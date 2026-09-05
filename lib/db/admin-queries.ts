@@ -71,16 +71,29 @@ async function listCoursesWithNodeCounts(masjidId: string): Promise<CourseRow[]>
     .order("name", { ascending: true });
   if (error) throw new Error(`listCoursesWithNodeCounts: ${error.message}`);
 
-  const rows: CourseRow[] = [];
-  for (const c of (courses ?? []) as { id: string; name: CourseName }[]) {
-    const { count, error: countErr } = await db
-      .from("pathway_nodes")
-      .select("id", { count: "exact", head: true })
-      .eq("course_id", c.id);
-    if (countErr) throw new Error(`listCoursesWithNodeCounts: ${countErr.message}`);
-    rows.push({ id: c.id, name: c.name, totalNodes: count ?? 0 });
+  const courseRows = (courses ?? []) as { id: string; name: CourseName }[];
+  if (courseRows.length === 0) return [];
+
+  // One query for every node in every course, tallied in memory (was 1 count/course).
+  const { data: nodes, error: nErr } = await db
+    .from("pathway_nodes")
+    .select("course_id")
+    .in(
+      "course_id",
+      courseRows.map((c) => c.id),
+    );
+  if (nErr) throw new Error(`listCoursesWithNodeCounts: ${nErr.message}`);
+
+  const countByCourse = new Map<string, number>();
+  for (const row of (nodes ?? []) as { course_id: string }[]) {
+    countByCourse.set(row.course_id, (countByCourse.get(row.course_id) ?? 0) + 1);
   }
-  return rows;
+
+  return courseRows.map((c) => ({
+    id: c.id,
+    name: c.name,
+    totalNodes: countByCourse.get(c.id) ?? 0,
+  }));
 }
 
 /** All volunteers in the masjid, for the pod assignment picker. */
@@ -147,42 +160,64 @@ export async function listPods(masjidId: string): Promise<AdminPod[]> {
   if (error) throw new Error(`listPods: ${error.message}`);
 
   const courses = await listCoursesWithNodeCounts(masjidId);
+  const podRows = (pods ?? []) as Record<string, unknown>[];
+  const podIds = podRows.map((p) => p.id as string);
+
+  // Two batched queries for all pods (was 2 per pod).
+  const [membersRes, progressRes] = await Promise.all([
+    podIds.length
+      ? db
+          .from("pod_students")
+          .select("pod_id, student:users!inner ( id, name, email )")
+          .in("pod_id", podIds)
+      : Promise.resolve({ data: [], error: null }),
+    podIds.length
+      ? db
+          .from("pod_progress")
+          .select(
+            "pod_id, course_id, current_node_id, node:pathway_nodes ( id, title, sequence_order )",
+          )
+          .in("pod_id", podIds)
+      : Promise.resolve({ data: [], error: null }),
+  ]);
+  if (membersRes.error) throw new Error(`listPods: ${membersRes.error.message}`);
+  if (progressRes.error) throw new Error(`listPods: ${progressRes.error.message}`);
+
+  const membersByPod = new Map<string, PodMember[]>();
+  for (const row of (membersRes.data ?? []) as Record<string, unknown>[]) {
+    const member = unwrap(row.student as unknown) as PodMember | null;
+    if (!member) continue;
+    const list = membersByPod.get(row.pod_id as string) ?? [];
+    list.push(member);
+    membersByPod.set(row.pod_id as string, list);
+  }
+
+  type PodCourseCell = { nodeId: string | null; title: string | null; position: number };
+  const progressByPodCourse = new Map<string, Map<string, PodCourseCell>>();
+  for (const row of (progressRes.data ?? []) as Record<string, unknown>[]) {
+    const node = unwrap(row.node as unknown) as
+      | { id: string; title: string; sequence_order: number }
+      | null;
+    const byCourse =
+      progressByPodCourse.get(row.pod_id as string) ?? new Map<string, PodCourseCell>();
+    byCourse.set(row.course_id as string, {
+      nodeId: (row.current_node_id as string | null) ?? null,
+      title: node?.title ?? null,
+      position: node?.sequence_order ?? 0,
+    });
+    progressByPodCourse.set(row.pod_id as string, byCourse);
+  }
 
   const result: AdminPod[] = [];
-  for (const pod of (pods ?? []) as Record<string, unknown>[]) {
+  for (const pod of podRows) {
     const podId = pod.id as string;
 
-    const { data: members, error: mErr } = await db
-      .from("pod_students")
-      .select("student:users!inner ( id, name, email )")
-      .eq("pod_id", podId);
-    if (mErr) throw new Error(`listPods: ${mErr.message}`);
-
-    const students: PodMember[] = (members ?? [])
-      .map((row) => unwrap(row.student as unknown) as PodMember | null)
-      .filter((s): s is PodMember => s != null)
+    const students: PodMember[] = (membersByPod.get(podId) ?? [])
+      .slice()
       .sort((a, b) => a.name.localeCompare(b.name));
 
-    const { data: progressRows, error: pErr } = await db
-      .from("pod_progress")
-      .select("course_id, current_node_id, node:pathway_nodes ( id, title, sequence_order )")
-      .eq("pod_id", podId);
-    if (pErr) throw new Error(`listPods: ${pErr.message}`);
-
-    const progressByCourse = new Map<
-      string,
-      { nodeId: string | null; title: string | null; position: number }
-    >();
-    for (const row of progressRows ?? []) {
-      const node = unwrap(row.node as unknown) as
-        | { id: string; title: string; sequence_order: number }
-        | null;
-      progressByCourse.set(row.course_id as string, {
-        nodeId: (row.current_node_id as string | null) ?? null,
-        title: node?.title ?? null,
-        position: node?.sequence_order ?? 0,
-      });
-    }
+    const progressByCourse =
+      progressByPodCourse.get(podId) ?? new Map<string, PodCourseCell>();
 
     const progress: PodCourseProgress[] = courses.map((c) => {
       const p = progressByCourse.get(c.id);

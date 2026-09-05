@@ -27,6 +27,29 @@ export interface ComplianceReport {
   }>;
 }
 
+/**
+ * Assemble the living report from an already-loaded ChildReport - pure, no DB.
+ * Use this when the caller already holds the child report (e.g. the parent home
+ * page) to avoid re-fetching it.
+ */
+export function assembleFromChildReport(
+  child: ChildReport,
+  termLabel: string = DEMO_TERM_LABEL,
+): ComplianceReport {
+  const courses = child.courses.map((c) => ({
+    status: computeCourseStatus(c, termLabel),
+    evidence: c,
+  }));
+  return {
+    student: { id: child.child.id, name: child.child.name },
+    podName: child.podName,
+    termLabel,
+    assembledAt: new Date().toISOString(),
+    overall: computeOverall(courses.map((c) => c.status)),
+    courses,
+  };
+}
+
 /** Build the living report from current data - no persistence. */
 export async function assembleComplianceReport(
   studentUserId: string,
@@ -35,18 +58,7 @@ export async function assembleComplianceReport(
   termLabel: string = DEMO_TERM_LABEL,
 ): Promise<ComplianceReport> {
   const child = await getChildReport({ id: studentUserId, name: studentName }, masjidId);
-  const courses = child.courses.map((c) => ({
-    status: computeCourseStatus(c, termLabel),
-    evidence: c,
-  }));
-  return {
-    student: { id: studentUserId, name: studentName },
-    podName: child.podName,
-    termLabel,
-    assembledAt: new Date().toISOString(),
-    overall: computeOverall(courses.map((c) => c.status)),
-    courses,
-  };
+  return assembleFromChildReport(child, termLabel);
 }
 
 /** Assemble + persist a snapshot into compliance_reports. Returns the report + row id. */

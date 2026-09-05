@@ -8,7 +8,8 @@ import { Badge } from "@/components/ui/Badge";
 import { NavIcon } from "@/components/ui/NavIcon";
 import { getAdminMetrics, type AdminMetrics } from "@/lib/db/metrics-queries";
 import { listStudents } from "@/lib/db/admin-queries";
-import { assembleComplianceReport } from "@/lib/compliance/report";
+import { getChildReports } from "@/lib/db/parent-queries";
+import { assembleFromChildReport } from "@/lib/compliance/report";
 import { LEVEL_LABEL, type ComplianceLevel } from "@/lib/compliance/status";
 
 const money = (v: number) =>
@@ -28,11 +29,12 @@ const LEVEL_TONE: Record<ComplianceLevel, "success" | "warning" | "danger"> = {
 async function complianceSpread(masjidId: string) {
   try {
     const students = await listStudents(masjidId);
-    const reports = await Promise.all(
-      students.map((s) => assembleComplianceReport(s.id, s.name, masjidId)),
+    const reports = await getChildReports(
+      students.map((s) => ({ id: s.id, name: s.name })),
+      masjidId,
     );
     const counts: Record<ComplianceLevel, number> = { on_track: 0, watch: 0, gap: 0 };
-    for (const r of reports) counts[r.overall.level] += 1;
+    for (const r of reports) counts[assembleFromChildReport(r).overall.level] += 1;
     return { total: students.length, counts };
   } catch {
     return null;

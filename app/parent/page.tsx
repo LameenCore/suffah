@@ -15,7 +15,7 @@ import {
   getChildBarakahSummary,
   type ChildBarakahSummary,
 } from "@/lib/db/barakah-queries";
-import { assembleComplianceReport } from "@/lib/compliance/report";
+import { assembleFromChildReport } from "@/lib/compliance/report";
 import { LEVEL_LABEL, type ComplianceLevel } from "@/lib/compliance/status";
 
 const pct = (frac: number) => `${Math.round(frac * 100)}%`;
@@ -198,17 +198,13 @@ function BarakahSummary({ barakah }: { barakah: ChildBarakahSummary }) {
 async function ChildBlock({
   report,
   barakah,
-  masjidId,
 }: {
   report: ChildReport;
   barakah: ChildBarakahSummary;
-  masjidId: string;
 }) {
-  const compliance = await assembleComplianceReport(
-    report.child.id,
-    report.child.name,
-    masjidId,
-  );
+  // report is already loaded by ParentHome - assemble the status view in memory
+  // rather than re-fetching the whole child report.
+  const compliance = assembleFromChildReport(report);
 
   return (
     <div className="space-y-4">
@@ -283,12 +279,7 @@ export default async function ParentHome() {
       ) : (
         <div className="space-y-9">
           {blocks.map((b) => (
-            <ChildBlock
-              key={b.report.child.id}
-              report={b.report}
-              barakah={b.barakah}
-              masjidId={user.masjidId}
-            />
+            <ChildBlock key={b.report.child.id} report={b.report} barakah={b.barakah} />
           ))}
         </div>
       )}

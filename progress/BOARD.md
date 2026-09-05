@@ -1,7 +1,7 @@
 # BOARD — Suffa progress snapshot
 
 **Derived from `progress/tasks/`. Not authoritative. Regenerate after any claim/finish.**
-Last regenerated: 2026-09-05 (T25 + T54 done)
+Last regenerated: 2026-09-05 (T25 + T54 + T73 done)
 
 | id  | phase | status | owner | title |
 |-----|-------|--------|-------|-------|
@@ -95,7 +95,7 @@ then T59 → T60, then Phase 11 depth; T63 is the multi-masjid scale unlock.
 | T70 | 14 | todo | — | Plain-language "what is this" explainer (Business) |
 | T71 | 14 | todo | — | Architecture: legible + justified (Technical-sw) |
 | T72 | 14 | todo | — | Cohesion / coupling / readability pass (Technical-sw) |
-| T73 | 14 | todo | — | Performance check + notes (Technical-sw) |
+| T73 | 14 | done | — | Performance check + notes (Technical-sw) |
 | T74 | 14 | done | — | Test coverage: measure it, report the number (Technical-sw) |
 | T75 | 14 | todo | — | Design-decision log — how we arrived at this (Technical) |
 | T76 | 14 | todo | — | Demo rehearsal + fallback recording + walkthrough script (Delivery) |

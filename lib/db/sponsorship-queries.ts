@@ -41,60 +41,108 @@ export async function getSponsoredOutcomes(masjidId: string): Promise<SponsoredO
   if (error) throw new Error(`getSponsoredOutcomes: ${error.message}`);
 
   const rows = (data ?? []) as unknown as Record<string, unknown>[];
-  const out: SponsoredOutcome[] = [];
+
+  // Resolve every sponsorship's pod/unit/course up front, then do ONE batched
+  // query per related table instead of four queries per sponsorship row.
+  type Resolved = {
+    r: Record<string, unknown>;
+    pod: { name: string; masjid_id: string };
+    unit: { title: string; course_id: string };
+    course: { name: CourseName } | null;
+    podId: string;
+    unitId: string;
+  };
+  const resolved: Resolved[] = [];
   for (const r of rows) {
     const pod = rel(r.pod as unknown) as { name: string; masjid_id: string } | null;
     const unit = rel(r.unit as unknown) as
       | { title: string; course_id: string; course: unknown }
       | null;
     if (!pod || pod.masjid_id !== masjidId || !unit) continue;
-    const course = rel(unit.course) as { name: CourseName } | null;
+    resolved.push({
+      r,
+      pod,
+      unit,
+      course: rel(unit.course) as { name: CourseName } | null,
+      podId: r.pod_id as string,
+      unitId: r.unit_id as string,
+    });
+  }
 
-    const podId = r.pod_id as string;
-    const unitId = r.unit_id as string;
+  if (resolved.length === 0) return [];
 
-    // Unit's pathway nodes.
-    const { data: unitNodes, error: nErr } = await db
-      .from("pathway_nodes")
-      .select("sequence_order")
-      .eq("unit_id", unitId)
-      .order("sequence_order", { ascending: true });
-    if (nErr) throw new Error(`getSponsoredOutcomes: ${nErr.message}`);
-    const seqs = (unitNodes ?? []).map((n) => n.sequence_order as number);
-    const total = seqs.length;
+  const podIds = [...new Set(resolved.map((x) => x.podId))];
+  const unitIds = [...new Set(resolved.map((x) => x.unitId))];
 
-    // Pod's current node in this unit's course.
-    const { data: pp, error: ppErr } = await db
+  const [unitNodesRes, progressRes, membersRes] = await Promise.all([
+    db.from("pathway_nodes").select("unit_id, sequence_order").in("unit_id", unitIds),
+    db
       .from("pod_progress")
-      .select("node:pathway_nodes ( sequence_order )")
-      .eq("pod_id", podId)
-      .eq("course_id", unit.course_id)
-      .maybeSingle();
-    if (ppErr) throw new Error(`getSponsoredOutcomes: ${ppErr.message}`);
-    const podSeq =
-      (rel(pp?.node as unknown) as { sequence_order: number } | null)?.sequence_order ?? 0;
+      .select("pod_id, course_id, node:pathway_nodes ( sequence_order )")
+      .in("pod_id", podIds),
+    db.from("pod_students").select("pod_id, student_user_id").in("pod_id", podIds),
+  ]);
+  if (unitNodesRes.error) throw new Error(`getSponsoredOutcomes: ${unitNodesRes.error.message}`);
+  if (progressRes.error) throw new Error(`getSponsoredOutcomes: ${progressRes.error.message}`);
+  if (membersRes.error) throw new Error(`getSponsoredOutcomes: ${membersRes.error.message}`);
+
+  const seqsByUnit = new Map<string, number[]>();
+  for (const n of (unitNodesRes.data ?? []) as { unit_id: string; sequence_order: number }[]) {
+    const list = seqsByUnit.get(n.unit_id) ?? [];
+    list.push(n.sequence_order);
+    seqsByUnit.set(n.unit_id, list);
+  }
+
+  const podSeqByPodCourse = new Map<string, number>();
+  for (const row of (progressRes.data ?? []) as Record<string, unknown>[]) {
+    const seq =
+      (rel(row.node as unknown) as { sequence_order: number } | null)?.sequence_order ?? 0;
+    podSeqByPodCourse.set(`${row.pod_id as string}:${row.course_id as string}`, seq);
+  }
+
+  const studentsByPod = new Map<string, string[]>();
+  for (const m of (membersRes.data ?? []) as { pod_id: string; student_user_id: string }[]) {
+    const list = studentsByPod.get(m.pod_id) ?? [];
+    list.push(m.student_user_id);
+    studentsByPod.set(m.pod_id, list);
+  }
+
+  const allStudentIds = [...new Set([...studentsByPod.values()].flat())];
+  // One row per assessment attempt (a student may have several) - grouped by unit,
+  // filtered per-sponsorship to that pod's roster below. Matches the prior
+  // row-counting semantics exactly.
+  const uaRowsByUnit = new Map<string, { student_user_id: string; passed: boolean }[]>();
+  if (allStudentIds.length > 0 && unitIds.length > 0) {
+    const { data: ua, error: uaErr } = await db
+      .from("unit_assessment_results")
+      .select("unit_id, student_user_id, passed")
+      .in("unit_id", unitIds)
+      .in("student_user_id", allStudentIds);
+    if (uaErr) throw new Error(`getSponsoredOutcomes: ${uaErr.message}`);
+    for (const x of (ua ?? []) as {
+      unit_id: string;
+      student_user_id: string;
+      passed: boolean;
+    }[]) {
+      const list = uaRowsByUnit.get(x.unit_id) ?? [];
+      list.push({ student_user_id: x.student_user_id, passed: x.passed === true });
+      uaRowsByUnit.set(x.unit_id, list);
+    }
+  }
+
+  const out: SponsoredOutcome[] = [];
+  for (const { r, pod, unit, course, podId, unitId } of resolved) {
+    const seqs = seqsByUnit.get(unitId) ?? [];
+    const total = seqs.length;
+    const podSeq = podSeqByPodCourse.get(`${podId}:${unit.course_id}`) ?? 0;
     const completed = total === 0 ? 0 : seqs.filter((s) => s < podSeq).length;
 
-    // Pod roster (count only) + unit assessment results for those students.
-    const { data: members, error: mErr } = await db
-      .from("pod_students")
-      .select("student_user_id")
-      .eq("pod_id", podId);
-    if (mErr) throw new Error(`getSponsoredOutcomes: ${mErr.message}`);
-    const studentIds = (members ?? []).map((m) => m.student_user_id as string);
-
-    let taken = 0;
-    let passed = 0;
-    if (studentIds.length > 0) {
-      const { data: ua, error: uaErr } = await db
-        .from("unit_assessment_results")
-        .select("passed")
-        .eq("unit_id", unitId)
-        .in("student_user_id", studentIds);
-      if (uaErr) throw new Error(`getSponsoredOutcomes: ${uaErr.message}`);
-      taken = (ua ?? []).length;
-      passed = (ua ?? []).filter((x) => x.passed === true).length;
-    }
+    const studentIds = new Set(studentsByPod.get(podId) ?? []);
+    const uaForPod = (uaRowsByUnit.get(unitId) ?? []).filter((x) =>
+      studentIds.has(x.student_user_id),
+    );
+    const taken = uaForPod.length;
+    const passed = uaForPod.filter((x) => x.passed).length;
 
     out.push({
       id: r.id as string,
@@ -105,7 +153,7 @@ export async function getSponsoredOutcomes(masjidId: string): Promise<SponsoredO
       unitTitle: unit.title,
       courseName: course?.name ?? ("Math" as CourseName),
       unitCompletion: total === 0 ? 0 : completed / total,
-      studentsInPod: studentIds.length,
+      studentsInPod: studentIds.size,
       assessmentsTaken: taken,
       assessmentsPassed: passed,
     });
