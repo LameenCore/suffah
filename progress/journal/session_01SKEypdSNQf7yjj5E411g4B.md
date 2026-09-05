@@ -120,3 +120,21 @@ Claimed T07 (commit b3f7efb). Plan:
   hidden until lesson complete, then renders questions + Submit.
 - Reset demo state (pod back to node 1, cleared Yusuf's progress). build+lint+tsc green.
 Commit <t07>.
+
+## 2026-09-05 — T08 done
+Claimed T08 (626d367).
+- Extracted lib/ai/questions.ts (shared question schema + objective grading);
+  refactored checkpoint.ts onto it. T09 term exam will reuse questions.ts + assessment.ts.
+- migration 0004: units.assessment_content jsonb.
+- lib/ai/assessment.ts: generateUnitAssessment (cumulative 5-8 questions from the unit's
+  lessons; persisted to units.assessment_content; continuity guard; fallback) +
+  gradeUnitAssessment (objective, 0.7 threshold, writes unit_assessment_results, score 0-1).
+  buildAssessmentPrompt is kind-aware ("unit" | "term") so T09 can call it with "term".
+- lib/ai/fallback-assessments.ts — unit-1 assessment per course.
+- POST /api/assessments/generate + /grade (grade gated on all unit checkpoints passed).
+- scripts/generate-assessments.ts + npm run gen:assessments. Ran it: all 3 units, source=model.
+- VERIFIED: all-correct → 1.0 passed; half → 0.5 not passed; both attempts persisted to
+  unit_assessment_results. Cleaned test rows.
+- FOLLOW-UP (not blocking T08's done-when): student-facing "take the unit assessment" panel
+  on /student/[courseId] — logic + API exist, UI wiring deferred. Noted in T08 notes.
+build+lint+tsc green. Commit <t08>.

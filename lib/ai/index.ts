@@ -26,3 +26,20 @@ export {
   type QuestionGrade,
   type GenerateCheckpointResult,
 } from "@/lib/ai/checkpoint";
+export {
+  generateUnitAssessment,
+  gradeUnitAssessment,
+  stripAssessmentAnswers,
+  buildAssessmentPrompt,
+  type AssessmentBody,
+  type AssessmentContent,
+  type AssessmentForStudent,
+  type AssessmentGrade,
+  type AssessmentKind,
+  type GenerateAssessmentResult,
+} from "@/lib/ai/assessment";
+export {
+  type Question,
+  type QuestionForStudent,
+  gradeQuestions,
+} from "@/lib/ai/questions";

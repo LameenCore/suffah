@@ -6,6 +6,7 @@ import { getServiceClient } from "@/lib/db";
 import type { CourseName } from "@/lib/types";
 import type { LessonContent } from "@/lib/ai/lesson";
 import type { CheckpointContent } from "@/lib/ai/checkpoint";
+import type { AssessmentContent } from "@/lib/ai/assessment";
 
 export interface CourseRef {
   id: string;
@@ -361,4 +362,145 @@ export async function advancePodProgress(
     .eq("course_id", courseId);
   if (error) throw new Error(`advancePodProgress: ${error.message}`);
   return true;
+}
+
+// --- Units + unit assessments ----------------------------------------
+
+export interface UnitRef {
+  id: string;
+  course_id: string;
+  title: string;
+  sequence_order: number;
+  assessment_content: AssessmentContent | null;
+  course: CourseRef;
+}
+
+const UNIT_SELECT =
+  "id, course_id, title, sequence_order, assessment_content, " +
+  "course:courses!inner ( id, name, grade_band, masjid_id )";
+
+function shapeUnit(row: Record<string, unknown>): UnitRef {
+  const course = Array.isArray(row.course) ? row.course[0] : row.course;
+  return {
+    id: row.id as string,
+    course_id: row.course_id as string,
+    title: row.title as string,
+    sequence_order: row.sequence_order as number,
+    assessment_content: (row.assessment_content as AssessmentContent | null) ?? null,
+    course: course as CourseRef,
+  };
+}
+
+/** One unit, only if its course belongs to `masjidId`. */
+export async function getUnit(unitId: string, masjidId: string): Promise<UnitRef | null> {
+  const { data, error } = await getServiceClient()
+    .from("units")
+    .select(UNIT_SELECT)
+    .eq("id", unitId)
+    .maybeSingle();
+  if (error) throw new Error(`getUnit: ${error.message}`);
+  if (!data) return null;
+  const unit = shapeUnit(data as unknown as Record<string, unknown>);
+  return unit.course.masjid_id === masjidId ? unit : null;
+}
+
+/** All pathway nodes in a unit, ordered by sequence. */
+export async function getUnitNodes(unitId: string, masjidId: string): Promise<PathwayNode[]> {
+  const { data, error } = await getServiceClient()
+    .from("pathway_nodes")
+    .select(NODE_SELECT)
+    .eq("unit_id", unitId)
+    .order("sequence_order", { ascending: true });
+  if (error) throw new Error(`getUnitNodes: ${error.message}`);
+  return (data ?? [])
+    .map((row) => shapeNode(row as unknown as Record<string, unknown>))
+    .filter((n) => n.course.masjid_id === masjidId);
+}
+
+export async function saveUnitAssessmentContent(
+  unitId: string,
+  masjidId: string,
+  content: AssessmentContent,
+): Promise<UnitRef> {
+  const existing = await getUnit(unitId, masjidId);
+  if (!existing) throw new Error(`saveUnitAssessmentContent: unit ${unitId} not in masjid ${masjidId}`);
+
+  const { error } = await getServiceClient()
+    .from("units")
+    .update({ assessment_content: content })
+    .eq("id", unitId);
+  if (error) throw new Error(`saveUnitAssessmentContent: ${error.message}`);
+
+  const updated = await getUnit(unitId, masjidId);
+  if (!updated) throw new Error("saveUnitAssessmentContent: unit vanished after update");
+  return updated;
+}
+
+export interface UnitAssessmentResultRow {
+  score: number;
+  passed: boolean;
+  answer_data: unknown;
+  attempted_at: string;
+}
+
+export async function getLatestUnitAssessmentResult(
+  studentUserId: string,
+  unitId: string,
+): Promise<UnitAssessmentResultRow | null> {
+  const { data, error } = await getServiceClient()
+    .from("unit_assessment_results")
+    .select("score, passed, answer_data, attempted_at")
+    .eq("student_user_id", studentUserId)
+    .eq("unit_id", unitId)
+    .order("attempted_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  if (error) throw new Error(`getLatestUnitAssessmentResult: ${error.message}`);
+  return (data as UnitAssessmentResultRow | null) ?? null;
+}
+
+export async function saveUnitAssessmentResult(
+  studentUserId: string,
+  unitId: string,
+  score: number,
+  passed: boolean,
+  answerData: unknown,
+): Promise<void> {
+  const { error } = await getServiceClient().from("unit_assessment_results").insert({
+    student_user_id: studentUserId,
+    unit_id: unitId,
+    score,
+    passed,
+    answer_data: answerData,
+  });
+  if (error) throw new Error(`saveUnitAssessmentResult: ${error.message}`);
+}
+
+/** How far a student has got through a unit's checkpoints. */
+export async function getUnitCheckpointProgress(
+  studentUserId: string,
+  unitId: string,
+  masjidId: string,
+): Promise<{ total: number; passed: number; complete: boolean }> {
+  const nodes = await getUnitNodes(unitId, masjidId);
+  if (nodes.length === 0) return { total: 0, passed: 0, complete: false };
+
+  const { data, error } = await getServiceClient()
+    .from("checkpoint_results")
+    .select("pathway_node_id, passed")
+    .eq("student_user_id", studentUserId)
+    .in(
+      "pathway_node_id",
+      nodes.map((n) => n.id),
+    );
+  if (error) throw new Error(`getUnitCheckpointProgress: ${error.message}`);
+
+  const passedNodes = new Set(
+    (data ?? []).filter((r) => r.passed === true).map((r) => r.pathway_node_id as string),
+  );
+  return {
+    total: nodes.length,
+    passed: passedNodes.size,
+    complete: passedNodes.size >= nodes.length,
+  };
 }

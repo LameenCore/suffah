@@ -26,7 +26,7 @@ Postgres schema, hackathon scope. Every table includes `masjid_id` for multi-ten
 - `id`, `course_id`, `sequence_order`, `title`, `lesson_content` (generated + persisted, not regenerated per view), `checkpoint_content` (jsonb — the node's checkpoint questions, generated once from `lesson_content` and persisted; added in migration `0003`), `unit_id` (groups nodes into units for unit-assessment scoping)
 
 ### `units`
-- `id`, `course_id`, `title`, `sequence_order`
+- `id`, `course_id`, `title`, `sequence_order`, `assessment_content` (jsonb — the unit assessment's questions, generated once from the unit's lessons and persisted; added in migration `0004`)
 
 ### `pod_progress`
 - `id`, `pod_id`, `course_id`, `current_node_id` — this is the continuity record: what node a pod is on, per course, so a new volunteer can pick up instantly

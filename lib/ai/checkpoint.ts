@@ -2,13 +2,21 @@
 //
 // A checkpoint is a short, low-stakes check tied to one lesson node. It is
 // generated from that node's persisted lesson, persisted onto the node
-// (checkpoint_content), graded objectively (MCQ index match / normalized string
-// + numeric match — NO rubric grading, see PRD Non-Goals), and the attempt is
-// written to checkpoint_results. Passing advances the pod to the next node.
+// (checkpoint_content), graded objectively (see lib/ai/questions.ts — NO rubric
+// grading, PRD Non-Goal), and the attempt is written to checkpoint_results.
+// Passing advances the pod to the next node.
 
 import { z } from "zod";
 import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
 import { getAnthropic, LESSON_MODEL } from "@/lib/ai/client";
+import {
+  QuestionSchema,
+  stripQuestionAnswers,
+  gradeQuestions,
+  type Question,
+  type QuestionForStudent,
+  type QuestionGrade,
+} from "@/lib/ai/questions";
 import {
   getPathwayNode,
   saveCheckpointContent,
@@ -22,38 +30,20 @@ import {
 import { fallbackCheckpoint } from "@/lib/ai/fallback-checkpoints";
 import { PASS_THRESHOLD } from "@/lib/types";
 
+export type { QuestionGrade } from "@/lib/ai/questions";
+
 // --- Persisted shape -----------------------------------------------------
-
-const McqQuestionSchema = z.object({
-  id: z.string().describe("Stable id like 'q1'."),
-  type: z.literal("mcq"),
-  prompt: z.string(),
-  options: z.array(z.string()).min(3).max(4),
-  answerIndex: z.number().int().min(0).max(3),
-  explanation: z.string(),
-});
-
-const ShortQuestionSchema = z.object({
-  id: z.string(),
-  type: z.literal("short"),
-  prompt: z.string(),
-  answer: z.string().describe("The canonical short answer — a number or a few words."),
-  acceptable: z
-    .array(z.string())
-    .describe("Other answers that should be marked correct (spellings, phrasings, units)."),
-  explanation: z.string(),
-});
 
 const CheckpointBodySchema = z.object({
   questions: z
-    .array(z.discriminatedUnion("type", [McqQuestionSchema, ShortQuestionSchema]))
+    .array(QuestionSchema)
     .min(3)
     .max(4)
     .describe("Mix of mcq and short. Every question has one objective, checkable answer."),
 });
 
 export type CheckpointBody = z.infer<typeof CheckpointBodySchema>;
-export type CheckpointQuestion = CheckpointBody["questions"][number];
+export type CheckpointQuestion = Question;
 export type CheckpointSource = "model" | "fallback";
 
 export interface CheckpointContent extends CheckpointBody {
@@ -62,22 +52,12 @@ export interface CheckpointContent extends CheckpointBody {
   generatedAt: string;
 }
 
-/** A checkpoint as shown to a student — no answers. */
 export interface CheckpointForStudent {
-  questions: Array<
-    | { id: string; type: "mcq"; prompt: string; options: string[] }
-    | { id: string; type: "short"; prompt: string }
-  >;
+  questions: QuestionForStudent[];
 }
 
 export function stripAnswers(content: CheckpointContent): CheckpointForStudent {
-  return {
-    questions: content.questions.map((q) =>
-      q.type === "mcq"
-        ? { id: q.id, type: "mcq", prompt: q.prompt, options: q.options }
-        : { id: q.id, type: "short", prompt: q.prompt },
-    ),
-  };
+  return { questions: stripQuestionAnswers(content.questions) };
 }
 
 // --- Generation --------------------------------------------------------
@@ -184,44 +164,6 @@ export async function generateCheckpointForNode(
 
 // --- Grading ----------------------------------------------------------
 
-function normalize(s: string): string {
-  return s
-    .toLowerCase()
-    .trim()
-    .replace(/[^\p{L}\p{N}\s.\-/]/gu, "")
-    .replace(/\s+/g, " ");
-}
-
-function asNumber(s: string): number | null {
-  const cleaned = s.replace(/[^0-9.\-]/g, "");
-  if (cleaned === "" || cleaned === "-" || cleaned === ".") return null;
-  const n = Number(cleaned);
-  return Number.isFinite(n) ? n : null;
-}
-
-function shortAnswerCorrect(given: string, q: z.infer<typeof ShortQuestionSchema>): boolean {
-  const candidates = [q.answer, ...q.acceptable];
-  const g = normalize(given);
-  if (candidates.some((c) => normalize(c) === g)) return true;
-
-  const gn = asNumber(given);
-  if (gn !== null && candidates.some((c) => {
-    const cn = asNumber(c);
-    return cn !== null && Math.abs(cn - gn) < 1e-9;
-  })) {
-    return true;
-  }
-  return false;
-}
-
-export interface QuestionGrade {
-  id: string;
-  correct: boolean;
-  given: string;
-  correctAnswer: string;
-  explanation: string;
-}
-
 export interface CheckpointGrade {
   score: number; // 0..1
   correctCount: number;
@@ -231,27 +173,6 @@ export interface CheckpointGrade {
   /** The node the pod advanced to, if this attempt passed and a next node exists. */
   advancedToNodeId: string | null;
   alreadyPassed: boolean;
-}
-
-function gradeOne(q: CheckpointQuestion, raw: string | undefined): QuestionGrade {
-  const given = (raw ?? "").toString();
-  if (q.type === "mcq") {
-    const idx = Number.parseInt(given, 10);
-    return {
-      id: q.id,
-      correct: idx === q.answerIndex,
-      given: Number.isInteger(idx) && q.options[idx] !== undefined ? q.options[idx] : given,
-      correctAnswer: q.options[q.answerIndex],
-      explanation: q.explanation,
-    };
-  }
-  return {
-    id: q.id,
-    correct: shortAnswerCorrect(given, q),
-    given,
-    correctAnswer: q.answer,
-    explanation: q.explanation,
-  };
 }
 
 /**
@@ -278,10 +199,10 @@ export async function gradeCheckpoint(
     throw err;
   }
 
-  const perQuestion = checkpoint.questions.map((q) => gradeOne(q, answers[q.id]));
-  const correctCount = perQuestion.filter((g) => g.correct).length;
-  const total = perQuestion.length;
-  const score = total === 0 ? 0 : correctCount / total;
+  const { score, correctCount, total, perQuestion } = gradeQuestions(
+    checkpoint.questions,
+    answers,
+  );
   const passed = score >= PASS_THRESHOLD;
 
   const priorPass = (await getLatestCheckpointResult(studentUserId, nodeId))?.passed === true;
