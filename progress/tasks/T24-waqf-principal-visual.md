@@ -39,4 +39,4 @@ finance: the principal is a locked, static number; only a thin stream flows out 
 - Placed as a "How the waqf works" section above the time-series chart on /admin/ledger.
 - build + lint green. Not visually verified vs a running server (no .env.local) — geometry
   is hand-checked within the 720×240 viewBox.
-- commits: <t24>
+- commits: 8e8bc04

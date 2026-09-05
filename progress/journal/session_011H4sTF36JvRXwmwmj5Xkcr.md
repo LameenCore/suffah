@@ -126,4 +126,4 @@ DB. Commit c6d3abb. Next: T16.
   prefers-reduced-motion. Wired into /admin/ledger above the time-series chart.
 - Principal-never-spendable rule already enforced in getLedgerSummary (T14).
 - build + lint green; geometry hand-checked (not rendered live, no .env.local).
-- commit <t24>. Session tally: T10,T11,T13,T14,T15,T24.
+- commit 8e8bc04. Session tally: T10,T11,T13,T14,T15,T24.
