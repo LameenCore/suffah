@@ -133,7 +133,7 @@ export function BarakahCheckIn({
           >
             {pending ? "Saving…" : "Record note"}
           </button>
-          {error && <span className="text-xs text-red-600 dark:text-red-400">{error}</span>}
+          {error && <span className="text-xs text-danger">{error}</span>}
         </div>
       </form>
 

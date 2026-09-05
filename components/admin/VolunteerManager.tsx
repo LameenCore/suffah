@@ -20,7 +20,7 @@ const STATUS_LABEL: Record<VolunteerStatus, string> = {
 const STATUS_STYLE: Record<VolunteerStatus, string> = {
   active: "bg-teal-soft text-teal-strong  ",
   inactive: "bg-surface-2 text-ink-2  ",
-  pending_vetting: "bg-amber-100 text-ink-2 dark:bg-amber-900/40 ",
+  pending_vetting: "bg-warning-soft text-ink-2  ",
 };
 
 const fmtDate = (iso: string) =>
@@ -98,7 +98,7 @@ function OnboardForm() {
         >
           {pending ? "Adding…" : "Add volunteer"}
         </button>
-        {error && <p className="text-xs text-red-600 dark:text-red-400">{error}</p>}
+        {error && <p className="text-xs text-danger">{error}</p>}
       </div>
     </form>
   );
@@ -142,7 +142,7 @@ function ActiveRow({ v }: { v: VolunteerRow }) {
             type="button"
             disabled={pending}
             onClick={() => dispatch(() => recordDepartureAction(v.id))}
-            className="rounded border border-red-300 px-2 py-1 text-xs text-red-700 hover:bg-red-50 disabled:opacity-50 dark:border-red-800 dark:text-red-300 dark:hover:bg-red-950/40"
+            className="rounded border border-danger/40 px-2 py-1 text-xs text-danger hover:bg-danger-soft disabled:opacity-50   "
           >
             Record departure
           </button>
@@ -152,7 +152,7 @@ function ActiveRow({ v }: { v: VolunteerRow }) {
         <p className="mt-1 text-xs text-ink-3 ">{v.certificationNote}</p>
       )}
       <p className="mt-0.5 text-xs text-ink-4">joined {fmtDate(v.joinedAt)}</p>
-      {error && <p className="mt-1 text-xs text-red-600 dark:text-red-400">{error}</p>}
+      {error && <p className="mt-1 text-xs text-danger">{error}</p>}
     </li>
   );
 }
@@ -169,7 +169,7 @@ function ChurnedRow({ v }: { v: VolunteerRow }) {
         </span>
       </div>
       <div className="flex items-center gap-2">
-        {error && <span className="text-xs text-red-600 dark:text-red-400">{error}</span>}
+        {error && <span className="text-xs text-danger">{error}</span>}
         <button
           type="button"
           disabled={pending}

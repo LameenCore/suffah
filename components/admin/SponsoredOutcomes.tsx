@@ -22,9 +22,9 @@ function Card({ o }: { o: SponsoredOutcome }) {
           <span>Unit progress</span>
           <span className="tabular-nums">{completionPct}%</span>
         </div>
-        <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-zinc-200 ">
+        <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-surface-2 ">
           <div
-            className="h-full rounded-full bg-success-soft0 dark:bg-emerald-400"
+            className="h-full rounded-full bg-success "
             style={{ width: `${completionPct}%` }}
           />
         </div>

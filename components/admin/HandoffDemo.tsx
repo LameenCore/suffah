@@ -4,6 +4,7 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { BriefingView } from "@/components/admin/BriefingView";
+import { Button } from "@/components/ui/Button";
 import {
   takeVolunteerOfflineAction,
   assignReplacementAction,
@@ -27,25 +28,25 @@ function Step({
 }) {
   return (
     <div
-      className={`rounded-xl border p-4 ${
+      className={`rounded-[var(--radius-lg)] border p-5 transition-colors ${
         active
-          ? "border-emerald-400 bg-surface  "
-          : "border-border bg-surface-2/60  /40"
+          ? "border-teal/50 bg-surface shadow-[var(--shadow-card)]"
+          : "border-border bg-surface-2/60"
       }`}
     >
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2.5">
         <span
-          className={`flex h-5 w-5 items-center justify-center rounded-full text-[11px] font-semibold ${
+          className={`grid h-6 w-6 place-items-center rounded-full text-[11px] font-semibold ${
             done
               ? "bg-teal text-white"
               : active
-                ? "bg-teal-soft text-teal-strong  "
-                : "bg-zinc-200 text-ink-3 "
+                ? "bg-terracotta-soft text-terracotta-strong"
+                : "bg-surface-2 text-ink-4"
           }`}
         >
           {done ? "✓" : n}
         </span>
-        <h2 className="text-sm font-medium">{title}</h2>
+        <h2 className="font-display text-base font-semibold text-ink">{title}</h2>
       </div>
       <div className="mt-3">{children}</div>
     </div>
@@ -89,17 +90,20 @@ export function HandoffDemo({ state }: { state: HandoffDemoState }) {
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-wrap items-center justify-between gap-2 rounded-lg bg-surface-2 px-3 py-2 text-sm ">
-        <span>
-          <span className="font-medium">{state.pod.name}</span> ·{" "}
+      <div className="flex flex-wrap items-center justify-between gap-2 rounded-[var(--radius)] border border-border bg-surface-2 px-3.5 py-2.5 text-sm">
+        <span className="text-ink-2">
+          <span className="font-medium text-ink">{state.pod.name}</span> &middot;{" "}
           {state.currentVolunteer ? (
-            <>volunteer: <span className="font-medium">{state.currentVolunteer.name}</span></>
+            <>
+              volunteer <span className="font-medium text-ink">{state.currentVolunteer.name}</span>
+            </>
           ) : (
-            <span className="font-medium text-red-600 dark:text-red-400">no volunteer</span>
+            <span className="font-medium text-danger">no volunteer</span>
           )}
         </span>
-        <button
-          type="button"
+        <Button
+          variant="ghost"
+          size="sm"
           disabled={pending}
           onClick={() =>
             run(async () => {
@@ -109,13 +113,12 @@ export function HandoffDemo({ state }: { state: HandoffDemoState }) {
               router.refresh();
             })
           }
-          className="rounded-md border border-border px-2.5 py-1 text-xs text-ink-2 hover:bg-surface   "
         >
           Reset demo
-        </button>
+        </Button>
       </div>
 
-      {error ? <p className="text-xs text-red-600 dark:text-red-400">{error}</p> : null}
+      {error ? <p className="text-xs text-danger">{error}</p> : null}
 
       <Step n={1} title="A live session is running" active={online} done={offline}>
         <p className="text-sm text-ink-2 ">
@@ -130,23 +133,17 @@ export function HandoffDemo({ state }: { state: HandoffDemoState }) {
           High volunteer churn is the core operational pain. Simulate it:
         </p>
         <div className="mt-2 flex flex-wrap items-center gap-3">
-          <button
-            type="button"
+          <Button
+            variant="danger"
+            size="sm"
             disabled={pending || offline}
             onClick={() => run(async () => { await takeVolunteerOfflineAction(); router.refresh(); })}
-            className="rounded-lg bg-red-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-red-500 disabled:opacity-50"
           >
             {offline ? "Volunteer is offline" : "Take volunteer offline"}
-          </button>
-          <span
-            className={`text-xs ${
-              state.playgroundOnline
-                ? "text-teal "
-                : "text-ink-4"
-            }`}
-          >
-            ● Student playground: {state.playgroundOnline ? "online - the pod keeps learning" : "no lesson ready"}
-            {"  "}
+          </Button>
+          <span className={`text-xs ${state.playgroundOnline ? "text-success" : "text-ink-4"}`}>
+            &bull; Student playground:{" "}
+            {state.playgroundOnline ? "online - the pod keeps learning" : "no lesson ready"}{" "}
             <Link href="/student" target="_blank" className="underline underline-offset-2">
               open it
             </Link>
@@ -170,9 +167,9 @@ export function HandoffDemo({ state }: { state: HandoffDemoState }) {
             value={pick}
             onChange={(e) => setPick(e.target.value)}
             disabled={pending || online}
-            className="rounded-md border border-border bg-surface px-2 py-1 text-sm  "
+            className="rounded-[var(--radius)] border border-border bg-surface px-3 py-2 text-sm text-ink outline-none focus:border-teal disabled:opacity-55"
           >
-            <option value="">Choose a volunteer…</option>
+            <option value="">Choose a volunteer...</option>
             {state.candidates.map((v) => (
               <option key={v.id} value={v.id}>
                 {v.name}
@@ -180,8 +177,8 @@ export function HandoffDemo({ state }: { state: HandoffDemoState }) {
               </option>
             ))}
           </select>
-          <button
-            type="button"
+          <Button
+            size="sm"
             disabled={pending || !pick || online}
             onClick={() =>
               run(async () => {
@@ -190,10 +187,9 @@ export function HandoffDemo({ state }: { state: HandoffDemoState }) {
                 router.refresh();
               })
             }
-            className="rounded-lg bg-teal px-3 py-1.5 text-sm font-medium text-white hover:bg-teal-strong disabled:opacity-50"
           >
-            {pending ? "Handing off…" : "Assign + generate briefing"}
-          </button>
+            {pending ? "Handing off..." : "Assign + generate briefing"}
+          </Button>
         </div>
 
         {freshBriefing ? (

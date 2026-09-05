@@ -1,5 +1,6 @@
-import Link from "next/link";
 import { requireRole } from "@/lib/auth";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { Card } from "@/components/ui/Card";
 import { VolunteerManager } from "@/components/admin/VolunteerManager";
 import { listVolunteers, type VolunteerRoster } from "@/lib/db/volunteer-queries";
 
@@ -17,29 +18,17 @@ export default async function AdminVolunteersPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between text-sm">
-        <Link
-          href="/admin"
-          className="text-ink-3 underline underline-offset-2 hover:text-ink "
-        >
-          ← Admin
-        </Link>
-      </div>
-
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Volunteers</h1>
-        <p className="mt-1 text-sm text-ink-3 ">
-          Onboard volunteers, track vetting status, and log departures. Volunteers run
-          live enrichment - the playground carries primary instruction, so a departure never
-          stops learning.
-        </p>
-      </div>
+      <PageHeader
+        kicker="Volunteers"
+        title="The people who run the circle"
+        lede="Onboard volunteers, track vetting status, and log departures. Volunteers lead live enrichment - the playground carries primary instruction, so a departure never stops learning."
+        back={{ href: "/admin", label: "Overview" }}
+      />
 
       {loadError ? (
-        <p className="rounded-xl border border-warning/40 bg-warning-soft p-4 text-sm text-ink-2   ">
-          Volunteer data is unavailable: {loadError}. Configure Supabase and run the
-          seed to populate this view.
-        </p>
+        <Card tone="warning" className="p-4 text-sm text-ink-2">
+          Volunteer data is unavailable: {loadError}. Run <code>npm run seed</code>.
+        </Card>
       ) : (
         <VolunteerManager active={roster.active} churned={roster.churned} />
       )}

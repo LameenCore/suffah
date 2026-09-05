@@ -1,5 +1,6 @@
-import Link from "next/link";
 import { requireRole } from "@/lib/auth";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { Card } from "@/components/ui/Card";
 import { BarakahCheckIn, type PodOption } from "@/components/admin/BarakahCheckIn";
 import { listPods } from "@/lib/db/admin-queries";
 import { listBarakahNotes, type BarakahEntry } from "@/lib/db/barakah-queries";
@@ -28,33 +29,21 @@ export default async function AdminBarakahPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between text-sm">
-        <Link
-          href="/admin"
-          className="text-ink-3 underline underline-offset-2 hover:text-ink "
-        >
-          ← Admin
-        </Link>
-      </div>
-
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Barakah notes</h1>
-        <p className="mt-1 text-sm text-ink-3 ">
-          What the community values beyond test scores - consistency, helping one
-          another, reflection, and adab in the circle. Observations, never points or
-          rankings.
-        </p>
-      </div>
+      <PageHeader
+        kicker="Barakah notes"
+        title="What the circle values, beyond marks"
+        lede="Consistency, helping one another, reflection, and adab in the circle. Observations, never points or rankings."
+        back={{ href: "/admin", label: "Overview" }}
+      />
 
       {loadError ? (
-        <p className="rounded-xl border border-warning/40 bg-warning-soft p-4 text-sm text-ink-2   ">
-          Barakah notes are unavailable: {loadError}. Configure Supabase and run the
-          seed to populate this view.
-        </p>
+        <Card tone="warning" className="p-4 text-sm text-ink-2">
+          Barakah notes are unavailable: {loadError}. Run <code>npm run seed</code>.
+        </Card>
       ) : pods.length === 0 ? (
-        <p className="rounded-xl border border-border p-6 text-sm text-ink-3 ">
+        <Card className="p-6 text-sm text-ink-3">
           No pods yet - create a pod before recording notes.
-        </p>
+        </Card>
       ) : (
         <BarakahCheckIn pods={pods} recentNotes={notes} />
       )}

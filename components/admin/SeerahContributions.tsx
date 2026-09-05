@@ -69,7 +69,7 @@ export function SeerahContributions({
                     className={`rounded px-1.5 py-0.5 text-[11px] font-medium ${
                       c.incorporated
                         ? "bg-teal-soft text-teal-strong  "
-                        : "bg-amber-100 text-ink-2 dark:bg-amber-900/40 "
+                        : "bg-warning-soft text-ink-2  "
                     }`}
                   >
                     {c.incorporated ? "incorporated" : "pending"}
@@ -160,7 +160,7 @@ export function SeerahContributions({
             <span
               className={`text-xs ${
                 msg.kind === "err"
-                  ? "text-red-600 dark:text-red-400"
+                  ? "text-danger"
                   : "text-teal-strong "
               }`}
             >

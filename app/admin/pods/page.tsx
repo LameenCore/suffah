@@ -1,6 +1,7 @@
-import Link from "next/link";
 import { requireRole } from "@/lib/auth";
 import { RegulationNote } from "@/components/RegulationNote";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { Card } from "@/components/ui/Card";
 import { PodCard } from "@/components/admin/PodCard";
 import {
   listPods,
@@ -41,23 +42,12 @@ export default async function AdminPodsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between text-sm">
-        <Link
-          href="/admin"
-          className="text-ink-3 underline underline-offset-2 hover:text-ink "
-        >
-          ← Admin
-        </Link>
-      </div>
-
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Pods</h1>
-        <p className="mt-1 text-sm text-ink-3 ">
-          Assign a volunteer and up to {POD_MAX_STUDENTS} students per pod. The
-          continuity view shows where each pod is in every course, so a new
-          volunteer can pick up mid-stream.
-        </p>
-      </div>
+      <PageHeader
+        kicker="Pods"
+        title="Pods & assignment"
+        lede={`Assign a volunteer and up to ${POD_MAX_STUDENTS} students per pod. The continuity matrix shows where each pod is in every course, so a new volunteer can pick up mid-stream.`}
+        back={{ href: "/admin", label: "Overview" }}
+      />
 
       <RegulationNote>
         The {POD_MAX_STUDENTS}-student cap mirrors Quebec&apos;s home-instruction
@@ -88,9 +78,9 @@ export default async function AdminPodsPage() {
           </div>
 
           {/* Continuity matrix - pod x course -> current node */}
-          <section className="rounded-xl border border-border bg-surface p-4  ">
-            <h2 className="font-medium">Continuity view</h2>
-            <p className="mt-1 text-xs text-ink-3 ">
+          <Card as="section" className="p-5">
+            <h2 className="font-display text-lg font-semibold text-ink">Continuity matrix</h2>
+            <p className="mt-1 text-xs text-ink-3">
               Current pathway node per pod, per course. This is what a replacement
               volunteer sees on day one.
             </p>
@@ -117,16 +107,16 @@ export default async function AdminPodsPage() {
                 <tbody>
                   {pods.map((pod) => (
                     <tr key={pod.id} className="align-top">
-                      <td className="border-b border-black/5 py-2 pr-4 font-medium ">
+                      <td className="border-b border-border py-2 pr-4 font-medium ">
                         {pod.name}
                       </td>
-                      <td className="border-b border-black/5 py-2 pr-4 text-ink-3  ">
+                      <td className="border-b border-border py-2 pr-4 text-ink-3  ">
                         {pod.volunteer?.name ?? "-"}
                       </td>
                       {pod.progress.map((p) => (
                         <td
                           key={p.courseId}
-                          className="border-b border-black/5 py-2 pr-4 "
+                          className="border-b border-border py-2 pr-4 "
                         >
                           {p.currentNodeTitle ? (
                             <>
@@ -147,7 +137,7 @@ export default async function AdminPodsPage() {
                 </tbody>
               </table>
             </div>
-          </section>
+          </Card>
         </>
       )}
     </div>

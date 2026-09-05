@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { requireRole } from "@/lib/auth";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { Card } from "@/components/ui/Card";
 import { getPathwayNode } from "@/lib/db/queries";
 import {
   listContributions,
@@ -48,33 +50,20 @@ export default async function AdminSeerahPage({
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between text-sm">
-        <Link
-          href="/admin"
-          className="text-ink-3 underline underline-offset-2 hover:text-ink "
-        >
-          ← Admin
-        </Link>
-      </div>
-
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Seerah - community input</h1>
-        <p className="mt-1 text-sm text-ink-3 ">
-          Seerah has no external curriculum vendor. The masjid&apos;s scholars and elders
-          annotate the lesson draft; their notes are folded into the next version
-          of the lesson.
-        </p>
-      </div>
+      <PageHeader
+        kicker="Seerah studio"
+        title="The community's own voice in the lesson"
+        lede="Seerah has no external curriculum vendor. The masjid's scholars and elders annotate the lesson draft; their notes fold into the next version."
+        back={{ href: "/admin", label: "Overview" }}
+      />
 
       {loadError ? (
-        <p className="rounded-xl border border-warning/40 bg-warning-soft p-4 text-sm text-ink-2   ">
-          Unavailable: {loadError}. Configure Supabase, run the seed, and generate the
-          Seerah lessons (`npm run gen:lessons`).
-        </p>
+        <Card tone="warning" className="p-4 text-sm text-ink-2">
+          Unavailable: {loadError}. Run <code>npm run seed</code> and{" "}
+          <code>npm run gen:lessons</code>.
+        </Card>
       ) : nodes.length === 0 ? (
-        <p className="rounded-xl border border-border p-6 text-sm text-ink-3 ">
-          No Seerah lesson nodes found.
-        </p>
+        <Card className="p-6 text-sm text-ink-3">No Seerah lesson nodes found.</Card>
       ) : (
         <div className="grid gap-6 lg:grid-cols-[220px_1fr]">
           <nav className="space-y-1">
@@ -84,7 +73,7 @@ export default async function AdminSeerahPage({
                 href={`/admin/seerah?node=${n.id}`}
                 className={`block rounded-lg border px-3 py-2 text-sm ${
                   selected?.id === n.id
-                    ? "border-emerald-400 bg-success-soft  "
+                    ? "border-teal bg-success-soft  "
                     : "border-border hover:bg-surface-2  "
                 }`}
               >
@@ -93,7 +82,7 @@ export default async function AdminSeerahPage({
                     {n.sequenceOrder}. {n.title}
                   </span>
                   {n.pendingContributions > 0 && (
-                    <span className="shrink-0 rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-medium text-ink-2 dark:bg-amber-900/40 ">
+                    <span className="shrink-0 rounded bg-warning-soft px-1.5 py-0.5 text-[10px] font-medium text-ink-2  ">
                       {n.pendingContributions}
                     </span>
                   )}

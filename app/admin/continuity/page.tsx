@@ -1,6 +1,8 @@
-import Link from "next/link";
 import { requireRole } from "@/lib/auth";
 import { RegulationNote } from "@/components/RegulationNote";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { Card } from "@/components/ui/Card";
+import { ButtonLink } from "@/components/ui/Button";
 import { ContinuityPod, type ContinuityPodData } from "@/components/admin/ContinuityPod";
 import {
   listPodsForBriefing,
@@ -65,48 +67,27 @@ export default async function AdminContinuityPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between text-sm">
-        <Link
-          href="/admin"
-          className="text-ink-3 underline underline-offset-2 hover:text-ink "
-        >
-          ← Admin
-        </Link>
-        <div className="flex gap-4">
-          <Link
-            href="/admin/handoff-demo"
-            className="text-teal-strong underline underline-offset-2 hover:text-teal "
-          >
-            Run live handoff simulation →
-          </Link>
-          <Link
-            href="/admin/pods"
-            className="text-ink-3 underline underline-offset-2 hover:text-ink "
-          >
-            Pod assignment →
-          </Link>
-        </div>
-      </div>
-
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Continuity Fingerprint</h1>
-        <p className="mt-1 text-sm text-ink-3 ">
-          When a volunteer leaves, the next one gets more than &ldquo;Node 4 of Unit 2&rdquo;.
-          This briefing captures <em>how</em> each pod has been learning,
-          assembled from its progress, checkpoint history, and session notes, so
-          churn becomes a knowledge handoff instead of a data-loss event.
-        </p>
-      </div>
+      <PageHeader
+        kicker="Continuity Fingerprint"
+        title="How each pod is learning"
+        lede={
+          "When a volunteer leaves, the next one gets more than “Node 4 of Unit 2”. This briefing captures how a pod has been learning - assembled from its progress, checkpoint history, and session notes - so churn becomes a knowledge handoff, not a data-loss event."
+        }
+        back={{ href: "/admin", label: "Overview" }}
+        actions={
+          <ButtonLink href="/admin/handoff-demo" variant="soft" size="sm">
+            Live handoff simulation
+          </ButtonLink>
+        }
+      />
 
       {loadError ? (
-        <p className="rounded-xl border border-warning/40 bg-warning-soft p-4 text-sm text-ink-2   ">
-          Continuity data is unavailable: {loadError}. Run{" "}
-          <code>npm run migrate</code> and <code>npm run seed</code>.
-        </p>
+        <Card tone="warning" className="p-4 text-sm text-ink-2">
+          Continuity data is unavailable: {loadError}. Run <code>npm run migrate</code> and{" "}
+          <code>npm run seed</code>.
+        </Card>
       ) : pods.length === 0 ? (
-        <p className="rounded-xl border border-border p-6 text-sm text-ink-3 ">
-          No pods yet.
-        </p>
+        <Card className="p-6 text-sm text-ink-3">No pods yet.</Card>
       ) : (
         <div className="space-y-4">
           {pods.map((pod) => (

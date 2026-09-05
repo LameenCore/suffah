@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { BriefingView } from "@/components/admin/BriefingView";
+import { Button } from "@/components/ui/Button";
 import {
   generateBriefingAction,
   addSessionNoteAction,
@@ -55,25 +56,24 @@ export function ContinuityPod({ pod }: { pod: ContinuityPodData }) {
   }
 
   return (
-    <section className="space-y-4 rounded-xl border border-border bg-surface p-4  ">
+    <section className="space-y-4 rounded-[var(--radius-lg)] border border-border bg-surface p-5 shadow-[var(--shadow-card)]">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div>
-          <h2 className="font-medium">{pod.name}</h2>
-          <p className="text-xs text-ink-3 ">
+          <h2 className="font-display text-lg font-semibold text-ink">{pod.name}</h2>
+          <p className="text-xs text-ink-4">
             Volunteer: {pod.volunteerName ?? "unassigned"}
           </p>
         </div>
-        <button
-          type="button"
-          disabled={pending}
-          onClick={generate}
-          className="rounded-lg bg-teal px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-teal-strong disabled:opacity-60"
-        >
-          {pending ? "Generating…" : briefing ? "Regenerate briefing" : "Generate handoff briefing"}
-        </button>
+        <Button size="sm" disabled={pending} onClick={generate}>
+          {pending
+            ? "Generating..."
+            : briefing
+              ? "Regenerate briefing"
+              : "Generate handoff briefing"}
+        </Button>
       </div>
 
-      {error ? <p className="text-xs text-red-600 dark:text-red-400">{error}</p> : null}
+      {error ? <p className="text-xs text-danger">{error}</p> : null}
 
       {briefing ? (
         <BriefingView
@@ -81,7 +81,7 @@ export function ContinuityPod({ pod }: { pod: ContinuityPodData }) {
           meta={{ source: briefing.source, generatedAt: briefing.generatedAt }}
         />
       ) : (
-        <p className="text-xs text-ink-3 ">
+        <p className="text-xs text-ink-3">
           No briefing yet. Generate one to see how this pod has been learning - where it got
           stuck, which students needed extra attempts, what the notes say.
         </p>
@@ -130,17 +130,12 @@ export function ContinuityPod({ pod }: { pod: ContinuityPodData }) {
               type="text"
               value={note}
               onChange={(e) => setNote(e.target.value)}
-              placeholder="After today's session…"
-              className="min-w-[12rem] flex-1 rounded-md border border-border bg-surface px-2 py-1 text-xs  "
+              placeholder="After today's session..."
+              className="min-w-[12rem] flex-1 rounded-[var(--radius)] border border-border bg-surface px-3 py-1.5 text-xs text-ink outline-none focus:border-teal"
             />
-            <button
-              type="button"
-              disabled={pending || !note.trim()}
-              onClick={submitNote}
-              className="rounded-md bg-zinc-800 px-3 py-1 text-xs font-medium text-white hover:bg-zinc-700 disabled:opacity-50 dark:bg-zinc-200  dark:hover:bg-surface"
-            >
+            <Button size="sm" variant="ghost" disabled={pending || !note.trim()} onClick={submitNote}>
               Add note
-            </button>
+            </Button>
           </div>
         </div>
       </details>

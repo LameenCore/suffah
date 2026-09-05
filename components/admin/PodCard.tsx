@@ -45,7 +45,7 @@ export function PodCard({
         <span
           className={`rounded px-1.5 py-0.5 text-[11px] font-medium ${
             full
-              ? "bg-amber-100 text-ink-2 dark:bg-amber-900/40 "
+              ? "bg-warning-soft text-ink-2  "
               : "bg-surface-2 text-ink-3  "
           }`}
         >
@@ -93,7 +93,7 @@ export function PodCard({
                 onClick={() =>
                   dispatch(() => unassignStudentAction(pod.id, s.id))
                 }
-                className="text-xs text-ink-4 underline underline-offset-2 hover:text-red-600 disabled:opacity-50"
+                className="text-xs text-ink-4 underline underline-offset-2 hover:text-danger disabled:opacity-50"
               >
                 remove
               </button>
@@ -137,7 +137,7 @@ export function PodCard({
         </button>
       </div>
 
-      {error && <p className="mt-2 text-xs text-red-600 dark:text-red-400">{error}</p>}
+      {error && <p className="mt-2 text-xs text-danger">{error}</p>}
     </section>
   );
 }
