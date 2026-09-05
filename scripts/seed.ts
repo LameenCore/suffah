@@ -62,15 +62,30 @@ async function seed() {
   );
 
   check(
-    await db.from("volunteers").insert({
-      id: VOLUNTEER,
-      masjid_id: MASJID,
-      user_id: null,
-      name: "Br. Kareem",
-      status: "active",
-      certification_note: "CEGEP math tutor; reference check on file (mock).",
-      joined_at: daysAgo(40),
-    }),
+    await db.from("volunteers").insert([
+      {
+        id: VOLUNTEER,
+        masjid_id: MASJID,
+        user_id: null,
+        name: "Br. Kareem",
+        status: "active",
+        certification_note: "CEGEP math tutor; reference check on file (mock).",
+        joined_at: daysAgo(40),
+        left_at: null,
+      },
+      {
+        // Departed volunteer — seeds a non-empty churn log (T15). Her pod kept
+        // its pod_progress and was picked up by Br. Kareem.
+        id: "00000000-0000-0000-0000-0000000000d2",
+        masjid_id: MASJID,
+        user_id: null,
+        name: "Sr. Amina",
+        status: "inactive",
+        certification_note: "Undergrad education student; moved cities.",
+        joined_at: daysAgo(150),
+        left_at: daysAgo(20),
+      },
+    ]),
   );
 
   check(

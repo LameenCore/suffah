@@ -104,3 +104,16 @@ DB. Commit c6d3abb. Next: T16.
 - Unit/term rows show "None yet" until T08/T09 generation runs.
 - build + lint green; not verified vs live data. Commit be5e05a.
 - Next free: T15, T16.
+
+## 2026-09-05 — T15 done
+- lib/db/volunteer-queries.ts — listVolunteers (active vs churned split, with pod
+  coverage), addVolunteer (starts pending_vetting), setVolunteerStatus, recordDeparture
+  (stamps left_at + inactive + nulls pods.volunteer_id — pod_progress untouched),
+  reinstateVolunteer. All masjid-scoped.
+- app/admin/volunteers/actions.ts — "use server", requireAdmin, {ok,error}.
+- components/admin/VolunteerManager.tsx — onboarding form + current list (status
+  toggles + Record departure) + churn log (tenure, Reinstate).
+- app/admin/volunteers/page.tsx + admin home link. Seed gains departed "Sr. Amina"
+  so the churn log is non-empty.
+- No migration (volunteers table already has status/certification_note/left_at).
+- build + lint green; not verified vs live data. Commit <t15>. Next free: T16.

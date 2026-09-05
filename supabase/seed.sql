@@ -22,8 +22,11 @@ insert into users (id, masjid_id, role, name, email) values
   ('00000000-0000-0000-0000-0000000000c3', '00000000-0000-0000-0000-000000000001', 'student', 'Idris (Secondary 1)',   'idris@suffa.demo'),
   ('00000000-0000-0000-0000-0000000000c4', '00000000-0000-0000-0000-000000000001', 'student', 'Safiya (Secondary 1)',  'safiya@suffa.demo');
 
-insert into volunteers (id, masjid_id, user_id, name, status, certification_note, joined_at) values
-  ('00000000-0000-0000-0000-0000000000d1', '00000000-0000-0000-0000-000000000001', null, 'Br. Kareem', 'active', 'CEGEP math tutor; reference check on file (mock).', now() - interval '40 days');
+insert into volunteers (id, masjid_id, user_id, name, status, certification_note, joined_at, left_at) values
+  ('00000000-0000-0000-0000-0000000000d1', '00000000-0000-0000-0000-000000000001', null, 'Br. Kareem', 'active',   'CEGEP math tutor; reference check on file (mock).', now() - interval '40 days',  null),
+  -- Departed volunteer — seeds a non-empty churn log (T15). Her pod kept its
+  -- pod_progress and was picked up by Br. Kareem.
+  ('00000000-0000-0000-0000-0000000000d2', '00000000-0000-0000-0000-000000000001', null, 'Sr. Amina',  'inactive', 'Undergrad education student; moved cities.',        now() - interval '150 days', now() - interval '20 days');
 
 -- Pod -----------------------------------------------------------------------
 

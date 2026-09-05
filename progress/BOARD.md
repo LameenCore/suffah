@@ -1,7 +1,7 @@
 # BOARD — Suffa progress snapshot
 
 **Derived from `progress/tasks/`. Not authoritative. Regenerate after any claim/finish.**
-Last regenerated: 2026-09-05 (T10 done; T08 done; T18–T24 differentiator tasks added)
+Last regenerated: 2026-09-05 (T15 done; T18–T24 differentiator tasks present)
 
 | id  | phase | status | owner | title |
 |-----|-------|--------|-------|-------|
@@ -19,25 +19,26 @@ Last regenerated: 2026-09-05 (T10 done; T08 done; T18–T24 differentiator tasks
 | T12 | 4 | todo  | — | Compliance report generation + exportable view |
 | T13 | 5 | done  | — | waqf_ledger table + mock entries |
 | T14 | 5 | done  | — | Admin ledger view + family fee status |
-| T15 | 6 | todo  | — | Volunteer onboarding form + churn log |
+| T15 | 6 | done  | — | Volunteer onboarding form + churn log |
 | T16 | 6 | todo  | — | Regulation-verification disclaimers |
 | T17 | 6 | todo  | — | Seed data cleanup for demo walkthrough |
-| T18 | 7 | todo  | — | Continuity Fingerprint — AI volunteer-handoff briefing (tier 1, build) |
-| T19 | 7 | todo  | — | Live "empty seat" handoff simulation (tier 3, build) |
-| T20 | 7 | todo  | — | Living compliance report — early-warning status (tier 1, build) |
-| T21 | 7 | todo  | — | Waqf-to-outcome linking (tier 1, mock) |
-| T22 | 7 | todo  | — | Community knowledge sourcing for Seerah (tier 2, mock/text) |
-| T23 | 7 | todo  | — | Pod "Barakah meter" — character/community indicators (tier 2, build) |
-| T24 | 7 | todo  | — | Waqf principal "never touched" visual (tier 3, build) |
+| T18 | 7 | todo  | — | Continuity Fingerprint — AI volunteer-handoff briefing |
+| T19 | 7 | todo  | — | Live "empty seat" handoff simulation (demo feature) |
+| T20 | 7 | todo  | — | Compliance report as a living document (early-warning) |
+| T21 | 7 | todo  | — | Waqf-to-outcome linking (donor sees learning) |
+| T22 | 7 | todo  | — | Multi-generational knowledge sourcing for Seerah content |
+| T23 | 7 | todo  | — | Pod "Barakah meter" — character/community indicators |
+| T24 | 7 | todo  | — | Waqf principal "never touched" visual |
 
 ## Next up (deps met, unclaimed)
 - **T09** — Term exam variant (timed) + term_exam_results (dep T08 done)
-- **T15** — Volunteer onboarding form + churn log (dep T11 done)
 - **T16** — regulation disclaimers (no deps, can run anytime)
-- **T18** — Continuity Fingerprint (deps T07, T11 done) — highest-value differentiator, do first
-- **T24** — Waqf principal visual (dep T14 done)
+- **T18** — Continuity Fingerprint (deps T07, T11 done) — highest-value differentiator
+- **T21** — Waqf-to-outcome linking (deps T14, T08 done)
+- **T22** — Seerah community sourcing (dep T05 done, mock/text)
 - **T23** — Barakah meter (dep T11 done)
-- blocked: T12 (needs T09), T20 (needs T12)
+- **T24** — Waqf principal "never touched" visual (dep T14 done)
+- blocked: T12 (needs T09), T17 (needs T12), T19 (needs T18), T20 (needs T12)
 
 ## Phase 7 — differentiators (see PRD §5.4)
 Build order: T18 → T19 (unique IP, demoable), then T20. T21/T22 as mocked pitch screens.
