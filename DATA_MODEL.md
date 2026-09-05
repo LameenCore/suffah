@@ -31,8 +31,9 @@ Postgres schema, hackathon scope. Every table includes `masjid_id` for multi-ten
 ### `pod_progress`
 - `id`, `pod_id`, `course_id`, `current_node_id` — this is the continuity record: what node a pod is on, per course, so a new volunteer can pick up instantly
 
-### `checkpoint_results`
-- `id`, `student_user_id`, `pathway_node_id`, `passed` (bool), `answer_data` (jsonb), `attempted_at`
+### `lesson_progress`
+- `id`, `student_user_id`, `pathway_node_id`, `status` (default `lesson_complete`), `completed_at`, unique (`student_user_id`, `pathway_node_id`)
+- Per-student record that an individual finished reading a lesson node. `pod_progress` is pod-level (where the pod is); this is the per-student "self-paced within the pod's topic" record that gates the checkpoint. Added in migration `0002`.
 
 ### `unit_assessment_results`
 - `id`, `student_user_id`, `unit_id`, `score`, `passed` (bool, threshold TBD — see PRD open question), `answer_data` (jsonb), `attempted_at`

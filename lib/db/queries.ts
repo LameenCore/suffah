@@ -99,3 +99,152 @@ export async function saveLessonContent(
   if (!updated) throw new Error("saveLessonContent: node vanished after update");
   return updated;
 }
+
+// --- Student playground -------------------------------------------------
+
+export interface PodRef {
+  id: string;
+  name: string;
+}
+
+export interface PlaygroundCourse {
+  course: CourseRef;
+  /** The node the pod is currently on for this course (pod_progress). */
+  currentNode: PathwayNode | null;
+  /** This student has marked the current node's lesson complete. */
+  lessonComplete: boolean;
+  /** 1-based position of the current node in the course pathway. */
+  nodePosition: number;
+  totalNodes: number;
+}
+
+export interface Playground {
+  pod: PodRef | null;
+  courses: PlaygroundCourse[];
+}
+
+/** The (single) pod a student belongs to in this masjid, or null. */
+export async function getPodForStudent(
+  studentUserId: string,
+  masjidId: string,
+): Promise<PodRef | null> {
+  const { data, error } = await getServiceClient()
+    .from("pod_students")
+    .select("pod:pods!inner ( id, name, masjid_id )")
+    .eq("student_user_id", studentUserId)
+    .limit(1)
+    .maybeSingle();
+
+  if (error) throw new Error(`getPodForStudent: ${error.message}`);
+  if (!data) return null;
+  const pod = (Array.isArray(data.pod) ? data.pod[0] : data.pod) as {
+    id: string;
+    name: string;
+    masjid_id: string;
+  };
+  if (!pod || pod.masjid_id !== masjidId) return null;
+  return { id: pod.id, name: pod.name };
+}
+
+/**
+ * Everything the student playground needs: the student's pod and, per course,
+ * the pod's current node (with its lesson) plus this student's completion state.
+ */
+export async function getPlayground(
+  studentUserId: string,
+  masjidId: string,
+): Promise<Playground> {
+  const db = getServiceClient();
+  const pod = await getPodForStudent(studentUserId, masjidId);
+  if (!pod) return { pod: null, courses: [] };
+
+  const { data: progressRows, error: progressErr } = await db
+    .from("pod_progress")
+    .select("course_id, current_node_id")
+    .eq("pod_id", pod.id);
+  if (progressErr) throw new Error(`getPlayground: ${progressErr.message}`);
+
+  const { data: courseRows, error: courseErr } = await db
+    .from("courses")
+    .select("id, name, grade_band, masjid_id")
+    .eq("masjid_id", masjidId)
+    .order("name", { ascending: true });
+  if (courseErr) throw new Error(`getPlayground: ${courseErr.message}`);
+
+  const currentNodeIds = (progressRows ?? [])
+    .map((r) => r.current_node_id as string | null)
+    .filter((id): id is string => Boolean(id));
+
+  const completeNodeIds = new Set<string>();
+  if (currentNodeIds.length > 0) {
+    const { data: lp, error: lpErr } = await db
+      .from("lesson_progress")
+      .select("pathway_node_id")
+      .eq("student_user_id", studentUserId)
+      .in("pathway_node_id", currentNodeIds);
+    if (lpErr) throw new Error(`getPlayground: ${lpErr.message}`);
+    for (const row of lp ?? []) completeNodeIds.add(row.pathway_node_id as string);
+  }
+
+  const courses: PlaygroundCourse[] = [];
+  for (const course of (courseRows ?? []) as CourseRef[]) {
+    const progress = (progressRows ?? []).find((r) => r.course_id === course.id);
+    const currentNodeId = (progress?.current_node_id as string | null) ?? null;
+
+    const { count, error: countErr } = await db
+      .from("pathway_nodes")
+      .select("id", { count: "exact", head: true })
+      .eq("course_id", course.id);
+    if (countErr) throw new Error(`getPlayground: ${countErr.message}`);
+
+    const currentNode = currentNodeId
+      ? await getPathwayNode(currentNodeId, masjidId)
+      : null;
+
+    courses.push({
+      course,
+      currentNode,
+      lessonComplete: currentNodeId ? completeNodeIds.has(currentNodeId) : false,
+      nodePosition: currentNode?.sequence_order ?? 0,
+      totalNodes: count ?? 0,
+    });
+  }
+
+  return { pod, courses };
+}
+
+/** Has this student marked the given node's lesson complete? */
+export async function isLessonComplete(
+  studentUserId: string,
+  nodeId: string,
+): Promise<boolean> {
+  const { data, error } = await getServiceClient()
+    .from("lesson_progress")
+    .select("id")
+    .eq("student_user_id", studentUserId)
+    .eq("pathway_node_id", nodeId)
+    .maybeSingle();
+  if (error) throw new Error(`isLessonComplete: ${error.message}`);
+  return Boolean(data);
+}
+
+/**
+ * Record that a student finished a lesson node. Idempotent (unique constraint
+ * on student + node). Tenant-guarded: the node must belong to `masjidId`.
+ */
+export async function markLessonComplete(
+  studentUserId: string,
+  nodeId: string,
+  masjidId: string,
+): Promise<void> {
+  const node = await getPathwayNode(nodeId, masjidId);
+  if (!node) throw new Error(`markLessonComplete: node ${nodeId} not in masjid ${masjidId}`);
+
+  const { error } = await getServiceClient()
+    .from("lesson_progress")
+    .upsert(
+      { student_user_id: studentUserId, pathway_node_id: nodeId, status: "lesson_complete" },
+      { onConflict: "student_user_id,pathway_node_id", ignoreDuplicates: true },
+    );
+  if (error) throw new Error(`markLessonComplete: ${error.message}`);
+}
