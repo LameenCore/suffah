@@ -15,7 +15,7 @@ outcome: docs/qa-prep.md - drafted answers for all 8 checklist categories (techn
   closing), each with a "Backed by:" repo pointer. Honest where it counts (what's mocked,
   LLM dependency + the fallback story, coverage number deferred to T74 not faked).
   Team/process answers left as prompts for the team.
-commits: <t77>
+commits: dc8d21d
 ---
 
 ## Why
