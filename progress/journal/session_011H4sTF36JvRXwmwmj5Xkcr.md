@@ -367,3 +367,22 @@ Commit: c9db4b3
   consented so the student walkthrough isn't gated.
 - eslint + next build clean.
 Commit: 03f0ebf
+
+## T29 — public marketing landing
+
+- app/page.tsx: rewritten from the redirect stub to a static public landing —
+  hero, Ashab al-Suffa name + funding note, "why pods break" (volunteer churn),
+  how-it-works 3 cards, one-platform-three-views, join section (families / masjids
+  via hello@suffa.community mailto). No auto-redirect for signed-in users (judges
+  need the landing); dashboards still gated by proxy.ts.
+- SEO: app/layout.tsx metadataBase + title template "%s — Suffa" + default desc;
+  per-page titles reduced to bare names (terms/privacy/acceptable-use/parent
+  privacy+consent). openGraph block on the landing. app/opengraph-image.tsx
+  (next/og ImageResponse, 1200x630, brand colours). app/sitemap.ts (6 public
+  pages). app/robots.ts (disallow /admin /parent /student /api /print + sitemap).
+- lib/env.ts: siteUrl from NEXT_PUBLIC_SITE_URL (default https://suffa.community).
+- Analytics: shipped with none (matches data-map "no third-party tracker on a
+  minors' product"); Plausible-style snippet left as an operator one-liner.
+- Verified: eslint + next build clean; / is now ○ static; next start smoke test —
+  / 200 with correct <title>, /sitemap.xml + /robots.txt render.
+Commit: PLACEHOLDER29

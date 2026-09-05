@@ -11,7 +11,7 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 
-export const metadata = { title: "Consent — Suffa" };
+export const metadata = { title: "Consent" };
 
 export default async function ParentConsentPage() {
   const user = await requireRole("parent");

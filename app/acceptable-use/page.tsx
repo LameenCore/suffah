@@ -1,6 +1,6 @@
 import { LegalDoc } from "@/components/LegalDoc";
 
-export const metadata = { title: "Acceptable Use — Suffa" };
+export const metadata = { title: "Acceptable Use" };
 
 export default function AcceptableUsePage() {
   return (

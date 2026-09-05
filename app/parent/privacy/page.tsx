@@ -6,7 +6,7 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { Card } from "@/components/ui/Card";
 import { ButtonLink } from "@/components/ui/Button";
 
-export const metadata = { title: "Your data — Suffa" };
+export const metadata = { title: "Your data" };
 
 export default async function ParentPrivacyPage() {
   const user = await requireRole("parent");

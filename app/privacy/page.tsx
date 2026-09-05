@@ -1,6 +1,6 @@
 import { LegalDoc } from "@/components/LegalDoc";
 
-export const metadata = { title: "Privacy Policy — Suffa" };
+export const metadata = { title: "Privacy Policy" };
 
 export default function PrivacyPage() {
   return (

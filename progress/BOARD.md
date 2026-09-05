@@ -1,7 +1,7 @@
 # BOARD — Suffa progress snapshot
 
 **Derived from `progress/tasks/`. Not authoritative. Regenerate after any claim/finish.**
-Last regenerated: 2026-09-05 (T34-T38, T56, T49, T52 done)
+Last regenerated: 2026-09-05 (T29, T34-T38, T49, T52, T56 done)
 
 | id  | phase | status | owner | title |
 |-----|-------|--------|-------|-------|
@@ -43,7 +43,7 @@ Get a clean demo state: `npm run demo:setup` (full, hits the API) or `npm run de
 | T26 | 8 | done  | — | Pitch one-pager + unit-economics model |
 | T27 | 8 | todo  | — | Deploy to Vercel (staging + prod) |
 | T28 | 8 | todo  | — | Recorded demo walkthrough (video / GIF) |
-| T29 | 8 | todo  | — | Public landing / marketing page |
+| T29 | 8 | done  | — | Public landing / marketing page |
 | T30 | 9 | done  | — | Real auth - sign-up/sign-in + 3 demo accounts |
 | T31 | 9 | todo  | — | Postgres RLS policies per table |
 | T32 | 9 | todo  | — | Volunteer logins + delegated pod access |

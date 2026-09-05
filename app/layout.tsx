@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Fraunces, Plus_Jakarta_Sans } from "next/font/google";
+import { env } from "@/lib/env";
 import "./globals.css";
 
 const jakarta = Plus_Jakarta_Sans({
@@ -17,9 +18,13 @@ const fraunces = Fraunces({
 });
 
 export const metadata: Metadata = {
-  title: "Suffa - community homeschool pods",
+  metadataBase: new URL(env.siteUrl),
+  title: {
+    default: "Suffa — community homeschool pods",
+    template: "%s — Suffa",
+  },
   description:
-    "Three-dashboard platform for pod-based homeschooling: a self-paced curriculum playground, parent monitoring, masjid admin and compliance.",
+    "Community-run homeschool pods for Quebec Muslim families. A self-paced curriculum playground keeps learning going when a volunteer moves on; volunteers add live enrichment; the masjid handles admin and compliance. Waqf-sustained, free to families.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
