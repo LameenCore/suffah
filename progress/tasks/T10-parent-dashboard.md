@@ -14,7 +14,7 @@ outcome: /parent renders one block per linked child, and per course a pathway pr
   results show right after the student completes them. New migration 0004 adds
   parent_children (the family link was missing from the schema); seed links the demo
   parent → Yusuf. lib/db/parent-queries.ts; RegulationNote on evaluation formats.
-commits: <t10>
+commits: be5e05a
 ---
 
 ## Goal

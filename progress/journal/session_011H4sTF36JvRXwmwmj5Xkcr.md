@@ -102,5 +102,5 @@ DB. Commit c6d3abb. Next: T16.
   card with a progress bar + three result lists, pass/needs-review badges, dates.
   RegulationNote on evaluation formats. try/catch -> friendly panel when unconfigured.
 - Unit/term rows show "None yet" until T08/T09 generation runs.
-- build + lint green; not verified vs live data. Commit <t10>.
+- build + lint green; not verified vs live data. Commit be5e05a.
 - Next free: T15, T16.
