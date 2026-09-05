@@ -2,9 +2,9 @@
 id: T22
 title: Multi-generational knowledge sourcing for Seerah content
 phase: 7
-status: todo
-owner: —
-claimed: —
+status: doing
+owner: https://claude.ai/code/session_011H4sTF36JvRXwmwmj5Xkcr
+claimed: 2026-09-05T18:45:00Z
 updated: 2026-09-05
 depends_on: [T05]
 tier: 2
