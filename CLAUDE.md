@@ -55,3 +55,6 @@ See `TASKS.md` for the recommended build sequence given limited time. Read it be
 - `docs/DATA_MODEL.md` — database schema and entity relationships
 - `TASKS.md` — build-order checklist for the hackathon window
 - `.claude/skills/` — project-specific skills for API design, security review, and git workflow, adapted from prior project conventions
+- `AGENTS.md` — Next.js 16 agent rules (auto-maintained by `next dev`); this repo runs **Next.js 16**, which has breaking changes vs. older versions — consult `node_modules/next/dist/docs/` before writing framework code
+
+@AGENTS.md
