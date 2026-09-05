@@ -1,5 +1,10 @@
+import Link from "next/link";
 import { requireRole } from "@/lib/auth";
 import { RegulationNote } from "@/components/RegulationNote";
+import { Card } from "@/components/ui/Card";
+import { Badge } from "@/components/ui/Badge";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { Dome, Crescent } from "@/components/ui/Motif";
 import {
   getChildReport,
   getChildrenForParent,
@@ -10,176 +15,218 @@ import {
   getChildBarakahSummary,
   type ChildBarakahSummary,
 } from "@/lib/db/barakah-queries";
+import { assembleComplianceReport } from "@/lib/compliance/report";
+import { LEVEL_LABEL, type ComplianceLevel } from "@/lib/compliance/status";
 
 const pct = (frac: number) => `${Math.round(frac * 100)}%`;
 const shortDate = (iso: string) =>
   new Date(iso).toLocaleDateString("en-CA", { month: "short", day: "numeric" });
 
-function ProgressBar({ position, total }: { position: number; total: number }) {
-  const frac = total > 0 ? Math.min(1, position / total) : 0;
-  return (
-    <div>
-      <div className="flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-400">
-        <span>Pathway progress</span>
-        <span className="tabular-nums">
-          {total > 0 ? `node ${position} of ${total}` : "not started"}
-        </span>
-      </div>
-      <div className="mt-1 h-2 overflow-hidden rounded-full bg-zinc-200 dark:bg-zinc-800">
-        <div
-          className="h-full rounded-full bg-sky-500 dark:bg-sky-400"
-          style={{ width: `${frac * 100}%` }}
-        />
-      </div>
-    </div>
-  );
-}
+const LEVEL_TONE: Record<ComplianceLevel, "success" | "warning" | "danger"> = {
+  on_track: "success",
+  watch: "warning",
+  gap: "danger",
+};
 
-function ResultBadge({ passed }: { passed: boolean }) {
+function ResultRow({
+  label,
+  right,
+}: {
+  label: string;
+  right: React.ReactNode;
+}) {
   return (
-    <span
-      className={`rounded px-1.5 py-0.5 text-[11px] font-medium ${
-        passed
-          ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300"
-          : "bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-200"
-      }`}
-    >
-      {passed ? "Passed" : "Needs review"}
-    </span>
+    <li className="flex items-center justify-between gap-2 py-1 text-sm">
+      <span className="min-w-0 truncate text-ink-2">{label}</span>
+      <span className="flex shrink-0 items-center gap-2">{right}</span>
+    </li>
   );
 }
 
 function CourseCard({ course }: { course: CourseReport }) {
   const { checkpoints, unitAssessments, termExams } = course;
+  const frac =
+    course.totalNodes > 0
+      ? Math.min(1, course.nodePosition / course.totalNodes)
+      : 0;
+
   return (
-    <section className="rounded-xl border border-black/10 bg-white p-4 dark:border-white/15 dark:bg-zinc-950">
+    <Card as="section" className="p-5">
       <div className="flex items-baseline justify-between">
-        <h3 className="font-medium">{course.courseName}</h3>
-        <span className="text-xs text-zinc-400">{course.gradeBand}</span>
+        <h3 className="font-display text-lg font-semibold text-ink">{course.courseName}</h3>
+        <span className="text-xs text-ink-4">{course.gradeBand}</span>
       </div>
 
       <div className="mt-3">
-        <ProgressBar position={course.nodePosition} total={course.totalNodes} />
+        <div className="flex items-center justify-between text-xs text-ink-4">
+          <span>Pathway</span>
+          <span className="tabular-nums">
+            {course.totalNodes > 0
+              ? `step ${course.nodePosition} of ${course.totalNodes}`
+              : "not started"}
+          </span>
+        </div>
+        <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-surface-2">
+          <div
+            className="h-full rounded-full bg-teal transition-all"
+            style={{ width: `${frac * 100}%` }}
+          />
+        </div>
       </div>
 
-      <div className="mt-4 space-y-3 text-sm">
+      <div className="mt-4 space-y-3">
         <div>
-          <div className="text-xs font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+          <p className="text-[11px] font-semibold uppercase tracking-wide text-ink-4">
             Checkpoints
-          </div>
+          </p>
           {checkpoints.length === 0 ? (
-            <p className="mt-1 text-zinc-400">None attempted yet.</p>
+            <p className="mt-0.5 text-sm text-ink-4">None attempted yet.</p>
           ) : (
-            <ul className="mt-1 space-y-1">
+            <ul className="mt-0.5 divide-y divide-border">
               {checkpoints.map((c, i) => (
-                <li key={i} className="flex items-center justify-between gap-2">
-                  <span className="min-w-0 truncate">{c.nodeTitle}</span>
-                  <span className="flex shrink-0 items-center gap-2">
-                    <ResultBadge passed={c.passed} />
-                    <span className="text-xs text-zinc-400">{shortDate(c.attemptedAt)}</span>
-                  </span>
-                </li>
+                <ResultRow
+                  key={i}
+                  label={c.nodeTitle}
+                  right={
+                    <>
+                      <Badge tone={c.passed ? "success" : "warning"}>
+                        {c.passed ? "Passed" : "Needs review"}
+                      </Badge>
+                      <span className="text-xs text-ink-4">{shortDate(c.attemptedAt)}</span>
+                    </>
+                  }
+                />
               ))}
             </ul>
           )}
         </div>
 
         <div>
-          <div className="text-xs font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
-            Unit assessments
-          </div>
+          <p className="text-[11px] font-semibold uppercase tracking-wide text-ink-4">
+            Unit assessment
+          </p>
           {unitAssessments.length === 0 ? (
-            <p className="mt-1 text-zinc-400">None yet.</p>
+            <p className="mt-0.5 text-sm text-ink-4">Not due yet.</p>
           ) : (
-            <ul className="mt-1 space-y-1">
+            <ul className="mt-0.5 divide-y divide-border">
               {unitAssessments.map((u, i) => (
-                <li key={i} className="flex items-center justify-between gap-2">
-                  <span className="min-w-0 truncate">{u.unitTitle}</span>
-                  <span className="flex shrink-0 items-center gap-2">
-                    <span className="tabular-nums">{pct(u.score)}</span>
-                    <ResultBadge passed={u.passed} />
-                    <span className="text-xs text-zinc-400">{shortDate(u.attemptedAt)}</span>
-                  </span>
-                </li>
+                <ResultRow
+                  key={i}
+                  label={u.unitTitle}
+                  right={
+                    <>
+                      <span className="tabular-nums text-sm text-ink-2">{pct(u.score)}</span>
+                      <Badge tone={u.passed ? "success" : "warning"}>
+                        {u.passed ? "Passed" : "Retry"}
+                      </Badge>
+                    </>
+                  }
+                />
               ))}
             </ul>
           )}
         </div>
 
         <div>
-          <div className="text-xs font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
-            Term exams
-          </div>
+          <p className="text-[11px] font-semibold uppercase tracking-wide text-ink-4">
+            Term exam
+          </p>
           {termExams.length === 0 ? (
-            <p className="mt-1 text-zinc-400">None yet.</p>
+            <p className="mt-0.5 text-sm text-ink-4">Not taken yet.</p>
           ) : (
-            <ul className="mt-1 space-y-1">
+            <ul className="mt-0.5 divide-y divide-border">
               {termExams.map((t, i) => (
-                <li key={i} className="flex items-center justify-between gap-2">
-                  <span className="min-w-0 truncate">{t.termLabel}</span>
-                  <span className="flex shrink-0 items-center gap-2">
-                    <span className="tabular-nums">{pct(t.score)}</span>
-                    <span className="text-xs text-zinc-400">{shortDate(t.attemptedAt)}</span>
-                  </span>
-                </li>
+                <ResultRow
+                  key={i}
+                  label={t.termLabel}
+                  right={
+                    <span className="tabular-nums text-sm font-medium text-ink">
+                      {pct(t.score)}
+                    </span>
+                  }
+                />
               ))}
             </ul>
           )}
         </div>
       </div>
-    </section>
+    </Card>
   );
 }
 
 function BarakahSummary({ barakah }: { barakah: ChildBarakahSummary }) {
   if (barakah.phrases.length === 0 && barakah.entries.length === 0) return null;
   return (
-    <section className="rounded-xl border border-black/10 bg-white p-4 dark:border-white/15 dark:bg-zinc-950">
-      <h3 className="font-medium">Character &amp; community</h3>
-      <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
-        What the pod&apos;s volunteers have noticed - not a score.
+    <Card as="section" tone="teal" className="p-5">
+      <h3 className="flex items-center gap-2 font-display text-lg font-semibold text-ink">
+        <Crescent className="h-4 w-4 text-teal-strong" /> In the circle
+      </h3>
+      <p className="mt-1 text-xs text-ink-3">
+        What the pod&apos;s volunteers have noticed &mdash; adab and cooperation, not a score.
       </p>
       {barakah.phrases.length > 0 && (
-        <p className="mt-2 text-sm capitalize text-zinc-700 dark:text-zinc-200">
-          {barakah.phrases.join(" · ")}
-        </p>
+        <p className="mt-2 text-sm capitalize text-ink-2">{barakah.phrases.join(" · ")}</p>
       )}
       {barakah.entries.length > 0 && (
-        <ul className="mt-2 space-y-1 text-sm text-zinc-600 dark:text-zinc-300">
+        <ul className="mt-2 space-y-1 text-sm text-ink-2">
           {barakah.entries.slice(0, 4).map((e) => (
             <li key={e.id} className="flex gap-2">
-              <span aria-hidden className="text-zinc-400">
-                ·
+              <span aria-hidden className="text-teal-strong">
+                &bull;
               </span>
               <span>
                 {e.note ?? e.indicatorLabel}
-                {e.studentName == null && (
-                  <span className="text-zinc-400"> (whole pod)</span>
-                )}
+                {e.studentName == null && <span className="text-ink-4"> (whole pod)</span>}
               </span>
             </li>
           ))}
         </ul>
       )}
-    </section>
+    </Card>
   );
 }
 
-function ChildBlock({
+async function ChildBlock({
   report,
   barakah,
+  masjidId,
 }: {
   report: ChildReport;
   barakah: ChildBarakahSummary;
+  masjidId: string;
 }) {
+  const compliance = await assembleComplianceReport(
+    report.child.id,
+    report.child.name,
+    masjidId,
+  );
+
   return (
     <div className="space-y-4">
-      <div className="flex items-baseline gap-3">
-        <h2 className="text-lg font-semibold">{report.child.name}</h2>
-        {report.podName && (
-          <span className="text-sm text-zinc-500 dark:text-zinc-400">{report.podName}</span>
-        )}
+      <div className="flex flex-wrap items-center gap-3">
+        <h2 className="font-display text-xl font-semibold text-ink">{report.child.name}</h2>
+        {report.podName && <span className="text-sm text-ink-3">{report.podName}</span>}
       </div>
+
+      <Card
+        as="section"
+        tone={LEVEL_TONE[compliance.overall.level]}
+        className="flex flex-wrap items-center justify-between gap-3 p-4"
+      >
+        <div className="flex items-center gap-2.5">
+          <Badge tone={LEVEL_TONE[compliance.overall.level]} dot>
+            {LEVEL_LABEL[compliance.overall.level]}
+          </Badge>
+          <span className="text-sm text-ink-2">{compliance.overall.headline}</span>
+        </div>
+        <Link
+          href="/parent/compliance"
+          className="text-sm font-medium text-terracotta hover:text-terracotta-strong"
+        >
+          Full evaluation status &rarr;
+        </Link>
+      </Card>
+
       <div className="grid gap-4 lg:grid-cols-3">
         {report.courses.map((c) => (
           <CourseCard key={c.courseId} course={c} />
@@ -209,37 +256,48 @@ export default async function ParentHome() {
   }
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Parent Dashboard</h1>
-        <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
-          Read-only view of your child&apos;s progress. Results appear here as soon as
-          your child completes them.
+    <div className="space-y-7">
+      <PageHeader
+        kicker="This week"
+        title={`As-salamu alaykum${blocks.length ? "" : ""}`}
+        lede="A calm, read-only view of how your child is doing. Results appear here the moment they finish."
+      />
+
+      {loadError ? (
+        <Card tone="warning" className="p-4 text-sm text-ink-2">
+          Progress is unavailable: {loadError}. Run <code>npm run seed</code>.
+        </Card>
+      ) : blocks.length === 0 ? (
+        <Card className="p-6 text-sm text-ink-3">
+          No child is linked to this account yet.
+        </Card>
+      ) : (
+        <div className="space-y-9">
+          {blocks.map((b) => (
+            <ChildBlock
+              key={b.report.child.id}
+              report={b.report}
+              barakah={b.barakah}
+              masjidId={user.masjidId}
+            />
+          ))}
+        </div>
+      )}
+
+      <div className="flex items-start gap-3 rounded-[var(--radius-lg)] border border-border bg-surface-2 p-4 text-sm text-ink-3">
+        <Dome className="mt-0.5 h-5 w-8 shrink-0 text-terracotta" />
+        <p>
+          Your pod meets with a community volunteer for live enrichment. Schedule and
+          fee/sponsorship details are managed by the masjid &mdash; reach out to the
+          coordinator with any questions.
         </p>
       </div>
 
       <RegulationNote>
-        Assessment and exam formats shown here are for the demo and must be verified
-        against current Quebec evaluation requirements before they stand in for an
-        official evaluation.
+        Assessment and exam formats shown here are for the demo and must be verified against
+        current Quebec evaluation requirements before they stand in for an official
+        evaluation.
       </RegulationNote>
-
-      {loadError ? (
-        <p className="rounded-xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900 dark:border-amber-700/60 dark:bg-amber-950/40 dark:text-amber-200">
-          Progress is unavailable: {loadError}. Configure Supabase and run the seed to
-          populate this view.
-        </p>
-      ) : blocks.length === 0 ? (
-        <p className="rounded-xl border border-black/10 p-6 text-sm text-zinc-500 dark:border-white/15">
-          No child is linked to this account yet.
-        </p>
-      ) : (
-        <div className="space-y-8">
-          {blocks.map((b) => (
-            <ChildBlock key={b.report.child.id} report={b.report} barakah={b.barakah} />
-          ))}
-        </div>
-      )}
     </div>
   );
 }

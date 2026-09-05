@@ -4,6 +4,8 @@ import { getChildrenForParent } from "@/lib/db/parent-queries";
 import { assembleComplianceReport } from "@/lib/compliance/report";
 import { ComplianceReportView } from "@/components/compliance/ComplianceReportView";
 import { RegulationNote } from "@/components/RegulationNote";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { Card } from "@/components/ui/Card";
 
 export default async function ParentCompliancePage({
   searchParams,
@@ -27,37 +29,25 @@ export default async function ParentCompliancePage({
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between text-sm">
-        <Link
-          href="/parent"
-          className="text-zinc-500 underline underline-offset-2 hover:text-zinc-800 dark:hover:text-zinc-200"
-        >
-          ← Dashboard
-        </Link>
-      </div>
-
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Evaluation status</h1>
-        <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
-          A live read on where your child stands against the term&apos;s evaluation
-          requirement - updated as they work, so there are no surprises at term-end.
-        </p>
-      </div>
+      <PageHeader
+        kicker="Evaluation"
+        title="Where things stand for the term"
+        lede="A live read on your child against the term's evaluation requirement, updated as they work, so there are no surprises at term-end."
+        back={{ href: "/parent", label: "This week" }}
+      />
 
       <RegulationNote>
         This status is a planning aid. The official evaluation requirement, its format, and
-        acceptable evidence must be confirmed with the masjid and against current Québec
+        acceptable evidence must be confirmed with the masjid and against current Quebec
         home-instruction regulation.
       </RegulationNote>
 
       {loadError ? (
-        <p className="rounded-xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900 dark:border-amber-700/60 dark:bg-amber-950/40 dark:text-amber-200">
+        <Card tone="warning" className="p-4 text-sm text-ink-2">
           {loadError}.
-        </p>
+        </Card>
       ) : children.length === 0 ? (
-        <p className="rounded-xl border border-black/10 p-6 text-sm text-zinc-500 dark:border-white/15">
-          No children linked to this account yet.
-        </p>
+        <Card className="p-6 text-sm text-ink-3">No children linked to this account yet.</Card>
       ) : (
         <>
           {children.length > 1 ? (
@@ -66,10 +56,10 @@ export default async function ParentCompliancePage({
                 <Link
                   key={c.id}
                   href={`/parent/compliance?child=${c.id}`}
-                  className={`rounded-lg border px-3 py-1.5 text-sm ${
+                  className={`rounded-full border px-3.5 py-1.5 text-sm transition-colors ${
                     selected?.id === c.id
-                      ? "border-sky-400 bg-sky-50 font-medium text-sky-800 dark:border-sky-500 dark:bg-sky-950/40 dark:text-sky-200"
-                      : "border-black/10 text-zinc-600 dark:border-white/15 dark:text-zinc-300"
+                      ? "border-terracotta bg-terracotta-soft font-medium text-terracotta-strong"
+                      : "border-border text-ink-3 hover:border-border-strong"
                   }`}
                 >
                   {c.name}
