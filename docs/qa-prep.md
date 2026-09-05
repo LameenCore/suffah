@@ -35,6 +35,15 @@ Yes — the app, the schema, the AI pipeline, all three dashboards, and the seve
 Phase-7 differentiator features. It's tracked task-by-task in `progress/` with a
 commit per task. _Backed by: `progress/tasks/`, `git log`._
 
+**What's your test coverage?**
+38 unit tests. The logic with real bug surface is near-total: objective grading
+100%, the compliance-status engine ~98%, plus the ledger "principal is never
+spendable" math. Overall `lib/` is ~8% by line — that's dominated by thin
+Supabase query glue, which is exercised by a data-integrity script
+(`npm run check:integrity`) and the live end-to-end verification; a proper DB
+integration harness is roadmapped (T54). _Backed by: `npm run test:coverage`,
+`tests/`, `scripts/check-integrity.ts`._
+
 **Technical tradeoffs made for time?**
 (1) Auth is a dev role cookie, not real login — the swap is one file
 (`lib/auth`), tracked as T30. (2) All server DB access uses the Supabase

@@ -75,11 +75,18 @@ components/                 # shared UI
 
 ## Tests
 
-`npm test` (vitest) - pure-function unit tests for the core loop: objective
+`npm test` (vitest) - 38 pure-function unit tests for the core loop: objective
 grading (`gradeQuestion` / `gradeQuestions`), the compliance-status engine
 (`computeCourseStatus` / `computeOverall`), and ledger aggregation
 (`summariseLedgerEntries` - the "principal is never spendable" invariant).
-`npm run test:watch` while developing. Wire into CI with T54.
+`npm run test:watch` while developing. `npm run test:coverage` for the report.
+
+**Coverage:** the logic with real bug surface is near-total -
+`lib/ai/questions.ts` (grading) **100%**, `lib/compliance/status.ts` (status
+engine) **~98%**. Overall `lib/` is **~8%** by line because most of `lib/db/` is
+thin Supabase query glue that needs an integration harness (T54); those paths are
+exercised by `npm run check:integrity` and the live end-to-end verification
+instead.
 
 `npm run check:integrity` - read-only data checks foreign keys don't enforce
 (cross-tenant refs, pods over the 4-cap, ledger sign errors). Exit 1 on failure;

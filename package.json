@@ -19,7 +19,8 @@
     "demo:reset": "tsx scripts/demo-setup.ts --reset-only",
     "check:integrity": "tsx --env-file=.env.local scripts/check-integrity.ts",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.124.0",
@@ -37,6 +38,7 @@
     "@types/pg": "^8.23.1",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@vitest/coverage-v8": "^2.1.9",
     "eslint": "^9",
     "eslint-config-next": "16.3.4",
     "tailwindcss": "^4",
