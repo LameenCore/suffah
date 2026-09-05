@@ -162,7 +162,7 @@ function BarakahSummary({ barakah }: { barakah: ChildBarakahSummary }) {
         <Crescent className="h-4 w-4 text-teal-strong" /> In the circle
       </h3>
       <p className="mt-1 text-xs text-ink-3">
-        What the pod&apos;s volunteers have noticed &mdash; adab and cooperation, not a score.
+        What the pod&apos;s volunteers have noticed - adab and cooperation, not a score.
       </p>
       {barakah.phrases.length > 0 && (
         <div className="mt-3 flex flex-wrap gap-1.5">
@@ -297,7 +297,7 @@ export default async function ParentHome() {
         <Dome className="mt-0.5 h-5 w-8 shrink-0 text-terracotta" />
         <p>
           Your pod meets with a community volunteer for live enrichment. Schedule and
-          fee/sponsorship details are managed by the masjid &mdash; reach out to the
+          fee/sponsorship details are managed by the masjid - reach out to the
           coordinator with any questions.
         </p>
       </div>

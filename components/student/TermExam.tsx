@@ -91,7 +91,7 @@ export function TermExam({
     return (
       <Card tone="muted" className="space-y-3 p-6">
         <h2 className="font-display text-lg font-semibold text-ink">
-          {exam.termLabel} &mdash; ready when you are
+          {exam.termLabel} - ready when you are
         </h2>
         <p className="text-sm text-ink-2">
           {exam.questions.length} questions &middot; {Math.round(exam.durationSeconds / 60)}{" "}

@@ -65,7 +65,7 @@ export function LessonView({
 
       <section>
         <h2 className="mb-3 text-xs font-semibold uppercase tracking-[0.14em] text-ink-3">
-          Practice &mdash; check yourself
+          Practice - check yourself
         </h2>
         <ol className="space-y-3">
           {lesson.practice.map((p, i) => (

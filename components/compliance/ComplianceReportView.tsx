@@ -17,7 +17,7 @@ export function ComplianceReportView({ report }: { report: ComplianceReport }) {
     <div className="space-y-5">
       <div className="border-b border-border pb-3">
         <h2 className="font-display text-xl font-semibold text-ink">
-          Progress &amp; evaluation record &mdash; {report.student.name}
+          Progress &amp; evaluation record - {report.student.name}
         </h2>
         <p className="text-sm text-ink-3">
           {report.podName ? `${report.podName} · ` : ""}

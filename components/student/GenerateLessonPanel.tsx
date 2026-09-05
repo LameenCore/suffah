@@ -18,7 +18,7 @@ export function GenerateLessonPanel({ nodeId }: { nodeId: string }) {
         This lesson isn&apos;t ready yet
       </p>
       <p className="mt-1 text-sm text-ink-3">
-        Fanoos will put it together for you &mdash; it only takes a moment.
+        Fanoos will put it together for you - it only takes a moment.
       </p>
       <div className="mt-4">
         <Button

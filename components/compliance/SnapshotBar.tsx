@@ -34,7 +34,7 @@ export function SnapshotBar({
       <ButtonLink
         size="sm"
         variant="ghost"
-        href={`/admin/compliance/${studentId}/print`}
+        href={`/print/compliance/${studentId}`}
         target="_blank"
       >
         Open printable view

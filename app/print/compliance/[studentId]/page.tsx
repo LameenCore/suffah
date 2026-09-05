@@ -5,10 +5,11 @@ import { assembleComplianceReport } from "@/lib/compliance/report";
 import { ComplianceReportView } from "@/components/compliance/ComplianceReportView";
 import { Star8 } from "@/components/ui/Motif";
 
-// Print-friendly compliance record. Opened in a new tab; use the browser's print.
+// Print-friendly compliance record. Opened in a new tab from the compliance view;
+// lives outside the /admin route group so it does NOT inherit the dashboard chrome.
 export default async function CompliancePrintPage({
   params,
-}: PageProps<"/admin/compliance/[studentId]/print">) {
+}: PageProps<"/print/compliance/[studentId]">) {
   const { studentId } = await params;
   const user = await requireRole("admin");
 
@@ -26,7 +27,7 @@ export default async function CompliancePrintPage({
             <Star8 className="h-6 w-6 text-terracotta" />
             <div>
               <p className="font-display text-lg font-semibold text-ink">
-                Suffa &mdash; home-instruction progress record
+                Suffa - home-instruction progress record
               </p>
               <p className="text-xs text-ink-4">
                 Masjid As-Suffa (Demo) &middot; generated{" "}

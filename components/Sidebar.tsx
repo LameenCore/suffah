@@ -85,7 +85,11 @@ export function Sidebar({
       <div className="mt-1 flex items-center justify-between rounded-[var(--radius)] px-3 py-2">
         <div className="min-w-0">
           <p className="truncate text-sm font-medium text-ink">{user.name}</p>
-          <p className="text-xs text-ink-4">{ROLE_LABEL[user.role]}</p>
+          {user.name !== ROLE_LABEL[user.role] ? (
+            <p className="text-xs text-ink-4">{ROLE_LABEL[user.role]}</p>
+          ) : (
+            <p className="truncate text-xs text-ink-4">{user.email}</p>
+          )}
         </div>
         <Link
           href="/"
@@ -107,7 +111,7 @@ export function Sidebar({
   return (
     <>
       {/* mobile top bar */}
-      <div className="sticky top-0 z-30 flex items-center justify-between border-b border-border bg-surface/90 px-4 py-2.5 backdrop-blur md:hidden">
+      <div className="sticky top-0 z-30 flex items-center justify-between border-b border-border bg-surface/90 px-4 py-2.5 backdrop-blur md:hidden print:hidden">
         <div className="flex items-center gap-2">
           <Star8 className="h-5 w-5 text-terracotta" />
           <span className="font-display font-semibold text-ink">Suffa</span>
@@ -123,7 +127,7 @@ export function Sidebar({
       </div>
 
       {/* desktop rail */}
-      <aside className="sticky top-0 hidden h-screen w-60 shrink-0 flex-col border-r border-border bg-surface md:flex">
+      <aside className="sticky top-0 hidden h-screen w-60 shrink-0 flex-col border-r border-border bg-surface md:flex print:hidden">
         {brand}
         {nav}
         {foot}

@@ -73,7 +73,7 @@ export default function Home({ searchParams }: PageProps<"/">) {
             <h1 className="font-display text-4xl font-semibold text-ink sm:text-5xl">Suffa</h1>
             <p className="max-w-xl text-ink-2">
               An AI-sustained, pod-based homeschool for Quebec Muslim families. The community
-              carries the learner &mdash; so learning never stops, even when a volunteer moves on.
+              carries the learner - so learning never stops, even when a volunteer moves on.
             </p>
             <Notice searchParams={searchParams} />
           </div>
@@ -105,7 +105,7 @@ export default function Home({ searchParams }: PageProps<"/">) {
         </div>
 
         <p className="text-xs text-ink-4">
-          Demo sign-in only &mdash; a role cookie, not a real login.{" "}
+          Demo sign-in only - a role cookie, not a real login.{" "}
           <Link href="/admin" className="underline underline-offset-2 hover:text-teal">
             Build notes in TASKS.md
           </Link>

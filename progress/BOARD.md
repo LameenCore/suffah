@@ -1,7 +1,7 @@
 # BOARD — Suffa progress snapshot
 
 **Derived from `progress/tasks/`. Not authoritative. Regenerate after any claim/finish.**
-Last regenerated: 2026-09-05 (T17 done - ALL 24 tasks complete)
+Last regenerated: 2026-09-05 (T25 done - UI/UX redesign landed)
 
 | id  | phase | status | owner | title |
 |-----|-------|--------|-------|-------|
@@ -39,7 +39,7 @@ Get a clean demo state: `npm run demo:setup` (full, hits the API) or `npm run de
 
 | id  | phase | status | owner | title |
 |-----|-------|--------|-------|-------|
-| T25 | 8 | doing | session_01SKEyp | Full UI/UX redesign — warm community design system |
+| T25 | 8 | done  | — | Full UI/UX redesign — warm community design system |
 | T26 | 8 | done  | — | Pitch one-pager + unit-economics model |
 | T27 | 8 | todo  | — | Deploy to Vercel (staging + prod) |
 | T28 | 8 | todo  | — | Recorded demo walkthrough (video / GIF) |

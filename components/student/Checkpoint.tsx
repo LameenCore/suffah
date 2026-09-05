@@ -48,7 +48,7 @@ export function Checkpoint({
       <Card className="space-y-3 p-5">
         {HEADING}
         <p className="text-sm text-ink-3">
-          A few quick questions on this lesson. You need 70% to move on &mdash; and you can
+          A few quick questions on this lesson. You need 70% to move on - and you can
           try again as many times as you need.
         </p>
         <Button
@@ -160,7 +160,7 @@ export function Checkpoint({
       ) : grade.passed ? (
         <div className="space-y-2 rounded-[var(--radius)] border border-success/40 bg-success-soft p-4 text-sm">
           <p className="font-display text-base font-semibold text-success">
-            Ma sha Allah &mdash; {grade.correctCount}/{grade.total} ({Math.round(grade.score * 100)}%)
+            Ma sha Allah - {grade.correctCount}/{grade.total} ({Math.round(grade.score * 100)}%)
           </p>
           <p className="text-success">
             {grade.advancedToNodeId
@@ -176,7 +176,7 @@ export function Checkpoint({
       ) : (
         <div className="space-y-2 rounded-[var(--radius)] border border-warning/40 bg-warning-soft p-4 text-sm">
           <p className="font-display text-base font-semibold text-[color:var(--ink)]">
-            {grade.correctCount}/{grade.total} ({Math.round(grade.score * 100)}%) &mdash; not there yet
+            {grade.correctCount}/{grade.total} ({Math.round(grade.score * 100)}%) - not there yet
           </p>
           <p className="text-ink-2">Have another look at the lesson above, then try again.</p>
           <Button
