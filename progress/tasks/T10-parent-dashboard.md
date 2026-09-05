@@ -2,9 +2,9 @@
 id: T10
 title: Parent dashboard — progress + results per course
 phase: 4
-status: todo
-owner: —
-claimed: —
+status: doing
+owner: https://claude.ai/code/session_011H4sTF36JvRXwmwmj5Xkcr
+claimed: 2026-09-05T16:25:00Z
 updated: 2026-09-05
 depends_on: [T07]
 ---
