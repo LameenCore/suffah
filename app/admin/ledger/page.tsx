@@ -2,6 +2,7 @@ import Link from "next/link";
 import { requireRole } from "@/lib/auth";
 import { LedgerChart } from "@/components/admin/LedgerChart";
 import { WaqfFlowDiagram } from "@/components/admin/WaqfFlowDiagram";
+import { SponsoredOutcomes } from "@/components/admin/SponsoredOutcomes";
 import {
   getFamilyFeeStatus,
   getLedgerSummary,
@@ -9,6 +10,10 @@ import {
   type LedgerEntry,
   type LedgerSummary,
 } from "@/lib/db/ledger-queries";
+import {
+  getSponsoredOutcomes,
+  type SponsoredOutcome,
+} from "@/lib/db/sponsorship-queries";
 
 const money = (v: number) =>
   v.toLocaleString("en-CA", { style: "currency", currency: "CAD", maximumFractionDigits: 0 });
@@ -52,12 +57,14 @@ export default async function AdminLedgerPage() {
 
   let summary: LedgerSummary | null = null;
   let fees: FamilyFeeRow[] = [];
+  let sponsored: SponsoredOutcome[] = [];
   let loadError: string | null = null;
 
   try {
-    [summary, fees] = await Promise.all([
+    [summary, fees, sponsored] = await Promise.all([
       getLedgerSummary(user.masjidId),
       getFamilyFeeStatus(user.masjidId),
+      getSponsoredOutcomes(user.masjidId),
     ]);
   } catch (err) {
     loadError = err instanceof Error ? err.message : "could not load ledger data";
@@ -136,6 +143,17 @@ export default async function AdminLedgerPage() {
                 sadaqahReceived={summary.sadaqahReceived}
                 scholarshipsAllocated={summary.scholarshipsAllocated}
               />
+            </div>
+          </section>
+
+          <section className="rounded-xl border border-black/10 bg-white p-4 dark:border-white/15 dark:bg-zinc-950">
+            <h2 className="font-medium">Sponsored outcomes</h2>
+            <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
+              What each contribution funded — and what the sponsored pod actually
+              learned. Not just where the money went.
+            </p>
+            <div className="mt-3">
+              <SponsoredOutcomes outcomes={sponsored} />
             </div>
           </section>
 

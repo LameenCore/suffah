@@ -1,7 +1,7 @@
 # BOARD — Suffa progress snapshot
 
 **Derived from `progress/tasks/`. Not authoritative. Regenerate after any claim/finish.**
-Last regenerated: 2026-09-05 (T24 done)
+Last regenerated: 2026-09-05 (T21 done)
 
 | id  | phase | status | owner | title |
 |-----|-------|--------|-------|-------|
@@ -25,7 +25,7 @@ Last regenerated: 2026-09-05 (T24 done)
 | T18 | 7 | todo  | — | Continuity Fingerprint — AI volunteer-handoff briefing |
 | T19 | 7 | todo  | — | Live "empty seat" handoff simulation (demo feature) |
 | T20 | 7 | todo  | — | Compliance report as a living document (early-warning) |
-| T21 | 7 | todo  | — | Waqf-to-outcome linking (donor sees learning) |
+| T21 | 7 | done  | — | Waqf-to-outcome linking (donor sees learning) |
 | T22 | 7 | todo  | — | Multi-generational knowledge sourcing for Seerah content |
 | T23 | 7 | todo  | — | Pod "Barakah meter" — character/community indicators |
 | T24 | 7 | done  | — | Waqf principal "never touched" visual |
@@ -34,7 +34,6 @@ Last regenerated: 2026-09-05 (T24 done)
 - **T09** — Term exam variant (timed) + term_exam_results (dep T08 done)
 - **T16** — regulation disclaimers (no deps, can run anytime)
 - **T18** — Continuity Fingerprint (deps T07, T11 done) — highest-value differentiator
-- **T21** — Waqf-to-outcome linking (deps T14, T08 done)
 - **T22** — Seerah community sourcing (dep T05 done, mock/text)
 - **T23** — Barakah meter (dep T11 done)
 - blocked: T12 (needs T09), T17 (needs T12), T19 (needs T18), T20 (needs T12)

@@ -185,6 +185,16 @@ async function seed() {
     ]),
   );
 
+  // Waqf-to-outcome links (sponsorships — migration 0006). Illustrative mapping;
+  // outcomes are read from real pod_progress / unit_assessment_results.
+  check(
+    await db.from("sponsorships").insert([
+      { masjid_id: MASJID, sponsor_label: "Founding endowment allocation", amount: 1500, pod_id: POD, unit_id: UNIT.math, note: "Sponsors Pod Al-Farabi through the integers unit (Math)." },
+      { masjid_id: MASJID, sponsor_label: "Ramadan drive — anonymous", amount: 900, pod_id: POD, unit_id: UNIT.seerah, note: "Sponsors the Meccan Period unit (Seerah)." },
+      { masjid_id: MASJID, sponsor_label: "Local family gift", amount: 750, pod_id: POD, unit_id: UNIT.ai, note: "Sponsors the AI-literacy intro unit." },
+    ]),
+  );
+
   console.log("Seeded demo masjid:", MASJID);
 }
 

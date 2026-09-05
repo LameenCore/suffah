@@ -127,3 +127,18 @@ DB. Commit c6d3abb. Next: T16.
 - Principal-never-spendable rule already enforced in getLedgerSummary (T14).
 - build + lint green; geometry hand-checked (not rendered live, no .env.local).
 - commit 8e8bc04. Session tally: T10,T11,T13,T14,T15,T24.
+
+## 2026-09-05 — T21 done
+- migration 0006_sponsorships (sponsor_label, amount, pod_id, unit_id — mock mapping).
+  Seeded 3 links (Pod Al-Farabi -> each unit) in supabase/seed.sql + scripts/seed.ts.
+- lib/db/sponsorship-queries.ts — getSponsoredOutcomes: joins the mock mapping to REAL
+  outcomes (unit completion from pod_progress vs the unit%27s node range; assessment
+  pass count from unit_assessment_results for the pod%27s students). Pod-level only,
+  no names.
+- components/admin/SponsoredOutcomes.tsx (server) + a "Sponsored outcomes" section on
+  /admin/ledger, with an "illustrative" disclaimer.
+- Supabase typed-select needed an `as unknown as Record<string,unknown>[]` cast (no
+  generated DB types in this repo) — same pattern as the other query files.
+- build + lint green; not verified vs live data. commit <t21>.
+- Remaining unclaimed in my lane: T22 (mock/text), T23 (build). T18/T19/T20 with the
+  other session or blocked on T12.
