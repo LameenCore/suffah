@@ -20,7 +20,7 @@ export async function generateBriefingAction(
   podId: string,
 ): Promise<{ briefing: PodBriefing; source: string; generatedAt: string }> {
   const user = await requireAdmin();
-  const result = await generatePodBriefing(podId, user.masjidId);
+  const result = await generatePodBriefing(podId, user.masjidId, { actorUserId: user.id });
   await recordAudit({
     actor: user,
     action: "continuity.briefing_generated",

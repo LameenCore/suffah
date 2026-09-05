@@ -229,6 +229,35 @@ async function seed() {
     ]),
   );
 
+  // Model-call log (model_call_log - migration 0011). Represents the one-time
+  // content generation for this masjid's curriculum (9 lessons + 9 checkpoints +
+  // 3 unit assessments + 3 term exams). Real gen:* runs also append here; these
+  // seed rows keep the /admin AI-spend view populated after a state-only reset.
+  {
+    const rows: Record<string, unknown>[] = [];
+    const push = (feature: string, n: number, inTok: number, outTok: number) => {
+      for (let i = 0; i < n; i += 1) {
+        rows.push({
+          masjid_id: MASJID,
+          actor_user_id: U.admin,
+          feature,
+          model: "claude-sonnet-5",
+          source: "model",
+          input_tokens: inTok,
+          output_tokens: outTok,
+          cost_usd: inTok * (2 / 1_000_000) + outTok * (10 / 1_000_000),
+          ok: true,
+          at: daysAgo(31),
+        });
+      }
+    };
+    push("lesson", 9, 2600, 2100);
+    push("checkpoint", 9, 1500, 900);
+    push("assessment", 3, 3400, 1600);
+    push("term_exam", 3, 4200, 2400);
+    check(await db.from("model_call_log").insert(rows));
+  }
+
   console.log("Seeded demo masjid:", MASJID);
 }
 

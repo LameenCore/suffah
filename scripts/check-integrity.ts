@@ -189,6 +189,22 @@ async function main() {
     }
   }
 
+  // --- 12. model_call_log is append-only (T34) --------------------
+  {
+    const { data } = await db.from("model_call_log").select("id").limit(1);
+    const id = data?.[0]?.id as string | undefined;
+    if (!id) {
+      console.log("  skip  model_call_log append-only (no rows to probe)");
+    } else {
+      const upd = await db.from("model_call_log").update({ feature: "__probe__" }).eq("id", id);
+      const del = await db.from("model_call_log").delete().eq("id", id);
+      const bad: Row[] = [];
+      if (!upd.error) bad.push({ op: "UPDATE", note: "was allowed" });
+      if (!del.error) bad.push({ op: "DELETE", note: "was allowed" });
+      report("model_call_log is append-only (UPDATE/DELETE rejected)", bad, (r) => `${r.op} ${r.note}`);
+    }
+  }
+
   console.log(failures === 0 ? "\nAll checks passed." : `\n${failures} check(s) FAILED.`);
   if (failures > 0) process.exitCode = 1;
 }

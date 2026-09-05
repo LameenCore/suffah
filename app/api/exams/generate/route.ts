@@ -1,6 +1,7 @@
 // POST /api/exams/generate  { courseId: string, termLabel?: string, force?: boolean }
 
 import { getCurrentUser } from "@/lib/auth";
+import { enforceAiRateLimit } from "@/lib/ratelimit";
 import { DEMO_TERM_LABEL } from "@/lib/types";
 import { generateTermExam } from "@/lib/ai/term-exam";
 
@@ -10,6 +11,9 @@ export async function POST(request: Request) {
   if (user.role !== "student" && user.role !== "admin") {
     return Response.json({ error: "role not permitted" }, { status: 403 });
   }
+
+  const limited = enforceAiRateLimit("term_exam", user);
+  if (limited) return limited;
 
   let body: unknown;
   try {
@@ -28,7 +32,10 @@ export async function POST(request: Request) {
   const term = typeof termLabel === "string" && termLabel ? termLabel : DEMO_TERM_LABEL;
 
   try {
-    const r = await generateTermExam(courseId, term, user.masjidId, { force: force === true });
+    const r = await generateTermExam(courseId, term, user.masjidId, {
+      force: force === true && user.role === "admin",
+      actorUserId: user.id,
+    });
     return Response.json({
       courseId,
       termLabel: term,

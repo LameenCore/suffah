@@ -5,6 +5,7 @@
 
 import { revalidatePath } from "next/cache";
 import { getCurrentUser } from "@/lib/auth";
+import { assertAiRateLimit } from "@/lib/ratelimit";
 import { markLessonComplete, isLessonComplete } from "@/lib/db/queries";
 import { generateLessonForNode } from "@/lib/ai/lesson";
 import {
@@ -37,7 +38,8 @@ export async function ensureLessonAction(
   nodeId: string,
 ): Promise<{ source: "existing" | "model" | "fallback" }> {
   const user = await requireStudent();
-  const result = await generateLessonForNode(nodeId, user.masjidId);
+  assertAiRateLimit("lesson", user);
+  const result = await generateLessonForNode(nodeId, user.masjidId, { actorUserId: user.id });
   revalidatePath("/student", "layout");
   return { source: result.source };
 }
@@ -50,7 +52,8 @@ export async function startCheckpointAction(
   if (!(await isLessonComplete(user.id, nodeId))) {
     throw new Error("finish the lesson before starting the checkpoint");
   }
-  const result = await generateCheckpointForNode(nodeId, user.masjidId);
+  assertAiRateLimit("checkpoint", user);
+  const result = await generateCheckpointForNode(nodeId, user.masjidId, { actorUserId: user.id });
   revalidatePath("/student", "layout");
   return { source: result.source };
 }
@@ -75,7 +78,10 @@ export async function submitCheckpointAction(
 /** Prepare the term exam for a course (generate + persist if missing). */
 export async function startTermExamAction(courseId: string): Promise<{ source: string }> {
   const user = await requireStudent();
-  const r = await generateTermExam(courseId, DEMO_TERM_LABEL, user.masjidId);
+  assertAiRateLimit("term_exam", user);
+  const r = await generateTermExam(courseId, DEMO_TERM_LABEL, user.masjidId, {
+    actorUserId: user.id,
+  });
   revalidatePath("/student", "layout");
   return { source: r.source };
 }

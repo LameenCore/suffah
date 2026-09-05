@@ -4,6 +4,7 @@
 // Admin only, masjid-scoped.
 
 import { getCurrentUser } from "@/lib/auth";
+import { enforceAiRateLimit } from "@/lib/ratelimit";
 import { generatePodBriefing } from "@/lib/ai/continuity";
 
 export async function POST(request: Request) {
@@ -12,6 +13,9 @@ export async function POST(request: Request) {
   if (user.role !== "admin") {
     return Response.json({ error: "admin role required" }, { status: 403 });
   }
+
+  const limited = enforceAiRateLimit("briefing", user);
+  if (limited) return limited;
 
   let body: unknown;
   try {
@@ -25,7 +29,7 @@ export async function POST(request: Request) {
   }
 
   try {
-    const result = await generatePodBriefing(podId, user.masjidId);
+    const result = await generatePodBriefing(podId, user.masjidId, { actorUserId: user.id });
     return Response.json({
       podId,
       source: result.source,

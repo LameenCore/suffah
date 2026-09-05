@@ -132,3 +132,36 @@ migrations / lib / admin actions.
 Verified: tsc + lint + build + 38 tests + check:integrity green. /admin/audit
 renders the 5 seed entries live; parent hitting /admin/audit -> 307 to /parent.
 Commit <t35>.
+
+## 2026-09-05 — T34 done (AI rate limits + model-call logging)
+Claimed T34 (no deps). Parallel session on Phase 10 - no overlap.
+
+- lib/ratelimit.ts: in-memory sliding-window limiter. Two entry points -
+  enforceAiRateLimit (returns a 429 Response, for API routes) and
+  assertAiRateLimit (throws RateLimitError, for Server Actions). 8/user/min +
+  40/masjid/min per feature. Per-process; Upstash is the prod swap behind the
+  same checkRateLimit() signature (documented in the file).
+- Applied to all 5 /api/*/generate routes + /api/continuity/briefing + the 3
+  student generate Server Actions (ensureLesson / startCheckpoint / startTermExam).
+- force-regen restricted to admins in the routes (`force === true && role ===
+  "admin"`) - it was open to students, a cost vector. Combined with the existing
+  "return persisted row if content exists" guards, that's the idempotency
+  requirement: a repeat student request never re-calls the model.
+- migration 0011_model_call_log: append-only (same trigger pattern as audit_log).
+- lib/ai/usage.ts: logModelCall (best-effort) + estimateCostUsd + MODEL_PRICING
+  (Sonnet 5 $2/$10 per MTok, from docs/research/model-economics.md).
+- Wired logModelCall into all 5 model-call sites - each generateWithModel now
+  returns {content, usage}; the caller logs source=model on success (with
+  response.usage) and source=fallback (ok:false) in the catch. actorUserId
+  threaded from routes/actions (nullable - CLI gen:* scripts log with null).
+- Seed: 24 model_call_log rows (9 lesson + 9 checkpoint + 3 assessment + 3 term
+  exam) = the demo's own curriculum generation, ~$0.51 total. seed.sql uses a
+  generate_series lateral join; seed.ts a loop. Inserted live via throwaway
+  script (didn't full-reseed - same reason as T35).
+- check-integrity check 12: model_call_log append-only (UPDATE/DELETE rejected).
+- tests/ratelimit.test.ts (7) + tests/ai-usage.test.ts (5).
+
+Verified live: 12 rapid POSTs to /api/lessons/generate -> first 8 pass the limit
+(404 on the bogus nodeId), rest 429 with Retry-After. Unauthed -> 401.
+tsc + lint + build + 50 tests + check:integrity(12) green. Unblocks T56.
+Commit <t34>.

@@ -47,7 +47,7 @@ export async function assignReplacementAction(
 
   await reinstateVolunteer(user.masjidId, volunteerId); // no-op if never departed
   await setPodVolunteer(user.masjidId, state.pod.id, volunteerId);
-  const result = await generatePodBriefing(state.pod.id, user.masjidId);
+  const result = await generatePodBriefing(state.pod.id, user.masjidId, { actorUserId: user.id });
   await recordAudit({
     actor: user,
     action: "pod.volunteer_set",

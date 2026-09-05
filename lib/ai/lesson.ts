@@ -10,6 +10,7 @@
 import { z } from "zod";
 import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
 import { getAnthropic, LESSON_MODEL } from "@/lib/ai/client";
+import { logModelCall, type TokenUsage } from "@/lib/ai/usage";
 import {
   getPathwayNode,
   saveLessonContent,
@@ -142,7 +143,9 @@ function buildPrompt(node: PathwayNode): { system: string; user: string } {
 
 // --- Generation ----------------------------------------------------------
 
-async function generateWithModel(node: PathwayNode): Promise<LessonContent> {
+async function generateWithModel(
+  node: PathwayNode,
+): Promise<{ lesson: LessonContent; usage: TokenUsage | null }> {
   const { system, user } = buildPrompt(node);
   const response = await getAnthropic().messages.parse({
     model: LESSON_MODEL,
@@ -160,11 +163,14 @@ async function generateWithModel(node: PathwayNode): Promise<LessonContent> {
   }
 
   return {
-    ...body,
-    schemaVersion: 1,
-    generatedBy: LESSON_MODEL,
-    generatedAt: new Date().toISOString(),
-    regulationNote: courseBrief(node.course).regulationNote,
+    lesson: {
+      ...body,
+      schemaVersion: 1,
+      generatedBy: LESSON_MODEL,
+      generatedAt: new Date().toISOString(),
+      regulationNote: courseBrief(node.course).regulationNote,
+    },
+    usage: response.usage ?? null,
   };
 }
 
@@ -179,7 +185,7 @@ async function generateWithModel(node: PathwayNode): Promise<LessonContent> {
 export async function generateLessonForNode(
   nodeId: string,
   masjidId: string,
-  opts: { force?: boolean } = {},
+  opts: { force?: boolean; actorUserId?: string | null } = {},
 ): Promise<GenerateLessonResult> {
   const node = await getPathwayNode(nodeId, masjidId);
   if (!node) {
@@ -195,8 +201,17 @@ export async function generateLessonForNode(
   let lesson: LessonContent;
   let source: LessonSource;
   try {
-    lesson = await generateWithModel(node);
+    const res = await generateWithModel(node);
+    lesson = res.lesson;
     source = "model";
+    await logModelCall({
+      feature: "lesson",
+      masjidId,
+      actorUserId: opts.actorUserId ?? null,
+      model: LESSON_MODEL,
+      source: "model",
+      usage: res.usage,
+    });
   } catch (modelError) {
     const fb = fallbackLesson(node);
     if (!fb) throw modelError;
@@ -206,6 +221,14 @@ export async function generateLessonForNode(
     );
     lesson = fb;
     source = "fallback";
+    await logModelCall({
+      feature: "lesson",
+      masjidId,
+      actorUserId: opts.actorUserId ?? null,
+      model: LESSON_MODEL,
+      source: "fallback",
+      ok: false,
+    });
   }
 
   const persisted = await saveLessonContent(nodeId, masjidId, lesson);

@@ -9,6 +9,7 @@
 import { z } from "zod";
 import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
 import { getAnthropic, LESSON_MODEL } from "@/lib/ai/client";
+import { logModelCall, type TokenUsage } from "@/lib/ai/usage";
 import {
   QuestionSchema,
   stripQuestionAnswers,
@@ -71,7 +72,9 @@ export interface GenerateCheckpointResult {
   source: CheckpointSource | "existing";
 }
 
-async function generateWithModel(node: PathwayNode): Promise<CheckpointContent> {
+async function generateWithModel(
+  node: PathwayNode,
+): Promise<{ checkpoint: CheckpointContent; usage: TokenUsage | null }> {
   const lesson = node.lesson_content;
   if (!lesson) throw new Error("cannot generate a checkpoint before the lesson exists");
 
@@ -111,10 +114,13 @@ async function generateWithModel(node: PathwayNode): Promise<CheckpointContent> 
     );
   }
   return {
-    ...body,
-    schemaVersion: 1,
-    generatedBy: LESSON_MODEL,
-    generatedAt: new Date().toISOString(),
+    checkpoint: {
+      ...body,
+      schemaVersion: 1,
+      generatedBy: LESSON_MODEL,
+      generatedAt: new Date().toISOString(),
+    },
+    usage: response.usage ?? null,
   };
 }
 
@@ -126,7 +132,7 @@ async function generateWithModel(node: PathwayNode): Promise<CheckpointContent> 
 export async function generateCheckpointForNode(
   nodeId: string,
   masjidId: string,
-  opts: { force?: boolean } = {},
+  opts: { force?: boolean; actorUserId?: string | null } = {},
 ): Promise<GenerateCheckpointResult> {
   const node = await getPathwayNode(nodeId, masjidId);
   if (!node) {
@@ -147,8 +153,17 @@ export async function generateCheckpointForNode(
   let checkpoint: CheckpointContent;
   let source: CheckpointSource;
   try {
-    checkpoint = await generateWithModel(node);
+    const res = await generateWithModel(node);
+    checkpoint = res.checkpoint;
     source = "model";
+    await logModelCall({
+      feature: "checkpoint",
+      masjidId,
+      actorUserId: opts.actorUserId ?? null,
+      model: LESSON_MODEL,
+      source: "model",
+      usage: res.usage,
+    });
   } catch (modelError) {
     const fb = fallbackCheckpoint(node);
     if (!fb) throw modelError;
@@ -158,6 +173,14 @@ export async function generateCheckpointForNode(
     );
     checkpoint = fb;
     source = "fallback";
+    await logModelCall({
+      feature: "checkpoint",
+      masjidId,
+      actorUserId: opts.actorUserId ?? null,
+      model: LESSON_MODEL,
+      source: "fallback",
+      ok: false,
+    });
   }
 
   const persisted = await saveCheckpointContent(nodeId, masjidId, checkpoint);

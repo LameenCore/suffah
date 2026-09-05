@@ -9,6 +9,7 @@
 import { z } from "zod";
 import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
 import { getAnthropic, LESSON_MODEL } from "@/lib/ai/client";
+import { logModelCall, type TokenUsage } from "@/lib/ai/usage";
 import {
   gatherPodLearningSignals,
   saveBriefing,
@@ -107,7 +108,9 @@ function renderSignals(s: PodLearningSignals): string {
   return lines.join("\n");
 }
 
-async function generateWithModel(s: PodLearningSignals): Promise<PodBriefing> {
+async function generateWithModel(
+  s: PodLearningSignals,
+): Promise<{ briefing: PodBriefing; usage: TokenUsage | null }> {
   const system =
     "You are briefing a community volunteer who is taking over a homeschool pod from " +
     "someone who just left. Write a short, concrete handoff - how the group has been " +
@@ -135,7 +138,7 @@ async function generateWithModel(s: PodLearningSignals): Promise<PodBriefing> {
       `pod briefing: unparseable model output (stop_reason=${response.stop_reason})`,
     );
   }
-  return body;
+  return { briefing: body, usage: response.usage ?? null };
 }
 
 /** A deterministic briefing assembled straight from the signals - no model. */
@@ -201,7 +204,7 @@ export function fallbackBriefing(s: PodLearningSignals): PodBriefing {
 export async function generatePodBriefing(
   podId: string,
   masjidId: string,
-  opts: { reuseWithinMs?: number } = {},
+  opts: { reuseWithinMs?: number; actorUserId?: string | null } = {},
 ): Promise<GenerateBriefingResult> {
   if (opts.reuseWithinMs && opts.reuseWithinMs > 0) {
     const latest = await getLatestBriefing(podId, masjidId);
@@ -221,9 +224,18 @@ export async function generatePodBriefing(
   let source: BriefingSource;
   let generatedBy: string;
   try {
-    briefing = await generateWithModel(signals);
+    const res = await generateWithModel(signals);
+    briefing = res.briefing;
     source = "model";
     generatedBy = LESSON_MODEL;
+    await logModelCall({
+      feature: "briefing",
+      masjidId,
+      actorUserId: opts.actorUserId ?? null,
+      model: LESSON_MODEL,
+      source: "model",
+      usage: res.usage,
+    });
   } catch (modelError) {
     console.warn(
       `[lib/ai/continuity] model briefing failed for pod ${podId}; using deterministic fallback.`,
@@ -232,6 +244,14 @@ export async function generatePodBriefing(
     briefing = fallbackBriefing(signals);
     source = "fallback";
     generatedBy = "fallback";
+    await logModelCall({
+      feature: "briefing",
+      masjidId,
+      actorUserId: opts.actorUserId ?? null,
+      model: LESSON_MODEL,
+      source: "fallback",
+      ok: false,
+    });
   }
 
   await saveBriefing(podId, masjidId, briefing, generatedBy);

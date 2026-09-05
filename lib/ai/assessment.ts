@@ -11,6 +11,7 @@
 import { z } from "zod";
 import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
 import { getAnthropic, LESSON_MODEL } from "@/lib/ai/client";
+import { logModelCall, type TokenUsage } from "@/lib/ai/usage";
 import {
   QuestionSchema,
   stripQuestionAnswers,
@@ -118,7 +119,7 @@ export function buildAssessmentPrompt(
 async function generateWithModel(
   unit: UnitRef,
   nodes: PathwayNode[],
-): Promise<AssessmentContent> {
+): Promise<{ assessment: AssessmentContent; usage: TokenUsage | null }> {
   const withLessons = nodes.filter((n) => n.lesson_content);
   if (withLessons.length === 0) {
     throw new Error("cannot generate a unit assessment before any lesson in the unit exists");
@@ -147,12 +148,15 @@ async function generateWithModel(
     );
   }
   return {
-    ...body,
-    schemaVersion: 1,
-    kind: "unit",
-    generatedBy: LESSON_MODEL,
-    generatedAt: new Date().toISOString(),
-    coversTitles: withLessons.map((n) => n.title),
+    assessment: {
+      ...body,
+      schemaVersion: 1,
+      kind: "unit",
+      generatedBy: LESSON_MODEL,
+      generatedAt: new Date().toISOString(),
+      coversTitles: withLessons.map((n) => n.title),
+    },
+    usage: response.usage ?? null,
   };
 }
 
@@ -171,7 +175,7 @@ export interface GenerateAssessmentResult {
 export async function generateUnitAssessment(
   unitId: string,
   masjidId: string,
-  opts: { force?: boolean } = {},
+  opts: { force?: boolean; actorUserId?: string | null } = {},
 ): Promise<GenerateAssessmentResult> {
   const unit = await getUnit(unitId, masjidId);
   if (!unit) {
@@ -189,8 +193,17 @@ export async function generateUnitAssessment(
   let assessment: AssessmentContent;
   let source: AssessmentSource;
   try {
-    assessment = await generateWithModel(unit, nodes);
+    const res = await generateWithModel(unit, nodes);
+    assessment = res.assessment;
     source = "model";
+    await logModelCall({
+      feature: "assessment",
+      masjidId,
+      actorUserId: opts.actorUserId ?? null,
+      model: LESSON_MODEL,
+      source: "model",
+      usage: res.usage,
+    });
   } catch (modelError) {
     const fb = fallbackUnitAssessment(unit, nodes);
     if (!fb) throw modelError;
@@ -200,6 +213,14 @@ export async function generateUnitAssessment(
     );
     assessment = fb;
     source = "fallback";
+    await logModelCall({
+      feature: "assessment",
+      masjidId,
+      actorUserId: opts.actorUserId ?? null,
+      model: LESSON_MODEL,
+      source: "fallback",
+      ok: false,
+    });
   }
 
   const persisted = await saveUnitAssessmentContent(unitId, masjidId, assessment);

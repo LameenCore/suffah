@@ -6,6 +6,7 @@
 // handler, not just the UI.
 
 import { getCurrentUser } from "@/lib/auth";
+import { enforceAiRateLimit } from "@/lib/ratelimit";
 import { generateLessonForNode } from "@/lib/ai/lesson";
 
 export async function POST(request: Request) {
@@ -17,6 +18,9 @@ export async function POST(request: Request) {
   if (user.role !== "student" && user.role !== "admin") {
     return Response.json({ error: "role not permitted" }, { status: 403 });
   }
+
+  const limited = enforceAiRateLimit("lesson", user);
+  if (limited) return limited;
 
   let body: unknown;
   try {
@@ -31,7 +35,9 @@ export async function POST(request: Request) {
 
   try {
     const result = await generateLessonForNode(nodeId, user.masjidId, {
-      force: force === true,
+      // force-regeneration is an admin-only escape hatch (cost guard)
+      force: force === true && user.role === "admin",
+      actorUserId: user.id,
     });
     return Response.json({
       nodeId: result.node.id,

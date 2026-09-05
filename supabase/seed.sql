@@ -137,4 +137,21 @@ insert into audit_log (masjid_id, actor_user_id, actor_role, action, target_type
   ('00000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-0000000000a1', 'admin', 'compliance.snapshot_saved',  'compliance_report', 'seed-report-idris', '{"studentId":"00000000-0000-0000-0000-0000000000c3"}'::jsonb, now() - interval '7 days'),
   ('00000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-0000000000a1', 'admin', 'compliance.report_exported', 'compliance_report', 'seed-report-idris', '{}'::jsonb, now() - interval '7 days');
 
+-- Model-call log (T34) - model_call_log is created by migration 0011. Represents
+-- the one-time curriculum generation for this masjid (9 lessons, 9 checkpoints,
+-- 3 unit assessments, 3 term exams). gen:* runs also append here.
+insert into model_call_log (masjid_id, actor_user_id, feature, model, source, input_tokens, output_tokens, cost_usd, ok, at)
+select
+  '00000000-0000-0000-0000-000000000001',
+  '00000000-0000-0000-0000-0000000000a1',
+  f.feature, 'claude-sonnet-5', 'model', f.in_tok, f.out_tok,
+  f.in_tok * 0.000002 + f.out_tok * 0.00001, true, now() - interval '31 days'
+from (values
+  ('lesson',     9, 2600, 2100),
+  ('checkpoint', 9, 1500,  900),
+  ('assessment', 3, 3400, 1600),
+  ('term_exam',  3, 4200, 2400)
+) as f(feature, n, in_tok, out_tok),
+lateral generate_series(1, f.n);
+
 commit;

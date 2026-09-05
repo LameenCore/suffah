@@ -9,6 +9,7 @@
 import { z } from "zod";
 import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
 import { getAnthropic, LESSON_MODEL } from "@/lib/ai/client";
+import { logModelCall, type TokenUsage } from "@/lib/ai/usage";
 import { QuestionSchema, stripQuestionAnswers, gradeQuestions } from "@/lib/ai/questions";
 import type { Question, QuestionForStudent, QuestionGrade } from "@/lib/ai/questions";
 import { buildAssessmentPrompt } from "@/lib/ai/assessment";
@@ -76,7 +77,7 @@ export async function generateTermExam(
   courseId: string,
   termLabel: string,
   masjidId: string,
-  opts: { force?: boolean; durationSeconds?: number } = {},
+  opts: { force?: boolean; durationSeconds?: number; actorUserId?: string | null } = {},
 ): Promise<GenerateTermExamResult> {
   const course = await getCourseForMasjid(courseId, masjidId);
   if (!course) {
@@ -106,6 +107,7 @@ export async function generateTermExam(
   // messages.parse() throws if the model output doesn't validate. That happens
   // occasionally and non-deterministically, so retry before giving up.
   let body: TermExamBody | null = null;
+  let usage: TokenUsage | null = null;
   let lastErr: unknown;
   for (let attempt = 1; attempt <= 3 && !body; attempt += 1) {
     try {
@@ -120,6 +122,7 @@ export async function generateTermExam(
         output_config: { format: zodOutputFormat(TermExamBodySchema) },
       });
       body = response.parsed_output;
+      usage = response.usage ?? null;
     } catch (err) {
       lastErr = err;
       console.warn(
@@ -129,11 +132,28 @@ export async function generateTermExam(
     }
   }
   if (!body) {
+    await logModelCall({
+      feature: "term_exam",
+      masjidId,
+      actorUserId: opts.actorUserId ?? null,
+      model: LESSON_MODEL,
+      source: "model",
+      ok: false,
+    });
     throw new Error(
       `term exam generation for ${course.name}: model output failed to validate after 3 tries` +
         (lastErr instanceof Error ? ` (${lastErr.message.split("\n")[0]})` : ""),
     );
   }
+
+  await logModelCall({
+    feature: "term_exam",
+    masjidId,
+    actorUserId: opts.actorUserId ?? null,
+    model: LESSON_MODEL,
+    source: "model",
+    usage,
+  });
 
   const content: TermExamContent = {
     ...body,

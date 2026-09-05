@@ -4,6 +4,7 @@
 // before responding. Role- and masjid-scoped at the handler.
 
 import { getCurrentUser } from "@/lib/auth";
+import { enforceAiRateLimit } from "@/lib/ratelimit";
 import { generateCheckpointForNode } from "@/lib/ai/checkpoint";
 
 export async function POST(request: Request) {
@@ -12,6 +13,9 @@ export async function POST(request: Request) {
   if (user.role !== "student" && user.role !== "admin") {
     return Response.json({ error: "role not permitted" }, { status: 403 });
   }
+
+  const limited = enforceAiRateLimit("checkpoint", user);
+  if (limited) return limited;
 
   let body: unknown;
   try {
@@ -26,7 +30,8 @@ export async function POST(request: Request) {
 
   try {
     const result = await generateCheckpointForNode(nodeId, user.masjidId, {
-      force: force === true,
+      force: force === true && user.role === "admin",
+      actorUserId: user.id,
     });
     return Response.json({
       nodeId: result.node.id,

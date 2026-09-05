@@ -4,6 +4,7 @@
 // responding. Role- and masjid-scoped at the handler.
 
 import { getCurrentUser } from "@/lib/auth";
+import { enforceAiRateLimit } from "@/lib/ratelimit";
 import { generateUnitAssessment } from "@/lib/ai/assessment";
 
 export async function POST(request: Request) {
@@ -12,6 +13,9 @@ export async function POST(request: Request) {
   if (user.role !== "student" && user.role !== "admin") {
     return Response.json({ error: "role not permitted" }, { status: 403 });
   }
+
+  const limited = enforceAiRateLimit("assessment", user);
+  if (limited) return limited;
 
   let body: unknown;
   try {
@@ -25,7 +29,10 @@ export async function POST(request: Request) {
   }
 
   try {
-    const result = await generateUnitAssessment(unitId, user.masjidId, { force: force === true });
+    const result = await generateUnitAssessment(unitId, user.masjidId, {
+      force: force === true && user.role === "admin",
+      actorUserId: user.id,
+    });
     return Response.json({
       unitId: result.unit.id,
       unitTitle: result.unit.title,
