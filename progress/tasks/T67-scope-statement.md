@@ -28,4 +28,4 @@ deliberately out of scope.
 
 ## Notes (owner appends)
 - Docs-only + a 1-line /login copy tweak (my file). No collision.
-- commits: <t6770>
+- commits: 3cac0b3

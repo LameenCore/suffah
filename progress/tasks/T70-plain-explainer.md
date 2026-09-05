@@ -27,4 +27,4 @@ sure the app's first screen reflects it.
 
 ## Notes (owner appends)
 - Docs-only + a 1-line /login copy tweak. Full marketing landing = T29.
-- commits: <t6770>
+- commits: 3cac0b3
