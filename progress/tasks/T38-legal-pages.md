@@ -15,7 +15,7 @@ outcome: >
   briefing call, retention, Law 25 data-subject rights, breach process, privacy-officer
   placeholder. Footer legal links added to /login; signup gets a "by creating an account
   you agree to Terms/Privacy" line. eslint + next build clean.
-commits: PLACEHOLDER
+commits: a18b8c8
 depends_on: []
 source: post-hackathon roadmap (EdTech-checklist analysis)
 ---

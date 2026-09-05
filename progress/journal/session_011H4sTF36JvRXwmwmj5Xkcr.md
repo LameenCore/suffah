@@ -311,4 +311,4 @@ Commits: dc8d21d, fb06c89, 412745f, 6fdc7e3, 6a8b3e3, ee47c27, 6e192d0 (+ hashes
 - Privacy-officer name/email + exact retention window left as explicit operator
   placeholders — decisions, not code.
 - eslint clean; next build clean (all 3 pages prerender static).
-Commit: PLACEHOLDER38
+Commit: a18b8c8
