@@ -34,4 +34,4 @@ AI prices 2x, what if a masjid has 40  students not 12).
   AI 10x is still ~$10/masjid/yr. Enrollment 12 -> 40 barely moves AI/infra (content is
   shared), it moves coordinator workload.
 - Supersedes the rougher ~$0.30 / ~$6-10K numbers in T26 - pitch + qa-prep updated.
-- commits: <t68>
+- commits: d3dda02
