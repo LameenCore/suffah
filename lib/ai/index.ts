@@ -50,3 +50,13 @@ export {
   type BriefingSource,
   type GenerateBriefingResult,
 } from "@/lib/ai/continuity";
+export {
+  generateTermExam,
+  gradeTermExam,
+  stripExamAnswers,
+  latestTermExamGrade,
+  type TermExamContent,
+  type TermExamForStudent,
+  type TermExamGrade,
+  type GenerateTermExamResult,
+} from "@/lib/ai/term-exam";

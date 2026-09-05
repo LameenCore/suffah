@@ -33,10 +33,18 @@ export default async function CourseLessonPage({
         >
           ← Playground
         </Link>
-        <span className="text-zinc-400">
-          {course.name} · {course.grade_band}
-          {totalNodes > 0 ? ` · node ${nodePosition} of ${totalNodes}` : ""}
-        </span>
+        <div className="flex items-center gap-3">
+          <Link
+            href={`/student/${course.id}/exam`}
+            className="text-violet-600 underline underline-offset-2 hover:text-violet-500 dark:text-violet-400"
+          >
+            Term exam →
+          </Link>
+          <span className="text-zinc-400">
+            {course.name} · {course.grade_band}
+            {totalNodes > 0 ? ` · node ${nodePosition} of ${totalNodes}` : ""}
+          </span>
+        </div>
       </div>
 
       {!currentNode ? (

@@ -25,6 +25,9 @@ export const POD_MAX_STUDENTS = 4;
 /** Default pass threshold for unit assessments / term exams (see PRD open question). */
 export const PASS_THRESHOLD = 0.7;
 
+/** The single term used across the demo (term exams, compliance reports). */
+export const DEMO_TERM_LABEL = "Fall 2026";
+
 export interface SessionUser {
   id: string;
   masjidId: string;

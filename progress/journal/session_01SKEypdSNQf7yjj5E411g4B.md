@@ -182,3 +182,19 @@ Claimed T19 (7d6e5f6).
 - Link from /admin/continuity → /admin/handoff-demo.
 - VERIFIED end to end via script: offline → playground stays online → assign → briefing
   generates → reset restores. Page renders all 3 steps. build+lint+tsc green. Commit <t19>.
+
+## 2026-09-05 — T09 done — term exam
+Claimed T09 (5f8ad73).
+- migration 0007_term_exams.sql: term_exams (course_id, term_label, exam_content).
+- lib/ai/term-exam.ts: generateTermExam / gradeTermExam / stripExamAnswers — reuses
+  assessment.ts buildAssessmentPrompt(...,"term") + questions.ts gradeQuestions.
+  Cumulative 8-12 q across the whole course, timed (durationSeconds), no remedial branch.
+- lib/db/exam-queries.ts: course/exam/result helpers. DEMO_TERM_LABEL in types.ts.
+- /student/[courseId]/exam page + components/student/TermExam.tsx (countdown, auto-submit
+  at 0, per-question feedback). Link from the course page header.
+- POST /api/exams/generate + /grade. npm run gen:exams.
+- VERIFIED: Math term exam = 12 q / 20 min; all-correct 1.0 pass, third-right 0.33 fail;
+  both attempts persisted to term_exam_results. build+lint+tsc green.
+- Migration collisions (0006 x2, 0007 x2 from parallel agents) — harmless, all use
+  `if not exists`, no cross-deps. Noted in T09 for a future timestamp scheme.
+Commit <t09>. This unblocks the full compliance-report story (T12 → T20).

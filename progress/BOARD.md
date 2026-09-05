@@ -1,7 +1,7 @@
 # BOARD — Suffa progress snapshot
 
 **Derived from `progress/tasks/`. Not authoritative. Regenerate after any claim/finish.**
-Last regenerated: 2026-09-05 (T22 done; T18/T19/T21/T23/T24 done)
+Last regenerated: 2026-09-05 (T09 done; Phase 7 all but T20 done)
 
 | id  | phase | status | owner | title |
 |-----|-------|--------|-------|-------|
@@ -13,7 +13,7 @@ Last regenerated: 2026-09-05 (T22 done; T18/T19/T21/T23/T24 done)
 | T06 | 2 | done  | — | Student playground — render lesson, mark complete |
 | T07 | 2 | done  | — | lib/ai/checkpoint.ts — checkpoint gen/grade, gate progression |
 | T08 | 3 | done  | — | lib/ai/assessment.ts — unit assessment |
-| T09 | 3 | todo  | — | Term exam variant (timed) + term_exam_results |
+| T09 | 3 | done  | — | Term exam variant (timed) + term_exam_results |
 | T10 | 4 | done  | — | Parent dashboard — progress + results per course |
 | T11 | 4 | done  | — | Admin dashboard — pods, assignment, continuity view |
 | T12 | 4 | todo  | — | Compliance report generation + exportable view |
@@ -31,9 +31,9 @@ Last regenerated: 2026-09-05 (T22 done; T18/T19/T21/T23/T24 done)
 | T24 | 7 | done  | — | Waqf principal "never touched" visual |
 
 ## Next up (deps met, unclaimed)
-- **T09** — Term exam variant (timed) + term_exam_results (dep T08 done)
+- **T12** — Compliance report generation + exportable view (deps T08, T11 done; T09 done → exam data available)
 - **T16** — regulation disclaimers (no deps, can run anytime)
-- blocked: T12 (needs T09), T17 (needs T12), T20 (needs T12)
+- blocked: T17 (needs T12), T20 (needs T12)
 
 Phase 7 differentiators: T18, T19, T21, T22, T23, T24 done. Remaining: T20 (needs T12).
 

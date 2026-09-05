@@ -12,6 +12,7 @@
     "gen:lessons": "tsx --env-file=.env.local scripts/generate-lessons.ts",
     "gen:checkpoints": "tsx --env-file=.env.local scripts/generate-checkpoints.ts",
     "gen:assessments": "tsx --env-file=.env.local scripts/generate-assessments.ts",
+    "gen:exams": "tsx --env-file=.env.local scripts/generate-term-exams.ts",
     "seed:continuity": "tsx --env-file=.env.local scripts/seed-continuity.ts"
   },
   "dependencies": {

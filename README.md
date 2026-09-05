@@ -26,6 +26,7 @@ npm run seed                      # load the demo masjid / pod / courses
 npm run gen:lessons               # generate + persist the 3 demo lessons (Anthropic)
 npm run gen:checkpoints           # then the checkpoints
 npm run gen:assessments           # then the unit assessments
+npm run gen:exams                 # then the term exams
 npm run seed:continuity           # demo session notes + first pod handoff briefing
 npm run dev                       # http://localhost:3000
 ```

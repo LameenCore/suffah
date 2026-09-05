@@ -12,6 +12,8 @@ import {
   gradeCheckpoint,
   type CheckpointGrade,
 } from "@/lib/ai/checkpoint";
+import { generateTermExam, gradeTermExam, type TermExamGrade } from "@/lib/ai/term-exam";
+import { DEMO_TERM_LABEL } from "@/lib/types";
 
 async function requireStudent() {
   const user = await getCurrentUser();
@@ -63,6 +65,25 @@ export async function submitCheckpointAction(
     throw new Error("finish the lesson before submitting the checkpoint");
   }
   const grade = await gradeCheckpoint(nodeId, user.id, user.masjidId, answers);
+  revalidatePath("/student", "layout");
+  return grade;
+}
+
+/** Prepare the term exam for a course (generate + persist if missing). */
+export async function startTermExamAction(courseId: string): Promise<{ source: string }> {
+  const user = await requireStudent();
+  const r = await generateTermExam(courseId, DEMO_TERM_LABEL, user.masjidId);
+  revalidatePath("/student", "layout");
+  return { source: r.source };
+}
+
+/** Grade a submitted term exam. Records the attempt to term_exam_results. */
+export async function submitTermExamAction(
+  courseId: string,
+  answers: Record<string, string>,
+): Promise<TermExamGrade> {
+  const user = await requireStudent();
+  const grade = await gradeTermExam(courseId, DEMO_TERM_LABEL, user.id, user.masjidId, answers);
   revalidatePath("/student", "layout");
   return grade;
 }
