@@ -22,6 +22,7 @@ calls, the content-generation and migration scripts - runs on your machine.
 npm install
 cp .env.example .env.local   # then fill in the values below
 npm run demo:setup           # migrate + seed + generate all AI content + demo state
+npm run seed:auth            # create the three demo login accounts
 npm run dev                  # http://localhost:3000
 ```
 
@@ -45,9 +46,24 @@ button in the dashboard header - same fast reset, no terminal needed mid-pitch.
 | `ANTHROPIC_API_KEY` | console.anthropic.com - needed for the `gen:*` scripts and live generation |
 
 The app builds and runs without any credentials, but the dashboards need the DB +
-seed data to show anything. The landing page is a dev role picker that drops a
-`suffa-dev-role` cookie and enters the chosen dashboard (`NEXT_PUBLIC_SUFFA_DEV_ROLE`
-skips the picker). Real Supabase Auth replaces this later - see `lib/auth/`.
+seed data to show anything.
+
+## Sign in
+
+`/` redirects to `/login`. Real Supabase Auth (email + password); `/signup`
+creates an account. `npm run seed:auth` provisions three demo logins, all with
+password `suffademo1234` (override with `SUFFA_DEMO_PASSWORD`):
+
+| Email | Role |
+|---|---|
+| `admin@suffa.demo` | Masjid Admin |
+| `parent@suffa.demo` | Parent (of Yusuf) |
+| `student@suffa.demo` | Student (Yusuf, Secondary 1) |
+
+The login screen also has "try the demo" buttons — those drop a signed
+`suffa-dev-role` cookie (no password) for a fast judge/dev path.
+`NEXT_PUBLIC_SUFFA_DEV_ROLE=admin|parent|student` forces a role for local dev/CI.
+Session refresh + the route guard live in `proxy.ts`; the resolver is `lib/auth/`.
 
 ## Database
 
