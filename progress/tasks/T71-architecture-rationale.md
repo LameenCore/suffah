@@ -32,4 +32,4 @@ content, why service-role + app-code tenancy for now.
 - New file docs/architecture-rationale.md + a pointer from ARCHITECTURE.md (the
   original is a stale plan). Cross-references docs/decisions.md rather than duplicating.
 - Docs-only, no collision (T35 audit-log is the other active claim).
-- commits: <t71>
+- commits: bcc2db8
