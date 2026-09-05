@@ -32,6 +32,9 @@ re-generating content. The individual steps (`migrate`, `seed`, `gen:lessons`,
 `gen:checkpoints`, `gen:assessments`, `gen:exams`, `seed:continuity`, `seed:progress`)
 can still be run one at a time.
 
+With `NEXT_PUBLIC_SUFFA_DEMO_MODE=1`, an admin also gets a **Reset walkthrough**
+button in the dashboard header - same fast reset, no terminal needed mid-pitch.
+
 `.env.local` keys:
 
 | key | where |

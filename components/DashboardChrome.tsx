@@ -1,5 +1,7 @@
 import Link from "next/link";
 import type { SessionUser } from "@/lib/types";
+import { env } from "@/lib/env";
+import { DemoResetButton } from "@/components/DemoResetButton";
 
 const ROLE_LABEL: Record<SessionUser["role"], string> = {
   admin: "Masjid Admin",
@@ -35,6 +37,7 @@ export function DashboardChrome({
           </span>
         </div>
         <div className="flex items-center gap-3 text-sm text-zinc-500 dark:text-zinc-400">
+          {env.demoMode && user.role === "admin" && <DemoResetButton />}
           <span>{user.name}</span>
           <Link href="/" className="underline underline-offset-2 hover:text-zinc-800 dark:hover:text-zinc-200">
             switch role

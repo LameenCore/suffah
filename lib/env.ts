@@ -8,6 +8,11 @@ export const env = {
   anthropicApiKey: process.env.ANTHROPIC_API_KEY ?? "",
   /** Demo shortcut: when set, the dashboards render for this role without real auth. */
   devRole: process.env.NEXT_PUBLIC_SUFFA_DEV_ROLE ?? "",
+  /**
+   * When "1"/"true", exposes the in-app "Reset walkthrough" control and its
+   * /api/demo/reset endpoint. Never set this in a real deployment.
+   */
+  demoMode: /^(1|true)$/i.test(process.env.NEXT_PUBLIC_SUFFA_DEMO_MODE ?? ""),
 } as const;
 
 export const isSupabaseConfigured = Boolean(env.supabaseUrl && env.supabaseAnonKey);
