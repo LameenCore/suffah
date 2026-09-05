@@ -39,6 +39,21 @@ export function SnapshotBar({
       >
         Open printable view
       </ButtonLink>
+      <ButtonLink
+        size="sm"
+        variant="ghost"
+        href={`/print/transcript/${studentId}`}
+        target="_blank"
+      >
+        Term-completion record
+      </ButtonLink>
+      <ButtonLink
+        size="sm"
+        variant="ghost"
+        href={`/api/transcript/${studentId}?format=csv`}
+      >
+        Export CSV
+      </ButtonLink>
       <span className="text-xs text-ink-4">
         {lastSnapshotAt
           ? `Last snapshot: ${new Date(lastSnapshotAt).toLocaleString()}`

@@ -193,3 +193,24 @@ breakdown / reconciliation ($16,500 draw vs $0.51 spend). Dropped the limit to
 $0.01 via setAiBudget -> state=over -> assertWithinAiBudget threw
 AiBudgetExceededError. Restored. parent -> /admin/ai-spend = 307.
 build + lint + tsc + 53 tests + check:integrity green. Commit <t56>.
+
+## 2026-09-05 — T49 done (transcript / term-completion record)
+Claimed T49 (dep T12 done). Parallel session on T29 (marketing) - no overlap.
+
+- lib/transcript.ts: assembleTranscript (reuses getChildReport - no new queries;
+  per course: pathway step, checkpoints passed/attempted, units passed/attempted,
+  best unit score, last term exam) + transcriptToCsv (RFC-ish quoting).
+- lib/db/access.ts: canViewStudent / assertCanViewStudent - first shared
+  relationship-level check (admin in masjid OR parent linked via parent_children).
+- /print/transcript/[studentId]: outside the route groups (no chrome), styled
+  table + a signature/stamp block + a RegulationNote scoped to the equivalency
+  point. getCurrentUser + canViewStudent (notFound if not).
+- GET /api/transcript/[studentId]?format=json|csv: same access check; csv sets
+  Content-Disposition attachment.
+- Links: SnapshotBar (admin /admin/compliance) + /parent per child -> printable +
+  CSV.
+- tests/transcript.test.ts (4).
+
+Verified live: admin 200 / linked parent 200 / non-linked parent 404 / student
+viewing another student 403; CSV columns correct. build + lint + tsc + 57 tests +
+check:integrity green. Commit <t49>.

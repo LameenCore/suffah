@@ -239,6 +239,23 @@ async function ChildBlock({
         ))}
       </div>
       <BarakahSummary barakah={barakah} />
+
+      <div className="flex flex-wrap gap-3 text-sm">
+        <a
+          href={`/print/transcript/${report.child.id}`}
+          target="_blank"
+          rel="noreferrer"
+          className="font-medium text-terracotta hover:text-terracotta-strong"
+        >
+          Term-completion record (printable) &rarr;
+        </a>
+        <a
+          href={`/api/transcript/${report.child.id}?format=csv`}
+          className="text-ink-3 hover:text-ink"
+        >
+          Download as CSV
+        </a>
+      </div>
     </div>
   );
 }
