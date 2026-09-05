@@ -1,8 +1,8 @@
--- Suffa — waqf-to-outcome linking (T21, differentiator).
+-- Suffa - waqf-to-outcome linking (T21, differentiator).
 --
 -- Maps a (mock) endowment/sadaqah contribution to the pod + unit it sponsored,
 -- so a donor-facing transparency view can show a *learning outcome trace*, not
--- just fund flow. The mapping is illustrative — seeded, not derived from real
+-- just fund flow. The mapping is illustrative - seeded, not derived from real
 -- ledger rows (waqf_ledger ids are random). Outcomes ARE pulled from real
 -- pod_progress / unit_assessment_results.
 --

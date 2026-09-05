@@ -1,4 +1,4 @@
--- Suffa — demo seed data (hackathon).
+-- Suffa - demo seed data (hackathon).
 -- Run after 0001_init.sql. Idempotent: clears the demo masjid first.
 --
 -- Fixed UUIDs so the app (lib/auth demo users, Phase 2 queries) can reference
@@ -24,7 +24,7 @@ insert into users (id, masjid_id, role, name, email) values
 
 insert into volunteers (id, masjid_id, user_id, name, status, certification_note, joined_at, left_at) values
   ('00000000-0000-0000-0000-0000000000d1', '00000000-0000-0000-0000-000000000001', null, 'Br. Kareem', 'active',   'CEGEP math tutor; reference check on file (mock).', now() - interval '40 days',  null),
-  -- Departed volunteer — seeds a non-empty churn log (T15). Her pod kept its
+  -- Departed volunteer - seeds a non-empty churn log (T15). Her pod kept its
   -- pod_progress and was picked up by Br. Kareem.
   ('00000000-0000-0000-0000-0000000000d2', '00000000-0000-0000-0000-000000000001', null, 'Sr. Amina',  'inactive', 'Undergrad education student; moved cities.',        now() - interval '150 days', now() - interval '20 days');
 
@@ -77,12 +77,12 @@ insert into pod_progress (pod_id, course_id, current_node_id) values
 
 -- Funding (mock) --------------------------------------------------------------
 
--- Mock ledger — no payment processing. Story: principal stays locked at 250k;
+-- Mock ledger - no payment processing. Story: principal stays locked at 250k;
 -- only the returns are spent (rising quarterly operating draws); sadaqah tops up
 -- the scholarship pool. Principal must never be summed into "spendable" totals.
 insert into waqf_ledger (masjid_id, entry_type, amount, note, created_at) values
   ('00000000-0000-0000-0000-000000000001', 'principal_deposit',     250000.00, 'Founding waqf endowment (locked principal)',            now() - interval '15 months'),
-  ('00000000-0000-0000-0000-000000000001', 'return_disbursed',       -3000.00, 'Operating draw — hosting + pod coordination',           now() - interval '13 months'),
+  ('00000000-0000-0000-0000-000000000001', 'return_disbursed',       -3000.00, 'Operating draw - hosting + pod coordination',           now() - interval '13 months'),
   ('00000000-0000-0000-0000-000000000001', 'return_disbursed',       -3150.00, 'Operating draw',                                       now() - interval '10 months'),
   ('00000000-0000-0000-0000-000000000001', 'return_disbursed',       -3300.00, 'Operating draw',                                       now() - interval '7 months'),
   ('00000000-0000-0000-0000-000000000001', 'return_disbursed',       -3450.00, 'Operating draw',                                       now() - interval '4 months'),
@@ -90,8 +90,8 @@ insert into waqf_ledger (masjid_id, entry_type, amount, note, created_at) values
   ('00000000-0000-0000-0000-000000000001', 'sadaqah_received',        2000.00, 'Eid al-Adha giving campaign',                          now() - interval '11 months'),
   ('00000000-0000-0000-0000-000000000001', 'sadaqah_received',        5000.00, 'Ramadan scholarship drive',                            now() - interval '5 months'),
   ('00000000-0000-0000-0000-000000000001', 'sadaqah_received',        1200.00, 'Weekly jumu''ah sadaqah (aggregated)',                  now() - interval '1 month'),
-  ('00000000-0000-0000-0000-000000000001', 'scholarship_allocated',  -1200.00, 'Safiya — full fee scholarship (Term 1)',                now() - interval '6 months'),
-  ('00000000-0000-0000-0000-000000000001', 'scholarship_allocated',  -1200.00, 'Safiya — full fee scholarship (Term 2)',                now() - interval '1 month');
+  ('00000000-0000-0000-0000-000000000001', 'scholarship_allocated',  -1200.00, 'Safiya - full fee scholarship (Term 1)',                now() - interval '6 months'),
+  ('00000000-0000-0000-0000-000000000001', 'scholarship_allocated',  -1200.00, 'Safiya - full fee scholarship (Term 2)',                now() - interval '1 month');
 
 insert into family_fee_status (masjid_id, student_user_id, status) values
   ('00000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-0000000000c1', 'fee_paid'),
@@ -104,21 +104,21 @@ insert into family_fee_status (masjid_id, student_user_id, status) values
 insert into parent_children (parent_user_id, student_user_id) values
   ('00000000-0000-0000-0000-0000000000b1', '00000000-0000-0000-0000-0000000000c1');
 
--- Waqf-to-outcome links (T21) — illustrative mapping: contribution → pod + unit
+-- Waqf-to-outcome links (T21) - illustrative mapping: contribution → pod + unit
 -- it sponsored. sponsorships is created by migration 0006. Outcomes are read
 -- from real pod_progress / unit_assessment_results at view time.
 insert into sponsorships (masjid_id, sponsor_label, amount, pod_id, unit_id, note) values
   ('00000000-0000-0000-0000-000000000001', 'Founding endowment allocation', 1500.00, '00000000-0000-0000-0000-0000000000e1', '00000000-0000-0000-0000-000000010001', 'Sponsors Pod Al-Farabi through the integers unit (Math).'),
-  ('00000000-0000-0000-0000-000000000001', 'Ramadan drive — anonymous',     900.00, '00000000-0000-0000-0000-0000000000e1', '00000000-0000-0000-0000-000000010002', 'Sponsors the Meccan Period unit (Seerah).'),
+  ('00000000-0000-0000-0000-000000000001', 'Ramadan drive - anonymous',     900.00, '00000000-0000-0000-0000-0000000000e1', '00000000-0000-0000-0000-000000010002', 'Sponsors the Meccan Period unit (Seerah).'),
   ('00000000-0000-0000-0000-000000000001', 'Local family gift',             750.00, '00000000-0000-0000-0000-0000000000e1', '00000000-0000-0000-0000-000000010003', 'Sponsors the AI-literacy intro unit.');
 
--- Community contributions to a Seerah lesson (T22) — lesson_contributions is
+-- Community contributions to a Seerah lesson (T22) - lesson_contributions is
 -- created by migration 0008. Node ...020101 = "Mecca before the revelation".
 insert into lesson_contributions (node_id, contributor_name, contributor_role, note) values
-  ('00000000-0000-0000-0000-000000020101', 'Sh. Yusuf',   'imam',  'Mention the tribal guardianship of the Kaaba by Quraysh and why that gave them standing across Arabia — it sets up why opposition to the Prophet ﷺ later cost them politically.'),
-  ('00000000-0000-0000-0000-000000020101', 'Hajja Fatima', 'elder', 'The date is debated among historians — say "around 570 CE" for the Year of the Elephant rather than a fixed year, and note that oral genealogy kept these records.');
+  ('00000000-0000-0000-0000-000000020101', 'Sh. Yusuf',   'imam',  'Mention the tribal guardianship of the Kaaba by Quraysh and why that gave them standing across Arabia - it sets up why opposition to the Prophet ﷺ later cost them politically.'),
+  ('00000000-0000-0000-0000-000000020101', 'Hajja Fatima', 'elder', 'The date is debated among historians - say "around 570 CE" for the Year of the Elephant rather than a fixed year, and note that oral genealogy kept these records.');
 
--- Barakah notes (T23) — pod_barakah_log is created by migration 0007. Short
+-- Barakah notes (T23) - pod_barakah_log is created by migration 0007. Short
 -- observations, never scores. student_user_id null = whole-pod note.
 insert into pod_barakah_log (masjid_id, pod_id, student_user_id, indicator, note, recorded_by, recorded_at) values
   ('00000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-0000000000e1', null,                                     'attendance',  'Full pod present for all four sessions this week.',                    'Br. Kareem', now() - interval '3 days'),

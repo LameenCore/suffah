@@ -1,4 +1,4 @@
--- Suffa — parent → child link.
+-- Suffa - parent → child link.
 --
 -- 0001 models masjid, users (with role), pods and results, but nothing connects
 -- a `parent` user to the `student` user(s) they monitor. The parent dashboard

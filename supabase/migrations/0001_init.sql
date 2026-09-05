@@ -1,4 +1,4 @@
--- Suffa — initial schema (hackathon scope)
+-- Suffa - initial schema (hackathon scope)
 -- Source of truth: docs/DATA_MODEL.md. Every table carries masjid_id for
 -- multi-tenancy even though the demo has a single masjid.
 --

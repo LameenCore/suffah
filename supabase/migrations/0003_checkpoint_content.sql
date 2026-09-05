@@ -1,4 +1,4 @@
--- Suffa — persisted checkpoint questions.
+-- Suffa - persisted checkpoint questions.
 --
 -- CLAUDE.md: every AI-generated lesson, checkpoint, and exam question must be
 -- persisted, not regenerated on view. lesson_content already lives on the node;

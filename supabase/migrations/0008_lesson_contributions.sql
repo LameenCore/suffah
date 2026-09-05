@@ -1,11 +1,11 @@
--- Suffa — community knowledge sourcing for lessons (T22, differentiator).
+-- Suffa - community knowledge sourcing for lessons (T22, differentiator).
 --
 -- Seerah has no external curriculum vendor, so the masjid's own scholars/elders
 -- react to an AI-generated draft; their text notes are folded into the next
 -- version of the lesson. A genuine AI + community hybrid.
 --
 -- The revision metadata (version, who was incorporated) lives inside
--- pathway_nodes.lesson_content JSON — no column change needed here.
+-- pathway_nodes.lesson_content JSON - no column change needed here.
 --
 -- Run: npm run migrate  (or paste into the Supabase SQL editor).
 

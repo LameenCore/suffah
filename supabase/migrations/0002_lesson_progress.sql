@@ -1,4 +1,4 @@
--- Suffa — per-student lesson completion.
+-- Suffa - per-student lesson completion.
 --
 -- 0001 tracks a POD's position (pod_progress) and per-student assessment RESULTS,
 -- but nothing records that an individual student finished reading a lesson node.

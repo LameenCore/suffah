@@ -1,4 +1,4 @@
--- Suffa — persisted unit-assessment questions.
+-- Suffa - persisted unit-assessment questions.
 --
 -- Same pattern as pathway_nodes.lesson_content / checkpoint_content: the
 -- assessment is generated once from the unit's lessons and persisted, not

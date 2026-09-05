@@ -1,7 +1,7 @@
--- Suffa — pod "barakah" notes (T23, differentiator).
+-- Suffa - pod "barakah" notes (T23, differentiator).
 --
--- Soft indicators the community already cares about — consistency, helping
--- others, reflection, adab in the circle — recorded as short observations, NOT
+-- Soft indicators the community already cares about - consistency, helping
+-- others, reflection, adab in the circle - recorded as short observations, NOT
 -- scores and NOT a leaderboard. A whole-pod note has student_user_id null.
 --
 -- Run: npm run migrate  (or paste into the Supabase SQL editor).

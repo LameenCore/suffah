@@ -1,4 +1,4 @@
--- Suffa — persisted term exams (T09).
+-- Suffa - persisted term exams (T09).
 --
 -- The term exam is the unit-assessment machinery behind a flag: cumulative across
 -- a whole course, timed, no remedial branch. Generated once from the course's

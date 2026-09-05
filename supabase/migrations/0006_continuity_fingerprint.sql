@@ -1,12 +1,12 @@
--- Suffa — Continuity Fingerprint (T18 / PRD §5.4).
+-- Suffa - Continuity Fingerprint (T18 / PRD §5.4).
 --
 -- Volunteer churn is the core operational pain. pod_progress says WHERE a pod is;
 -- these two tables capture HOW it's been learning, so a handoff is a knowledge-
 -- transfer event, not a data-loss event.
 --
---   pod_session_notes  — short observations (volunteers after a live session, or
+--   pod_session_notes  - short observations (volunteers after a live session, or
 --                        the playground on notable events like a repeated checkpoint fail)
---   pod_briefings      — the generated AI handoff briefing, persisted so it's
+--   pod_briefings      - the generated AI handoff briefing, persisted so it's
 --                        referenceable and not regenerated on every view
 --
 -- Run: npm run migrate
