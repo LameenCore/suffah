@@ -1,7 +1,7 @@
 # BOARD — Suffa progress snapshot
 
 **Derived from `progress/tasks/`. Not authoritative. Regenerate after any claim/finish.**
-Last regenerated: 2026-09-05
+Last regenerated: 2026-09-05 (T05 done)
 
 | id  | phase | status | owner | title |
 |-----|-------|--------|-------|-------|
@@ -9,7 +9,7 @@ Last regenerated: 2026-09-05
 | T02 | 1 | done  | — | Supabase project — Postgres + Auth |
 | T03 | 1 | done  | — | Core schema migration |
 | T04 | 1 | done  | — | Three route groups + role-gated auth |
-| T05 | 2 | todo  | — | lib/ai/lesson.ts — generate + persist lesson nodes |
+| T05 | 2 | done  | — | lib/ai/lesson.ts — generate + persist lesson nodes |
 | T06 | 2 | todo  | — | Student playground — render lesson, mark complete |
 | T07 | 2 | todo  | — | lib/ai/checkpoint.ts — checkpoint gen/grade, gate progression |
 | T08 | 3 | todo  | — | lib/ai/assessment.ts — unit assessment |
@@ -24,7 +24,7 @@ Last regenerated: 2026-09-05
 | T17 | 6 | todo  | — | Seed data cleanup for demo walkthrough |
 
 ## Next up (deps met, unclaimed)
-- **T05** — lib/ai/lesson.ts (Phase 2 entry point)
+- **T06** — Student playground renders a real lesson + mark complete (deps T05, T04 done)
 - **T16** — regulation disclaimers (no deps, can run anytime)
 
 ## Legend
