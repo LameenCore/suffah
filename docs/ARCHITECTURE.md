@@ -1,5 +1,10 @@
 # Architecture - Suffa
 
+> This is the original plan. For the **built** system — a current diagram, where
+> tenancy is enforced, each choice justified against its rejected alternative, and
+> the known tradeoffs with the task that closes each — see
+> [`architecture-rationale.md`](./architecture-rationale.md).
+
 ## System shape
 
 Single Next.js app, three route groups sharing one backend and one database. Not three separate apps - the dashboards differ in UI/permissions, not in underlying system.
