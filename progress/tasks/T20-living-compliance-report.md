@@ -2,14 +2,17 @@
 id: T20
 title: Compliance report as a living document (early-warning, not export)
 phase: 7
-status: todo
-owner: —
-claimed: —
+status: doing
+owner: https://claude.ai/code/session_01SKEypdSNQf7yjj5E411g4B
+claimed: 2026-09-05T00:00:00Z
 updated: 2026-09-05
 depends_on: [T12]
 tier: 1
 build_or_mock: build
 ---
+
+> Claimed alongside T12 and built as one piece — the status engine (T20) is baked
+> into the compliance report from the start rather than retrofitted.
 
 ## Why
 Existing homeschool tools are backward-looking recordkeeping. Reframe the regulatory
