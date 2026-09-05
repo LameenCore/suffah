@@ -28,7 +28,7 @@ outcome: |
   script: fail -> fail -> remediation (real AI re-teach on sign rules) -> pass ->
   remediation_passed; banners render. build + lint + tsc + 62 tests +
   check:integrity green.
-commits: <t42>
+commits: fe35dca
 depends_on: []
 source: post-hackathon roadmap (EdTech-checklist analysis)
 ---
