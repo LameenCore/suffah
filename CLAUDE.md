@@ -43,10 +43,17 @@ Children are placed in small pods (max 4, matching Quebec's home-instruction exe
 - Treat "pod" as the central entity everything else hangs off — course pathways are assigned to pods, not directly to students, since a pod moves through curriculum together (see `docs/DATA_MODEL.md`)
 - Flag any legal/compliance-adjacent copy (exemption thresholds, evaluation formats) in the UI with a visible "verify with current regulation" note — this is stated as a hard constraint in the PRD, not optional polish
 - Commit early, commit often — for a hackathon judge/demo flow, a working `main` branch at every checkpoint matters more than clean history
+- **Fix bugs at the root, immediately.** If you hit a bug while working a task — build break, wrong behaviour, bad data, a broken assumption — pause the current task, fix the bug *permanently* (root cause, not a workaround or a `// TODO`), commit the fix on its own, note it in your journal entry, then resume the task. Never leave a known bug behind to "come back to."
+
+## Progress tracking (multi-agent)
+
+`progress/` is the living, concurrency-safe tracker. **Before starting any work, read `progress/README.md`**, pick a `todo` task from `progress/tasks/`, claim it (edit only that file), and keep your own append-only log in `progress/journal/<session-id>.md`. Mark the task `done` with an `outcome:` when finished. `progress/BOARD.md` is a regenerable snapshot. This is how a later agent picks up where you left off and how parallel agents avoid colliding.
+
+**Standing authorization — commit and push after every completed task, without being asked.** When a task reaches `done`: regenerate `BOARD.md`, then `git add -A && git commit` (message per `git-workflow.md`) and `git push origin main`. Also commit+push your claim when you take a task, and any root-cause bug fix on its own commit. Keep `main` green. This standing permission is scoped to this repo's `main` and normal task work — it does not cover history rewrites, force pushes, or destructive git operations, which still need an explicit ask.
 
 ## Build order
 
-See `TASKS.md` for the recommended build sequence given limited time. Read it before starting.
+See `TASKS.md` for the recommended build sequence given limited time. Read it before starting — but `progress/tasks/` is the authoritative, up-to-date task state.
 
 ## Files in this repo
 
