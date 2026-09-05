@@ -4,6 +4,15 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { startCheckpointAction, submitCheckpointAction } from "@/app/student/actions";
 import type { CheckpointForStudent, CheckpointGrade } from "@/lib/ai/checkpoint";
+import { Card } from "@/components/ui/Card";
+import { Button } from "@/components/ui/Button";
+import { Crescent } from "@/components/ui/Motif";
+
+const HEADING = (
+  <h2 className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.14em] text-ink-3">
+    <Crescent className="h-4 w-4 text-terracotta" /> Checkpoint
+  </h2>
+);
 
 export function Checkpoint({
   nodeId,
@@ -12,7 +21,6 @@ export function Checkpoint({
   isLastNode,
 }: {
   nodeId: string;
-  /** null until the checkpoint has been generated for this node. */
   checkpoint: CheckpointForStudent | null;
   priorPassed: boolean;
   isLastNode: boolean;
@@ -23,31 +31,28 @@ export function Checkpoint({
   const [grade, setGrade] = useState<CheckpointGrade | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const heading = (
-    <h2 className="text-sm font-semibold uppercase tracking-wide text-zinc-500">Checkpoint</h2>
-  );
-
   if (priorPassed && !grade) {
     return (
-      <section className="space-y-2 rounded-xl border border-emerald-300 bg-emerald-50 p-4 dark:border-emerald-700/60 dark:bg-emerald-950/40">
-        {heading}
-        <p className="text-sm text-emerald-900 dark:text-emerald-200">
+      <Card tone="success" className="space-y-2 p-5">
+        {HEADING}
+        <p className="text-sm text-success">
           You&apos;ve passed this checkpoint.
-          {isLastNode ? " That's the last node in this course." : ""}
+          {isLastNode ? " That's the final step in this course." : ""}
         </p>
-      </section>
+      </Card>
     );
   }
 
   if (!checkpoint) {
     return (
-      <section className="space-y-3 rounded-xl border border-black/10 bg-white p-4 dark:border-white/15 dark:bg-zinc-950">
-        {heading}
-        <p className="text-sm text-zinc-600 dark:text-zinc-400">
-          A few quick questions on this lesson. You need 70% to move on.
+      <Card className="space-y-3 p-5">
+        {HEADING}
+        <p className="text-sm text-ink-3">
+          A few quick questions on this lesson. You need 70% to move on &mdash; and you can
+          try again as many times as you need.
         </p>
-        <button
-          type="button"
+        <Button
+          variant="accent"
           disabled={pending}
           onClick={() =>
             startTransition(async () => {
@@ -60,12 +65,11 @@ export function Checkpoint({
               }
             })
           }
-          className="rounded-lg bg-violet-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-violet-500 disabled:opacity-60"
         >
-          {pending ? "Preparing…" : "Start checkpoint"}
-        </button>
-        {error ? <p className="text-xs text-red-600 dark:text-red-400">{error}</p> : null}
-      </section>
+          {pending ? "Preparing..." : "Start checkpoint"}
+        </Button>
+        {error ? <p className="text-xs text-danger">{error}</p> : null}
+      </Card>
     );
   }
 
@@ -76,8 +80,7 @@ export function Checkpoint({
     startTransition(async () => {
       setError(null);
       try {
-        const result = await submitCheckpointAction(nodeId, answers);
-        setGrade(result);
+        setGrade(await submitCheckpointAction(nodeId, answers));
       } catch (e) {
         setError(e instanceof Error ? e.message : "grading failed");
       }
@@ -85,35 +88,46 @@ export function Checkpoint({
   }
 
   return (
-    <section className="space-y-4 rounded-xl border border-black/10 bg-white p-4 dark:border-white/15 dark:bg-zinc-950">
-      {heading}
+    <Card className="space-y-5 p-5">
+      {HEADING}
 
-      <ol className="space-y-4">
+      <ol className="space-y-5">
         {checkpoint.questions.map((q, i) => {
           const g = gradeById.get(q.id);
           return (
             <li key={q.id} className="space-y-2">
-              <p className="text-sm font-medium text-zinc-800 dark:text-zinc-200">
+              <p className="text-sm font-medium text-ink">
                 {i + 1}. {q.prompt}
               </p>
 
               {q.type === "mcq" ? (
-                <div className="space-y-1">
-                  {q.options.map((opt, idx) => (
-                    <label key={idx} className="flex items-center gap-2 text-sm">
-                      <input
-                        type="radio"
-                        name={q.id}
-                        value={String(idx)}
-                        checked={answers[q.id] === String(idx)}
-                        disabled={pending || grade !== null}
-                        onChange={(e) =>
-                          setAnswers((a) => ({ ...a, [q.id]: e.target.value }))
-                        }
-                      />
-                      <span className="text-zinc-700 dark:text-zinc-300">{opt}</span>
-                    </label>
-                  ))}
+                <div className="space-y-1.5">
+                  {q.options.map((opt, idx) => {
+                    const selected = answers[q.id] === String(idx);
+                    return (
+                      <label
+                        key={idx}
+                        className={`flex cursor-pointer items-center gap-2.5 rounded-[var(--radius)] border px-3 py-2 text-sm transition-colors ${
+                          selected
+                            ? "border-terracotta bg-terracotta-soft"
+                            : "border-border bg-surface hover:border-border-strong"
+                        }`}
+                      >
+                        <input
+                          type="radio"
+                          name={q.id}
+                          value={String(idx)}
+                          className="accent-[color:var(--terracotta)]"
+                          checked={selected}
+                          disabled={pending || grade !== null}
+                          onChange={(e) =>
+                            setAnswers((a) => ({ ...a, [q.id]: e.target.value }))
+                          }
+                        />
+                        <span className="text-ink-2">{opt}</span>
+                      </label>
+                    );
+                  })}
                 </div>
               ) : (
                 <input
@@ -122,20 +136,14 @@ export function Checkpoint({
                   disabled={pending || grade !== null}
                   onChange={(e) => setAnswers((a) => ({ ...a, [q.id]: e.target.value }))}
                   placeholder="Your answer"
-                  className="w-full max-w-xs rounded-md border border-black/15 bg-white px-2 py-1 text-sm dark:border-white/20 dark:bg-zinc-900"
+                  className="w-full max-w-xs rounded-[var(--radius)] border border-border bg-surface px-3 py-2 text-sm text-ink outline-none focus:border-terracotta"
                 />
               )}
 
               {g ? (
-                <p
-                  className={`text-xs ${
-                    g.correct
-                      ? "text-emerald-600 dark:text-emerald-400"
-                      : "text-red-600 dark:text-red-400"
-                  }`}
-                >
+                <p className={`text-xs ${g.correct ? "text-success" : "text-danger"}`}>
                   {g.correct ? "Correct." : `Not quite - answer: ${g.correctAnswer}.`}{" "}
-                  <span className="text-zinc-500 dark:text-zinc-400">{g.explanation}</span>
+                  <span className="text-ink-4">{g.explanation}</span>
                 </p>
               ) : null}
             </li>
@@ -143,58 +151,46 @@ export function Checkpoint({
         })}
       </ol>
 
-      {error ? <p className="text-xs text-red-600 dark:text-red-400">{error}</p> : null}
+      {error ? <p className="text-xs text-danger">{error}</p> : null}
 
       {!grade ? (
-        <button
-          type="button"
-          disabled={pending || !allAnswered}
-          onClick={submit}
-          className="rounded-lg bg-violet-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-violet-500 disabled:opacity-50"
-        >
-          {pending ? "Grading…" : "Submit checkpoint"}
-        </button>
+        <Button disabled={pending || !allAnswered} onClick={submit}>
+          {pending ? "Checking..." : "Submit checkpoint"}
+        </Button>
       ) : grade.passed ? (
-        <div className="space-y-2 rounded-lg border border-emerald-300 bg-emerald-50 p-3 text-sm dark:border-emerald-700/60 dark:bg-emerald-950/40">
-          <p className="font-semibold text-emerald-900 dark:text-emerald-200">
-            Passed - {grade.correctCount}/{grade.total} ({Math.round(grade.score * 100)}%).
+        <div className="space-y-2 rounded-[var(--radius)] border border-success/40 bg-success-soft p-4 text-sm">
+          <p className="font-display text-base font-semibold text-success">
+            Ma sha Allah &mdash; {grade.correctCount}/{grade.total} ({Math.round(grade.score * 100)}%)
           </p>
-          <p className="text-emerald-800 dark:text-emerald-300">
+          <p className="text-success">
             {grade.advancedToNodeId
-              ? "Your pod advanced to the next lesson."
-              : "That's the last node in this course."}
+              ? "Your pod moves on to the next lesson."
+              : "That's the final step in this course."}
           </p>
           {grade.advancedToNodeId ? (
-            <button
-              type="button"
-              onClick={() => router.refresh()}
-              className="rounded-md bg-emerald-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-emerald-500"
-            >
-              Go to next lesson
-            </button>
+            <Button size="sm" variant="primary" onClick={() => router.refresh()}>
+              Go to the next lesson
+            </Button>
           ) : null}
         </div>
       ) : (
-        <div className="space-y-2 rounded-lg border border-amber-300 bg-amber-50 p-3 text-sm dark:border-amber-700/60 dark:bg-amber-950/40">
-          <p className="font-semibold text-amber-900 dark:text-amber-200">
-            Score {grade.correctCount}/{grade.total} ({Math.round(grade.score * 100)}%) - you
-            need 70%.
+        <div className="space-y-2 rounded-[var(--radius)] border border-warning/40 bg-warning-soft p-4 text-sm">
+          <p className="font-display text-base font-semibold text-[color:var(--ink)]">
+            {grade.correctCount}/{grade.total} ({Math.round(grade.score * 100)}%) &mdash; not there yet
           </p>
-          <p className="text-amber-800 dark:text-amber-300">
-            Review the lesson above, then try again.
-          </p>
-          <button
-            type="button"
+          <p className="text-ink-2">Have another look at the lesson above, then try again.</p>
+          <Button
+            size="sm"
+            variant="accent"
             onClick={() => {
               setGrade(null);
               setAnswers({});
             }}
-            className="rounded-md bg-amber-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-amber-500"
           >
             Try again
-          </button>
+          </Button>
         </div>
       )}
-    </section>
+    </Card>
   );
 }

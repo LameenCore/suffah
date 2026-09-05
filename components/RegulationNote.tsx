@@ -1,13 +1,18 @@
-// Hard constraint from PRD §8 / CLAUDE.md: any legal/compliance-adjacent copy
+import { Star8 } from "@/components/ui/Motif";
+
+// Hard constraint from PRD 8 / CLAUDE.md: any legal/compliance-adjacent copy
 // (exemption thresholds, evaluation formats, exam equivalency) must carry a
-// visible "verify with current regulation" note. Not optional polish.
+// visible "verify with current regulation" note.
 
 export function RegulationNote({ children }: { children?: React.ReactNode }) {
   return (
-    <p className="rounded-md border border-amber-300 bg-amber-50 px-3 py-2 text-xs text-amber-900 dark:border-amber-700/60 dark:bg-amber-950/40 dark:text-amber-200">
-      <span className="font-semibold">Verify with current regulation. </span>
-      {children ??
-        "Compliance thresholds and evaluation formats shown here are illustrative and must be confirmed against current Quebec home-instruction rules."}
-    </p>
+    <div className="flex gap-3 rounded-[var(--radius)] border border-mustard/40 bg-mustard-soft px-4 py-3 text-xs leading-relaxed text-[color:var(--ink)]">
+      <Star8 className="mt-0.5 h-4 w-4 shrink-0 text-mustard" />
+      <p>
+        <span className="font-semibold">Verify with current regulation. </span>
+        {children ??
+          "Compliance thresholds and evaluation formats shown here are illustrative and must be confirmed against current Quebec home-instruction rules."}
+      </p>
+    </div>
   );
 }

@@ -4,6 +4,8 @@ import { useState, useEffect, useRef, useCallback, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { startTermExamAction, submitTermExamAction } from "@/app/student/actions";
 import type { TermExamForStudent, TermExamGrade } from "@/lib/ai/term-exam";
+import { Card } from "@/components/ui/Card";
+import { Button } from "@/components/ui/Button";
 
 function fmt(s: number): string {
   const m = Math.floor(s / 60);
@@ -36,8 +38,7 @@ export function TermExam({
     startTransition(async () => {
       setError(null);
       try {
-        const g = await submitTermExamAction(courseId, answers);
-        setGrade(g);
+        setGrade(await submitTermExamAction(courseId, answers));
       } catch (e) {
         submittedRef.current = false;
         setError(e instanceof Error ? e.message : "grading failed");
@@ -57,15 +58,15 @@ export function TermExam({
 
   if (!exam) {
     return (
-      <section className="space-y-3 rounded-xl border border-black/10 bg-white p-4 dark:border-white/15 dark:bg-zinc-950">
-        <h2 className="text-sm font-semibold uppercase tracking-wide text-zinc-500">Term exam</h2>
-        <p className="text-sm text-zinc-600 dark:text-zinc-400">
+      <Card className="space-y-3 p-5">
+        <h2 className="text-xs font-semibold uppercase tracking-[0.14em] text-ink-3">Term exam</h2>
+        <p className="text-sm text-ink-3">
           {priorResult
             ? `You've taken this term exam - ${Math.round(priorResult.score * 100)}%.`
-            : "A timed, cumulative exam across the whole course. No help mid-exam."}
+            : "A timed, cumulative exam across the whole course, with no help mid-exam."}
         </p>
-        <button
-          type="button"
+        <Button
+          variant="accent"
           disabled={pending}
           onClick={() =>
             startTransition(async () => {
@@ -78,51 +79,44 @@ export function TermExam({
               }
             })
           }
-          className="rounded-lg bg-violet-600 px-4 py-2 text-sm font-medium text-white hover:bg-violet-500 disabled:opacity-60"
         >
-          {pending ? "Preparing…" : priorResult ? "Retake term exam" : "Prepare term exam"}
-        </button>
-        {error ? <p className="text-xs text-red-600 dark:text-red-400">{error}</p> : null}
-      </section>
+          {pending ? "Preparing..." : priorResult ? "Retake term exam" : "Prepare term exam"}
+        </Button>
+        {error ? <p className="text-xs text-danger">{error}</p> : null}
+      </Card>
     );
   }
 
   if (!started && !grade) {
     return (
-      <section className="space-y-3 rounded-xl border border-black/10 bg-white p-4 dark:border-white/15 dark:bg-zinc-950">
-        <h2 className="text-sm font-semibold uppercase tracking-wide text-zinc-500">
-          Term exam · {exam.termLabel}
+      <Card tone="muted" className="space-y-3 p-6">
+        <h2 className="font-display text-lg font-semibold text-ink">
+          {exam.termLabel} &mdash; ready when you are
         </h2>
-        <p className="text-sm text-zinc-600 dark:text-zinc-400">
-          {exam.questions.length} questions · {Math.round(exam.durationSeconds / 60)} minutes ·
-          the timer starts when you begin and auto-submits at zero. Covers:{" "}
-          {exam.coversTitles.join(", ")}.
+        <p className="text-sm text-ink-2">
+          {exam.questions.length} questions &middot; {Math.round(exam.durationSeconds / 60)}{" "}
+          minutes. The timer starts when you begin and submits automatically at zero.
         </p>
-        <button
-          type="button"
-          onClick={() => setStarted(true)}
-          className="rounded-lg bg-violet-600 px-4 py-2 text-sm font-medium text-white hover:bg-violet-500"
-        >
+        <p className="text-xs text-ink-4">Covers: {exam.coversTitles.join(", ")}.</p>
+        <Button variant="accent" onClick={() => setStarted(true)}>
           Start the exam
-        </button>
-      </section>
+        </Button>
+      </Card>
     );
   }
 
   const low = remaining <= 60;
 
   return (
-    <section className="space-y-4 rounded-xl border border-black/10 bg-white p-4 dark:border-white/15 dark:bg-zinc-950">
+    <Card className="space-y-5 p-5">
       <div className="flex items-center justify-between">
-        <h2 className="text-sm font-semibold uppercase tracking-wide text-zinc-500">
-          Term exam · {exam.termLabel}
+        <h2 className="text-xs font-semibold uppercase tracking-[0.14em] text-ink-3">
+          {exam.termLabel}
         </h2>
         {!grade ? (
           <span
-            className={`rounded-md px-2 py-0.5 text-sm font-mono font-medium ${
-              low
-                ? "bg-red-100 text-red-700 dark:bg-red-950/50 dark:text-red-300"
-                : "bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-300"
+            className={`rounded-full px-3 py-1 font-mono text-sm font-semibold ${
+              low ? "bg-danger-soft text-danger" : "bg-surface-2 text-ink-2"
             }`}
           >
             {fmt(Math.max(0, remaining))}
@@ -130,29 +124,42 @@ export function TermExam({
         ) : null}
       </div>
 
-      <ol className="space-y-4">
+      <ol className="space-y-5">
         {exam.questions.map((q, i) => {
           const g = grade?.perQuestion.find((x) => x.id === q.id);
           return (
             <li key={q.id} className="space-y-2">
-              <p className="text-sm font-medium text-zinc-800 dark:text-zinc-200">
+              <p className="text-sm font-medium text-ink">
                 {i + 1}. {q.prompt}
               </p>
               {q.type === "mcq" ? (
-                <div className="space-y-1">
-                  {q.options.map((opt, idx) => (
-                    <label key={idx} className="flex items-center gap-2 text-sm">
-                      <input
-                        type="radio"
-                        name={q.id}
-                        value={String(idx)}
-                        checked={answers[q.id] === String(idx)}
-                        disabled={pending || grade !== null}
-                        onChange={(e) => setAnswers((a) => ({ ...a, [q.id]: e.target.value }))}
-                      />
-                      <span className="text-zinc-700 dark:text-zinc-300">{opt}</span>
-                    </label>
-                  ))}
+                <div className="space-y-1.5">
+                  {q.options.map((opt, idx) => {
+                    const selected = answers[q.id] === String(idx);
+                    return (
+                      <label
+                        key={idx}
+                        className={`flex cursor-pointer items-center gap-2.5 rounded-[var(--radius)] border px-3 py-2 text-sm transition-colors ${
+                          selected
+                            ? "border-terracotta bg-terracotta-soft"
+                            : "border-border bg-surface hover:border-border-strong"
+                        }`}
+                      >
+                        <input
+                          type="radio"
+                          name={q.id}
+                          value={String(idx)}
+                          className="accent-[color:var(--terracotta)]"
+                          checked={selected}
+                          disabled={pending || grade !== null}
+                          onChange={(e) =>
+                            setAnswers((a) => ({ ...a, [q.id]: e.target.value }))
+                          }
+                        />
+                        <span className="text-ink-2">{opt}</span>
+                      </label>
+                    );
+                  })}
                 </div>
               ) : (
                 <input
@@ -161,19 +168,13 @@ export function TermExam({
                   disabled={pending || grade !== null}
                   onChange={(e) => setAnswers((a) => ({ ...a, [q.id]: e.target.value }))}
                   placeholder="Your answer"
-                  className="w-full max-w-xs rounded-md border border-black/15 bg-white px-2 py-1 text-sm dark:border-white/20 dark:bg-zinc-900"
+                  className="w-full max-w-xs rounded-[var(--radius)] border border-border bg-surface px-3 py-2 text-sm text-ink outline-none focus:border-terracotta"
                 />
               )}
               {g ? (
-                <p
-                  className={`text-xs ${
-                    g.correct
-                      ? "text-emerald-600 dark:text-emerald-400"
-                      : "text-red-600 dark:text-red-400"
-                  }`}
-                >
+                <p className={`text-xs ${g.correct ? "text-success" : "text-danger"}`}>
                   {g.correct ? "Correct." : `Answer: ${g.correctAnswer}.`}{" "}
-                  <span className="text-zinc-500 dark:text-zinc-400">{g.explanation}</span>
+                  <span className="text-ink-4">{g.explanation}</span>
                 </p>
               ) : null}
             </li>
@@ -181,33 +182,28 @@ export function TermExam({
         })}
       </ol>
 
-      {error ? <p className="text-xs text-red-600 dark:text-red-400">{error}</p> : null}
+      {error ? <p className="text-xs text-danger">{error}</p> : null}
 
       {!grade ? (
-        <button
-          type="button"
-          disabled={pending}
-          onClick={submit}
-          className="rounded-lg bg-violet-600 px-4 py-2 text-sm font-medium text-white hover:bg-violet-500 disabled:opacity-60"
-        >
-          {pending ? "Submitting…" : "Submit exam"}
-        </button>
+        <Button variant="accent" disabled={pending} onClick={submit}>
+          {pending ? "Submitting..." : "Submit exam"}
+        </Button>
       ) : (
         <div
-          className={`rounded-lg border p-3 text-sm ${
+          className={`rounded-[var(--radius)] border p-4 text-sm ${
             grade.passed
-              ? "border-emerald-300 bg-emerald-50 dark:border-emerald-700/60 dark:bg-emerald-950/40"
-              : "border-amber-300 bg-amber-50 dark:border-amber-700/60 dark:bg-amber-950/40"
+              ? "border-success/40 bg-success-soft"
+              : "border-warning/40 bg-warning-soft"
           }`}
         >
-          <p className="font-semibold">
-            {grade.correctCount}/{grade.total} · {Math.round(grade.score * 100)}%
+          <p className="font-display text-base font-semibold text-ink">
+            {grade.correctCount}/{grade.total} &middot; {Math.round(grade.score * 100)}%
           </p>
-          <p className="mt-1 text-zinc-600 dark:text-zinc-400">
+          <p className="mt-1 text-ink-2">
             Recorded for {exam.termLabel}. This result feeds the compliance report.
           </p>
         </div>
       )}
-    </section>
+    </Card>
   );
 }

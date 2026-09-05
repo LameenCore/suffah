@@ -7,6 +7,7 @@ import { LessonView } from "@/components/student/LessonView";
 import { MarkCompleteButton } from "@/components/student/MarkCompleteButton";
 import { GenerateLessonPanel } from "@/components/student/GenerateLessonPanel";
 import { Checkpoint } from "@/components/student/Checkpoint";
+import { ButtonLink } from "@/components/ui/Button";
 
 export default async function CourseLessonPage({
   params,
@@ -26,35 +27,32 @@ export default async function CourseLessonPage({
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between text-sm">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <Link
           href="/student"
-          className="text-zinc-500 underline underline-offset-2 hover:text-zinc-800 dark:hover:text-zinc-200"
+          className="inline-flex items-center gap-1 text-sm text-ink-3 transition-colors hover:text-teal"
         >
-          ← Playground
+          <span aria-hidden>&larr;</span> All courses
         </Link>
         <div className="flex items-center gap-3">
-          <Link
-            href={`/student/${course.id}/exam`}
-            className="text-violet-600 underline underline-offset-2 hover:text-violet-500 dark:text-violet-400"
-          >
-            Term exam →
-          </Link>
-          <span className="text-zinc-400">
-            {course.name} · {course.grade_band}
-            {totalNodes > 0 ? ` · node ${nodePosition} of ${totalNodes}` : ""}
+          <span className="text-xs text-ink-4">
+            {course.name}
+            {totalNodes > 0 ? ` · step ${nodePosition} of ${totalNodes}` : ""}
           </span>
+          <ButtonLink href={`/student/${course.id}/exam`} variant="ghost" size="sm">
+            Term exam
+          </ButtonLink>
         </div>
       </div>
 
       {!currentNode ? (
-        <p className="rounded-xl border border-black/10 p-6 text-sm text-zinc-500 dark:border-white/15">
-          This course has no lesson node assigned to your pod yet.
+        <p className="rounded-[var(--radius-lg)] border border-border bg-surface p-6 text-sm text-ink-3">
+          Your pod isn&apos;t on this course yet. Ask the masjid to place it.
         </p>
       ) : !currentNode.lesson_content ? (
         <GenerateLessonPanel nodeId={currentNode.id} />
       ) : (
-        <>
+        <div className="space-y-6">
           <LessonView title={currentNode.title} lesson={currentNode.lesson_content} />
 
           {!lessonComplete ? (
@@ -74,7 +72,7 @@ export default async function CourseLessonPage({
               />
             </>
           )}
-        </>
+        </div>
       )}
     </div>
   );

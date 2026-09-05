@@ -235,6 +235,125 @@ export async function getPlayground(
   return { pod, courses };
 }
 
+export type TrackNodeState = "done" | "current" | "locked";
+
+export interface TrackNode {
+  id: string;
+  title: string;
+  sequence_order: number;
+  state: TrackNodeState;
+  hasLesson: boolean;
+}
+
+export interface CourseTrack {
+  course: CourseRef;
+  nodes: TrackNode[];
+  currentNode: PathwayNode | null;
+  lessonComplete: boolean;
+  checkpointPassed: boolean;
+  /** 1-based position of the current node; 0 if none. */
+  position: number;
+  total: number;
+}
+
+export interface StudentTracks {
+  pod: PodRef | null;
+  tracks: CourseTrack[];
+  lessonsCompleted: number;
+  checkpointsPassed: number;
+}
+
+/**
+ * The playground home view: for each course, the full node path with this
+ * student's per-node state (done / current / locked), plus small totals.
+ */
+export async function getStudentTracks(
+  studentUserId: string,
+  masjidId: string,
+): Promise<StudentTracks> {
+  const db = getServiceClient();
+  const pod = await getPodForStudent(studentUserId, masjidId);
+  if (!pod) return { pod: null, tracks: [], lessonsCompleted: 0, checkpointsPassed: 0 };
+
+  const [{ data: courseRows }, { data: progressRows }, { data: nodeRows }] = await Promise.all([
+    db.from("courses").select("id, name, grade_band, masjid_id").eq("masjid_id", masjidId).order("name"),
+    db.from("pod_progress").select("course_id, current_node_id").eq("pod_id", pod.id),
+    db
+      .from("pathway_nodes")
+      .select("id, title, sequence_order, course_id, lesson_content")
+      .order("sequence_order", { ascending: true }),
+  ]);
+
+  const courses = (courseRows ?? []) as CourseRef[];
+  const courseIds = new Set(courses.map((c) => c.id));
+  const nodes = (nodeRows ?? []).filter((n) => courseIds.has(n.course_id as string)) as {
+    id: string;
+    title: string;
+    sequence_order: number;
+    course_id: string;
+    lesson_content: unknown;
+  }[];
+
+  const { data: lp } = await db
+    .from("lesson_progress")
+    .select("pathway_node_id")
+    .eq("student_user_id", studentUserId);
+  const doneLesson = new Set((lp ?? []).map((r) => r.pathway_node_id as string));
+
+  const { data: cr } = await db
+    .from("checkpoint_results")
+    .select("pathway_node_id, passed")
+    .eq("student_user_id", studentUserId);
+  const passedCp = new Set(
+    (cr ?? []).filter((r) => r.passed === true).map((r) => r.pathway_node_id as string),
+  );
+
+  const tracks: CourseTrack[] = [];
+  for (const course of courses) {
+    const currentNodeId =
+      ((progressRows ?? []).find((r) => r.course_id === course.id)?.current_node_id as
+        | string
+        | null) ?? null;
+    const courseNodes = nodes
+      .filter((n) => n.course_id === course.id)
+      .sort((a, b) => a.sequence_order - b.sequence_order);
+    const currentSeq =
+      courseNodes.find((n) => n.id === currentNodeId)?.sequence_order ?? 0;
+
+    const trackNodes: TrackNode[] = courseNodes.map((n) => {
+      let state: TrackNodeState = "locked";
+      if (currentSeq > 0 && n.sequence_order < currentSeq) state = "done";
+      else if (n.id === currentNodeId) state = "current";
+      return {
+        id: n.id,
+        title: n.title,
+        sequence_order: n.sequence_order,
+        state,
+        hasLesson: Boolean(n.lesson_content),
+      };
+    });
+
+    const currentNode = currentNodeId ? await getPathwayNode(currentNodeId, masjidId) : null;
+
+    tracks.push({
+      course,
+      nodes: trackNodes,
+      currentNode,
+      lessonComplete: currentNodeId ? doneLesson.has(currentNodeId) : false,
+      checkpointPassed: currentNodeId ? passedCp.has(currentNodeId) : false,
+      position: currentSeq,
+      total: courseNodes.length,
+    });
+  }
+
+  return {
+    pod,
+    tracks,
+    lessonsCompleted: doneLesson.size,
+    checkpointsPassed: passedCp.size,
+  };
+}
+
 /** Has this student marked the given node's lesson complete? */
 export async function isLessonComplete(
   studentUserId: string,

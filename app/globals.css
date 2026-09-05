@@ -1,26 +1,231 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* ===================================================================
+   Suffa design system - warm, communal, rooted-but-modern.
+   Palette: terracotta / deep teal / golden mustard / soft coral over
+   warm sand neutrals. Islamic geometric motifs used as quiet accents.
+   =================================================================== */
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+:root {
+  color-scheme: light;
+
+  /* Surfaces + ink (swap in dark mode) */
+  --bg: #faf4ea;          /* page */
+  --bg-tint: #f3e9d8;     /* subtle banded sections */
+  --surface: #fffdf8;     /* cards */
+  --surface-2: #f7efe1;   /* nested / muted cards */
+  --border: #e7d8bf;      /* hairlines */
+  --border-strong: #d9c3a0;
+
+  --ink: #2c2521;         /* headings / primary text */
+  --ink-2: #574d44;       /* body */
+  --ink-3: #857868;       /* secondary */
+  --ink-4: #a99a86;       /* faint / captions */
+
+  /* Brand ramps - mid-tones tuned to sit on both sand and dark walnut */
+  --terracotta: #c05e3b;
+  --terracotta-strong: #a54a2c;
+  --terracotta-soft: #f3ddd0;
+
+  --teal: #2f7d78;        /* primary action */
+  --teal-strong: #245f5b;
+  --teal-soft: #d6e8e6;
+
+  --mustard: #cf9a34;     /* highlight / streak / warmth */
+  --mustard-soft: #f6e6c4;
+
+  --coral: #e28368;       /* secondary accent */
+  --coral-soft: #f8dcd2;
+
+  /* Semantic */
+  --success: #3f8a5b;
+  --success-soft: #d8ece0;
+  --warning: #cf9a34;
+  --warning-soft: #f6e6c4;
+  --danger: #bf4630;
+  --danger-soft: #f5d9d2;
+
+  --focus: #2f7d78;
+
+  --radius: 0.9rem;
+  --radius-lg: 1.4rem;
+  --shadow-card: 0 1px 2px rgb(60 40 25 / 0.04), 0 8px 24px -12px rgb(80 50 30 / 0.14);
+  --shadow-pop: 0 12px 40px -12px rgb(70 45 30 / 0.28);
+
+  --font-display: var(--font-fraunces), ui-serif, Georgia, serif;
+  --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+
+    --bg: #1c1713;
+    --bg-tint: #241d17;
+    --surface: #26201a;
+    --surface-2: #2f2720;
+    --border: #3d332a;
+    --border-strong: #4d4034;
+
+    --ink: #f3e9db;
+    --ink-2: #d8cbb9;
+    --ink-3: #ab9c86;
+    --ink-4: #8a7c69;
+
+    --terracotta: #e0805c;
+    --terracotta-strong: #cf6f4b;
+    --terracotta-soft: #3a271e;
+
+    --teal: #56b3ac;
+    --teal-strong: #6cc4bd;
+    --teal-soft: #1e332f;
+
+    --mustard: #e6b556;
+    --mustard-soft: #352a17;
+
+    --coral: #ef9a82;
+    --coral-soft: #38261f;
+
+    --success: #67bd86;
+    --success-soft: #1f3226;
+    --warning: #e6b556;
+    --warning-soft: #352a17;
+    --danger: #e77a63;
+    --danger-soft: #3a231d;
+
+    --focus: #56b3ac;
+
+    --shadow-card: 0 1px 2px rgb(0 0 0 / 0.3), 0 10px 28px -14px rgb(0 0 0 / 0.55);
+    --shadow-pop: 0 16px 44px -14px rgb(0 0 0 / 0.6);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg: #1c1713;
+  --bg-tint: #241d17;
+  --surface: #26201a;
+  --surface-2: #2f2720;
+  --border: #3d332a;
+  --border-strong: #4d4034;
+
+  --ink: #f3e9db;
+  --ink-2: #d8cbb9;
+  --ink-3: #ab9c86;
+  --ink-4: #8a7c69;
+
+  --terracotta: #e0805c;
+  --terracotta-strong: #cf6f4b;
+  --terracotta-soft: #3a271e;
+
+  --teal: #56b3ac;
+  --teal-strong: #6cc4bd;
+  --teal-soft: #1e332f;
+
+  --mustard: #e6b556;
+  --mustard-soft: #352a17;
+
+  --coral: #ef9a82;
+  --coral-soft: #38261f;
+
+  --success: #67bd86;
+  --success-soft: #1f3226;
+  --warning: #e6b556;
+  --warning-soft: #352a17;
+  --danger: #e77a63;
+  --danger-soft: #3a231d;
+
+  --focus: #56b3ac;
+
+  --shadow-card: 0 1px 2px rgb(0 0 0 / 0.3), 0 10px 28px -14px rgb(0 0 0 / 0.55);
+  --shadow-pop: 0 16px 44px -14px rgb(0 0 0 / 0.6);
 }
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-bg-tint: var(--bg-tint);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-ink-4: var(--ink-4);
+
+  --color-terracotta: var(--terracotta);
+  --color-terracotta-strong: var(--terracotta-strong);
+  --color-terracotta-soft: var(--terracotta-soft);
+  --color-teal: var(--teal);
+  --color-teal-strong: var(--teal-strong);
+  --color-teal-soft: var(--teal-soft);
+  --color-mustard: var(--mustard);
+  --color-mustard-soft: var(--mustard-soft);
+  --color-coral: var(--coral);
+  --color-coral-soft: var(--coral-soft);
+
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+
+  --font-sans: var(--font-sans);
+  --font-display: var(--font-display);
+
+  --radius-xl2: var(--radius-lg);
+}
+
+* {
+  border-color: var(--border);
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--ink-2);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  color: var(--ink);
+  font-weight: 550;
+  letter-spacing: -0.01em;
+}
+
+::selection {
+  background: var(--mustard-soft);
+  color: var(--ink);
+}
+
+a {
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ---- Geometric motif: a small interlocking eight-point tile, very faint ---- */
+.geo-field {
+  background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%237a5636' stroke-opacity='0.10' stroke-width='1'%3E%3Cpath d='M20 3l4.2 7.6L32 10l-4.3 7.7L32 25l-8.5.9L20 33l-4.2-7L8 25l4.3-7.7L8 10l8.5-.6z'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: 40px 40px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .geo-field {
+    background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23e6d1b2' stroke-opacity='0.07' stroke-width='1'%3E%3Cpath d='M20 3l4.2 7.6L32 10l-4.3 7.7L32 25l-8.5.9L20 33l-4.2-7L8 25l4.3-7.7L8 10l8.5-.6z'/%3E%3C/g%3E%3C/svg%3E");
+  }
+}
+:root[data-theme="dark"] .geo-field {
+  background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23e6d1b2' stroke-opacity='0.07' stroke-width='1'%3E%3Cpath d='M20 3l4.2 7.6L32 10l-4.3 7.7L32 25l-8.5.9L20 33l-4.2-7L8 25l4.3-7.7L8 10l8.5-.6z'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+img { max-width: 100%; }
+[hidden] { display: none !important; }

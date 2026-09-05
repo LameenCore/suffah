@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requireRole } from "@/lib/auth";
 import { DEMO_TERM_LABEL } from "@/lib/types";
@@ -7,6 +6,7 @@ import { getTermExam } from "@/lib/db/exam-queries";
 import { stripExamAnswers, latestTermExamGrade } from "@/lib/ai/term-exam";
 import { TermExam } from "@/components/student/TermExam";
 import { RegulationNote } from "@/components/RegulationNote";
+import { PageHeader } from "@/components/ui/PageHeader";
 
 export default async function TermExamPage({ params }: PageProps<"/student/[courseId]/exam">) {
   const { courseId } = await params;
@@ -22,23 +22,12 @@ export default async function TermExamPage({ params }: PageProps<"/student/[cour
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between text-sm">
-        <Link
-          href={`/student/${courseId}`}
-          className="text-zinc-500 underline underline-offset-2 hover:text-zinc-800 dark:hover:text-zinc-200"
-        >
-          ← {entry.course.name}
-        </Link>
-        <span className="text-zinc-400">{DEMO_TERM_LABEL}</span>
-      </div>
-
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">{entry.course.name} - term exam</h1>
-        <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
-          Timed, cumulative, no help mid-exam - modelled on a real school exam. The result is
-          the primary artifact in the compliance report.
-        </p>
-      </div>
+      <PageHeader
+        kicker={`${entry.course.name} · ${DEMO_TERM_LABEL}`}
+        title="Term exam"
+        lede="Timed and cumulative, with no help mid-exam - modelled on a real school exam. The result becomes the primary artifact in your compliance record."
+        back={{ href: `/student/${courseId}`, label: entry.course.name }}
+      />
 
       <TermExam
         courseId={courseId}

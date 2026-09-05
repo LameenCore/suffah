@@ -3,6 +3,8 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { ensureLessonAction } from "@/app/student/actions";
+import { Button } from "@/components/ui/Button";
+import { Mascot } from "@/components/ui/Mascot";
 
 export function GenerateLessonPanel({ nodeId }: { nodeId: string }) {
   const router = useRouter();
@@ -10,29 +12,34 @@ export function GenerateLessonPanel({ nodeId }: { nodeId: string }) {
   const [error, setError] = useState<string | null>(null);
 
   return (
-    <div className="rounded-xl border border-black/10 bg-white p-6 text-center dark:border-white/15 dark:bg-zinc-950">
-      <p className="text-sm text-zinc-600 dark:text-zinc-400">
-        This lesson hasn&apos;t been prepared yet.
+    <div className="rounded-[var(--radius-lg)] border border-border bg-surface p-8 text-center shadow-[var(--shadow-card)]">
+      <Mascot size={72} mood="thinking" className="mx-auto" />
+      <p className="mt-3 font-display text-lg font-semibold text-ink">
+        This lesson isn&apos;t ready yet
       </p>
-      <button
-        type="button"
-        disabled={pending}
-        onClick={() =>
-          startTransition(async () => {
-            setError(null);
-            try {
-              await ensureLessonAction(nodeId);
-              router.refresh();
-            } catch (e) {
-              setError(e instanceof Error ? e.message : "generation failed");
-            }
-          })
-        }
-        className="mt-3 rounded-lg bg-violet-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-violet-500 disabled:opacity-60"
-      >
-        {pending ? "Preparing lesson…" : "Start this lesson"}
-      </button>
-      {error ? <p className="mt-2 text-xs text-red-600 dark:text-red-400">{error}</p> : null}
+      <p className="mt-1 text-sm text-ink-3">
+        Fanoos will put it together for you &mdash; it only takes a moment.
+      </p>
+      <div className="mt-4">
+        <Button
+          variant="accent"
+          disabled={pending}
+          onClick={() =>
+            startTransition(async () => {
+              setError(null);
+              try {
+                await ensureLessonAction(nodeId);
+                router.refresh();
+              } catch (e) {
+                setError(e instanceof Error ? e.message : "generation failed");
+              }
+            })
+          }
+        >
+          {pending ? "Preparing the lesson..." : "Prepare this lesson"}
+        </Button>
+      </div>
+      {error ? <p className="mt-2 text-xs text-danger">{error}</p> : null}
     </div>
   );
 }
