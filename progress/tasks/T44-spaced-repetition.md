@@ -27,7 +27,7 @@ outcome: |
   tests/review.test.ts (SM-2 boundaries, 5). 62 total. Verified end to end via a
   script: 3-card deck -> submit 1/3 -> items rescheduled -> deck empties,
   retention updates (dueNow 3->0, accuracyLast7 -> 0.33).
-commits: <t44>
+commits: 5612724
 
 ## Why
 Passing a checkpoint once is not retention. A light review deck resurfaces a few items from
