@@ -17,7 +17,7 @@ outcome: docs/ops/backup-restore.md - backup layers (PITR + daily snapshot + a n
   pod_progress node in the wrong course, ledger sign errors, results for a student in no
   pod, departed volunteer still assigned, roles). Exit 1 on any FAIL. Verified against the
   live DB: all pass; negative-tested (a wrong-sign ledger row -> FAIL, exit 1).
-commits: <t57>
+commits: 9d29ba8
 ---
 
 ## Why
