@@ -22,7 +22,7 @@ export async function generateSnapshotAction(
 }
 
 export async function markExportedAction(reportId: string): Promise<void> {
-  await requireAdmin();
-  await markReportExported(reportId);
+  const user = await requireAdmin();
+  await markReportExported(reportId, user.masjidId);
   revalidatePath("/admin/compliance");
 }

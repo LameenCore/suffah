@@ -41,6 +41,18 @@ function isIndicator(v: string): v is BarakahIndicator {
   return v === "attendance" || v === "cooperation" || v === "reflection" || v === "adab";
 }
 
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+/**
+ * A PostgREST `.or()` filter is built from a string, so any id spliced into it
+ * must be a real UUID and nothing else - never free text. All callers pass
+ * session/DB ids, but validate anyway (defense in depth).
+ */
+function assertUuid(value: string, label: string): string {
+  if (!UUID_RE.test(value)) throw new Error(`${label} is not a valid id`);
+  return value;
+}
+
 async function shapeRows(
   rows: Record<string, unknown>[],
   masjidId: string,
@@ -139,7 +151,10 @@ export async function getChildBarakahSummary(
     .eq("masjid_id", masjidId)
     .order("recorded_at", { ascending: false });
   query = podId
-    ? query.or(`student_user_id.eq.${studentUserId},pod_id.eq.${podId}`)
+    ? query.or(
+        `student_user_id.eq.${assertUuid(studentUserId, "studentUserId")},` +
+          `pod_id.eq.${assertUuid(podId, "podId")}`,
+      )
     : query.eq("student_user_id", studentUserId);
 
   const { data, error } = await query;

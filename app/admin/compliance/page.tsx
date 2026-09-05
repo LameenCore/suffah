@@ -26,7 +26,7 @@ export default async function AdminCompliancePage({
   const [report, stored] = selected
     ? await Promise.all([
         assembleComplianceReport(selected.id, selected.name, user.masjidId),
-        getLatestStoredReport(selected.id),
+        getLatestStoredReport(selected.id, user.masjidId),
       ])
     : [null, null];
 

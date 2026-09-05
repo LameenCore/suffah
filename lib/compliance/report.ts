@@ -81,10 +81,24 @@ export interface StoredComplianceReport {
   report: ComplianceReport;
 }
 
+/** True if this student record belongs to `masjidId`. Tenancy guard. */
+async function studentInMasjid(studentUserId: string, masjidId: string): Promise<boolean> {
+  const { data, error } = await getServiceClient()
+    .from("users")
+    .select("id, masjid_id")
+    .eq("id", studentUserId)
+    .maybeSingle();
+  if (error) throw new Error(`studentInMasjid: ${error.message}`);
+  return !!data && data.masjid_id === masjidId;
+}
+
 export async function getLatestStoredReport(
   studentUserId: string,
+  masjidId: string,
   termLabel: string = DEMO_TERM_LABEL,
 ): Promise<StoredComplianceReport | null> {
+  if (!(await studentInMasjid(studentUserId, masjidId))) return null;
+
   const { data, error } = await getServiceClient()
     .from("compliance_reports")
     .select("id, term_label, generated_at, exported, report_data")
@@ -104,8 +118,24 @@ export async function getLatestStoredReport(
   };
 }
 
-export async function markReportExported(reportId: string): Promise<void> {
-  const { error } = await getServiceClient()
+export async function markReportExported(
+  reportId: string,
+  masjidId: string,
+): Promise<void> {
+  const db = getServiceClient();
+
+  // Tenancy: the report's student must belong to the caller's masjid.
+  const { data: row, error: findErr } = await db
+    .from("compliance_reports")
+    .select("id, student_user_id")
+    .eq("id", reportId)
+    .maybeSingle();
+  if (findErr) throw new Error(`markReportExported: ${findErr.message}`);
+  if (!row || !(await studentInMasjid(row.student_user_id as string, masjidId))) {
+    throw new Error("report not found in this masjid");
+  }
+
+  const { error } = await db
     .from("compliance_reports")
     .update({ exported: true })
     .eq("id", reportId);
