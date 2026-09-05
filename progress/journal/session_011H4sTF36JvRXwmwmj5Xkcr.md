@@ -429,4 +429,4 @@ Commit: 87dccc4
   runway 0.96yr. time-to-value null on the demo (seed checkpoint timestamps are
   backdated before users.created_at — median correctly returns null; real usage
   has created_at first). eslint + next build clean.
-Commit: PLACEHOLDER65
+Commit: 31d895e
