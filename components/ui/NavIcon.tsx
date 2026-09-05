@@ -13,7 +13,8 @@ type Name =
   | "gauge"
   | "path"
   | "shield"
-  | "check";
+  | "check"
+  | "chart";
 
 const PATHS: Record<Name, React.ReactNode> = {
   home: <path d="M3 10.5 12 3l9 7.5M5 9.5V21h14V9.5" />,
@@ -50,6 +51,7 @@ const PATHS: Record<Name, React.ReactNode> = {
   path: <path d="M6 20c0-4 3-4 3-8s-3-4-3-8M12 4c0 4 3 4 3 8s-3 4-3 8M18 20V4" />,
   shield: <path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6zM9 12l2 2 4-4" />,
   check: <path d="M5 13l4 4L19 7" />,
+  chart: <path d="M4 20V4M4 20h16M8 20v-6M13 20V9M18 20v-9" />,
 };
 
 export function NavIcon({

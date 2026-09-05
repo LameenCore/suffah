@@ -386,3 +386,26 @@ Commit: 03f0ebf
 - Verified: eslint + next build clean; / is now ○ static; next start smoke test —
   / 200 with correct <title>, /sitemap.xml + /robots.txt render.
 Commit: 9087c83
+
+## T64 — learning analytics dashboard
+
+- lib/db/analytics-queries.ts: getLearningAnalytics(masjidId) — built on
+  listStudents + getChildReports (fixed query count) + assembleFromChildReport so
+  "at-risk" == the families' compliance definition. Produces: active students +
+  rate; at-risk spread (on_track/watch/gap); per-course completion rate,
+  unit-assessment pass rate, drop-off histogram (students by furthest checkpoint
+  passed); pod cohorts (students/avg progress/checkpoint pass/at-risk); volunteer
+  churn rate + departures90d; rough waqf runway (4% draw + sadaqah vs committed
+  outflow). analyticsToCsv() flattens it.
+- app/admin/analytics/page.tsx: stat cards + inline drop-off bars + cohort table +
+  RegulationNote. Export CSV button -> app/admin/analytics/export/route.ts (GET,
+  admin-only, text/csv attachment).
+- app/admin/layout.tsx: nav "Learning analytics"; components/ui/NavIcon.tsx new
+  "chart" glyph.
+- Verified live (demo masjid): 4 students all active, watch 2 / gap 2, 3 course
+  histograms (Math [2,2,0,0] etc), cohort "Pod Al-Farabi" 4 students/17%/67%/4
+  at-risk, churn 33% (2 active 1 departed), runway ~0.96yr, CSV renders.
+- "at-risk over time" / "cohort by term" shipped as current snapshot only; time
+  series needs a periodic aggregate-snapshot job (noted in task).
+- eslint + next build clean.
+Commit: PLACEHOLDER64

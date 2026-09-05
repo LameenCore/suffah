@@ -1,7 +1,7 @@
 # BOARD — Suffa progress snapshot
 
 **Derived from `progress/tasks/`. Not authoritative. Regenerate after any claim/finish.**
-Last regenerated: 2026-09-05 (T29, T34-T38, T49, T52, T56 done)
+Last regenerated: 2026-09-05 (T64 done — learning analytics)
 
 | id  | phase | status | owner | title |
 |-----|-------|--------|-------|-------|
@@ -78,7 +78,7 @@ Get a clean demo state: `npm run demo:setup` (full, hits the API) or `npm run de
 | T61 | 13 | todo | — | PWA + offline: download a unit, work offline, sync |
 | T62 | 13 | todo | — | Mobile / responsive audit |
 | T63 | 13 | todo | — | Multi-masjid onboarding + per-masjid content library |
-| T64 | 13 | todo | — | Learning analytics dashboard |
+| T64 | 13 | done | — | Learning analytics dashboard |
 | T65 | 13 | todo | — | Define + instrument the core metrics |
 | T66 | 13 | todo | — | Cognitive-accessibility "simple mode" for the playground |
 

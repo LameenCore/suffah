@@ -16,6 +16,7 @@ export default async function AdminLayout({ children }: LayoutProps<"/admin">) {
 
   const nav: NavItem[] = [
     { href: "/admin", label: "Overview", icon: <NavIcon name="gauge" /> },
+    { href: "/admin/analytics", label: "Learning analytics", icon: <NavIcon name="chart" /> },
     { href: "/admin/pods", label: "Pods & assignment", icon: <NavIcon name="grid" /> },
     { href: "/admin/volunteers", label: "Volunteers", icon: <NavIcon name="users" /> },
     { href: "/admin/continuity", label: "Continuity Fingerprint", icon: <NavIcon name="spark" /> },
