@@ -3,6 +3,7 @@ import { requireRole } from "@/lib/auth";
 import { getChildrenForParent } from "@/lib/db/parent-queries";
 import { assembleComplianceReport } from "@/lib/compliance/report";
 import { ComplianceReportView } from "@/components/compliance/ComplianceReportView";
+import { RegulationNote } from "@/components/RegulationNote";
 
 export default async function ParentCompliancePage({
   searchParams,
@@ -42,6 +43,12 @@ export default async function ParentCompliancePage({
           requirement — updated as they work, so there are no surprises at term-end.
         </p>
       </div>
+
+      <RegulationNote>
+        This status is a planning aid. The official evaluation requirement, its format, and
+        acceptable evidence must be confirmed with the masjid and against current Québec
+        home-instruction regulation.
+      </RegulationNote>
 
       {loadError ? (
         <p className="rounded-xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900 dark:border-amber-700/60 dark:bg-amber-950/40 dark:text-amber-200">

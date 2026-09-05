@@ -20,7 +20,7 @@ Last regenerated: 2026-09-05 (T12 + T20 done — compliance report; only T16, T1
 | T13 | 5 | done  | — | waqf_ledger table + mock entries |
 | T14 | 5 | done  | — | Admin ledger view + family fee status |
 | T15 | 6 | done  | — | Volunteer onboarding form + churn log |
-| T16 | 6 | todo  | — | Regulation-verification disclaimers |
+| T16 | 6 | done  | — | Regulation-verification disclaimers |
 | T17 | 6 | todo  | — | Seed data cleanup for demo walkthrough |
 | T18 | 7 | done  | — | Continuity Fingerprint — AI volunteer-handoff briefing |
 | T19 | 7 | done  | — | Live "empty seat" handoff simulation (demo feature) |

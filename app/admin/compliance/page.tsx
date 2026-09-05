@@ -4,6 +4,7 @@ import { listStudents } from "@/lib/db/admin-queries";
 import { assembleComplianceReport, getLatestStoredReport } from "@/lib/compliance/report";
 import { ComplianceReportView } from "@/components/compliance/ComplianceReportView";
 import { SnapshotBar } from "@/components/compliance/SnapshotBar";
+import { RegulationNote } from "@/components/RegulationNote";
 
 export default async function AdminCompliancePage({
   searchParams,
@@ -48,6 +49,12 @@ export default async function AdminCompliancePage({
           a backward record. Save a snapshot for the file when a term closes.
         </p>
       </div>
+
+      <RegulationNote>
+        Whether this record satisfies Québec&apos;s home-instruction evaluation requirement —
+        and in what format — must be confirmed against current regulation. The status
+        thresholds here are illustrative.
+      </RegulationNote>
 
       {loadError ? (
         <p className="rounded-xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900 dark:border-amber-700/60 dark:bg-amber-950/40 dark:text-amber-200">
