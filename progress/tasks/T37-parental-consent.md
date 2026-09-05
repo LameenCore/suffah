@@ -21,7 +21,7 @@ outcome: >
   keeps existing records). Versioned via CONSENT_VERSION from lib/consent.ts (T36)
   — bump → re-prompt. Verified live: gate blocks on withdraw, opens on grant;
   guardian-of guard rejects an unlinked child id; demo child left consented.
-commits: PLACEHOLDER37
+commits: 03f0ebf
 depends_on: [T30, T36]
 source: post-hackathon roadmap (EdTech-checklist analysis)
 ---

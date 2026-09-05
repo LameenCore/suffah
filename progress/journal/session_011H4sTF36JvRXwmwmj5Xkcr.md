@@ -366,4 +366,4 @@ Commit: c9db4b3
   gate blocks after withdraw, opens after grant; demo child (Yusuf / c1) left
   consented so the student walkthrough isn't gated.
 - eslint + next build clean.
-Commit: PLACEHOLDER37
+Commit: 03f0ebf
