@@ -18,7 +18,7 @@ outcome: >
   app/opengraph-image.tsx (next/og, 1200×630), app/sitemap.ts (public pages only),
   app/robots.ts (disallow /admin /parent /student /api /print). Smoke-tested via
   next start: / 200 + correct <title>, /sitemap.xml + /robots.txt render.
-commits: PLACEHOLDER29
+commits: 9087c83
 depends_on: [T25]
 source: post-hackathon roadmap (EdTech-checklist analysis)
 ---

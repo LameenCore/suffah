@@ -385,4 +385,4 @@ Commit: 03f0ebf
   minors' product"); Plausible-style snippet left as an operator one-liner.
 - Verified: eslint + next build clean; / is now ○ static; next start smoke test —
   / 200 with correct <title>, /sitemap.xml + /robots.txt render.
-Commit: PLACEHOLDER29
+Commit: 9087c83
