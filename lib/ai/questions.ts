@@ -51,7 +51,10 @@ function normalize(s: string): string {
     .toLowerCase()
     .trim()
     .replace(/[^\p{L}\p{N}\s.\-/]/gu, "")
-    .replace(/\s+/g, " ");
+    .replace(/\s+/g, " ")
+    // A trailing period is sentence punctuation, never meaningful for a short
+    // answer ("Paris." === "Paris", "3.14." === "3.14"). Internal "." stays.
+    .replace(/\.+$/, "");
 }
 
 function asNumber(s: string): number | null {
