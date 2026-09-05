@@ -73,6 +73,18 @@ lib/
 components/                 # shared UI
 ```
 
+## Tests
+
+`npm test` (vitest) - pure-function unit tests for the core loop: objective
+grading (`gradeQuestion` / `gradeQuestions`), the compliance-status engine
+(`computeCourseStatus` / `computeOverall`), and ledger aggregation
+(`summariseLedgerEntries` - the "principal is never spendable" invariant).
+`npm run test:watch` while developing. Wire into CI with T54.
+
+`npm run check:integrity` - read-only data checks foreign keys don't enforce
+(cross-tenant refs, pods over the 4-cap, ledger sign errors). Exit 1 on failure;
+run nightly (see `docs/ops/backup-restore.md`).
+
 ## Build order
 
 `TASKS.md` - build in phases, each phase leaves something demoable. Commit at every
