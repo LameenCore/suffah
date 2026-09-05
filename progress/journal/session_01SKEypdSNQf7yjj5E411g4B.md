@@ -138,3 +138,31 @@ Claimed T08 (626d367).
 - FOLLOW-UP (not blocking T08's done-when): student-facing "take the unit assessment" panel
   on /student/[courseId] — logic + API exist, UI wiring deferred. Noted in T08 notes.
 build+lint+tsc green. Commit <t08>.
+
+## 2026-09-05 — planning: Phase 7 differentiator tasks (user request)
+User did competitive research (AI tutoring + waqf-on-chain both already exist; moat is
+the *combination*). Added T18-T24 task files, PRD §5.4 "Differentiators" table, TASKS.md
+Phase 7 + updated demo script, README local-first setup + SUPABASE_DB_URL pooler note.
+Commit 6d1a618. Memories saved: phase7-differentiators, suffa-local-dev-and-parallel-agents.
+
+## 2026-09-05 — T18 done — Continuity Fingerprint
+Claimed T18 (25f7f8e).
+- migration 0006_continuity_fingerprint.sql: pod_session_notes + pod_briefings.
+  (Renumbered from 0005 → 0006 to dodge a filename collision with the other agent's
+  0005_parent_children.sql; updated the schema_migrations row too.)
+- lib/db/continuity-queries.ts — session notes CRUD, gatherPodLearningSignals
+  (pod + students + per-course position + checkpoint attempts/passes + assessment
+  results + notes), briefing save/getLatest.
+- lib/ai/continuity.ts — generatePodBriefing: structured-output briefing
+  {headline, perCourse[status+note], students[observation], watchFor[]}; deterministic
+  fallbackBriefing straight from signals; persisted to pod_briefings.
+- checkpoint.ts hook: a 2nd+ failed attempt on a node writes a system session note
+  (best-effort, never breaks grading).
+- /admin/continuity page + ContinuityPod / BriefingView components + actions
+  (generateBriefingAction, addSessionNoteAction). Link card on /admin.
+- POST /api/continuity/briefing.
+- scripts/seed-continuity.ts + npm run seed:continuity — 5 realistic demo notes +
+  first briefing.
+- VERIFIED: ran seed:continuity, briefing synthesised the notes into per-course status
+  + per-student observations + concrete day-one actions. Page renders the persisted
+  briefing; regenerate works. build+lint+tsc green. Commit <t18>.

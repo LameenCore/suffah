@@ -2,13 +2,21 @@
 id: T18
 title: Continuity Fingerprint — AI volunteer-handoff briefing
 phase: 7
-status: doing
+status: done
 owner: https://claude.ai/code/session_01SKEypdSNQf7yjj5E411g4B
 claimed: 2026-09-05T00:00:00Z
 updated: 2026-09-05
+completed: 2026-09-05T00:00:00Z
 depends_on: [T07, T11]
 tier: 1
 build_or_mock: build
+outcome: pod_session_notes + pod_briefings (migration 0006). lib/ai/continuity.ts
+  generates + persists a structured AI handoff briefing from pod progress + checkpoint
+  history + session notes; deterministic fallback. /admin/continuity view + note form,
+  POST /api/continuity/briefing, npm run seed:continuity. checkpoint.ts writes a system
+  note on repeated misses. Verified: briefing synthesises notes into per-course status +
+  per-student observations + day-one actions.
+commits: 25f7f8e, <t18>
 ---
 
 ## Why (from competitive research)
@@ -38,9 +46,20 @@ number-line visuals."
   briefing" button per pod → shows the briefing; regenerate on demand.
 
 ## Done when
-- [ ] pod_session_notes table + a way to add a note (admin or volunteer view)
-- [ ] lib/ai/continuity.ts generates + persists a pod briefing from progress + notes
-- [ ] Admin continuity view shows the briefing for a pod
-- [ ] Briefing is persisted, not regenerated per view
+- [x] pod_session_notes table + a way to add a note (admin or volunteer view)
+- [x] lib/ai/continuity.ts generates + persists a pod briefing from progress + notes
+- [x] Admin continuity view shows the briefing for a pod
+- [x] Briefing is persisted, not regenerated per view
 
 ## Notes (owner appends)
+- Migration is **0006** (renumbered from 0005 to avoid colliding with T10's
+  0005_parent_children.sql).
+- Briefing shape: `{ headline, perCourse: [{course, position, status, note}],
+  students: [{name, observation}], watchFor: string[] }`. `PodBriefing` in lib/ai/continuity.ts.
+- Signals fed to the model: pod + students + per-course node position + per-(student,node)
+  checkpoint attempts/passes + unit_assessment_results + recent pod_session_notes.
+- `checkpoint.ts` auto-writes a `system` session note when a student misses a node's
+  checkpoint 2+ times — makes the fingerprint reflect real struggle without manual notes.
+- **T19 (live handoff simulation) builds directly on this** — a repeatable
+  volunteer-offline → reassign → briefing-generates flow.
+- Ready-made demo data: `npm run seed:continuity` (5 notes + first briefing for Pod Al-Farabi).

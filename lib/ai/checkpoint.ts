@@ -22,11 +22,13 @@ import {
   saveCheckpointContent,
   saveCheckpointResult,
   getLatestCheckpointResult,
+  countCheckpointAttempts,
   getNextNode,
   advancePodProgress,
   getPodForStudent,
   type PathwayNode,
 } from "@/lib/db/queries";
+import { tryAddSystemNote } from "@/lib/db/continuity-queries";
 import { fallbackCheckpoint } from "@/lib/ai/fallback-checkpoints";
 import { PASS_THRESHOLD } from "@/lib/types";
 
@@ -215,11 +217,25 @@ export async function gradeCheckpoint(
     perQuestion,
   });
 
+  const pod = await getPodForStudent(studentUserId, masjidId);
+
+  // Feed the Continuity Fingerprint (T18): a repeated miss on a node is exactly
+  // the kind of "how the pod is learning" signal a handoff briefing needs.
+  if (!passed && pod) {
+    const attempts = await countCheckpointAttempts(studentUserId, nodeId);
+    if (attempts >= 2) {
+      await tryAddSystemNote(
+        pod.id,
+        node.course_id,
+        `${node.course.name}: a student has now missed the "${node.title}" checkpoint ${attempts}× — worth reviewing with the pod.`,
+      );
+    }
+  }
+
   let advancedToNodeId: string | null = null;
-  if (passed) {
-    const pod = await getPodForStudent(studentUserId, masjidId);
+  if (passed && pod) {
     const nextNode = await getNextNode(node.course_id, node.sequence_order, masjidId);
-    if (pod && nextNode) {
+    if (nextNode) {
       await advancePodProgress(pod.id, node.course_id, nextNode);
       advancedToNodeId = nextNode.id;
     }

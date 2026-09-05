@@ -43,3 +43,10 @@ export {
   type QuestionForStudent,
   gradeQuestions,
 } from "@/lib/ai/questions";
+export {
+  generatePodBriefing,
+  fallbackBriefing,
+  type PodBriefing,
+  type BriefingSource,
+  type GenerateBriefingResult,
+} from "@/lib/ai/continuity";

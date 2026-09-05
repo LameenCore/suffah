@@ -298,6 +298,20 @@ export async function getLatestCheckpointResult(
   return (data as CheckpointResultRow | null) ?? null;
 }
 
+/** How many times this student has attempted this node's checkpoint. */
+export async function countCheckpointAttempts(
+  studentUserId: string,
+  nodeId: string,
+): Promise<number> {
+  const { count, error } = await getServiceClient()
+    .from("checkpoint_results")
+    .select("id", { count: "exact", head: true })
+    .eq("student_user_id", studentUserId)
+    .eq("pathway_node_id", nodeId);
+  if (error) throw new Error(`countCheckpointAttempts: ${error.message}`);
+  return count ?? 0;
+}
+
 export async function saveCheckpointResult(
   studentUserId: string,
   nodeId: string,

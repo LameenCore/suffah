@@ -1,7 +1,7 @@
 # BOARD — Suffa progress snapshot
 
 **Derived from `progress/tasks/`. Not authoritative. Regenerate after any claim/finish.**
-Last regenerated: 2026-09-05 (T21 done)
+Last regenerated: 2026-09-05 (T18 done — Continuity Fingerprint; T21/T24 done)
 
 | id  | phase | status | owner | title |
 |-----|-------|--------|-------|-------|
@@ -22,7 +22,7 @@ Last regenerated: 2026-09-05 (T21 done)
 | T15 | 6 | done  | — | Volunteer onboarding form + churn log |
 | T16 | 6 | todo  | — | Regulation-verification disclaimers |
 | T17 | 6 | todo  | — | Seed data cleanup for demo walkthrough |
-| T18 | 7 | todo  | — | Continuity Fingerprint — AI volunteer-handoff briefing |
+| T18 | 7 | done  | — | Continuity Fingerprint — AI volunteer-handoff briefing |
 | T19 | 7 | todo  | — | Live "empty seat" handoff simulation (demo feature) |
 | T20 | 7 | todo  | — | Compliance report as a living document (early-warning) |
 | T21 | 7 | done  | — | Waqf-to-outcome linking (donor sees learning) |
@@ -32,11 +32,11 @@ Last regenerated: 2026-09-05 (T21 done)
 
 ## Next up (deps met, unclaimed)
 - **T09** — Term exam variant (timed) + term_exam_results (dep T08 done)
+- **T19** — Live "empty seat" handoff simulation (dep T18 done) — demo centrepiece
 - **T16** — regulation disclaimers (no deps, can run anytime)
-- **T18** — Continuity Fingerprint (deps T07, T11 done) — highest-value differentiator
 - **T22** — Seerah community sourcing (dep T05 done, mock/text)
 - **T23** — Barakah meter (dep T11 done)
-- blocked: T12 (needs T09), T17 (needs T12), T19 (needs T18), T20 (needs T12)
+- blocked: T12 (needs T09), T17 (needs T12), T20 (needs T12)
 
 ## Phase 7 — differentiators (see PRD §5.4)
 Build order: T18 → T19 (unique IP, demoable), then T20. T21/T22 as mocked pitch screens.
