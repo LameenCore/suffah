@@ -2,9 +2,9 @@
 id: T21
 title: Waqf-to-outcome linking (donor sees learning, not just fund flow)
 phase: 7
-status: todo
-owner: —
-claimed: —
+status: doing
+owner: https://claude.ai/code/session_011H4sTF36JvRXwmwmj5Xkcr
+claimed: 2026-09-05T17:50:00Z
 updated: 2026-09-05
 depends_on: [T14, T08]
 tier: 1
