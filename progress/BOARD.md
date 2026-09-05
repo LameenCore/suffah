@@ -1,7 +1,7 @@
 # BOARD — Suffa progress snapshot
 
 **Derived from `progress/tasks/`. Not authoritative. Regenerate after any claim/finish.**
-Last regenerated: 2026-09-05 (T23 done; T18/T21/T24 done)
+Last regenerated: 2026-09-05 (T19 done — handoff sim; T18/T21/T23/T24 done)
 
 | id  | phase | status | owner | title |
 |-----|-------|--------|-------|-------|
@@ -23,7 +23,7 @@ Last regenerated: 2026-09-05 (T23 done; T18/T21/T24 done)
 | T16 | 6 | todo  | — | Regulation-verification disclaimers |
 | T17 | 6 | todo  | — | Seed data cleanup for demo walkthrough |
 | T18 | 7 | done  | — | Continuity Fingerprint — AI volunteer-handoff briefing |
-| T19 | 7 | todo  | — | Live "empty seat" handoff simulation (demo feature) |
+| T19 | 7 | done  | — | Live "empty seat" handoff simulation (demo feature) |
 | T20 | 7 | todo  | — | Compliance report as a living document (early-warning) |
 | T21 | 7 | done  | — | Waqf-to-outcome linking (donor sees learning) |
 | T22 | 7 | todo  | — | Multi-generational knowledge sourcing for Seerah content |
@@ -32,10 +32,12 @@ Last regenerated: 2026-09-05 (T23 done; T18/T21/T24 done)
 
 ## Next up (deps met, unclaimed)
 - **T09** — Term exam variant (timed) + term_exam_results (dep T08 done)
-- **T19** — Live "empty seat" handoff simulation (dep T18 done) — demo centrepiece
+- **T12** — Compliance report generation (needs T09)
 - **T16** — regulation disclaimers (no deps, can run anytime)
 - **T22** — Seerah community sourcing (dep T05 done, mock/text)
-- blocked: T12 (needs T09), T17 (needs T12), T20 (needs T12)
+- blocked: T17 (needs T12), T20 (needs T12)
+
+Phase 7 differentiators: T18, T19, T21, T23, T24 done. Remaining: T20 (needs T12), T22 (mock).
 
 ## Phase 7 — differentiators (see PRD §5.4)
 Build order: T18 → T19 (unique IP, demoable), then T20. T21/T22 as mocked pitch screens.

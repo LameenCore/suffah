@@ -336,3 +336,86 @@ export async function listPodsForBriefing(
   if (error) throw new Error(`listPodsForBriefing: ${error.message}`);
   return (data ?? []) as { id: string; name: string }[];
 }
+
+// --- Live handoff simulation (T19) ---------------------------------
+
+export interface HandoffDemoState {
+  pod: { id: string; name: string } | null;
+  currentVolunteer: { id: string; name: string } | null;
+  /** Volunteers who could take the pod (in the masjid, not currently on this pod). */
+  candidates: { id: string; name: string; status: string }[];
+  /** The pod's home volunteer from seed data — the reset target. */
+  homeVolunteer: { id: string; name: string } | null;
+  /** Whether a student in the pod has a current lesson ready right now. */
+  playgroundOnline: boolean;
+  latestBriefingAt: string | null;
+}
+
+const DEMO_POD_NAME = "Pod Al-Farabi";
+const DEMO_HOME_VOLUNTEER_NAME = "Br. Kareem";
+
+export async function getHandoffDemoState(masjidId: string): Promise<HandoffDemoState> {
+  const db = getServiceClient();
+
+  const { data: pod, error: podErr } = await db
+    .from("pods")
+    .select("id, name, volunteer:volunteers ( id, name )")
+    .eq("masjid_id", masjidId)
+    .eq("name", DEMO_POD_NAME)
+    .maybeSingle();
+  if (podErr) throw new Error(`getHandoffDemoState: ${podErr.message}`);
+  if (!pod) {
+    return {
+      pod: null,
+      currentVolunteer: null,
+      candidates: [],
+      homeVolunteer: null,
+      playgroundOnline: false,
+      latestBriefingAt: null,
+    };
+  }
+  const podId = pod.id as string;
+  const current = unwrap(pod.volunteer as unknown) as { id: string; name: string } | null;
+
+  const { data: vols, error: vErr } = await db
+    .from("volunteers")
+    .select("id, name, status")
+    .eq("masjid_id", masjidId)
+    .order("name", { ascending: true });
+  if (vErr) throw new Error(`getHandoffDemoState: ${vErr.message}`);
+  const volunteers = (vols ?? []) as { id: string; name: string; status: string }[];
+
+  const homeVolunteer =
+    volunteers.find((v) => v.name === DEMO_HOME_VOLUNTEER_NAME) ?? null;
+  const candidates = volunteers.filter((v) => v.id !== current?.id);
+
+  // Playground "online" = the pod's current node in any course has a lesson ready.
+  const { data: progressRows, error: pErr } = await db
+    .from("pod_progress")
+    .select("node:pathway_nodes ( lesson_content )")
+    .eq("pod_id", podId);
+  if (pErr) throw new Error(`getHandoffDemoState: ${pErr.message}`);
+  const playgroundOnline = (progressRows ?? []).some((r) => {
+    const node = unwrap(r.node as unknown) as { lesson_content: unknown } | null;
+    return Boolean(node?.lesson_content);
+  });
+
+  const { data: briefing } = await db
+    .from("pod_briefings")
+    .select("generated_at")
+    .eq("pod_id", podId)
+    .order("generated_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  return {
+    pod: { id: podId, name: pod.name as string },
+    currentVolunteer: current,
+    candidates: candidates.map((v) => ({ id: v.id, name: v.name, status: v.status })),
+    homeVolunteer: homeVolunteer
+      ? { id: homeVolunteer.id, name: homeVolunteer.name }
+      : null,
+    playgroundOnline,
+    latestBriefingAt: (briefing?.generated_at as string | null) ?? null,
+  };
+}

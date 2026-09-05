@@ -166,3 +166,19 @@ Claimed T18 (25f7f8e).
 - VERIFIED: ran seed:continuity, briefing synthesised the notes into per-course status
   + per-student observations + concrete day-one actions. Page renders the persisted
   briefing; regenerate works. build+lint+tsc green. Commit <t18>.
+
+## 2026-09-05 — T19 done — live handoff simulation
+Claimed T19 (7d6e5f6).
+- app/admin/handoff-demo — 3-step on-stage flow: (1) live session, (2) "Take volunteer
+  offline" → recordDeparture (pod loses volunteer, pod_progress + playground untouched —
+  page shows playground still online), (3) pick a replacement → reinstate + setPodVolunteer
+  + generatePodBriefing, briefing renders inline. "Reset demo" restores the home volunteer.
+- All real: reuses recordDeparture/reinstateVolunteer (T15), setPodVolunteer (T11),
+  generatePodBriefing (T18). No mock/animation.
+- getHandoffDemoState in continuity-queries.ts.
+- BUG FOUND + FIXED: seed only had one volunteer, so there was nobody to hand off TO.
+  seed-continuity.ts now also adds a standby volunteer "Sr. Amina Diallo" (active,
+  unassigned). Re-ran seed:continuity.
+- Link from /admin/continuity → /admin/handoff-demo.
+- VERIFIED end to end via script: offline → playground stays online → assign → briefing
+  generates → reset restores. Page renders all 3 steps. build+lint+tsc green. Commit <t19>.

@@ -72,12 +72,20 @@ export default async function AdminContinuityPage() {
         >
           ← Admin
         </Link>
-        <Link
-          href="/admin/pods"
-          className="text-zinc-500 underline underline-offset-2 hover:text-zinc-800 dark:hover:text-zinc-200"
-        >
-          Pod assignment →
-        </Link>
+        <div className="flex gap-4">
+          <Link
+            href="/admin/handoff-demo"
+            className="text-emerald-700 underline underline-offset-2 hover:text-emerald-600 dark:text-emerald-400"
+          >
+            Run live handoff simulation →
+          </Link>
+          <Link
+            href="/admin/pods"
+            className="text-zinc-500 underline underline-offset-2 hover:text-zinc-800 dark:hover:text-zinc-200"
+          >
+            Pod assignment →
+          </Link>
+        </div>
       </div>
 
       <div>

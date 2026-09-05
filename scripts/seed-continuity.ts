@@ -49,6 +49,8 @@ const NOTES: { note: string; courseId: string | null; author: string }[] = [
   },
 ];
 
+const MASJID = "00000000-0000-0000-0000-000000000001";
+
 async function main() {
   const reset = process.argv.includes("--reset");
   const db = getServiceClient();
@@ -57,6 +59,24 @@ async function main() {
     await db.from("pod_briefings").delete().eq("pod_id", POD);
     await db.from("pod_session_notes").delete().eq("pod_id", POD);
     console.log("Cleared existing notes + briefings for the demo pod.");
+  }
+
+  // A standby volunteer so the live handoff simulation (T19) has someone to hand
+  // off TO. Unassigned; the seed pod keeps Br. Kareem.
+  const { data: standby } = await db
+    .from("volunteers")
+    .select("id")
+    .eq("masjid_id", MASJID)
+    .eq("name", "Sr. Amina Diallo")
+    .maybeSingle();
+  if (!standby) {
+    await db.from("volunteers").insert({
+      masjid_id: MASJID,
+      name: "Sr. Amina Diallo",
+      status: "active",
+      certification_note: "Former Sec-1 teacher; available as a substitute (mock).",
+    });
+    console.log("Added standby volunteer: Sr. Amina Diallo.");
   }
 
   const { count } = await db
