@@ -110,7 +110,7 @@ insert into parent_children (parent_user_id, student_user_id) values
 insert into sponsorships (masjid_id, sponsor_label, amount, pod_id, unit_id, note) values
   ('00000000-0000-0000-0000-000000000001', 'Founding endowment allocation', 1500.00, '00000000-0000-0000-0000-0000000000e1', '00000000-0000-0000-0000-000000010001', 'Sponsors Pod Al-Farabi through the integers unit (Math).'),
   ('00000000-0000-0000-0000-000000000001', 'Ramadan drive - anonymous',     900.00, '00000000-0000-0000-0000-0000000000e1', '00000000-0000-0000-0000-000000010002', 'Sponsors the Meccan Period unit (Seerah).'),
-  ('00000000-0000-0000-0000-000000000001', 'Local family gift',             750.00, '00000000-0000-0000-0000-0000000000e1', '00000000-0000-0000-0000-000000010003', 'Sponsors the AI-literacy intro unit.');
+  ('00000000-0000-0000-0000-000000000001', 'Local family gift',             750.00, '00000000-0000-0000-0000-0000000000e1', '00000000-0000-0000-0000-000000010003', 'Sponsors the AI Literacy intro unit.');
 
 -- Community contributions to a Seerah lesson (T22) - lesson_contributions is
 -- created by migration 0008. Node ...020101 = "Mecca before the revelation".

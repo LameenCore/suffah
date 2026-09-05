@@ -191,7 +191,7 @@ async function seed() {
     await db.from("sponsorships").insert([
       { masjid_id: MASJID, sponsor_label: "Founding endowment allocation", amount: 1500, pod_id: POD, unit_id: UNIT.math, note: "Sponsors Pod Al-Farabi through the integers unit (Math)." },
       { masjid_id: MASJID, sponsor_label: "Ramadan drive - anonymous", amount: 900, pod_id: POD, unit_id: UNIT.seerah, note: "Sponsors the Meccan Period unit (Seerah)." },
-      { masjid_id: MASJID, sponsor_label: "Local family gift", amount: 750, pod_id: POD, unit_id: UNIT.ai, note: "Sponsors the AI-literacy intro unit." },
+      { masjid_id: MASJID, sponsor_label: "Local family gift", amount: 750, pod_id: POD, unit_id: UNIT.ai, note: "Sponsors the AI Literacy intro unit." },
     ]),
   );
 
