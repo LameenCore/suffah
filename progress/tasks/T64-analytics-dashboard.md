@@ -20,7 +20,7 @@ outcome: >
   "Learning analytics" + new NavIcon "chart". Verified live against the demo
   masjid: 4 students, watch 2 / gap 2, 3 course histograms, 1 cohort, churn 33%,
   runway ~1.0yr; CSV renders. eslint + next build clean.
-commits: PLACEHOLDER64
+commits: 87dccc4
 depends_on: []
 source: post-hackathon roadmap (EdTech-checklist analysis)
 ---
