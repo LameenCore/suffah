@@ -41,4 +41,4 @@ framed around adab and cooperation, not gamified points.
   BarakahSummary block per child. Seed adds 5 notes.
 - Needs `npm run migrate` + `npm run seed` on a live DB. build + lint green; not
   verified vs live data.
-- commits: <t23>. Session tally: T10,T11,T13,T14,T15,T21,T23,T24.
+- commits: 104c9ca. Session tally: T10,T11,T13,T14,T15,T21,T23,T24.

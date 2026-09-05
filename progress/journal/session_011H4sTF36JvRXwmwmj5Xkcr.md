@@ -156,4 +156,4 @@ DB. Commit c6d3abb. Next: T16.
 - Note: 0006 filename collides with the other session's 0006_continuity_fingerprint
   (mine 0006_sponsorships already on main from T21). Migrate runner sorts by full
   filename + tracks each separately, so both apply — cosmetic only, left as-is.
-- build + lint green on the merged tree; not verified vs live data. commit <t23>.
+- build + lint green on the merged tree; not verified vs live data. commit 104c9ca.
