@@ -2,9 +2,9 @@
 id: T65
 title: Define + instrument the core metrics
 phase: 13
-status: todo
-owner: —
-claimed: —
+status: doing
+owner: https://claude.ai/code/session_011H4sTF36JvRXwmwmj5Xkcr
+claimed: 2026-09-06T06:05:00Z
 updated: 2026-09-05
 depends_on: [T64]
 source: post-hackathon roadmap (EdTech-checklist analysis)
