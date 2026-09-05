@@ -217,3 +217,30 @@ Claimed both (7ab3e4b) — T20's status engine baked into T12 rather than retrof
 - VERIFIED: per-student report computes the spread; snapshot persists; all 4 routes
   render (admin, print, parent). build+lint+tsc green.
 Commits: 7ab3e4b, <t12t20>.
+
+## 2026-09-05 — T16 done
+Audited every route for regulatory claims. Added page-level RegulationNote to
+/admin/compliance + /parent/compliance; rest already covered. Commit <t16>.
+
+## 2026-09-05 — BUG: term-exam structured-output parse flakes
+`generateTermExam` used `messages.parse()` with no retry; the Seerah exam failed a
+structured-output validation once during demo:setup and killed the orchestrator chain.
+Root fix: 3-attempt retry loop in term-exam.ts + loosened question count to 6-14; and
+demo-setup.ts now continues past a failed step and reports it at the end (a flaky
+generator must not block the seed steps). Commit <bugfix>.
+
+## 2026-09-05 — T17 done — demo seed cleanup
+- `npm run demo:setup` — migrate + seed + generate ALL 9 lessons/checkpoints + 3
+  assessments + 3 exams + seed:continuity + seed:progress. One command.
+- `npm run demo:reset` — state only, no API: seed:progress --reset (pod→node1, clears
+  results, reinstates+reassigns Br. Kareem) + seed:continuity --reset. Seconds.
+- gen:lessons / gen:checkpoints do all nodes by default (`--first` for node 1 only).
+- seed-demo-progress.ts reworked: Yusuf FRESH on Math (demo step 1 completes live),
+  Maryam watch / Idris gap (Math 0%) / Safiya gap (AI term exam 55%).
+- README + TASKS.md demo script rewritten with concrete routes + seeded state.
+- RAN demo:setup end to end (one term-exam retry needed, succeeded). Verified all 10
+  demo-flow routes render with real data on localhost:3000:
+  /student (Yusuf: Math ready, Seerah complete), /student/<math>, /student/<math>/exam,
+  /parent, /parent/compliance, /admin/handoff-demo (both volunteers), /admin/continuity
+  (briefing), /admin/compliance (Idris = gap, pass rate 0%), .../print, /admin/ledger.
+Commit <t17>.

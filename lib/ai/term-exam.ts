@@ -27,8 +27,8 @@ const DEFAULT_DURATION_SECONDS = 20 * 60;
 const TermExamBodySchema = z.object({
   questions: z
     .array(QuestionSchema)
-    .min(8)
-    .max(12)
+    .min(6)
+    .max(14)
     .describe("Cumulative across the whole course. Spread coverage; mix mcq and short."),
 });
 
@@ -103,21 +103,35 @@ export async function generateTermExam(
     "term",
   );
 
-  const response = await getAnthropic().messages.parse({
-    model: LESSON_MODEL,
-    max_tokens: 8000,
-    system:
-      system +
-      " This is a timed end-of-term exam with no help available mid-exam - make it fair " +
-      "but comprehensive.",
-    messages: [{ role: "user", content: user }],
-    output_config: { format: zodOutputFormat(TermExamBodySchema) },
-  });
-
-  const body = response.parsed_output;
+  // messages.parse() throws if the model output doesn't validate. That happens
+  // occasionally and non-deterministically, so retry before giving up.
+  let body: TermExamBody | null = null;
+  let lastErr: unknown;
+  for (let attempt = 1; attempt <= 3 && !body; attempt += 1) {
+    try {
+      const response = await getAnthropic().messages.parse({
+        model: LESSON_MODEL,
+        max_tokens: 8000,
+        system:
+          system +
+          " This is a timed end-of-term exam with no help available mid-exam - make it " +
+          "fair but comprehensive. Return 8-12 questions.",
+        messages: [{ role: "user", content: user }],
+        output_config: { format: zodOutputFormat(TermExamBodySchema) },
+      });
+      body = response.parsed_output;
+    } catch (err) {
+      lastErr = err;
+      console.warn(
+        `[lib/ai/term-exam] parse attempt ${attempt}/3 failed for ${course.name}: ` +
+          (err instanceof Error ? err.message.split("\n")[0] : String(err)),
+      );
+    }
+  }
   if (!body) {
     throw new Error(
-      `term exam generation: unparseable model output (stop_reason=${response.stop_reason})`,
+      `term exam generation for ${course.name}: model output failed to validate after 3 tries` +
+        (lastErr instanceof Error ? ` (${lastErr.message.split("\n")[0]})` : ""),
     );
   }
 

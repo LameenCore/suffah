@@ -14,7 +14,9 @@
     "gen:assessments": "tsx --env-file=.env.local scripts/generate-assessments.ts",
     "gen:exams": "tsx --env-file=.env.local scripts/generate-term-exams.ts",
     "seed:continuity": "tsx --env-file=.env.local scripts/seed-continuity.ts",
-    "seed:progress": "tsx --env-file=.env.local scripts/seed-demo-progress.ts"
+    "seed:progress": "tsx --env-file=.env.local scripts/seed-demo-progress.ts",
+    "demo:setup": "tsx scripts/demo-setup.ts",
+    "demo:reset": "tsx scripts/demo-setup.ts --reset-only"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.124.0",

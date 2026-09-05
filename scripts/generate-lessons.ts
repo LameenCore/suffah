@@ -1,30 +1,31 @@
 /**
- * One-shot: generate + persist the first lesson node of every course in the demo
- * masjid. Satisfies T05's "one lesson exists for each of the 3 courses".
+ * Generate + persist lessons for the demo masjid.
  *
- *   npm run gen:lessons          # generate any node that has no lesson yet
- *   npm run gen:lessons -- --force   # regenerate all three
+ *   npm run gen:lessons              # every node with no lesson yet (whole demo)
+ *   npm run gen:lessons -- --first   # only node 1 of each course (fast)
+ *   npm run gen:lessons -- --force   # regenerate
  *
  * Needs NEXT_PUBLIC_SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY and ANTHROPIC_API_KEY
- * in .env.local (loaded via tsx --env-file). Without ANTHROPIC_API_KEY the
- * hand-authored fallback lesson is persisted instead.
+ * in .env.local. Nodes past the first have no offline fallback - the model must
+ * be reachable for those.
  */
 
 import { DEMO_MASJID_ID } from "@/lib/auth";
-import { getFirstNodePerCourse } from "@/lib/db/queries";
+import { getFirstNodePerCourse, getAllPathwayNodes } from "@/lib/db/queries";
 import { generateLessonForNode } from "@/lib/ai/lesson";
 
 async function main() {
   const force = process.argv.includes("--force");
+  const firstOnly = process.argv.includes("--first");
 
-  const nodes = await getFirstNodePerCourse(DEMO_MASJID_ID);
+  const nodes = firstOnly
+    ? await getFirstNodePerCourse(DEMO_MASJID_ID)
+    : await getAllPathwayNodes(DEMO_MASJID_ID);
   if (nodes.length === 0) {
-    throw new Error(
-      "No pathway nodes found. Run supabase/migrations/0001_init.sql and supabase/seed.sql first.",
-    );
+    throw new Error("No pathway nodes found. Run npm run migrate && npm run seed first.");
   }
 
-  console.log(`Generating lessons for ${nodes.length} node(s)${force ? " (force)" : ""}…\n`);
+  console.log(`Generating lessons for ${nodes.length} node(s)${force ? " (force)" : ""}...\n`);
 
   let failures = 0;
   for (const node of nodes) {

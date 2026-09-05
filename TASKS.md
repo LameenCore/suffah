@@ -59,10 +59,14 @@ mocked pitch screens.
 - Full curriculum coverage beyond one unit per course
 
 ## Demo script (for when you present)
-1. Show a student completing a lesson + checkpoint in the playground (proves AI-as-constant-teacher)
-2. Show the parent dashboard reflecting that result immediately (proves the monitoring layer)
-3. **Live handoff simulation (T19):** take the pod's volunteer offline mid-session - the student's playground keeps working - then reassign a new volunteer and watch the **Continuity Fingerprint** briefing generate on screen (proves churn-resilience by *performing* it, not describing it)
-4. Show the **living compliance report** (T20) - per-course "on track / gap forming" assembled from checkpoint + assessment + exam data, exportable (proves the regulatory pain point is solved, and turns it forward-looking)
-5. Show the waqf ledger view - principal untouched (T24 visual), returns funding operations; optionally the waqf-to-outcome screen (T21) linking a donation to a pod's actual unit completion (proves the "viable after year one" funding story *and* donor trust)
+Run `npm run demo:setup` once, then `npm run demo:reset` before each practice run.
+Sign-in is the role picker on `/` (or `NEXT_PUBLIC_SUFFA_DEV_ROLE`). The seeded state
+leaves **Yusuf fresh on Math** for step 1; Maryam/Idris/Safiya carry the compliance spread.
+
+1. **Student** (`/student` -> Math): the lesson, mark it complete, the checkpoint appears, pass it -> the pod advances to the next node. *The AI as the constant teacher.*
+2. **Parent** (`/parent`, `/parent/compliance`): Yusuf's new checkpoint result is already there, and the evaluation status updates live. *The monitoring layer, zero effort.*
+3. **Admin -> Live handoff simulation** (`/admin/handoff-demo`): take Br. Kareem offline mid-session - the student playground keeps working - then assign Sr. Amina and watch the **Continuity Fingerprint** briefing generate on screen. *Churn-resilience, performed not described.*
+4. **Admin -> Compliance report** (`/admin/compliance`): pick Idris (gap forming - Math pass rate) vs. Yusuf (on track); the status is assembled live from checkpoint + assessment + exam data. Save a snapshot, open the printable view. *The regulatory pain point, turned into an early-warning system.*
+5. **Admin -> Waqf ledger** (`/admin/ledger`): principal locked and untouched (T24 visual), only returns spent; the waqf-to-outcome view (T21) links a donation to a pod's actual unit completion. *Viable after year one, and donors see the learning, not just the ledger.*
 
 This order mirrors the pitch's problem → model → funding structure, so the demo doubles as the pitch narrative.

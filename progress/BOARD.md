@@ -1,7 +1,7 @@
 # BOARD — Suffa progress snapshot
 
 **Derived from `progress/tasks/`. Not authoritative. Regenerate after any claim/finish.**
-Last regenerated: 2026-09-05 (T12 + T20 done — compliance report; only T16, T17 left)
+Last regenerated: 2026-09-05 (T17 done - ALL 24 tasks complete)
 
 | id  | phase | status | owner | title |
 |-----|-------|--------|-------|-------|
@@ -21,7 +21,7 @@ Last regenerated: 2026-09-05 (T12 + T20 done — compliance report; only T16, T1
 | T14 | 5 | done  | — | Admin ledger view + family fee status |
 | T15 | 6 | done  | — | Volunteer onboarding form + churn log |
 | T16 | 6 | done  | — | Regulation-verification disclaimers |
-| T17 | 6 | todo  | — | Seed data cleanup for demo walkthrough |
+| T17 | 6 | done  | — | Seed data cleanup for demo walkthrough |
 | T18 | 7 | done  | — | Continuity Fingerprint — AI volunteer-handoff briefing |
 | T19 | 7 | done  | — | Live "empty seat" handoff simulation (demo feature) |
 | T20 | 7 | done  | — | Compliance report as a living document (early-warning) |
@@ -30,12 +30,10 @@ Last regenerated: 2026-09-05 (T12 + T20 done — compliance report; only T16, T1
 | T23 | 7 | done  | — | Pod "Barakah meter" — character/community indicators |
 | T24 | 7 | done  | — | Waqf principal "never touched" visual |
 
-## Next up (deps met, unclaimed)
-- **T16** — regulation-verification disclaimers sweep (no deps)
-- **T17** — seed/demo cleanup for a smooth walkthrough (deps met — T12 done)
+## Status: all 24 tasks done.
 
-Everything else is done. T16 + T17 are the last two — both polish.
-Demo content scripts: `npm run seed && seed:continuity && seed:progress && gen:lessons && gen:checkpoints && gen:assessments && gen:exams`.
+Get a clean demo state: `npm run demo:setup` (full, hits the API) or `npm run demo:reset`
+(state only, seconds). Then `npm run dev`. Walkthrough is in TASKS.md ("Demo script").
 
 ## Legend
 todo = free to claim · doing = owned now · blocked = see task's `blocker:` · done = see task's `outcome:`

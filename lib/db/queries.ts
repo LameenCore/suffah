@@ -79,6 +79,24 @@ export async function getFirstNodePerCourse(masjidId: string): Promise<PathwayNo
     .filter((n) => n.course.masjid_id === masjidId);
 }
 
+/** Every pathway node in the masjid, ordered by course then sequence. */
+export async function getAllPathwayNodes(masjidId: string): Promise<PathwayNode[]> {
+  const { data, error } = await getServiceClient()
+    .from("pathway_nodes")
+    .select(NODE_SELECT)
+    .order("sequence_order", { ascending: true });
+
+  if (error) throw new Error(`getAllPathwayNodes: ${error.message}`);
+  return (data ?? [])
+    .map((row) => shapeNode(row as unknown as Record<string, unknown>))
+    .filter((n) => n.course.masjid_id === masjidId)
+    .sort((a, b) =>
+      a.course.name === b.course.name
+        ? a.sequence_order - b.sequence_order
+        : a.course.name.localeCompare(b.course.name),
+    );
+}
+
 /**
  * Persist generated lesson content onto a node. Scoped: the update only lands
  * if the node's course belongs to `masjidId`.

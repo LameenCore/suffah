@@ -20,17 +20,17 @@ calls, the content-generation and migration scripts - runs on your machine.
 
 ```bash
 npm install
-cp .env.example .env.local        # then fill in the values below
-npm run migrate                   # apply supabase/migrations/*.sql
-npm run seed                      # load the demo masjid / pod / courses
-npm run gen:lessons               # generate + persist the 3 demo lessons (Anthropic)
-npm run gen:checkpoints           # then the checkpoints
-npm run gen:assessments           # then the unit assessments
-npm run gen:exams                 # then the term exams
-npm run seed:continuity           # demo session notes + first pod handoff briefing
-npm run seed:progress             # a believable spread of student results
-npm run dev                       # http://localhost:3000
+cp .env.example .env.local   # then fill in the values below
+npm run demo:setup           # migrate + seed + generate all AI content + demo state
+npm run dev                  # http://localhost:3000
 ```
+
+`demo:setup` runs everything in order (it hits the Anthropic API for ~24 lessons /
+checkpoints / assessments / exams, so it takes a few minutes). Between practice runs
+of the walkthrough, `npm run demo:reset` restores the demo state in seconds without
+re-generating content. The individual steps (`migrate`, `seed`, `gen:lessons`,
+`gen:checkpoints`, `gen:assessments`, `gen:exams`, `seed:continuity`, `seed:progress`)
+can still be run one at a time.
 
 `.env.local` keys:
 
