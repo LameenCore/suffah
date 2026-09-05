@@ -2,9 +2,9 @@
 id: T23
 title: Pod "Barakah meter" — character/community indicators, not just grades
 phase: 7
-status: todo
-owner: —
-claimed: —
+status: doing
+owner: https://claude.ai/code/session_011H4sTF36JvRXwmwmj5Xkcr
+claimed: 2026-09-05T18:15:00Z
 updated: 2026-09-05
 depends_on: [T11]
 tier: 2
