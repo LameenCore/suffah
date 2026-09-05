@@ -201,3 +201,23 @@ Not a board task - direct user request in 3 parts.
    5 defense-in-depth / demo-benign items noted. build + lint + all routes green;
    DB re-seeded + regenerated (seed, seed:continuity, seed:progress, gen:*).
 Commits: 19a9706, eca5af2, 9da1992, f1cfc7c, 9662c0d, f46ee91, de2fb60, 4f00c9f.
+
+## 2026-09-05 - bug-check + full-file cleanliness pass (user request)
+Bugs: the one real bug (markReportExported cross-tenant write) was already fixed
++ pushed. Re-traced findings 4-6 - all confirmed safe (student_user_id filter is
+always the session user; getTermExam masjid check sits on the line before the
+save; date formatters read NOT NULL columns). Nothing unfixed -> pushed.
+
+Cleanliness sweep of all files:
+- moved ARCHITECTURE.md + DATA_MODEL.md into docs/ (18 refs already said docs/);
+  fixed the remaining bare refs
+- CLAUDE.md file list -> real .claude/skills/ contents; "superseded by" banners on
+  root api-design.md / security-review.md
+- README: softened tagline, fixed a truncated git-workflow sentence
+- lib/auth: TODO -> documented demo-scope NOTE
+- '…' -> '...' in CLI script stdout (UI keeps the typographic '…' for loading states)
+- verified: no console.log leftovers (CLI scripts only), no secrets in tracked
+  files (project ref is public-by-design), no temp/backup files, 0 em-dashes in
+  source + rendered UI, no stray "AI" self-labelling
+Verified: next build + eslint clean; 13/13 routes 200 with real data.
+Commits: b0aa3ae (+ earlier this session through 448555f).
