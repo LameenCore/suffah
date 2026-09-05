@@ -2,9 +2,9 @@
 id: T19
 title: Live "empty seat" handoff simulation (demo feature)
 phase: 7
-status: todo
-owner: —
-claimed: —
+status: doing
+owner: https://claude.ai/code/session_01SKEypdSNQf7yjj5E411g4B
+claimed: 2026-09-05T00:00:00Z
 updated: 2026-09-05
 depends_on: [T18]
 tier: 3
