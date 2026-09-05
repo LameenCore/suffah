@@ -17,6 +17,7 @@ import {
 } from "@/lib/db/barakah-queries";
 import { assembleFromChildReport } from "@/lib/compliance/report";
 import { LEVEL_LABEL, type ComplianceLevel } from "@/lib/compliance/status";
+import { getActiveConsent } from "@/lib/consent";
 
 const pct = (frac: number) => `${Math.round(frac * 100)}%`;
 const shortDate = (iso: string) =>
@@ -247,6 +248,7 @@ export default async function ParentHome() {
 
   let blocks: { report: ChildReport; barakah: ChildBarakahSummary }[] = [];
   let loadError: string | null = null;
+  let needsConsent: string[] = [];
 
   try {
     const children = await getChildrenForParent(user.id, user.masjidId);
@@ -256,6 +258,13 @@ export default async function ParentHome() {
         barakah: await getChildBarakahSummary(c.id, user.masjidId),
       })),
     );
+    const consent = await Promise.all(
+      children.map(async (c) => ({
+        name: c.name,
+        ok: (await getActiveConsent(c.id, user.masjidId)) !== null,
+      })),
+    );
+    needsConsent = consent.filter((c) => !c.ok).map((c) => c.name);
   } catch (err) {
     loadError = err instanceof Error ? err.message : "could not load progress";
   }
@@ -267,6 +276,21 @@ export default async function ParentHome() {
         title={`As-salamu alaykum${blocks.length ? "" : ""}`}
         lede="A calm, read-only view of how your child is doing. Results appear here the moment they finish."
       />
+
+      {needsConsent.length > 0 ? (
+        <Card tone="warning" className="flex flex-wrap items-center justify-between gap-3 p-4">
+          <span className="text-sm text-ink-2">
+            {needsConsent.join(" and ")}&apos;s playground is locked until you complete the
+            consent step.
+          </span>
+          <Link
+            href="/parent/consent"
+            className="text-sm font-medium text-terracotta hover:text-terracotta-strong"
+          >
+            Review consent &rarr;
+          </Link>
+        </Card>
+      ) : null}
 
       {loadError ? (
         <Card tone="warning" className="p-4 text-sm text-ink-2">

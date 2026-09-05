@@ -345,3 +345,25 @@ Commit: a18b8c8
   a consented state so the T37 gate won't lock the walkthrough.
 - eslint + next build clean.
 Commit: c9db4b3
+
+## T37 — parental consent flow for minors
+
+- app/parent/consent/page.tsx: per linked child, shows the four CONSENT_PURPOSES
+  (label + detail), consent status badge, and either a grant form (guardian
+  checkbox + "Give consent") or a withdraw form with the effect spelled out.
+- app/parent/consent/actions.ts: grantConsentAction / withdrawConsentAction, both
+  gated by assertGuardianOf() (child must be in getChildrenForParent) and both
+  recordAudit (consent.granted / consent.withdrawn). recordConsentDecision from
+  lib/consent.ts.
+- components/student/ConsentGate.tsx + app/student/layout.tsx: if
+  hasActiveConsent(user.id) is false the layout returns <ConsentGate> instead of
+  the DashboardChrome + children — covers /student, /student/[courseId], exam.
+  A lookup error fails OPEN (don't lock out a consented child).
+- app/parent/page.tsx: "playground is locked until you complete the consent step"
+  warning banner + link when any linked child lacks consent.
+- app/parent/layout.tsx: nav "Consent" (new NavIcon "check" glyph).
+- Verified live: guardian-of guard true for the real child / false for a bogus id;
+  gate blocks after withdraw, opens after grant; demo child (Yusuf / c1) left
+  consented so the student walkthrough isn't gated.
+- eslint + next build clean.
+Commit: PLACEHOLDER37

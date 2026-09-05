@@ -6,6 +6,7 @@ import type { NavItem } from "@/components/Sidebar";
 const NAV: NavItem[] = [
   { href: "/parent", label: "This week", icon: <NavIcon name="home" /> },
   { href: "/parent/compliance", label: "Evaluation status", icon: <NavIcon name="clipboard" /> },
+  { href: "/parent/consent", label: "Consent", icon: <NavIcon name="check" /> },
   { href: "/parent/privacy", label: "Your data", icon: <NavIcon name="shield" /> },
 ];
 
