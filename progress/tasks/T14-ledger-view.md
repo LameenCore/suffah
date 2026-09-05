@@ -14,7 +14,7 @@ outcome: /admin/ledger — 4 stat tiles (locked principal, returns disbursed, sa
   family fee-status list. lib/db/ledger-queries.ts keeps principal out of every "spent"
   total per DATA_MODEL. Chart is inline SVG (no lib); dataviz palette validator passes
   light + dark. Admin home "ledger" card now links here.
-commits: <t14>
+commits: bd9e01e
 ---
 
 ## Goal

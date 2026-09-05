@@ -88,5 +88,5 @@ DB. Commit c6d3abb. Next: T16.
   list w/ paying/scholarship counts + mock-data disclaimer. try/catch -> friendly panel
   when Supabase unconfigured.
 - app/admin/page.tsx — "Waqf & donation ledger" card now links to /admin/ledger.
-- build + lint green. Not visually verified vs live data (no .env.local). Commit <t14>.
+- build + lint green. Not visually verified vs live data (no .env.local). Commit bd9e01e.
 - Next free: T10, T15, T16. T08 is taken by the other session.
