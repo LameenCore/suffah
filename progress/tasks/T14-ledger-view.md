@@ -2,9 +2,9 @@
 id: T14
 title: Admin ledger view + family fee status
 phase: 5
-status: todo
-owner: —
-claimed: —
+status: doing
+owner: https://claude.ai/code/session_011H4sTF36JvRXwmwmj5Xkcr
+claimed: 2026-09-05T15:50:00Z
 updated: 2026-09-05
 depends_on: [T13, T11]
 ---
