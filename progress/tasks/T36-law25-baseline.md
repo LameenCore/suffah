@@ -2,9 +2,9 @@
 id: T36
 title: Quebec Law 25 baseline (privacy)
 phase: 10
-status: todo
-owner: —
-claimed: —
+status: doing
+owner: https://claude.ai/code/session_011H4sTF36JvRXwmwmj5Xkcr
+claimed: 2026-09-06T04:15:00Z
 updated: 2026-09-05
 depends_on: [T30]
 source: post-hackathon roadmap (EdTech-checklist analysis)

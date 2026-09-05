@@ -2,9 +2,9 @@
 id: T38
 title: Terms of Service / Privacy Policy / AUP
 phase: 10
-status: todo
-owner: —
-claimed: —
+status: doing
+owner: https://claude.ai/code/session_011H4sTF36JvRXwmwmj5Xkcr
+claimed: 2026-09-06T04:15:00Z
 updated: 2026-09-05
 depends_on: []
 source: post-hackathon roadmap (EdTech-checklist analysis)
