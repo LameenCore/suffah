@@ -31,4 +31,4 @@ persist content, why start with these 3 courses.
   instruction, waqf, objective grading, persist-once, living compliance, multi-tenant,
   Seerah hybrid, the stack, dev-auth-first, anti-leaderboard, the 3 courses).
 - Docs-only, no collision.
-- commits: <t75>
+- commits: 8c332e4
