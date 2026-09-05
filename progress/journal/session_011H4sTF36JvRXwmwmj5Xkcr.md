@@ -254,3 +254,30 @@ for the T25 UI redesign - so everything here is docs / lib / scripts / tests.
   the whole app, persisted per user, FR settable as tenant default.
 - BOARD roadmap rows corrected (T39/T40/T55/T57 were stale at todo).
 Pushed through c351e12. main: build + lint + test + check:integrity green.
+
+## 2026-09-06 - T74, T69, then T30 (real auth) + judging-prep tasks
+Phase 14 (T67-T78) added from the MuslimHacks rubric. Done this stretch:
+- T77 docs/qa-prep.md - drafted answers to every judge-Q&A checklist question,
+  repo-grounded, honest on mocks / LLM dependency / coverage.
+- T74 coverage - @vitest/coverage-v8 + npm run test:coverage; +5 boundary tests
+  (38 total). Numbers: questions.ts (grading) 100%, status.ts ~98%, overall lib/
+  ~8% by line (Supabase glue - T54 harness). Stated in README + pitch + qa-prep.
+- T69 docs/research/market-and-competitors.md - 13 comparables across AI tutoring
+  (Khanmigo $15/student/yr, $2.75B market), Islamic homeschool (Sahlah/Zaid/
+  Allamah), waqf-tech (WaqfChain/baraka.fund stop at fund flow), compliance tools;
+  gap matrix; folded into pitch + qa-prep.
+- T30 REAL AUTH (user asked: 3 separate demo emails + a real signup page):
+  * migration 0009_user_auth_link (users.auth_id -> auth.users)
+  * lib/auth: session -> users row via auth_id; dev cookie still short-circuits
+  * proxy.ts (Next 16 middleware rename): session refresh + guard
+  * /login (+ "try the demo" buttons) + /signup; / -> dashboard-or-login; sidebar
+    "switch" -> "sign out"
+  * scripts/seed-auth.ts + npm run seed:auth: admin@/parent@/student@ suffa.demo,
+    password suffademo1234, linked to a1/b1/c1. seed emails updated to match.
+  Verified live e2e: all 3 password logins resolve to the right role/row; a real
+  sb- session cookie renders /admin; unauth -> /login?next; all 3 dashboards
+  render with data; build + lint + 38 tests green.
+- BUG FIX (6e192d0): the 30s AI timeout I'd added for demo-resilience was too
+  tight and broke bulk lesson gen (Seerah node 3 failed). Raised to 90s +
+  SUFFA_AI_TIMEOUT_MS override. Content re-generated clean afterwards.
+Commits: dc8d21d, fb06c89, 412745f, 6fdc7e3, 6a8b3e3, ee47c27, 6e192d0 (+ hashes).

@@ -2,9 +2,10 @@
 id: T30
 title: Real auth - sign-up / sign-in page + 3 role accounts (replace the dev cookie)
 phase: 9
-status: doing
+status: done
 owner: https://claude.ai/code/session_011H4sTF36JvRXwmwmj5Xkcr
 claimed: 2026-09-06T01:35:00Z
+completed: 2026-09-06T02:40:00Z
 updated: 2026-09-05
 depends_on: []
 source: post-hackathon roadmap + user request (separate accounts, real signup)
@@ -20,33 +21,35 @@ resolver swap is contained; the visible work is the auth pages and the seeded
 accounts.
 
 ## Done when
-- [ ] **Supabase Auth** wired: email + password (Google / Microsoft optional).
-      `getCurrentUser` / `requireRole` resolve from the Supabase session; `users.role`
-      + `users.masjid_id` read from a `users` row keyed to `auth.users.id`. No call
-      site changes.
-- [ ] **`/signup`** - create an account (name, email, password, role for the demo;
-      in production a parent creates the account and consent gates the child - see T37).
-      **`/login`** - sign in. **Sign out** in the dashboard chrome. Session refresh via
-      middleware; the route groups (`/admin` `/parent` `/student`) are guarded there.
-- [ ] **Three seeded demo accounts**, one email each, documented in the README and on
-      the login page as "try the demo":
-      `admin@suffa.demo` (Masjid Admin), `parent@suffa.demo` (parent of Yusuf),
-      `student@suffa.demo` / or `yusuf@suffa.demo` (Secondary 1 student). Seeded with
-      a known password via a script (`scripts/seed-auth.ts`) that creates the
-      `auth.users` rows and links them to the existing seeded `users` rows (ids
-      a1 / b1 / c1 - keep them so all the seeded data still resolves).
-- [ ] `NEXT_PUBLIC_SUFFA_DEV_ROLE` still works for local dev only; the dev cookie path
-      is removed from the default flow.
-- [ ] build + lint + tests green; the 5-step demo still works signed in as the three
-      accounts.
+- [x] **Supabase Auth** wired: email + password. `getCurrentUser` resolves the
+      Supabase session -> `users` row via `users.auth_id` (migration 0009);
+      `requireRole` -> `/login`. No call-site changes. Google/Microsoft deferred.
+- [x] **`/login`** (email+password + "try the demo" role buttons + link to signup),
+      **`/signup`** (name/email/password/role -> creates the auth user, auto-confirms
+      via the service role, inserts the `users` row, signs in). **Sign out** in the
+      sidebar. `proxy.ts` (Next 16 middleware) refreshes the session + bounces
+      unauthenticated visitors off `/admin` `/parent` `/student`. `/` -> dashboard or `/login`.
+- [x] **Three demo accounts** - `admin@` / `parent@` / `student@ suffa.demo`,
+      password `suffademo1234` (`SUFFA_DEMO_PASSWORD`). `scripts/seed-auth.ts` +
+      `npm run seed:auth` creates the `auth.users` rows and links them to the seeded
+      a1/b1/c1. Documented in README + on the login page. Seed emails updated to match.
+- [x] `NEXT_PUBLIC_SUFFA_DEV_ROLE` + the signed dev cookie still work (local dev, CI,
+      the login "try the demo" buttons); they are no longer the default path.
+- [x] build + lint + 38 tests green. Auth verified live: all 3 accounts sign in and
+      resolve to the right role/row; `/` and `/admin` redirect correctly. Dashboard
+      render re-checked after content regen.
 
 ## Notes (owner appends)
-- COLLISION: the sign-up/sign-in pages + chrome + layout guards live in `app/` +
-  `components/`, which T25 (UI redesign) is holding. Coordinate: either the T25 owner
-  folds the auth pages into the redesign, or this waits until T25 lands. The
-  non-colliding groundwork - `scripts/seed-auth.ts`, the `lib/auth` resolver, a
-  migration if `users` needs an `auth_id` column - can be done first.
-- Keep the seeded `users` ids (a1/b1/c1 ...) - `supabase/seed.sql`, `scripts/seed.ts`,
-  `scripts/seed-demo-progress.ts`, `lib/auth` DEMO_MASJID_ID and every fixture depend
-  on them.
-- T31 (RLS) builds directly on this - RLS policies need `auth.uid()`.
+- T25 landed before this started, so the pages could be built directly in `app/` +
+  `components/` with the new design system (Card/Button/Motif/Mascot).
+- migration `0009_user_auth_link.sql` shares the `0009` number with the other
+  session's `0009_support_requests.sql` - both apply (runner tracks full filenames).
+- One-off: `npm run seed` wipes the masjid (FK cascade) which drops the `auth_id`
+  links AND the generated content - run `seed:auth` + the `gen:*` scripts after any
+  full reseed. `demo:reset` does not touch auth.
+- Seed `users.email` for c1 changed `yusuf@` -> `student@suffa.demo` to match the
+  login. `name` stays "Yusuf (Secondary 1)".
+- T31 (RLS) builds directly on this - policies key off `auth.uid()` and `users.auth_id`.
+- Not done: Google/Microsoft OAuth, password reset, and folding the parent-creates-
+  child consent flow (T37) - all follow-ups.
+commits: 6a8b3e3, ee47c27, 6e192d0
