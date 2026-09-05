@@ -15,7 +15,7 @@ outcome: docs/data-map.md - full data inventory (every table -> store -> region 
   (ca-central-1 + Canadian Vercel region), and a 6-step migration plan from the current
   us-west-2 project. Minimisation list led by "pseudonymise students before the briefing
   call".
-commits: <t39>
+commits: 539caf8
 ---
 
 ## Why
