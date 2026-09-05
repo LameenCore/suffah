@@ -2,9 +2,9 @@
 id: T15
 title: Volunteer onboarding form + churn log
 phase: 6
-status: todo
-owner: —
-claimed: —
+status: doing
+owner: https://claude.ai/code/session_011H4sTF36JvRXwmwmj5Xkcr
+claimed: 2026-09-05T16:55:00Z
 updated: 2026-09-05
 depends_on: [T11]
 ---
