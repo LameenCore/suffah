@@ -25,7 +25,7 @@ const DASHBOARDS: { role: Role; title: string; blurb: string; accent: string }[]
   {
     role: "student",
     title: "Student Playground",
-    blurb: "AI-led lessons, checkpoints, and assessments - self-paced within the pod's unit.",
+    blurb: "Lessons, checkpoints, and assessments - self-paced within the pod's unit.",
     accent: "hover:border-violet-500",
   },
   {
@@ -48,8 +48,8 @@ export default function Home({ searchParams }: PageProps<"/">) {
       <div className="space-y-3">
         <h1 className="text-4xl font-semibold tracking-tight">Suffa</h1>
         <p className="text-zinc-600 dark:text-zinc-400">
-          AI-sustained, pod-based homeschooling for Quebec Muslim families. Pick a
-          dashboard to enter the demo.
+          Pod-based homeschooling for Quebec Muslim families, sustained by the
+          community. Pick a dashboard to enter the demo.
         </p>
         <Notice searchParams={searchParams} />
       </div>

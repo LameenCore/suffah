@@ -120,8 +120,8 @@ export function HandoffDemo({ state }: { state: HandoffDemoState }) {
       <Step n={1} title="A live session is running" active={online} done={offline}>
         <p className="text-sm text-zinc-600 dark:text-zinc-400">
           {state.currentVolunteer?.name ?? "The volunteer"} is leading{" "}
-          {state.pod.name}&apos;s enrichment session. The AI playground is delivering the
-          actual curriculum underneath.
+          {state.pod.name}&apos;s enrichment session. The playground is delivering
+          the actual curriculum underneath.
         </p>
       </Step>
 

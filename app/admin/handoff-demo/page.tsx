@@ -30,7 +30,7 @@ export default async function HandoffDemoPage() {
         <h1 className="text-2xl font-semibold tracking-tight">Live handoff simulation</h1>
         <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
           A repeatable on-stage sequence: a volunteer drops out mid-session, the pod keeps
-          learning through the AI playground, and the replacement volunteer picks up with a
+          learning through the playground, and the replacement volunteer picks up with a
           generated handoff briefing. This <em>performs</em> the churn-resilience claim
           instead of describing it.
         </p>

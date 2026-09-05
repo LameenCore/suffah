@@ -67,7 +67,7 @@ export default function AdminHome() {
             </span>
           </div>
           <ul className="mt-2 space-y-1 text-sm text-zinc-500 dark:text-zinc-400">
-            <li className="flex gap-2"><span aria-hidden>·</span>AI handoff briefing per pod</li>
+            <li className="flex gap-2"><span aria-hidden>·</span>Handoff briefing per pod</li>
             <li className="flex gap-2"><span aria-hidden>·</span>How the pod learns, not just where it is</li>
             <li className="flex gap-2"><span aria-hidden>·</span>Session notes feed the briefing</li>
           </ul>
@@ -143,7 +143,7 @@ export default function AdminHome() {
             </span>
           </div>
           <ul className="mt-2 space-y-1 text-sm text-zinc-500 dark:text-zinc-400">
-            <li className="flex gap-2"><span aria-hidden>·</span>Scholars / elders annotate the AI draft</li>
+            <li className="flex gap-2"><span aria-hidden>·</span>Scholars / elders annotate the lesson draft</li>
             <li className="flex gap-2"><span aria-hidden>·</span>Notes folded into the next lesson version</li>
             <li className="flex gap-2"><span aria-hidden>·</span>No external curriculum vendor needed</li>
           </ul>

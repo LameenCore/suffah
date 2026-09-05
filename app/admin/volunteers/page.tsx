@@ -30,7 +30,7 @@ export default async function AdminVolunteersPage() {
         <h1 className="text-2xl font-semibold tracking-tight">Volunteers</h1>
         <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
           Onboard volunteers, track vetting status, and log departures. Volunteers run
-          live enrichment - the AI carries primary instruction, so a departure never
+          live enrichment - the playground carries primary instruction, so a departure never
           stops learning.
         </p>
       </div>

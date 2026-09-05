@@ -13,7 +13,7 @@ export default async function StudentHome() {
         <h1 className="text-2xl font-semibold tracking-tight">Playground</h1>
         <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
           {pod
-            ? `You're in ${pod.name}. Learn at your own pace - the AI teaches the lesson, then a checkpoint before you move on.`
+            ? `You're in ${pod.name}. Learn at your own pace: work through the lesson, then a checkpoint before you move on.`
             : "You're not in a pod yet. Ask the masjid admin to add you to one."}
         </p>
       </div>

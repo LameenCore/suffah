@@ -92,9 +92,9 @@ export default async function AdminContinuityPage() {
         <h1 className="text-2xl font-semibold tracking-tight">Continuity Fingerprint</h1>
         <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
           When a volunteer leaves, the next one gets more than &ldquo;Node 4 of Unit 2&rdquo;.
-          This is an AI-generated briefing on <em>how</em> each pod has been
-          learning, assembled from its progress, checkpoint history, and session
-          notes, so churn becomes a knowledge handoff instead of a data-loss event.
+          This briefing captures <em>how</em> each pod has been learning,
+          assembled from its progress, checkpoint history, and session notes, so
+          churn becomes a knowledge handoff instead of a data-loss event.
         </p>
       </div>
 
