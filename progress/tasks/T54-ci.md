@@ -2,9 +2,9 @@
 id: T54
 title: CI: lint + typecheck + build + tests on every PR
 phase: 12
-status: todo
-owner: —
-claimed: —
+status: doing
+owner: https://claude.ai/code/session_01KZau462fdpkrsdLZNLrD9T
+claimed: 2026-09-05T18:45:00Z
 updated: 2026-09-05
 depends_on: [T55]
 source: post-hackathon roadmap (EdTech-checklist analysis)
