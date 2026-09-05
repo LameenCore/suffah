@@ -1,7 +1,7 @@
 # BOARD — Suffa progress snapshot
 
 **Derived from `progress/tasks/`. Not authoritative. Regenerate after any claim/finish.**
-Last regenerated: 2026-09-05 (T08 done; T10 in progress)
+Last regenerated: 2026-09-05 (T10 done; T08 done)
 
 | id  | phase | status | owner | title |
 |-----|-------|--------|-------|-------|
@@ -14,7 +14,7 @@ Last regenerated: 2026-09-05 (T08 done; T10 in progress)
 | T07 | 2 | done  | — | lib/ai/checkpoint.ts — checkpoint gen/grade, gate progression |
 | T08 | 3 | done  | — | lib/ai/assessment.ts — unit assessment |
 | T09 | 3 | todo  | — | Term exam variant (timed) + term_exam_results |
-| T10 | 4 | doing | session_011H4sTF | Parent dashboard — progress + results per course |
+| T10 | 4 | done  | — | Parent dashboard — progress + results per course |
 | T11 | 4 | done  | — | Admin dashboard — pods, assignment, continuity view |
 | T12 | 4 | todo  | — | Compliance report generation + exportable view |
 | T13 | 5 | done  | — | waqf_ledger table + mock entries |
@@ -27,8 +27,7 @@ Last regenerated: 2026-09-05 (T08 done; T10 in progress)
 - **T09** — Term exam variant (timed) + term_exam_results (dep T08 done)
 - **T15** — Volunteer onboarding form + churn log (dep T11 done)
 - **T16** — regulation disclaimers (no deps, can run anytime)
-- in progress: T10 parent dashboard (session_011H4sTF)
-- blocked: T12 (needs T09, T10)
+- blocked: T12 (needs T09; T10 done)
 
 ## Legend
 todo = free to claim · doing = owned now · blocked = see task's `blocker:` · done = see task's `outcome:`

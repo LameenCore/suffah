@@ -162,6 +162,14 @@ async function seed() {
     ]),
   );
 
+  // Family link (parent_children — migration 0005): the demo parent monitors
+  // Yusuf, the student who moves through the playground during the demo.
+  check(
+    await db.from("parent_children").insert([
+      { parent_user_id: U.parent, student_user_id: U.yusuf },
+    ]),
+  );
+
   console.log("Seeded demo masjid:", MASJID);
 }
 

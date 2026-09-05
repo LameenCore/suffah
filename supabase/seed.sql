@@ -96,4 +96,9 @@ insert into family_fee_status (masjid_id, student_user_id, status) values
   ('00000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-0000000000c3', 'fee_paid'),
   ('00000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-0000000000c4', 'scholarship_covered');
 
+-- Family link: the demo parent monitors Yusuf (the student who moves through the
+-- playground in the demo). parent_children is created by migration 0005.
+insert into parent_children (parent_user_id, student_user_id) values
+  ('00000000-0000-0000-0000-0000000000b1', '00000000-0000-0000-0000-0000000000c1');
+
 commit;

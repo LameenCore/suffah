@@ -90,3 +90,17 @@ DB. Commit c6d3abb. Next: T16.
 - app/admin/page.tsx — "Waqf & donation ledger" card now links to /admin/ledger.
 - build + lint green. Not visually verified vs live data (no .env.local). Commit bd9e01e.
 - Next free: T10, T15, T16. T08 is taken by the other session.
+
+## 2026-09-05 — T10 done
+- BUG/gap: schema had no parent->student link. Root fix: migration 0005_parent_children
+  (join table, FK cascade from users) + seed row demo parent b1 -> Yusuf c1 in both
+  supabase/seed.sql and scripts/seed.ts. Needs npm run migrate + npm run seed live.
+- lib/db/parent-queries.ts — getChildrenForParent (masjid + role guarded) and
+  getChildReport: per course -> pod pathway position/total + checkpoint_results,
+  unit_assessment_results, term_exam_results lists (all masjid/student scoped).
+- app/parent/page.tsx — full rewrite from the stub: one block per child, per-course
+  card with a progress bar + three result lists, pass/needs-review badges, dates.
+  RegulationNote on evaluation formats. try/catch -> friendly panel when unconfigured.
+- Unit/term rows show "None yet" until T08/T09 generation runs.
+- build + lint green; not verified vs live data. Commit <t10>.
+- Next free: T15, T16.
