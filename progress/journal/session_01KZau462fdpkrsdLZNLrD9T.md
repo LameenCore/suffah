@@ -249,3 +249,29 @@ Claimed T44 (no deps).
 Verified via script: 3-card deck -> submit 1/3 -> rescheduled -> deck empties;
 retention dueNow 3->0, accuracyLast7 -> 0.33. Ran demo:reset after.
 build + lint + tsc + 62 tests + check:integrity green. Commit <t44>.
+
+## 2026-09-05 — T45 done (AI lesson tutor)
+Claimed T45 (no deps). Builds on T34's rate-limit + model-call logging.
+
+- migration 0014_tutor_messages (role student|tutor, flagged; trigger blocks
+  UPDATE only - DELETE stays open for demo:reset + Law 25 erasure. Fixed the
+  trigger from the initial "block both" via a live ALTER since migrate.ts tracks
+  by filename.)
+- lib/ai/tutor.ts: askTutor() - context is ONLY the node's lesson (practice
+  PROMPTS, never answers; no checkpoint_content). System rules with OFF_TOPIC /
+  ESCALATE sentinels mapped to safe canned replies. messages.create, fallback
+  line on failure, both turns persisted, logModelCall(feature "tutor").
+  getTutorTranscript + countRecentTutorQuestions.
+- Action askTutorAction (assertAiRateLimit "tutor").
+- TutorPanel.tsx on the lesson page (collapsible). TutorTranscriptView.tsx on
+  /parent/compliance (own child) + /admin/compliance (any student -> volunteer
+  review).
+- getConsistency now also counts days with a tutor question.
+- check-integrity check 13 (tutor_messages UPDATE rejected). ModelFeature gained
+  "tutor".
+
+Verified live via script: on-topic -> grounded answer in the lesson's own words;
+"best video game?" -> flagged + redirected to enrichment; transcript persisted (4
+turns); consistency counts today; UPDATE rejected. demo:reset clears
+tutor_messages + review_items. build + lint + tsc + 62 tests + check:integrity(13)
+green. Commit <t45>.

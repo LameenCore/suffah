@@ -63,17 +63,23 @@ export async function getConsistency(
     return { daysThisWeek: 0, daysThisMonth: 0, lastActive: null, recent: [] };
   }
 
-  const [lp, cp, ua, te] = await Promise.all([
+  const [lp, cp, ua, te, tut] = await Promise.all([
     db.from("lesson_progress").select("completed_at").eq("student_user_id", studentUserId),
     db.from("checkpoint_results").select("attempted_at").eq("student_user_id", studentUserId),
     db.from("unit_assessment_results").select("attempted_at").eq("student_user_id", studentUserId),
     db.from("term_exam_results").select("attempted_at").eq("student_user_id", studentUserId),
+    db
+      .from("tutor_messages")
+      .select("created_at")
+      .eq("student_user_id", studentUserId)
+      .eq("role", "student"),
   ]);
   for (const [label, res] of [
     ["lesson_progress", lp],
     ["checkpoint_results", cp],
     ["unit_assessment_results", ua],
     ["term_exam_results", te],
+    ["tutor_messages", tut],
   ] as const) {
     if (res.error) throw new Error(`getConsistency (${label}): ${res.error.message}`);
   }
@@ -83,6 +89,7 @@ export async function getConsistency(
   for (const r of [...(cp.data ?? []), ...(ua.data ?? []), ...(te.data ?? [])]) {
     days.add(localDay(r.attempted_at as string));
   }
+  for (const r of tut.data ?? []) days.add(localDay(r.created_at as string));
 
   const today = todayLocal();
   const weekCutoff = daysAgoLocal(6);

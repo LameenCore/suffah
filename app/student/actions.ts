@@ -15,6 +15,7 @@ import {
 } from "@/lib/ai/checkpoint";
 import { generateTermExam, gradeTermExam, type TermExamGrade } from "@/lib/ai/term-exam";
 import { submitReview, type ReviewResult } from "@/lib/review";
+import { askTutor, type TutorReply, type TutorTurn } from "@/lib/ai/tutor";
 import { DEMO_TERM_LABEL } from "@/lib/types";
 
 async function requireStudent() {
@@ -105,4 +106,15 @@ export async function submitReviewAction(
 ): Promise<ReviewResult> {
   const user = await requireStudent();
   return submitReview(user.id, user.masjidId, answers);
+}
+
+/** Ask the lesson tutor a question about a node (T45). Rate-limited + logged. */
+export async function askTutorAction(
+  nodeId: string,
+  question: string,
+  history: TutorTurn[],
+): Promise<TutorReply> {
+  const user = await requireStudent();
+  assertAiRateLimit("tutor", user);
+  return askTutor(nodeId, user.id, user.masjidId, question, history ?? []);
 }

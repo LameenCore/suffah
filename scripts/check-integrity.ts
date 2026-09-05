@@ -205,6 +205,22 @@ async function main() {
     }
   }
 
+  // --- 13. tutor_messages cannot be edited (T45) ------------------
+  {
+    const { data } = await db.from("tutor_messages").select("id").limit(1);
+    const id = data?.[0]?.id as string | undefined;
+    if (!id) {
+      console.log("  skip  tutor_messages no-edit (no rows to probe)");
+    } else {
+      const upd = await db.from("tutor_messages").update({ content: "__probe__" }).eq("id", id);
+      report(
+        "tutor_messages cannot be edited (UPDATE rejected)",
+        upd.error ? [] : [{ note: "UPDATE was allowed" }],
+        (r) => `${r.note}`,
+      );
+    }
+  }
+
   console.log(failures === 0 ? "\nAll checks passed." : `\n${failures} check(s) FAILED.`);
   if (failures > 0) process.exitCode = 1;
 }

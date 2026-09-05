@@ -2,7 +2,9 @@ import Link from "next/link";
 import { requireRole } from "@/lib/auth";
 import { getChildrenForParent } from "@/lib/db/parent-queries";
 import { assembleComplianceReport } from "@/lib/compliance/report";
+import { getTutorTranscript } from "@/lib/ai/tutor";
 import { ComplianceReportView } from "@/components/compliance/ComplianceReportView";
+import { TutorTranscriptView } from "@/components/student/TutorTranscriptView";
 import { RegulationNote } from "@/components/RegulationNote";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Card } from "@/components/ui/Card";
@@ -26,6 +28,9 @@ export default async function ParentCompliancePage({
   const report = selected
     ? await assembleComplianceReport(selected.id, selected.name, user.masjidId)
     : null;
+  const tutorTranscripts = selected
+    ? await getTutorTranscript(selected.id, user.masjidId).catch(() => [])
+    : [];
 
   return (
     <div className="space-y-6">
@@ -68,6 +73,7 @@ export default async function ParentCompliancePage({
             </div>
           ) : null}
           {report ? <ComplianceReportView report={report} /> : null}
+          {selected ? <TutorTranscriptView transcripts={tutorTranscripts} /> : null}
         </>
       )}
     </div>

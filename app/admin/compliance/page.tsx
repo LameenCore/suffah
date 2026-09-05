@@ -2,7 +2,9 @@ import Link from "next/link";
 import { requireRole } from "@/lib/auth";
 import { listStudents } from "@/lib/db/admin-queries";
 import { assembleComplianceReport, getLatestStoredReport } from "@/lib/compliance/report";
+import { getTutorTranscript } from "@/lib/ai/tutor";
 import { ComplianceReportView } from "@/components/compliance/ComplianceReportView";
+import { TutorTranscriptView } from "@/components/student/TutorTranscriptView";
 import { SnapshotBar } from "@/components/compliance/SnapshotBar";
 import { RegulationNote } from "@/components/RegulationNote";
 import { PageHeader } from "@/components/ui/PageHeader";
@@ -25,12 +27,13 @@ export default async function AdminCompliancePage({
 
   const selected = students.find((s) => s.id === selectedId) ?? students[0] ?? null;
 
-  const [report, stored] = selected
+  const [report, stored, tutorTranscripts] = selected
     ? await Promise.all([
         assembleComplianceReport(selected.id, selected.name, user.masjidId),
         getLatestStoredReport(selected.id, user.masjidId),
+        getTutorTranscript(selected.id, user.masjidId).catch(() => []),
       ])
-    : [null, null];
+    : [null, null, []];
 
   return (
     <div className="space-y-6">
@@ -79,6 +82,7 @@ export default async function AdminCompliancePage({
                 lastSnapshotAt={stored?.generatedAt ?? null}
               />
               <ComplianceReportView report={report} />
+              <TutorTranscriptView transcripts={tutorTranscripts} />
             </>
           ) : null}
         </>

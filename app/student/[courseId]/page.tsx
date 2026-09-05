@@ -4,6 +4,7 @@ import { requireRole } from "@/lib/auth";
 import { getPlayground, getLatestCheckpointResult } from "@/lib/db/queries";
 import { stripAnswers } from "@/lib/ai/checkpoint";
 import { LessonView } from "@/components/student/LessonView";
+import { TutorPanel } from "@/components/student/TutorPanel";
 import { MarkCompleteButton } from "@/components/student/MarkCompleteButton";
 import { GenerateLessonPanel } from "@/components/student/GenerateLessonPanel";
 import { Checkpoint } from "@/components/student/Checkpoint";
@@ -54,6 +55,8 @@ export default async function CourseLessonPage({
       ) : (
         <div className="space-y-6">
           <LessonView title={currentNode.title} lesson={currentNode.lesson_content} />
+
+          <TutorPanel nodeId={currentNode.id} />
 
           {!lessonComplete ? (
             <MarkCompleteButton nodeId={currentNode.id} completed={false} />
