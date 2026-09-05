@@ -2,9 +2,9 @@
 id: T30
 title: Real auth - sign-up / sign-in page + 3 role accounts (replace the dev cookie)
 phase: 9
-status: todo
-owner: —
-claimed: —
+status: doing
+owner: https://claude.ai/code/session_011H4sTF36JvRXwmwmj5Xkcr
+claimed: 2026-09-06T01:35:00Z
 updated: 2026-09-05
 depends_on: []
 source: post-hackathon roadmap + user request (separate accounts, real signup)
