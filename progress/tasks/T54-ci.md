@@ -20,7 +20,7 @@ outcome: |
   Two done-when items are GitHub/Vercel config, not a repo file - documented in
   Notes below: (a) branch-protection "required check" must be toggled in repo
   settings, (b) per-PR preview deploy is deferred to T27 (no Vercel project yet).
-commits: <t54>
+commits: 55d5cdb
 ---
 
 ## Why
