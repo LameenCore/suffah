@@ -1,0 +1,91 @@
+-- Suffa — demo seed data (hackathon).
+-- Run after 0001_init.sql. Idempotent: clears the demo masjid first.
+--
+-- Fixed UUIDs so the app (lib/auth demo users, Phase 2 queries) can reference
+-- rows directly. One masjid, one pod of 4 students, one volunteer, three
+-- courses each with one unit and a short pathway.
+
+begin;
+
+delete from masjids where id = '00000000-0000-0000-0000-000000000001';
+
+-- Tenancy + people ------------------------------------------------------------
+
+insert into masjids (id, name) values
+  ('00000000-0000-0000-0000-000000000001', 'Masjid As-Suffa (Demo)');
+
+insert into users (id, masjid_id, role, name, email) values
+  ('00000000-0000-0000-0000-0000000000a1', '00000000-0000-0000-0000-000000000001', 'admin',   'Masjid Admin',          'admin@suffa.demo'),
+  ('00000000-0000-0000-0000-0000000000b1', '00000000-0000-0000-0000-000000000001', 'parent',  'Parent (Demo Family)',  'parent@suffa.demo'),
+  ('00000000-0000-0000-0000-0000000000c1', '00000000-0000-0000-0000-000000000001', 'student', 'Yusuf (Secondary 1)',   'yusuf@suffa.demo'),
+  ('00000000-0000-0000-0000-0000000000c2', '00000000-0000-0000-0000-000000000001', 'student', 'Maryam (Secondary 1)',  'maryam@suffa.demo'),
+  ('00000000-0000-0000-0000-0000000000c3', '00000000-0000-0000-0000-000000000001', 'student', 'Idris (Secondary 1)',   'idris@suffa.demo'),
+  ('00000000-0000-0000-0000-0000000000c4', '00000000-0000-0000-0000-000000000001', 'student', 'Safiya (Secondary 1)',  'safiya@suffa.demo');
+
+insert into volunteers (id, masjid_id, user_id, name, status, certification_note, joined_at) values
+  ('00000000-0000-0000-0000-0000000000d1', '00000000-0000-0000-0000-000000000001', null, 'Br. Kareem', 'active', 'CEGEP math tutor; reference check on file (mock).', now() - interval '40 days');
+
+-- Pod -----------------------------------------------------------------------
+
+insert into pods (id, masjid_id, name, volunteer_id) values
+  ('00000000-0000-0000-0000-0000000000e1', '00000000-0000-0000-0000-000000000001', 'Pod Al-Farabi', '00000000-0000-0000-0000-0000000000d1');
+
+insert into pod_students (pod_id, student_user_id) values
+  ('00000000-0000-0000-0000-0000000000e1', '00000000-0000-0000-0000-0000000000c1'),
+  ('00000000-0000-0000-0000-0000000000e1', '00000000-0000-0000-0000-0000000000c2'),
+  ('00000000-0000-0000-0000-0000000000e1', '00000000-0000-0000-0000-0000000000c3'),
+  ('00000000-0000-0000-0000-0000000000e1', '00000000-0000-0000-0000-0000000000c4');
+
+-- Courses + curriculum ----------------------------------------------------------
+
+insert into courses (id, masjid_id, name, grade_band) values
+  ('00000000-0000-0000-0000-0000000000f1', '00000000-0000-0000-0000-000000000001', 'Math',        'Secondary 1'),
+  ('00000000-0000-0000-0000-0000000000f2', '00000000-0000-0000-0000-000000000001', 'Seerah',      'Secondary 1'),
+  ('00000000-0000-0000-0000-0000000000f3', '00000000-0000-0000-0000-000000000001', 'AI Literacy', 'Secondary 1');
+
+insert into units (id, course_id, title, sequence_order) values
+  ('00000000-0000-0000-0000-000000010001', '00000000-0000-0000-0000-0000000000f1', 'Operations with Integers',        1),
+  ('00000000-0000-0000-0000-000000010002', '00000000-0000-0000-0000-0000000000f2', 'The Meccan Period',               1),
+  ('00000000-0000-0000-0000-000000010003', '00000000-0000-0000-0000-0000000000f3', 'What a Model Actually Does',       1);
+
+-- Math pathway (maps to Quebec Sec 1 arithmetic progression)
+insert into pathway_nodes (id, course_id, unit_id, sequence_order, title) values
+  ('00000000-0000-0000-0000-000000020001', '00000000-0000-0000-0000-0000000000f1', '00000000-0000-0000-0000-000000010001', 1, 'Adding and subtracting integers'),
+  ('00000000-0000-0000-0000-000000020002', '00000000-0000-0000-0000-0000000000f1', '00000000-0000-0000-0000-000000010001', 2, 'Multiplying and dividing integers'),
+  ('00000000-0000-0000-0000-000000020003', '00000000-0000-0000-0000-0000000000f1', '00000000-0000-0000-0000-000000010001', 3, 'Order of operations with integers');
+
+-- Seerah pathway
+insert into pathway_nodes (id, course_id, unit_id, sequence_order, title) values
+  ('00000000-0000-0000-0000-000000020101', '00000000-0000-0000-0000-0000000000f2', '00000000-0000-0000-0000-000000010002', 1, 'Mecca before the revelation'),
+  ('00000000-0000-0000-0000-000000020102', '00000000-0000-0000-0000-0000000000f2', '00000000-0000-0000-0000-000000010002', 2, 'The first revelation'),
+  ('00000000-0000-0000-0000-000000020103', '00000000-0000-0000-0000-0000000000f2', '00000000-0000-0000-0000-000000010002', 3, 'The early community and its trials');
+
+-- AI Literacy pathway
+insert into pathway_nodes (id, course_id, unit_id, sequence_order, title) values
+  ('00000000-0000-0000-0000-000000020201', '00000000-0000-0000-0000-0000000000f3', '00000000-0000-0000-0000-000000010003', 1, 'Prediction, not knowledge'),
+  ('00000000-0000-0000-0000-000000020202', '00000000-0000-0000-0000-0000000000f3', '00000000-0000-0000-0000-000000010003', 2, 'Training data and where it comes from'),
+  ('00000000-0000-0000-0000-000000020203', '00000000-0000-0000-0000-0000000000f3', '00000000-0000-0000-0000-000000010003', 3, 'Why models get things confidently wrong');
+
+-- Pod continuity: pod is on node 1 of each course
+insert into pod_progress (pod_id, course_id, current_node_id) values
+  ('00000000-0000-0000-0000-0000000000e1', '00000000-0000-0000-0000-0000000000f1', '00000000-0000-0000-0000-000000020001'),
+  ('00000000-0000-0000-0000-0000000000e1', '00000000-0000-0000-0000-0000000000f2', '00000000-0000-0000-0000-000000020101'),
+  ('00000000-0000-0000-0000-0000000000e1', '00000000-0000-0000-0000-0000000000f3', '00000000-0000-0000-0000-000000020201');
+
+-- Funding (mock) --------------------------------------------------------------
+
+insert into waqf_ledger (masjid_id, entry_type, amount, note, created_at) values
+  ('00000000-0000-0000-0000-000000000001', 'principal_deposit',     250000.00, 'Founding waqf endowment (locked principal)', now() - interval '1 year'),
+  ('00000000-0000-0000-0000-000000000001', 'return_disbursed',       -3200.00, 'Q1 operating draw (platform + coordination)', now() - interval '9 months'),
+  ('00000000-0000-0000-0000-000000000001', 'return_disbursed',       -3400.00, 'Q2 operating draw',                          now() - interval '6 months'),
+  ('00000000-0000-0000-0000-000000000001', 'return_disbursed',       -3550.00, 'Q3 operating draw',                          now() - interval '3 months'),
+  ('00000000-0000-0000-0000-000000000001', 'sadaqah_received',        5000.00, 'Ramadan scholarship drive',                  now() - interval '5 months'),
+  ('00000000-0000-0000-0000-000000000001', 'scholarship_allocated',  -1200.00, 'Safiya — full fee scholarship (term)',       now() - interval '2 months');
+
+insert into family_fee_status (masjid_id, student_user_id, status) values
+  ('00000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-0000000000c1', 'fee_paid'),
+  ('00000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-0000000000c2', 'fee_paid'),
+  ('00000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-0000000000c3', 'fee_paid'),
+  ('00000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-0000000000c4', 'scholarship_covered');
+
+commit;

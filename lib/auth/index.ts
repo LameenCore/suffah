@@ -14,30 +14,31 @@ import { ROLES } from "@/lib/types";
 
 export const DEV_ROLE_COOKIE = "suffa-dev-role";
 
-/** The single demo masjid. Real builds derive this from the authenticated user. */
-export const DEMO_MASJID_ID = "masjid-demo";
+/** The single demo masjid — matches supabase/seed.sql. */
+export const DEMO_MASJID_ID = "00000000-0000-0000-0000-000000000001";
 
+// IDs match supabase/seed.sql so dashboard queries hit real seeded rows.
 const DEMO_USERS: Record<Role, SessionUser> = {
   admin: {
-    id: "user-admin-demo",
+    id: "00000000-0000-0000-0000-0000000000a1",
     masjidId: DEMO_MASJID_ID,
     role: "admin",
     name: "Masjid Admin",
     email: "admin@suffa.demo",
   },
   parent: {
-    id: "user-parent-demo",
+    id: "00000000-0000-0000-0000-0000000000b1",
     masjidId: DEMO_MASJID_ID,
     role: "parent",
     name: "Parent (Demo Family)",
     email: "parent@suffa.demo",
   },
   student: {
-    id: "user-student-demo",
+    id: "00000000-0000-0000-0000-0000000000c1",
     masjidId: DEMO_MASJID_ID,
     role: "student",
-    name: "Student (Secondary 1)",
-    email: "student@suffa.demo",
+    name: "Yusuf (Secondary 1)",
+    email: "yusuf@suffa.demo",
   },
 };
 
