@@ -2,7 +2,11 @@
 // attachment. Admin-only, aggregate, no per-student rows.
 
 import { getCurrentUser } from "@/lib/auth";
-import { getLearningAnalytics, analyticsToCsv } from "@/lib/db/analytics-queries";
+import {
+  getLearningAnalytics,
+  getMissionHealth,
+  analyticsToCsv,
+} from "@/lib/db/analytics-queries";
 
 export async function GET() {
   const user = await getCurrentUser();
@@ -12,7 +16,11 @@ export async function GET() {
   }
 
   try {
-    const csv = analyticsToCsv(await getLearningAnalytics(user.masjidId));
+    const [analytics, health] = await Promise.all([
+      getLearningAnalytics(user.masjidId),
+      getMissionHealth(user.masjidId).catch(() => null),
+    ]);
+    const csv = analyticsToCsv(analytics, health);
     const stamp = new Date().toISOString().slice(0, 10);
     return new Response(csv, {
       headers: {

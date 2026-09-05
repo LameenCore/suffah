@@ -7,6 +7,7 @@ import { listStudents } from "@/lib/db/admin-queries";
 import { getServiceClient } from "@/lib/db";
 import { getChildReports, type ChildReport } from "@/lib/db/parent-queries";
 import { assembleFromChildReport } from "@/lib/compliance/report";
+import { getMonthSpend } from "@/lib/ai/budget";
 import type { ComplianceLevel } from "@/lib/compliance/status";
 import { DEMO_TERM_LABEL } from "@/lib/types";
 
@@ -238,8 +239,125 @@ export async function getLearningAnalytics(
   };
 }
 
+/**
+ * The core "mission health" metric set (T65). One object, one screen. Each field
+ * has a written definition in docs/metrics.md. Derived entirely from operational
+ * DB state — there is no event pipeline and no third-party tracker on a minors'
+ * product; that is the deliberate privacy-respecting instrumentation choice.
+ */
+export interface MissionHealth {
+  termLabel: string;
+  generatedAt: string;
+  /** mean of per-course completion rate (students at final node / enrolled) */
+  completionRate: number;
+  /** median days from account creation to first checkpoint *passed*; null if none */
+  timeToValueDays: number | null;
+  /** share of students with any checkpoint attempt in the last 30 days */
+  familyRetention30d: number;
+  /** watch + gap, from the compliance engine */
+  atRiskCount: number;
+  atRiskShare: number;
+  volunteerChurnRate: number;
+  /** this calendar month's AI spend / active students; null if no active students */
+  aiCostPerActiveStudentUsd: number | null;
+  waqfRunwayYears: number | null;
+}
+
+function median(nums: number[]): number | null {
+  if (nums.length === 0) return null;
+  const s = [...nums].sort((a, b) => a - b);
+  const mid = Math.floor(s.length / 2);
+  return s.length % 2 ? s[mid] : (s[mid - 1] + s[mid]) / 2;
+}
+
+export async function getMissionHealth(
+  masjidId: string,
+  termLabel: string = DEMO_TERM_LABEL,
+): Promise<MissionHealth> {
+  const db = getServiceClient();
+  const analytics = await getLearningAnalytics(masjidId, termLabel);
+
+  const roster = await listStudents(masjidId);
+  const ids = roster.map((s) => s.id);
+
+  const [createdRes, firstPassRes, spend] = await Promise.all([
+    ids.length
+      ? db.from("users").select("id, created_at").in("id", ids)
+      : Promise.resolve({ data: [] as { id: string; created_at: string }[] }),
+    ids.length
+      ? db
+          .from("checkpoint_results")
+          .select("student_user_id, attempted_at, passed")
+          .in("student_user_id", ids)
+          .eq("passed", true)
+          .order("attempted_at", { ascending: true })
+      : Promise.resolve({ data: [] as Record<string, unknown>[] }),
+    getMonthSpend(masjidId).catch(() => null),
+  ]);
+
+  const createdAt = new Map(
+    ((createdRes.data ?? []) as { id: string; created_at: string }[]).map((r) => [
+      r.id,
+      new Date(r.created_at).getTime(),
+    ]),
+  );
+  const firstPassAt = new Map<string, number>();
+  for (const r of (firstPassRes.data ?? []) as Record<string, unknown>[]) {
+    const sid = r.student_user_id as string;
+    if (!firstPassAt.has(sid)) {
+      firstPassAt.set(sid, new Date(r.attempted_at as string).getTime());
+    }
+  }
+  const ttvDays: number[] = [];
+  for (const [sid, first] of firstPassAt) {
+    const born = createdAt.get(sid);
+    if (born != null && first >= born) ttvDays.push((first - born) / 864e5);
+  }
+
+  const thirtyDaysAgo = Date.now() - 30 * 864e5;
+  let activeRecent = 0;
+  {
+    const { data } = ids.length
+      ? await db
+          .from("checkpoint_results")
+          .select("student_user_id, attempted_at")
+          .in("student_user_id", ids)
+          .gte("attempted_at", new Date(thirtyDaysAgo).toISOString())
+      : { data: [] as Record<string, unknown>[] };
+    activeRecent = new Set(
+      ((data ?? []) as Record<string, unknown>[]).map((r) => r.student_user_id as string),
+    ).size;
+  }
+
+  const completionRate =
+    analytics.courses.length > 0
+      ? analytics.courses.reduce((s, c) => s + c.completionRate, 0) / analytics.courses.length
+      : 0;
+  const atRiskCount = analytics.atRisk.watch + analytics.atRisk.gap;
+  const monthUsd = spend ? spend.spentUsd : null;
+
+  return {
+    termLabel,
+    generatedAt: new Date().toISOString(),
+    completionRate: clamp01(completionRate),
+    timeToValueDays: median(ttvDays),
+    familyRetention30d: roster.length ? clamp01(activeRecent / roster.length) : 0,
+    atRiskCount,
+    atRiskShare: analytics.students ? clamp01(atRiskCount / analytics.students) : 0,
+    volunteerChurnRate: analytics.volunteers.churnRate,
+    aiCostPerActiveStudentUsd:
+      monthUsd != null && analytics.studentsActive > 0
+        ? monthUsd / analytics.studentsActive
+        : null,
+    waqfRunwayYears: analytics.waqf.runwayYears,
+  };
+}
+
 /** Flatten the analytics into CSV rows for the export route. */
-export function analyticsToCsv(a: LearningAnalytics): string {
+export function analyticsToCsv(
+  a: LearningAnalytics,
+  health?: MissionHealth | null,
+): string {
   const rows: (string | number)[][] = [];
   const esc = (v: string | number) => {
     const s = String(v);
@@ -274,6 +392,35 @@ export function analyticsToCsv(a: LearningAnalytics): string {
     rows.push([`pod:${p.podName}`, "avg_progress", p.avgProgress.toFixed(3)]);
     rows.push([`pod:${p.podName}`, "checkpoint_pass_rate", p.checkpointPassRate.toFixed(3)]);
     rows.push([`pod:${p.podName}`, "at_risk", p.atRisk]);
+  }
+  if (health) {
+    rows.push(["mission_health", "completion_rate", health.completionRate.toFixed(3)]);
+    rows.push([
+      "mission_health",
+      "time_to_value_days",
+      health.timeToValueDays?.toFixed(1) ?? "",
+    ]);
+    rows.push([
+      "mission_health",
+      "family_retention_30d",
+      health.familyRetention30d.toFixed(3),
+    ]);
+    rows.push(["mission_health", "at_risk_count", health.atRiskCount]);
+    rows.push([
+      "mission_health",
+      "volunteer_churn_rate",
+      health.volunteerChurnRate.toFixed(3),
+    ]);
+    rows.push([
+      "mission_health",
+      "ai_cost_per_active_student_usd",
+      health.aiCostPerActiveStudentUsd?.toFixed(4) ?? "",
+    ]);
+    rows.push([
+      "mission_health",
+      "waqf_runway_years",
+      health.waqfRunwayYears?.toFixed(2) ?? "",
+    ]);
   }
   return rows.map((r) => r.map(esc).join(",")).join("\n") + "\n";
 }

@@ -1,5 +1,5 @@
 import { requireRole } from "@/lib/auth";
-import { getLearningAnalytics } from "@/lib/db/analytics-queries";
+import { getLearningAnalytics, getMissionHealth } from "@/lib/db/analytics-queries";
 import { PageHeader, SectionTitle } from "@/components/ui/PageHeader";
 import { StatCard } from "@/components/ui/StatCard";
 import { Card } from "@/components/ui/Card";
@@ -40,12 +40,19 @@ export default async function AdminAnalyticsPage() {
   const user = await requireRole("admin");
 
   let a: Awaited<ReturnType<typeof getLearningAnalytics>> | null = null;
+  let health: Awaited<ReturnType<typeof getMissionHealth>> | null = null;
   let loadError: string | null = null;
   try {
-    a = await getLearningAnalytics(user.masjidId);
+    [a, health] = await Promise.all([
+      getLearningAnalytics(user.masjidId),
+      getMissionHealth(user.masjidId),
+    ]);
   } catch (err) {
     loadError = err instanceof Error ? err.message : "could not load analytics";
   }
+
+  const one = (v: number | null, suffix = "") =>
+    v == null ? "—" : `${v.toFixed(1)}${suffix}`;
 
   return (
     <div className="space-y-7">
@@ -73,6 +80,52 @@ export default async function AdminAnalyticsPage() {
             </ButtonLink>
             <span className="text-xs text-ink-4">Term: {a.termLabel}</span>
           </div>
+
+          {health ? (
+            <Card as="section" tone="teal" className="p-5">
+              <SectionTitle>Mission health</SectionTitle>
+              <p className="mt-1 text-xs text-ink-3">
+                The seven numbers defined in{" "}
+                <code className="rounded bg-surface-2 px-1">docs/metrics.md</code> — all
+                derived from operational data, no tracker.
+              </p>
+              <dl className="mt-3 grid grid-cols-2 gap-x-4 gap-y-3 sm:grid-cols-4 lg:grid-cols-7">
+                {[
+                  { t: "Completion", v: pct(health.completionRate) },
+                  {
+                    t: "Time to value",
+                    v: one(health.timeToValueDays, "d"),
+                  },
+                  { t: "Retention 30d", v: pct(health.familyRetention30d) },
+                  {
+                    t: "At risk",
+                    v: `${health.atRiskCount} (${pct(health.atRiskShare)})`,
+                  },
+                  { t: "Volunteer churn", v: pct(health.volunteerChurnRate) },
+                  {
+                    t: "AI $/active",
+                    v:
+                      health.aiCostPerActiveStudentUsd == null
+                        ? "—"
+                        : `$${health.aiCostPerActiveStudentUsd.toFixed(2)}`,
+                  },
+                  {
+                    t: "Waqf runway",
+                    v: one(health.waqfRunwayYears, " yr"),
+                  },
+                ].map((m) => (
+                  <div key={m.t}>
+                    <dt className="text-[11px] font-semibold uppercase tracking-wide text-ink-4">
+                      {m.t}
+                    </dt>
+                    <dd className="mt-0.5 font-display text-lg font-semibold text-ink">
+                      {m.v}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+            </Card>
+          ) : null}
 
           <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             <StatCard

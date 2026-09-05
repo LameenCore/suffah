@@ -409,3 +409,24 @@ Commit: 9087c83
   series needs a periodic aggregate-snapshot job (noted in task).
 - eslint + next build clean.
 Commit: 87dccc4
+
+## T65 — define + instrument the core metrics
+
+- docs/metrics.md: the 7-metric set with exact formula, source table, cadence and
+  target for each (completion rate, time-to-value, family retention 30d, at-risk
+  count, volunteer churn, AI $/active student, waqf runway). States the
+  instrumentation stance: NO event pipeline / tracker — everything is derived on
+  read from operational DB state; a time series needs a periodic aggregate-
+  snapshot job (the one open follow-on).
+- lib/db/analytics-queries.ts: getMissionHealth(masjidId) assembles the 7 from
+  getLearningAnalytics + getMonthSpend (T56) + users.created_at / checkpoint
+  timestamps (time-to-value = median days enrol->first passed checkpoint;
+  retention = share with a checkpoint attempt in 30d). analyticsToCsv() gains an
+  optional health arg -> a mission_health CSV section.
+- app/admin/analytics/page.tsx: "Mission health" band (teal card, 7 figures) above
+  the detail. export/route.ts fetches health too.
+- Verified live: retention 1.00, at-risk 4 (1.00), churn 0.33, AI $/active $0.13,
+  runway 0.96yr. time-to-value null on the demo (seed checkpoint timestamps are
+  backdated before users.created_at — median correctly returns null; real usage
+  has created_at first). eslint + next build clean.
+Commit: PLACEHOLDER65
