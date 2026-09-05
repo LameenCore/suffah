@@ -6,6 +6,10 @@ import {
   type ChildReport,
   type CourseReport,
 } from "@/lib/db/parent-queries";
+import {
+  getChildBarakahSummary,
+  type ChildBarakahSummary,
+} from "@/lib/db/barakah-queries";
 
 const pct = (frac: number) => `${Math.round(frac * 100)}%`;
 const shortDate = (iso: string) =>
@@ -127,7 +131,47 @@ function CourseCard({ course }: { course: CourseReport }) {
   );
 }
 
-function ChildBlock({ report }: { report: ChildReport }) {
+function BarakahSummary({ barakah }: { barakah: ChildBarakahSummary }) {
+  if (barakah.phrases.length === 0 && barakah.entries.length === 0) return null;
+  return (
+    <section className="rounded-xl border border-black/10 bg-white p-4 dark:border-white/15 dark:bg-zinc-950">
+      <h3 className="font-medium">Character &amp; community</h3>
+      <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
+        What the pod&apos;s volunteers have noticed — not a score.
+      </p>
+      {barakah.phrases.length > 0 && (
+        <p className="mt-2 text-sm capitalize text-zinc-700 dark:text-zinc-200">
+          {barakah.phrases.join(" · ")}
+        </p>
+      )}
+      {barakah.entries.length > 0 && (
+        <ul className="mt-2 space-y-1 text-sm text-zinc-600 dark:text-zinc-300">
+          {barakah.entries.slice(0, 4).map((e) => (
+            <li key={e.id} className="flex gap-2">
+              <span aria-hidden className="text-zinc-400">
+                ·
+              </span>
+              <span>
+                {e.note ?? e.indicatorLabel}
+                {e.studentName == null && (
+                  <span className="text-zinc-400"> (whole pod)</span>
+                )}
+              </span>
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
+  );
+}
+
+function ChildBlock({
+  report,
+  barakah,
+}: {
+  report: ChildReport;
+  barakah: ChildBarakahSummary;
+}) {
   return (
     <div className="space-y-4">
       <div className="flex items-baseline gap-3">
@@ -141,6 +185,7 @@ function ChildBlock({ report }: { report: ChildReport }) {
           <CourseCard key={c.courseId} course={c} />
         ))}
       </div>
+      <BarakahSummary barakah={barakah} />
     </div>
   );
 }
@@ -148,12 +193,17 @@ function ChildBlock({ report }: { report: ChildReport }) {
 export default async function ParentHome() {
   const user = await requireRole("parent");
 
-  let reports: ChildReport[] = [];
+  let blocks: { report: ChildReport; barakah: ChildBarakahSummary }[] = [];
   let loadError: string | null = null;
 
   try {
     const children = await getChildrenForParent(user.id, user.masjidId);
-    reports = await Promise.all(children.map((c) => getChildReport(c, user.masjidId)));
+    blocks = await Promise.all(
+      children.map(async (c) => ({
+        report: await getChildReport(c, user.masjidId),
+        barakah: await getChildBarakahSummary(c.id, user.masjidId),
+      })),
+    );
   } catch (err) {
     loadError = err instanceof Error ? err.message : "could not load progress";
   }
@@ -179,14 +229,14 @@ export default async function ParentHome() {
           Progress is unavailable: {loadError}. Configure Supabase and run the seed to
           populate this view.
         </p>
-      ) : reports.length === 0 ? (
+      ) : blocks.length === 0 ? (
         <p className="rounded-xl border border-black/10 p-6 text-sm text-zinc-500 dark:border-white/15">
           No child is linked to this account yet.
         </p>
       ) : (
         <div className="space-y-8">
-          {reports.map((r) => (
-            <ChildBlock key={r.child.id} report={r} />
+          {blocks.map((b) => (
+            <ChildBlock key={b.report.child.id} report={b.report} barakah={b.barakah} />
           ))}
         </div>
       )}

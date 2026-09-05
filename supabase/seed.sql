@@ -112,4 +112,13 @@ insert into sponsorships (masjid_id, sponsor_label, amount, pod_id, unit_id, not
   ('00000000-0000-0000-0000-000000000001', 'Ramadan drive — anonymous',     900.00, '00000000-0000-0000-0000-0000000000e1', '00000000-0000-0000-0000-000000010002', 'Sponsors the Meccan Period unit (Seerah).'),
   ('00000000-0000-0000-0000-000000000001', 'Local family gift',             750.00, '00000000-0000-0000-0000-0000000000e1', '00000000-0000-0000-0000-000000010003', 'Sponsors the AI-literacy intro unit.');
 
+-- Barakah notes (T23) — pod_barakah_log is created by migration 0007. Short
+-- observations, never scores. student_user_id null = whole-pod note.
+insert into pod_barakah_log (masjid_id, pod_id, student_user_id, indicator, note, recorded_by, recorded_at) values
+  ('00000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-0000000000e1', null,                                     'attendance',  'Full pod present for all four sessions this week.',                    'Br. Kareem', now() - interval '3 days'),
+  ('00000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-0000000000e1', null,                                     'adab',        'Circle settled quickly; made du''a together before starting.',         'Br. Kareem', now() - interval '3 days'),
+  ('00000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-0000000000e1', '00000000-0000-0000-0000-0000000000c1', 'cooperation', 'Helped Idris work through sign errors without being asked.',            'Br. Kareem', now() - interval '6 days'),
+  ('00000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-0000000000e1', '00000000-0000-0000-0000-0000000000c1', 'reflection',  'Thoughtful reflection on what "prediction, not knowledge" means.',      'Br. Kareem', now() - interval '9 days'),
+  ('00000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-0000000000e1', '00000000-0000-0000-0000-0000000000c2', 'cooperation', 'Maryam slowed down to check her work and explained a step to Safiya.', 'Br. Kareem', now() - interval '6 days');
+
 commit;

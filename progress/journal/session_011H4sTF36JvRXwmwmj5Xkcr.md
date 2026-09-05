@@ -142,3 +142,18 @@ DB. Commit c6d3abb. Next: T16.
 - build + lint green; not verified vs live data. commit 5c93603.
 - Remaining unclaimed in my lane: T22 (mock/text), T23 (build). T18/T19/T20 with the
   other session or blocked on T12.
+
+## 2026-09-05 — T23 done
+- migration 0007_pod_barakah_log (pod_id, student_user_id nullable = whole-pod note,
+  indicator, note, recorded_by). Seed adds 5 notes.
+- lib/db/barakah-queries.ts — BARAKAH_INDICATORS (attendance/cooperation/reflection/
+  adab), listBarakahNotes (admin), getChildBarakahSummary (parent: calm phrases +
+  recent notes, NO scores/counts as rank), addBarakahNote (tenancy + pod-membership
+  checks).
+- app/admin/barakah/{page,actions}.ts + components/admin/BarakahCheckIn.tsx — weekly
+  check-in form + recent-notes list. Admin home gains a card.
+- app/parent/page.tsx — per-child "Character & community" section (phrases + notes).
+- Note: 0006 filename collides with the other session's 0006_continuity_fingerprint
+  (mine 0006_sponsorships already on main from T21). Migrate runner sorts by full
+  filename + tracks each separately, so both apply — cosmetic only, left as-is.
+- build + lint green on the merged tree; not verified vs live data. commit <t23>.

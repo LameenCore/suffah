@@ -195,6 +195,18 @@ async function seed() {
     ]),
   );
 
+  // Barakah notes (pod_barakah_log — migration 0007). Short observations, never
+  // scores. student_user_id null = whole-pod note.
+  check(
+    await db.from("pod_barakah_log").insert([
+      { masjid_id: MASJID, pod_id: POD, student_user_id: null, indicator: "attendance", note: "Full pod present for all four sessions this week.", recorded_by: "Br. Kareem", recorded_at: daysAgo(3) },
+      { masjid_id: MASJID, pod_id: POD, student_user_id: null, indicator: "adab", note: "Circle settled quickly; made du'a together before starting.", recorded_by: "Br. Kareem", recorded_at: daysAgo(3) },
+      { masjid_id: MASJID, pod_id: POD, student_user_id: U.yusuf, indicator: "cooperation", note: "Helped Idris work through sign errors without being asked.", recorded_by: "Br. Kareem", recorded_at: daysAgo(6) },
+      { masjid_id: MASJID, pod_id: POD, student_user_id: U.yusuf, indicator: "reflection", note: 'Thoughtful reflection on what "prediction, not knowledge" means.', recorded_by: "Br. Kareem", recorded_at: daysAgo(9) },
+      { masjid_id: MASJID, pod_id: POD, student_user_id: U.maryam, indicator: "cooperation", note: "Maryam slowed down to check her work and explained a step to Safiya.", recorded_by: "Br. Kareem", recorded_at: daysAgo(6) },
+    ]),
+  );
+
   console.log("Seeded demo masjid:", MASJID);
 }
 

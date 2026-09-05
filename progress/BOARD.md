@@ -1,7 +1,7 @@
 # BOARD — Suffa progress snapshot
 
 **Derived from `progress/tasks/`. Not authoritative. Regenerate after any claim/finish.**
-Last regenerated: 2026-09-05 (T18 done — Continuity Fingerprint; T21/T24 done)
+Last regenerated: 2026-09-05 (T23 done; T18/T21/T24 done)
 
 | id  | phase | status | owner | title |
 |-----|-------|--------|-------|-------|
@@ -27,7 +27,7 @@ Last regenerated: 2026-09-05 (T18 done — Continuity Fingerprint; T21/T24 done)
 | T20 | 7 | todo  | — | Compliance report as a living document (early-warning) |
 | T21 | 7 | done  | — | Waqf-to-outcome linking (donor sees learning) |
 | T22 | 7 | todo  | — | Multi-generational knowledge sourcing for Seerah content |
-| T23 | 7 | todo  | — | Pod "Barakah meter" — character/community indicators |
+| T23 | 7 | done  | — | Pod "Barakah meter" — character/community indicators |
 | T24 | 7 | done  | — | Waqf principal "never touched" visual |
 
 ## Next up (deps met, unclaimed)
@@ -35,7 +35,6 @@ Last regenerated: 2026-09-05 (T18 done — Continuity Fingerprint; T21/T24 done)
 - **T19** — Live "empty seat" handoff simulation (dep T18 done) — demo centrepiece
 - **T16** — regulation disclaimers (no deps, can run anytime)
 - **T22** — Seerah community sourcing (dep T05 done, mock/text)
-- **T23** — Barakah meter (dep T11 done)
 - blocked: T12 (needs T09), T17 (needs T12), T20 (needs T12)
 
 ## Phase 7 — differentiators (see PRD §5.4)
