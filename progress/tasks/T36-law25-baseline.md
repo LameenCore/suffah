@@ -20,7 +20,7 @@ outcome: >
   law25-baseline.md: privacy-officer contact (operator placeholder), breach process
   (CAI notification + incident register), retention table, data-subject rights,
   cross-border summary, and an explicit open-items list.
-commits: PLACEHOLDER36
+commits: c9db4b3
 depends_on: [T30]
 source: post-hackathon roadmap (EdTech-checklist analysis)
 ---
