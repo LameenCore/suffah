@@ -24,7 +24,7 @@ outcome: |
   barakah/ledger; pods/continuity/handoff-demo/compliance/print + mobile drawer
   are HTTP-verified + code-reviewed here (no browser extension available this
   session) - recommend a quick screenshot pass in T28 recording prep.
-commits: <t25-final>
+commits: e370f70 (+ claim on the takeover commit before it)
 depends_on: []
 ---
 
