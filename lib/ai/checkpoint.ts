@@ -31,6 +31,8 @@ import {
   type PathwayNode,
 } from "@/lib/db/queries";
 import { tryAddSystemNote } from "@/lib/db/continuity-queries";
+import { recordRemediationPassed, maybeSuggestFastTrack, needsRemediation } from "@/lib/db/path-queries";
+import { getOrCreateRemediation, type RemediationContent } from "@/lib/ai/remediation";
 import { fallbackCheckpoint } from "@/lib/ai/fallback-checkpoints";
 import { PASS_THRESHOLD } from "@/lib/types";
 
@@ -200,6 +202,8 @@ export interface CheckpointGrade {
   /** The node the pod advanced to, if this attempt passed and a next node exists. */
   advancedToNodeId: string | null;
   alreadyPassed: boolean;
+  /** Adaptive path (T42): set after a 2nd miss - a focused re-teach to read first. */
+  remediation: RemediationContent | null;
 }
 
 /**
@@ -246,14 +250,23 @@ export async function gradeCheckpoint(
 
   // Feed the Continuity Fingerprint (T18): a repeated miss on a node is exactly
   // the kind of "how the pod is learning" signal a handoff briefing needs.
-  if (!passed && pod) {
+  let remediation: RemediationContent | null = null;
+  if (!passed) {
     const attempts = await countCheckpointAttempts(studentUserId, nodeId);
-    if (attempts >= 2) {
+    if (attempts >= 2 && pod) {
       await tryAddSystemNote(
         pod.id,
         node.course_id,
         `${node.course.name}: a student has now missed the "${node.title}" checkpoint ${attempts}× - worth reviewing with the pod.`,
       );
+    }
+    // Adaptive path (T42): after a 2nd miss, generate/serve a focused re-teach.
+    if (await needsRemediation(nodeId, studentUserId)) {
+      try {
+        remediation = (await getOrCreateRemediation(nodeId, studentUserId, masjidId)).content;
+      } catch (err) {
+        console.error("[checkpoint] remediation failed:", err);
+      }
     }
   }
 
@@ -264,6 +277,12 @@ export async function gradeCheckpoint(
       await advancePodProgress(pod.id, node.course_id, nextNode);
       advancedToNodeId = nextNode.id;
     }
+    // Adaptive path (T42): record a post-remediation pass, and flag a strong
+    // first-try pass as a fast-track candidate for the admin/volunteer.
+    await recordRemediationPassed(nodeId, studentUserId).catch(() => {});
+    await maybeSuggestFastTrack(nodeId, nextNode?.id ?? null, studentUserId, score).catch(
+      () => {},
+    );
   }
 
   return {
@@ -274,5 +293,6 @@ export async function gradeCheckpoint(
     perQuestion,
     advancedToNodeId,
     alreadyPassed: priorPass,
+    remediation,
   };
 }

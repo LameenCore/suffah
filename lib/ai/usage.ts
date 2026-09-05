@@ -10,7 +10,8 @@ export type ModelFeature =
   | "assessment"
   | "term_exam"
   | "briefing"
-  | "tutor";
+  | "tutor"
+  | "remediation";
 
 /** Anthropic list price, USD per token. Sonnet 5: $2 / 1M in, $10 / 1M out. */
 export const MODEL_PRICING: Record<string, { input: number; output: number }> = {

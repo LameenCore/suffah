@@ -8,6 +8,7 @@
 import { getServiceClient } from "@/lib/db";
 import { getChildReport, type ChildReport } from "@/lib/db/parent-queries";
 import { getRetentionSignal } from "@/lib/review";
+import { getPathHistory } from "@/lib/db/path-queries";
 import {
   computeCourseStatus,
   computeOverall,
@@ -33,6 +34,13 @@ export interface ComplianceReport {
     reviewedLast7: number;
     accuracyLast7: number | null;
   };
+  /** Adaptive-path branch history (T42), DB path only. */
+  pathHistory?: Array<{
+    kind: "remediation_shown" | "remediation_passed" | "fast_track_suggested";
+    nodeTitle: string;
+    courseName: string;
+    at: string;
+  }>;
 }
 
 /**
@@ -77,6 +85,17 @@ export async function assembleComplianceReport(
     };
   } catch {
     // retention is supplementary - a lookup failure must not break the report
+  }
+  try {
+    const events = await getPathHistory(studentUserId, masjidId);
+    report.pathHistory = events.map((e) => ({
+      kind: e.kind,
+      nodeTitle: e.nodeTitle,
+      courseName: e.courseName,
+      at: e.at,
+    }));
+  } catch {
+    // path history is supplementary
   }
   return report;
 }

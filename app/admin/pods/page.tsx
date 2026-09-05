@@ -11,6 +11,7 @@ import {
   type AdminStudent,
   type AdminVolunteer,
 } from "@/lib/db/admin-queries";
+import { getFastTrackSuggestions, type FastTrackSuggestion } from "@/lib/db/path-queries";
 import { POD_MAX_STUDENTS } from "@/lib/types";
 
 export default async function AdminPodsPage() {
@@ -19,6 +20,7 @@ export default async function AdminPodsPage() {
   let pods: AdminPod[] = [];
   let volunteers: AdminVolunteer[] = [];
   let students: AdminStudent[] = [];
+  let fastTrack: FastTrackSuggestion[] = [];
   let loadError: string | null = null;
 
   try {
@@ -27,6 +29,7 @@ export default async function AdminPodsPage() {
       listVolunteers(user.masjidId),
       listStudents(user.masjidId),
     ]);
+    fastTrack = await getFastTrackSuggestions(user.masjidId).catch(() => []);
   } catch (err) {
     loadError = err instanceof Error ? err.message : "could not load pod data";
   }
@@ -54,6 +57,20 @@ export default async function AdminPodsPage() {
         exemption threshold (fewer than five children per instructor) as currently
         understood - confirm against active regulation before relying on it.
       </RegulationNote>
+
+      {fastTrack.length > 0 ? (
+        <Card tone="teal" className="p-4">
+          <p className="text-sm font-medium text-ink">Ready to move faster</p>
+          <ul className="mt-1 space-y-0.5 text-sm text-ink-2">
+            {fastTrack.map((s, i) => (
+              <li key={i}>
+                {s.studentName} passed &quot;{s.nodeTitle}&quot; ({s.courseName}) cold - consider
+                advancing the pod past it once others are ready.
+              </li>
+            ))}
+          </ul>
+        </Card>
+      ) : null}
 
       {loadError ? (
         <p className="rounded-xl border border-warning/40 bg-warning-soft p-4 text-sm text-ink-2   ">

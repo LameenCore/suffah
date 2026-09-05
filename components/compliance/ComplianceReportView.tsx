@@ -34,6 +34,28 @@ export function ComplianceReportView({ report }: { report: ComplianceReport }) {
         </div>
       </Card>
 
+      {report.pathHistory && report.pathHistory.length > 0 ? (
+        <Card className="p-4">
+          <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-ink-4">
+            Path taken
+          </p>
+          <ul className="space-y-1 text-sm text-ink-2">
+            {report.pathHistory.slice(0, 6).map((e, i) => (
+              <li key={i}>
+                {e.kind === "remediation_shown"
+                  ? `Extra re-teach on "${e.nodeTitle}" (${e.courseName})`
+                  : e.kind === "remediation_passed"
+                    ? `Passed "${e.nodeTitle}" after the re-teach`
+                    : `Moved quickly - ready to fast-track past "${e.nodeTitle}"`}
+                <span className="ml-2 text-xs text-ink-4">
+                  {new Date(e.at).toLocaleDateString("en-CA", { month: "short", day: "numeric" })}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </Card>
+      ) : null}
+
       {report.retention && report.retention.totalItems > 0 ? (
         <p className="text-xs text-ink-4">
           Spaced review: {report.retention.totalItems} items tracked

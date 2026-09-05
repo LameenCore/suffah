@@ -28,6 +28,7 @@ const DEMO = {
   },
   node: {
     math1: "00000000-0000-0000-0000-000000020001",
+    math2: "00000000-0000-0000-0000-000000020002",
     seerah1: "00000000-0000-0000-0000-000000020101",
     ai1: "00000000-0000-0000-0000-000000020201",
   },
@@ -59,6 +60,8 @@ export async function resetWalkthroughState(masjidId: string): Promise<ResetSumm
   await db.from("lesson_progress").delete().in("student_user_id", students);
   await db.from("review_items").delete().in("student_user_id", students);
   await db.from("tutor_messages").delete().in("student_user_id", students);
+  await db.from("node_remediations").delete().in("student_user_id", students);
+  await db.from("path_events").delete().in("student_user_id", students);
 
   // 2. Wipe the continuity trail so demo step 3 regenerates a fresh briefing.
   await db.from("pod_briefings").delete().eq("pod_id", DEMO.pod);
@@ -100,6 +103,43 @@ export async function resetWalkthroughState(masjidId: string): Promise<ResetSumm
   // 5. Undo the volunteer handoff.
   await db.from("volunteers").update({ left_at: null, status: "active" }).eq("id", DEMO.homeVolunteer);
   await db.from("pods").update({ volunteer_id: DEMO.homeVolunteer }).eq("id", DEMO.pod);
+
+  // 6. Adaptive-path (T42) demo state: Idris got a re-teach on Math node 1 after
+  // two misses; Safiya aced it cold and is a fast-track candidate for node 2.
+  await db.from("node_remediations").insert({
+    student_user_id: DEMO.students.idris,
+    pathway_node_id: DEMO.node.math1,
+    missed_concepts: ["adding integers with different signs", "subtracting a negative"],
+    content: {
+      summary:
+        "The sign rules are what tripped you up. Let's redo just those with a number line.",
+      points: [
+        "Adding a negative moves you LEFT on the number line; adding a positive moves RIGHT.",
+        "Subtracting a negative is the same as adding a positive: 5 - (-3) = 5 + 3 = 8.",
+      ],
+      examples: [
+        { prompt: "-4 + 7", solution: "Start at -4, move 7 right -> land on 3." },
+        { prompt: "2 - (-5)", solution: "Change to 2 + 5 -> 7." },
+      ],
+    },
+    source: "fallback",
+  });
+  await db.from("path_events").insert([
+    {
+      student_user_id: DEMO.students.idris,
+      pathway_node_id: DEMO.node.math1,
+      kind: "remediation_shown",
+      detail: { missedCount: 2, source: "fallback" },
+      created_at: daysAgo(5),
+    },
+    {
+      student_user_id: DEMO.students.safiya,
+      pathway_node_id: DEMO.node.math2,
+      kind: "fast_track_suggested",
+      detail: { afterNodeId: DEMO.node.math1, score: 1 },
+      created_at: daysAgo(8),
+    },
+  ]);
 
   return { ok: true, clearedFor: ["progress", "results", "compliance snapshots", "continuity trail", "volunteer handoff"] };
 }

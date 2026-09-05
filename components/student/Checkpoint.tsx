@@ -174,11 +174,31 @@ export function Checkpoint({
           ) : null}
         </div>
       ) : (
-        <div className="space-y-2 rounded-[var(--radius)] border border-warning/40 bg-warning-soft p-4 text-sm">
+        <div className="space-y-3 rounded-[var(--radius)] border border-warning/40 bg-warning-soft p-4 text-sm">
           <p className="font-display text-base font-semibold text-[color:var(--ink)]">
             {grade.correctCount}/{grade.total} ({Math.round(grade.score * 100)}%) - not there yet
           </p>
-          <p className="text-ink-2">Have another look at the lesson above, then try again.</p>
+          {grade.remediation ? (
+            <div className="space-y-2 rounded-[var(--radius)] bg-surface p-3">
+              <p className="text-xs font-semibold uppercase tracking-wide text-terracotta">
+                A quick re-teach on what tripped you up
+              </p>
+              <p className="text-ink-2">{grade.remediation.summary}</p>
+              <ul className="list-disc space-y-1 pl-4 text-ink-2">
+                {grade.remediation.points.map((p, i) => (
+                  <li key={i}>{p}</li>
+                ))}
+              </ul>
+              {grade.remediation.examples.map((ex, i) => (
+                <div key={i} className="rounded-[var(--radius)] bg-surface-2 p-2.5 text-xs">
+                  <p className="font-medium text-ink">{ex.prompt}</p>
+                  <p className="mt-1 text-ink-2">{ex.solution}</p>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-ink-2">Have another look at the lesson above, then try again.</p>
+          )}
           <Button
             size="sm"
             variant="accent"
@@ -187,7 +207,7 @@ export function Checkpoint({
               setAnswers({});
             }}
           >
-            Try again
+            {grade.remediation ? "I've read this - try again" : "Try again"}
           </Button>
         </div>
       )}

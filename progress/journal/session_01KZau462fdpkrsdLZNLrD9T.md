@@ -275,3 +275,28 @@ Verified live via script: on-topic -> grounded answer in the lesson's own words;
 turns); consistency counts today; UPDATE rejected. demo:reset clears
 tutor_messages + review_items. build + lint + tsc + 62 tests + check:integrity(13)
 green. Commit <t45>.
+
+## 2026-09-05 — T42 done (adaptive path: remediation + fast-track)
+Claimed T42 (no deps).
+
+- migration 0015_adaptive_path: node_remediations (cached re-teach) + path_events.
+- lib/ai/remediation.ts: getOrCreateRemediation - on the 2nd checkpoint miss,
+  builds a re-teach from the lesson + the exact questions missed (perQuestion.id
+  -> prompt), structured {summary, points[], examples[]}, budget-gated + logged
+  (feature "remediation") + fallback. Cached per student+node.
+- lib/db/path-queries.ts: needsRemediation (>=2 misses, not yet shown),
+  recordRemediationPassed, maybeSuggestFastTrack (cold pass >= 0.9, first try),
+  getPathHistory, getFastTrackSuggestions.
+- gradeCheckpoint: returns `remediation` on the triggering fail; calls
+  recordRemediationPassed + maybeSuggestFastTrack on a pass. Checkpoint.tsx
+  renders the re-teach inline above the retry button.
+- Fast-track is a SIGNAL not an auto-skip (pod_progress is pod-level): /admin/pods
+  "Ready to move faster" banner. Real skip needs per-student positioning -> T43.
+- ComplianceReport.pathHistory -> "Path taken" section in ComplianceReportView.
+- demo:reset seeds Idris' re-teach (2 Math misses) + Safiya's fast-track; clears
+  node_remediations + path_events. ModelFeature gained "remediation".
+
+Verified via script: fail -> fail -> remediation (real AI: "sign rules... number
+line") -> pass -> path history [remediation_passed, remediation_shown]. Banners
+render on /admin/pods + /admin/compliance. build + lint + tsc + 62 tests +
+check:integrity green. Commit <t42>.
