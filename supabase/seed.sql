@@ -145,7 +145,7 @@ select
   '00000000-0000-0000-0000-000000000001',
   '00000000-0000-0000-0000-0000000000a1',
   f.feature, 'claude-sonnet-5', 'model', f.in_tok, f.out_tok,
-  f.in_tok * 0.000002 + f.out_tok * 0.00001, true, now() - interval '31 days'
+  f.in_tok * 0.000002 + f.out_tok * 0.00001, true, now() - interval '2 days'
 from (values
   ('lesson',     9, 2600, 2100),
   ('checkpoint', 9, 1500,  900),
@@ -153,5 +153,10 @@ from (values
   ('term_exam',  3, 4200, 2400)
 ) as f(feature, n, in_tok, out_tok),
 lateral generate_series(1, f.n);
+
+-- Per-masjid AI budget (T56) - masjid_ai_budget is created by migration 0012.
+insert into masjid_ai_budget (masjid_id, monthly_limit_usd, soft_alert_ratio, hard_cap_enabled)
+values ('00000000-0000-0000-0000-000000000001', 25.00, 0.800, true)
+on conflict (masjid_id) do nothing;
 
 commit;

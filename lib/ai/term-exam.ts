@@ -10,6 +10,7 @@ import { z } from "zod";
 import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
 import { getAnthropic, LESSON_MODEL } from "@/lib/ai/client";
 import { logModelCall, type TokenUsage } from "@/lib/ai/usage";
+import { assertWithinAiBudget } from "@/lib/ai/budget";
 import { QuestionSchema, stripQuestionAnswers, gradeQuestions } from "@/lib/ai/questions";
 import type { Question, QuestionForStudent, QuestionGrade } from "@/lib/ai/questions";
 import { buildAssessmentPrompt } from "@/lib/ai/assessment";
@@ -95,6 +96,10 @@ export async function generateTermExam(
   if (nodes.length === 0) {
     throw new Error("cannot generate a term exam before any lesson in the course exists");
   }
+
+  // No offline fallback for a term exam - over budget, this surfaces as an error
+  // the admin sees rather than silently degrading.
+  await assertWithinAiBudget("term_exam", masjidId);
 
   const { system, user } = buildAssessmentPrompt(
     course.name,

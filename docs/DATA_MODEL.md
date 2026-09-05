@@ -64,6 +64,19 @@ The core table set above is `0001_init.sql`. Subsequent migrations add:
 - **Append-only**: a `BEFORE UPDATE OR DELETE` trigger rejects any mutation. Every
   sensitive admin Server Action writes one entry; `/admin/audit` reads the trail.
 
+### `model_call_log` (migration 0011)
+- `id`, `masjid_id`, `actor_user_id`, `feature` (`lesson` | `checkpoint` |
+  `assessment` | `term_exam` | `briefing`), `model`, `source` (`model` |
+  `fallback`), `input_tokens`, `output_tokens`, `cost_usd`, `ok`, `at`
+- **Append-only** (same trigger pattern). One row per generation attempt. Feeds
+  `/admin/ai-spend`.
+
+### `masjid_ai_budget` (migration 0012)
+- `masjid_id` (pk), `monthly_limit_usd`, `soft_alert_ratio`, `hard_cap_enabled`,
+  `updated_at`
+- When `hard_cap_enabled` and month-to-date spend (from `model_call_log`) is over
+  the limit, generators skip the model and serve hand-authored fallback content.
+
 ## Key relationships
 
 - A **pod** has one volunteer (nullable) and up to 4 students (`pod_students`)

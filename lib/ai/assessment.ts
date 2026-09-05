@@ -12,6 +12,7 @@ import { z } from "zod";
 import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
 import { getAnthropic, LESSON_MODEL } from "@/lib/ai/client";
 import { logModelCall, type TokenUsage } from "@/lib/ai/usage";
+import { assertWithinAiBudget } from "@/lib/ai/budget";
 import {
   QuestionSchema,
   stripQuestionAnswers,
@@ -193,6 +194,7 @@ export async function generateUnitAssessment(
   let assessment: AssessmentContent;
   let source: AssessmentSource;
   try {
+    await assertWithinAiBudget("assessment", masjidId);
     const res = await generateWithModel(unit, nodes);
     assessment = res.assessment;
     source = "model";

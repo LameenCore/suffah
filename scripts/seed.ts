@@ -247,7 +247,7 @@ async function seed() {
           output_tokens: outTok,
           cost_usd: inTok * (2 / 1_000_000) + outTok * (10 / 1_000_000),
           ok: true,
-          at: daysAgo(31),
+          at: daysAgo(2),
         });
       }
     };
@@ -257,6 +257,16 @@ async function seed() {
     push("term_exam", 3, 4200, 2400);
     check(await db.from("model_call_log").insert(rows));
   }
+
+  // Per-masjid AI budget (masjid_ai_budget - migration 0012).
+  check(
+    await db.from("masjid_ai_budget").upsert({
+      masjid_id: MASJID,
+      monthly_limit_usd: 25,
+      soft_alert_ratio: 0.8,
+      hard_cap_enabled: true,
+    }),
+  );
 
   console.log("Seeded demo masjid:", MASJID);
 }

@@ -1,7 +1,7 @@
 # BOARD — Suffa progress snapshot
 
 **Derived from `progress/tasks/`. Not authoritative. Regenerate after any claim/finish.**
-Last regenerated: 2026-09-05 (T36 + T37 + T38 done — Phase 10 compliance)
+Last regenerated: 2026-09-05 (T34-T38, T56 done)
 
 | id  | phase | status | owner | title |
 |-----|-------|--------|-------|-------|
@@ -70,7 +70,7 @@ Get a clean demo state: `npm run demo:setup` (full, hits the API) or `npm run de
 | T53 | 12 | todo | — | Error + uptime + performance monitoring |
 | T54 | 12 | done | — | CI: lint + typecheck + build + tests on every PR |
 | T55 | 12 | done | — | Automated tests for the core loop |
-| T56 | 12 | todo | — | AI spend monitoring + budget alerts + metering |
+| T56 | 12 | done | — | AI spend monitoring + budget alerts + metering |
 | T57 | 12 | done | — | Backup / restore runbook + integrity check |
 | T58 | 12 | todo | — | Transactional email service |
 | T59 | 13 | todo | — | French (Quebec) localization |

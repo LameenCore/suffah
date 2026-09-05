@@ -58,7 +58,9 @@ const SECTIONS: { href: string; label: string; icon: React.ReactNode }[] = [
   { href: "/admin/handoff-demo", label: "Handoff simulation", icon: <NavIcon name="swap" /> },
   { href: "/admin/compliance", label: "Compliance report", icon: <NavIcon name="clipboard" /> },
   { href: "/admin/ledger", label: "Waqf ledger", icon: <NavIcon name="coins" /> },
+  { href: "/admin/ai-spend", label: "AI spend", icon: <NavIcon name="gauge" /> },
   { href: "/admin/seerah", label: "Seerah studio", icon: <NavIcon name="book" /> },
+  { href: "/admin/audit", label: "Audit trail", icon: <NavIcon name="shield" /> },
   { href: "/admin/inbox", label: "Help requests", icon: <NavIcon name="inbox" /> },
 ];
 

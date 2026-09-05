@@ -11,6 +11,7 @@ import { z } from "zod";
 import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
 import { getAnthropic, LESSON_MODEL } from "@/lib/ai/client";
 import { logModelCall, type TokenUsage } from "@/lib/ai/usage";
+import { assertWithinAiBudget } from "@/lib/ai/budget";
 import {
   getPathwayNode,
   saveLessonContent,
@@ -201,6 +202,7 @@ export async function generateLessonForNode(
   let lesson: LessonContent;
   let source: LessonSource;
   try {
+    await assertWithinAiBudget("lesson", masjidId);
     const res = await generateWithModel(node);
     lesson = res.lesson;
     source = "model";

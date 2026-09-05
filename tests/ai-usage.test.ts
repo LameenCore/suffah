@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { estimateCostUsd, MODEL_PRICING } from "@/lib/ai/usage";
+import { budgetState } from "@/lib/ai/budget";
 
 describe("estimateCostUsd", () => {
   it("prices Sonnet 5 at $2/M in + $10/M out", () => {
@@ -27,5 +28,20 @@ describe("estimateCostUsd", () => {
 
   it("exposes pricing for the model the app uses", () => {
     expect(MODEL_PRICING["claude-sonnet-5"]).toEqual({ input: 2 / 1_000_000, output: 10 / 1_000_000 });
+  });
+});
+
+describe("budgetState", () => {
+  it("is ok below the soft-alert ratio", () => {
+    expect(budgetState(0, 0.8)).toBe("ok");
+    expect(budgetState(0.79, 0.8)).toBe("ok");
+  });
+  it("warns from the soft-alert ratio up to the limit", () => {
+    expect(budgetState(0.8, 0.8)).toBe("warn");
+    expect(budgetState(0.99, 0.8)).toBe("warn");
+  });
+  it("is over at or past the limit", () => {
+    expect(budgetState(1, 0.8)).toBe("over");
+    expect(budgetState(3.2, 0.8)).toBe("over");
   });
 });

@@ -165,3 +165,31 @@ Verified live: 12 rapid POSTs to /api/lessons/generate -> first 8 pass the limit
 (404 on the bogus nodeId), rest 429 with Retry-After. Unauthed -> 401.
 tsc + lint + build + 50 tests + check:integrity(12) green. Unblocks T56.
 Commit <t34>.
+
+## 2026-09-05 — T56 done (AI spend monitoring + budget)
+Claimed T56 (dep T34 done, done same session). Built straight on model_call_log.
+
+- migration 0012_ai_budget: masjid_ai_budget (monthly_limit_usd,
+  soft_alert_ratio, hard_cap_enabled). Default $25/mo, alert at 80%, cap on.
+- lib/ai/budget.ts: getMonthSpend (model_call_log sum for the calendar month,
+  grouped by feature), budgetState() pure (ratio -> ok|warn|over),
+  getBudgetStatus, get/setAiBudget, assertWithinAiBudget(feature, masjidId) ->
+  throws AiBudgetExceededError when over the hard cap (best-effort: a lookup
+  failure never blocks generation).
+- Wired assertWithinAiBudget into all 5 generators before generateWithModel.
+  lesson/checkpoint/assessment/briefing: the throw is caught -> fallback content.
+  term_exam: no fallback, so it surfaces the error (correct - can't fake an exam).
+- /admin/ai-spend: month-to-date spend + budget bar + state badge, by-feature
+  table, BudgetForm (setBudgetAction, audited ai_budget.updated), and a
+  waqf-ledger reconciliation panel (all-time operating draw vs this month's AI
+  spend). Nav entry + overview-grid card (added the audit-trail card too, T35
+  had missed it).
+- Seed: masjid_ai_budget row + the 24 model_call_log rows re-dated from -31d to
+  -2d so they land in the current month. seed.sql + seed.ts in sync.
+- tests: budgetState boundary cases (tests/ai-usage.test.ts). 53 total.
+
+Verified live: /admin/ai-spend shows $0.51 / 24 calls / $0.02 avg / by-feature
+breakdown / reconciliation ($16,500 draw vs $0.51 spend). Dropped the limit to
+$0.01 via setAiBudget -> state=over -> assertWithinAiBudget threw
+AiBudgetExceededError. Restored. parent -> /admin/ai-spend = 307.
+build + lint + tsc + 53 tests + check:integrity green. Commit <t56>.

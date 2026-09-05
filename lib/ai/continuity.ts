@@ -10,6 +10,7 @@ import { z } from "zod";
 import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
 import { getAnthropic, LESSON_MODEL } from "@/lib/ai/client";
 import { logModelCall, type TokenUsage } from "@/lib/ai/usage";
+import { assertWithinAiBudget } from "@/lib/ai/budget";
 import {
   gatherPodLearningSignals,
   saveBriefing,
@@ -224,6 +225,7 @@ export async function generatePodBriefing(
   let source: BriefingSource;
   let generatedBy: string;
   try {
+    await assertWithinAiBudget("briefing", masjidId);
     const res = await generateWithModel(signals);
     briefing = res.briefing;
     source = "model";
