@@ -2,9 +2,9 @@
 id: T56
 title: AI spend monitoring + budget alerts + metering
 phase: 12
-status: todo
-owner: —
-claimed: —
+status: doing
+owner: https://claude.ai/code/session_01KZau462fdpkrsdLZNLrD9T
+claimed: 2026-09-06T05:00:00Z
 updated: 2026-09-05
 depends_on: [T34]
 source: post-hackathon roadmap (EdTech-checklist analysis)
