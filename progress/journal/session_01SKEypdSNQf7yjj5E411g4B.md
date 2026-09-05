@@ -64,3 +64,22 @@ MarkCompleteButton + GenerateLessonPanel fallback), app/student/actions.ts serve
 getPlayground/markLessonComplete/etc in queries.ts. DATA_MODEL.md updated.
 Builds green (wip commit f6f676a). BLOCKED ON: user to add SUPABASE_DB_URL to .env.local so
 I can `npm run migrate` (apply 0002) and verify render + mark-complete end to end.
+
+## 2026-09-05 — DB connection: direct host is IPv6-only, switched to pooler
+User added SUPABASE_DB_URL as the direct URI (db.<ref>.supabase.co:5432) — that host has
+only an AAAA record and this machine has no IPv6 route (getaddrinfo ENOTFOUND). Probed the
+shared pooler: project is in **us-west-2**. Rewrote SUPABASE_DB_URL in .env.local to
+`postgresql://postgres.<ref>:<pw>@aws-0-us-west-2.pooler.supabase.com:5432/postgres` and
+added `ssl:{rejectUnauthorized:false}` to migrate.ts (pooler cert chain). .env.local is
+gitignored — noted for the user.
+
+## 2026-09-05 — T06 done
+`npm run migrate` applied 0002 (lesson_progress). Verified end to end:
+- getPlayground returns pod + 3 courses w/ current node + lesson + completion state
+- markLessonComplete persists, idempotent
+- dev server: /student lists the pod's courses; /student/<courseId> renders the persisted
+  lesson (objectives, sections, worked example, practice, key terms, Math regulation note)
+  + "Mark lesson complete"; after completion the page + list show the complete state and
+  the "checkpoint unlocks here (T07)" note.
+Reset demo lesson_progress so the walkthrough starts clean. build+lint+tsc green.
+Commit <t06>.

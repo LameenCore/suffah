@@ -25,7 +25,8 @@ async function main() {
     .filter((f) => f.endsWith(".sql"))
     .sort();
 
-  const client = new Client({ connectionString: url });
+  // Supabase requires TLS; the pooler presents a chain Node doesn't bundle a root for.
+  const client = new Client({ connectionString: url, ssl: { rejectUnauthorized: false } });
   await client.connect();
   try {
     await client.query(`
@@ -58,7 +59,7 @@ async function main() {
     let ran = 0;
     for (const file of files) {
       if (applied.has(file)) {
-        console.log(`· ${file} (already applied)`);
+        if (file !== "0001_init.sql") console.log(`· ${file} (already applied)`);
         continue;
       }
       const sql = await readFile(join(MIGRATIONS_DIR, file), "utf8");

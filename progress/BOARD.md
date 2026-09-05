@@ -1,7 +1,7 @@
 # BOARD — Suffa progress snapshot
 
 **Derived from `progress/tasks/`. Not authoritative. Regenerate after any claim/finish.**
-Last regenerated: 2026-09-05 (T11 claimed)
+Last regenerated: 2026-09-05 (T06 done; T11 claimed)
 
 | id  | phase | status | owner | title |
 |-----|-------|--------|-------|-------|
@@ -10,7 +10,7 @@ Last regenerated: 2026-09-05 (T11 claimed)
 | T03 | 1 | done  | — | Core schema migration |
 | T04 | 1 | done  | — | Three route groups + role-gated auth |
 | T05 | 2 | done  | — | lib/ai/lesson.ts — generate + persist lesson nodes |
-| T06 | 2 | todo  | — | Student playground — render lesson, mark complete |
+| T06 | 2 | done  | — | Student playground — render lesson, mark complete |
 | T07 | 2 | todo  | — | lib/ai/checkpoint.ts — checkpoint gen/grade, gate progression |
 | T08 | 3 | todo  | — | lib/ai/assessment.ts — unit assessment |
 | T09 | 3 | todo  | — | Term exam variant (timed) + term_exam_results |
@@ -24,6 +24,7 @@ Last regenerated: 2026-09-05 (T11 claimed)
 | T17 | 6 | todo  | — | Seed data cleanup for demo walkthrough |
 
 ## Next up (deps met, unclaimed)
+- **T07** — lib/ai/checkpoint.ts: gen + grade checkpoint, gate progression (deps T05, T06 done) — closes the Phase 2 milestone
 - **T13** — waqf_ledger table + mock entries (dep T03 done)
 - **T16** — regulation disclaimers (no deps, can run anytime)
 
