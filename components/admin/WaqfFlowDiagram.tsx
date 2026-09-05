@@ -125,7 +125,7 @@ export function WaqfFlowDiagram({
         </text>
       </svg>
 
-      <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
+      <p className="mt-1 text-xs text-ink-3 ">
         The endowment principal is a fixed, locked block - it is never spent. Only the
         returns it earns flow out to operations, and sadaqah funds scholarships as a
         separate stream.

@@ -18,9 +18,9 @@ const STATUS_LABEL: Record<VolunteerStatus, string> = {
 };
 
 const STATUS_STYLE: Record<VolunteerStatus, string> = {
-  active: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300",
-  inactive: "bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-300",
-  pending_vetting: "bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-200",
+  active: "bg-teal-soft text-teal-strong  ",
+  inactive: "bg-surface-2 text-ink-2  ",
+  pending_vetting: "bg-amber-100 text-ink-2 dark:bg-amber-900/40 ",
 };
 
 const fmtDate = (iso: string) =>
@@ -61,40 +61,40 @@ function OnboardForm() {
         const fd = new FormData(e.currentTarget);
         dispatch(() => addVolunteerAction(fd), () => formRef.current?.reset());
       }}
-      className="rounded-xl border border-black/10 bg-white p-4 dark:border-white/15 dark:bg-zinc-950"
+      className="rounded-xl border border-border bg-surface p-4  "
     >
       <h2 className="font-medium">Onboard a volunteer</h2>
-      <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
+      <p className="mt-1 text-xs text-ink-3 ">
         New volunteers start as <em>pending vetting</em>. Vetting is simulated for the
         demo - no real background check.
       </p>
       <div className="mt-3 space-y-3">
         <div>
-          <label className="block text-xs font-medium text-zinc-500 dark:text-zinc-400">
+          <label className="block text-xs font-medium text-ink-3 ">
             Name
           </label>
           <input
             name="name"
             required
-            className="mt-1 w-full rounded-md border border-black/15 bg-white px-2 py-1.5 text-sm dark:border-white/20 dark:bg-zinc-900"
+            className="mt-1 w-full rounded-md border border-border bg-surface px-2 py-1.5 text-sm  "
             placeholder="Br. / Sr. …"
           />
         </div>
         <div>
-          <label className="block text-xs font-medium text-zinc-500 dark:text-zinc-400">
+          <label className="block text-xs font-medium text-ink-3 ">
             Certification / background note
           </label>
           <textarea
             name="certificationNote"
             rows={2}
-            className="mt-1 w-full rounded-md border border-black/15 bg-white px-2 py-1.5 text-sm dark:border-white/20 dark:bg-zinc-900"
+            className="mt-1 w-full rounded-md border border-border bg-surface px-2 py-1.5 text-sm  "
             placeholder="e.g. CEGEP math tutor; reference check on file (mock)."
           />
         </div>
         <button
           type="submit"
           disabled={pending}
-          className="rounded-md bg-emerald-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-emerald-500 disabled:opacity-50"
+          className="rounded-md bg-teal px-3 py-1.5 text-sm font-medium text-white hover:bg-teal-strong disabled:opacity-50"
         >
           {pending ? "Adding…" : "Add volunteer"}
         </button>
@@ -121,7 +121,7 @@ function ActiveRow({ v }: { v: VolunteerRow }) {
             {STATUS_LABEL[v.status]}
           </span>
           {v.pods.length > 0 && (
-            <span className="ml-2 text-xs text-zinc-400">
+            <span className="ml-2 text-xs text-ink-4">
               covering {v.pods.join(", ")}
             </span>
           )}
@@ -133,7 +133,7 @@ function ActiveRow({ v }: { v: VolunteerRow }) {
               type="button"
               disabled={pending}
               onClick={() => dispatch(() => setVolunteerStatusAction(v.id, s))}
-              className="rounded border border-black/15 px-2 py-1 text-xs hover:bg-zinc-50 disabled:opacity-50 dark:border-white/20 dark:hover:bg-zinc-900"
+              className="rounded border border-border px-2 py-1 text-xs hover:bg-surface-2 disabled:opacity-50  "
             >
               → {STATUS_LABEL[s]}
             </button>
@@ -149,9 +149,9 @@ function ActiveRow({ v }: { v: VolunteerRow }) {
         </div>
       </div>
       {v.certificationNote && (
-        <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">{v.certificationNote}</p>
+        <p className="mt-1 text-xs text-ink-3 ">{v.certificationNote}</p>
       )}
-      <p className="mt-0.5 text-xs text-zinc-400">joined {fmtDate(v.joinedAt)}</p>
+      <p className="mt-0.5 text-xs text-ink-4">joined {fmtDate(v.joinedAt)}</p>
       {error && <p className="mt-1 text-xs text-red-600 dark:text-red-400">{error}</p>}
     </li>
   );
@@ -163,7 +163,7 @@ function ChurnedRow({ v }: { v: VolunteerRow }) {
     <li className="flex flex-wrap items-center justify-between gap-2 py-2 text-sm">
       <div>
         <span className="font-medium">{v.name}</span>
-        <span className="ml-2 text-xs text-zinc-400">
+        <span className="ml-2 text-xs text-ink-4">
           {fmtDate(v.joinedAt)} – {v.leftAt ? fmtDate(v.leftAt) : "-"}
           {v.leftAt ? ` · ${tenure(v.joinedAt, v.leftAt)}` : ""}
         </span>
@@ -174,7 +174,7 @@ function ChurnedRow({ v }: { v: VolunteerRow }) {
           type="button"
           disabled={pending}
           onClick={() => dispatch(() => reinstateVolunteerAction(v.id))}
-          className="rounded border border-black/15 px-2 py-1 text-xs hover:bg-zinc-50 disabled:opacity-50 dark:border-white/20 dark:hover:bg-zinc-900"
+          className="rounded border border-border px-2 py-1 text-xs hover:bg-surface-2 disabled:opacity-50  "
         >
           Reinstate
         </button>
@@ -194,10 +194,10 @@ export function VolunteerManager({
     <div className="space-y-6">
       <OnboardForm />
 
-      <section className="rounded-xl border border-black/10 bg-white p-4 dark:border-white/15 dark:bg-zinc-950">
+      <section className="rounded-xl border border-border bg-surface p-4  ">
         <h2 className="font-medium">Current volunteers</h2>
         {active.length === 0 ? (
-          <p className="mt-2 text-sm text-zinc-400">No active volunteers.</p>
+          <p className="mt-2 text-sm text-ink-4">No active volunteers.</p>
         ) : (
           <ul className="mt-1 divide-y divide-black/5 dark:divide-white/10">
             {active.map((v) => (
@@ -207,19 +207,19 @@ export function VolunteerManager({
         )}
       </section>
 
-      <section className="rounded-xl border border-black/10 bg-white p-4 dark:border-white/15 dark:bg-zinc-950">
+      <section className="rounded-xl border border-border bg-surface p-4  ">
         <div className="flex items-center justify-between">
           <h2 className="font-medium">Churn log</h2>
-          <span className="text-xs text-zinc-500 dark:text-zinc-400">
+          <span className="text-xs text-ink-3 ">
             {churned.length} departure{churned.length === 1 ? "" : "s"}
           </span>
         </div>
-        <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
+        <p className="mt-1 text-xs text-ink-3 ">
           When a volunteer leaves, their pods are detached but keep their place in the
           curriculum - a replacement picks up from the same node.
         </p>
         {churned.length === 0 ? (
-          <p className="mt-2 text-sm text-zinc-400">No departures recorded.</p>
+          <p className="mt-2 text-sm text-ink-4">No departures recorded.</p>
         ) : (
           <ul className="mt-1 divide-y divide-black/5 dark:divide-white/10">
             {churned.map((v) => (

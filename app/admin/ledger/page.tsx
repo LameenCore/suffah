@@ -42,12 +42,12 @@ function StatTile({
   accent: string;
 }) {
   return (
-    <div className="rounded-xl border border-black/10 bg-white p-4 dark:border-white/15 dark:bg-zinc-950">
-      <div className="text-xs font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+    <div className="rounded-xl border border-border bg-surface p-4  ">
+      <div className="text-xs font-medium uppercase tracking-wide text-ink-3 ">
         {label}
       </div>
       <div className={`mt-1 text-2xl font-semibold ${accent}`}>{value}</div>
-      <div className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">{sub}</div>
+      <div className="mt-1 text-xs text-ink-3 ">{sub}</div>
     </div>
   );
 }
@@ -78,7 +78,7 @@ export default async function AdminLedgerPage() {
       <div className="flex items-center justify-between text-sm">
         <Link
           href="/admin"
-          className="text-zinc-500 underline underline-offset-2 hover:text-zinc-800 dark:hover:text-zinc-200"
+          className="text-ink-3 underline underline-offset-2 hover:text-ink "
         >
           ← Admin
         </Link>
@@ -86,19 +86,19 @@ export default async function AdminLedgerPage() {
 
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">Waqf &amp; donation ledger</h1>
-        <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
+        <p className="mt-1 text-sm text-ink-3 ">
           Transparency view. The endowment principal is locked - only its returns,
           plus sadaqah, fund operations and scholarships.
         </p>
       </div>
 
-      <p className="rounded-md border border-zinc-300 bg-zinc-50 px-3 py-2 text-xs text-zinc-600 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300">
+      <p className="rounded-md border border-border-strong bg-surface-2 px-3 py-2 text-xs text-ink-2 dark:border-zinc-700  ">
         <span className="font-semibold">Illustrative mock data.</span> No payment
         processing - figures are seeded for the demo.
       </p>
 
       {loadError ? (
-        <p className="rounded-xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900 dark:border-amber-700/60 dark:bg-amber-950/40 dark:text-amber-200">
+        <p className="rounded-xl border border-warning/40 bg-warning-soft p-4 text-sm text-ink-2   ">
           Ledger data is unavailable: {loadError}. Configure Supabase and run the
           seed to populate this view.
         </p>
@@ -109,7 +109,7 @@ export default async function AdminLedgerPage() {
               label="Principal - locked"
               value={money(summary.principal)}
               sub="Never spent. Only returns are drawn."
-              accent="text-zinc-900 dark:text-zinc-100"
+              accent="text-ink "
             />
             <StatTile
               label="Returns disbursed"
@@ -121,19 +121,19 @@ export default async function AdminLedgerPage() {
               label="Sadaqah received"
               value={money(summary.sadaqahReceived)}
               sub="Community giving into the scholarship pool."
-              accent="text-emerald-700 dark:text-emerald-400"
+              accent="text-teal-strong "
             />
             <StatTile
               label="Scholarships funded"
               value={money(summary.scholarshipsAllocated)}
               sub={`${scholarship} student${scholarship === 1 ? "" : "s"}, sadaqah-covered.`}
-              accent="text-violet-700 dark:text-violet-400"
+              accent="text-violet-700 "
             />
           </div>
 
-          <section className="rounded-xl border border-black/10 bg-white p-4 dark:border-white/15 dark:bg-zinc-950">
+          <section className="rounded-xl border border-border bg-surface p-4  ">
             <h2 className="font-medium">How the waqf works</h2>
-            <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
+            <p className="mt-1 text-xs text-ink-3 ">
               The endowment model at a glance - for anyone new to waqf.
             </p>
             <div className="mt-3">
@@ -146,9 +146,9 @@ export default async function AdminLedgerPage() {
             </div>
           </section>
 
-          <section className="rounded-xl border border-black/10 bg-white p-4 dark:border-white/15 dark:bg-zinc-950">
+          <section className="rounded-xl border border-border bg-surface p-4  ">
             <h2 className="font-medium">Sponsored outcomes</h2>
-            <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
+            <p className="mt-1 text-xs text-ink-3 ">
               What each contribution funded - and what the sponsored pod actually
               learned. Not just where the money went.
             </p>
@@ -157,9 +157,9 @@ export default async function AdminLedgerPage() {
             </div>
           </section>
 
-          <section className="rounded-xl border border-black/10 bg-white p-4 dark:border-white/15 dark:bg-zinc-950">
+          <section className="rounded-xl border border-border bg-surface p-4  ">
             <h2 className="font-medium">Spending vs. principal, over time</h2>
-            <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
+            <p className="mt-1 text-xs text-ink-3 ">
               Cumulative operating draw and scholarships. The dashed line is the
               locked principal - spending never reaches it.
             </p>
@@ -168,41 +168,41 @@ export default async function AdminLedgerPage() {
             </div>
 
             <details className="mt-3 text-sm">
-              <summary className="cursor-pointer text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200">
+              <summary className="cursor-pointer text-ink-3 hover:text-ink  ">
                 Table view - all ledger entries
               </summary>
               <div className="mt-2 overflow-x-auto">
                 <table className="w-full border-collapse text-sm">
                   <thead>
-                    <tr className="text-left text-xs uppercase tracking-wide text-zinc-400">
-                      <th className="border-b border-black/10 py-2 pr-4 dark:border-white/15">Date</th>
-                      <th className="border-b border-black/10 py-2 pr-4 dark:border-white/15">Type</th>
-                      <th className="border-b border-black/10 py-2 pr-4 text-right dark:border-white/15">Amount</th>
-                      <th className="border-b border-black/10 py-2 dark:border-white/15">Note</th>
+                    <tr className="text-left text-xs uppercase tracking-wide text-ink-4">
+                      <th className="border-b border-border py-2 pr-4 ">Date</th>
+                      <th className="border-b border-border py-2 pr-4 ">Type</th>
+                      <th className="border-b border-border py-2 pr-4 text-right ">Amount</th>
+                      <th className="border-b border-border py-2 ">Note</th>
                     </tr>
                   </thead>
                   <tbody>
                     {summary.entries.map((e, i) => (
                       <tr key={i}>
-                        <td className="border-b border-black/5 py-2 pr-4 tabular-nums text-zinc-500 dark:border-white/10 dark:text-zinc-400">
+                        <td className="border-b border-black/5 py-2 pr-4 tabular-nums text-ink-3  ">
                           {new Date(e.createdAt).toLocaleDateString("en-CA", {
                             year: "numeric",
                             month: "short",
                           })}
                         </td>
-                        <td className="border-b border-black/5 py-2 pr-4 dark:border-white/10">
+                        <td className="border-b border-black/5 py-2 pr-4 ">
                           {ENTRY_LABEL[e.entryType]}
                         </td>
                         <td
-                          className={`border-b border-black/5 py-2 pr-4 text-right tabular-nums dark:border-white/10 ${
+                          className={`border-b border-black/5 py-2 pr-4 text-right tabular-nums  ${
                             e.amount < 0
-                              ? "text-zinc-500 dark:text-zinc-400"
-                              : "text-emerald-700 dark:text-emerald-400"
+                              ? "text-ink-3 "
+                              : "text-teal-strong "
                           }`}
                         >
                           {money(e.amount)}
                         </td>
-                        <td className="border-b border-black/5 py-2 text-zinc-500 dark:border-white/10 dark:text-zinc-400">
+                        <td className="border-b border-black/5 py-2 text-ink-3  ">
                           {e.note ?? "-"}
                         </td>
                       </tr>
@@ -213,10 +213,10 @@ export default async function AdminLedgerPage() {
             </details>
           </section>
 
-          <section className="rounded-xl border border-black/10 bg-white p-4 dark:border-white/15 dark:bg-zinc-950">
+          <section className="rounded-xl border border-border bg-surface p-4  ">
             <div className="flex items-center justify-between">
               <h2 className="font-medium">Family fee status</h2>
-              <span className="text-xs text-zinc-500 dark:text-zinc-400">
+              <span className="text-xs text-ink-3 ">
                 {feePaid} paying · {scholarship} scholarship-covered
               </span>
             </div>
@@ -230,8 +230,8 @@ export default async function AdminLedgerPage() {
                   <span
                     className={`rounded px-1.5 py-0.5 text-[11px] font-medium ${
                       f.status === "fee_paid"
-                        ? "bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-300"
-                        : "bg-violet-100 text-violet-700 dark:bg-violet-900/40 dark:text-violet-300"
+                        ? "bg-surface-2 text-ink-2  "
+                        : "bg-violet-100 text-violet-700 dark:bg-violet-900/40 "
                     }`}
                   >
                     {FEE_LABEL[f.status]}
@@ -239,7 +239,7 @@ export default async function AdminLedgerPage() {
                 </li>
               ))}
               {fees.length === 0 && (
-                <li className="py-2 text-sm text-zinc-400">No families on file.</li>
+                <li className="py-2 text-sm text-ink-4">No families on file.</li>
               )}
             </ul>
           </section>

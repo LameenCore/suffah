@@ -31,7 +31,7 @@ export default async function AdminBarakahPage() {
       <div className="flex items-center justify-between text-sm">
         <Link
           href="/admin"
-          className="text-zinc-500 underline underline-offset-2 hover:text-zinc-800 dark:hover:text-zinc-200"
+          className="text-ink-3 underline underline-offset-2 hover:text-ink "
         >
           ← Admin
         </Link>
@@ -39,7 +39,7 @@ export default async function AdminBarakahPage() {
 
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">Barakah notes</h1>
-        <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
+        <p className="mt-1 text-sm text-ink-3 ">
           What the community values beyond test scores - consistency, helping one
           another, reflection, and adab in the circle. Observations, never points or
           rankings.
@@ -47,12 +47,12 @@ export default async function AdminBarakahPage() {
       </div>
 
       {loadError ? (
-        <p className="rounded-xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900 dark:border-amber-700/60 dark:bg-amber-950/40 dark:text-amber-200">
+        <p className="rounded-xl border border-warning/40 bg-warning-soft p-4 text-sm text-ink-2   ">
           Barakah notes are unavailable: {loadError}. Configure Supabase and run the
           seed to populate this view.
         </p>
       ) : pods.length === 0 ? (
-        <p className="rounded-xl border border-black/10 p-6 text-sm text-zinc-500 dark:border-white/15">
+        <p className="rounded-xl border border-border p-6 text-sm text-ink-3 ">
           No pods yet - create a pod before recording notes.
         </p>
       ) : (

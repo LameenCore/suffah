@@ -20,7 +20,7 @@ export default async function HandoffDemoPage() {
       <div className="flex items-center justify-between text-sm">
         <Link
           href="/admin/continuity"
-          className="text-zinc-500 underline underline-offset-2 hover:text-zinc-800 dark:hover:text-zinc-200"
+          className="text-ink-3 underline underline-offset-2 hover:text-ink "
         >
           ← Continuity Fingerprint
         </Link>
@@ -28,7 +28,7 @@ export default async function HandoffDemoPage() {
 
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">Live handoff simulation</h1>
-        <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
+        <p className="mt-1 text-sm text-ink-3 ">
           A repeatable on-stage sequence: a volunteer drops out mid-session, the pod keeps
           learning through the playground, and the replacement volunteer picks up with a
           generated handoff briefing. This <em>performs</em> the churn-resilience claim
@@ -37,7 +37,7 @@ export default async function HandoffDemoPage() {
       </div>
 
       {loadError ? (
-        <p className="rounded-xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900 dark:border-amber-700/60 dark:bg-amber-950/40 dark:text-amber-200">
+        <p className="rounded-xl border border-warning/40 bg-warning-soft p-4 text-sm text-ink-2   ">
           {loadError}. Run <code>npm run seed</code> and <code>npm run seed:continuity</code>.
         </p>
       ) : state ? (

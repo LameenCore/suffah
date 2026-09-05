@@ -36,7 +36,7 @@ export function LedgerChart({
 
   if (series.length < 2 || principal <= 0) {
     return (
-      <p className="text-sm text-zinc-500 dark:text-zinc-400">
+      <p className="text-sm text-ink-3 ">
         Not enough ledger data to chart yet.
       </p>
     );
@@ -230,11 +230,11 @@ export function LedgerChart({
 
       {hover && (
         <div
-          className="pointer-events-none absolute -translate-x-1/2 rounded-md border border-black/10 bg-white px-2 py-1 text-xs shadow-sm dark:border-white/15 dark:bg-zinc-900"
+          className="pointer-events-none absolute -translate-x-1/2 rounded-md border border-border bg-surface px-2 py-1 text-xs shadow-sm  "
           style={{ left: `${(hover.px / W) * 100}%`, top: 0 }}
         >
           <div className="font-medium tabular-nums">{money(hover.cumulativeOut)}</div>
-          <div className="text-zinc-500 dark:text-zinc-400">
+          <div className="text-ink-3 ">
             by {new Date(hover.t).toLocaleDateString("en-CA", { month: "long", year: "numeric" })}
           </div>
         </div>

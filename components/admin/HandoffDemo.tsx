@@ -29,18 +29,18 @@ function Step({
     <div
       className={`rounded-xl border p-4 ${
         active
-          ? "border-emerald-400 bg-white dark:border-emerald-500 dark:bg-zinc-950"
-          : "border-black/10 bg-zinc-50/60 dark:border-white/10 dark:bg-zinc-900/40"
+          ? "border-emerald-400 bg-surface  "
+          : "border-border bg-surface-2/60  /40"
       }`}
     >
       <div className="flex items-center gap-2">
         <span
           className={`flex h-5 w-5 items-center justify-center rounded-full text-[11px] font-semibold ${
             done
-              ? "bg-emerald-600 text-white"
+              ? "bg-teal text-white"
               : active
-                ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-300"
-                : "bg-zinc-200 text-zinc-500 dark:bg-zinc-800"
+                ? "bg-teal-soft text-teal-strong  "
+                : "bg-zinc-200 text-ink-3 "
           }`}
         >
           {done ? "✓" : n}
@@ -65,7 +65,7 @@ export function HandoffDemo({ state }: { state: HandoffDemoState }) {
 
   if (!state.pod) {
     return (
-      <p className="rounded-xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900 dark:border-amber-700/60 dark:bg-amber-950/40 dark:text-amber-200">
+      <p className="rounded-xl border border-warning/40 bg-warning-soft p-4 text-sm text-ink-2   ">
         Demo pod not found. Run <code>npm run seed</code> then <code>npm run seed:continuity</code>.
       </p>
     );
@@ -89,7 +89,7 @@ export function HandoffDemo({ state }: { state: HandoffDemoState }) {
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-wrap items-center justify-between gap-2 rounded-lg bg-zinc-100 px-3 py-2 text-sm dark:bg-zinc-800/60">
+      <div className="flex flex-wrap items-center justify-between gap-2 rounded-lg bg-surface-2 px-3 py-2 text-sm ">
         <span>
           <span className="font-medium">{state.pod.name}</span> ·{" "}
           {state.currentVolunteer ? (
@@ -109,7 +109,7 @@ export function HandoffDemo({ state }: { state: HandoffDemoState }) {
               router.refresh();
             })
           }
-          className="rounded-md border border-black/15 px-2.5 py-1 text-xs text-zinc-600 hover:bg-white dark:border-white/20 dark:text-zinc-300 dark:hover:bg-zinc-950"
+          className="rounded-md border border-border px-2.5 py-1 text-xs text-ink-2 hover:bg-surface   "
         >
           Reset demo
         </button>
@@ -118,7 +118,7 @@ export function HandoffDemo({ state }: { state: HandoffDemoState }) {
       {error ? <p className="text-xs text-red-600 dark:text-red-400">{error}</p> : null}
 
       <Step n={1} title="A live session is running" active={online} done={offline}>
-        <p className="text-sm text-zinc-600 dark:text-zinc-400">
+        <p className="text-sm text-ink-2 ">
           {state.currentVolunteer?.name ?? "The volunteer"} is leading{" "}
           {state.pod.name}&apos;s enrichment session. The playground is delivering
           the actual curriculum underneath.
@@ -126,7 +126,7 @@ export function HandoffDemo({ state }: { state: HandoffDemoState }) {
       </Step>
 
       <Step n={2} title="The volunteer goes offline" active={online} done={offline}>
-        <p className="text-sm text-zinc-600 dark:text-zinc-400">
+        <p className="text-sm text-ink-2 ">
           High volunteer churn is the core operational pain. Simulate it:
         </p>
         <div className="mt-2 flex flex-wrap items-center gap-3">
@@ -141,8 +141,8 @@ export function HandoffDemo({ state }: { state: HandoffDemoState }) {
           <span
             className={`text-xs ${
               state.playgroundOnline
-                ? "text-emerald-600 dark:text-emerald-400"
-                : "text-zinc-400"
+                ? "text-teal "
+                : "text-ink-4"
             }`}
           >
             ● Student playground: {state.playgroundOnline ? "online - the pod keeps learning" : "no lesson ready"}
@@ -153,7 +153,7 @@ export function HandoffDemo({ state }: { state: HandoffDemoState }) {
           </span>
         </div>
         {offline ? (
-          <p className="mt-2 text-xs text-zinc-500 dark:text-zinc-400">
+          <p className="mt-2 text-xs text-ink-3 ">
             The pod&apos;s <code>pod_progress</code> is untouched - nothing was lost, and the
             students never stopped.
           </p>
@@ -161,7 +161,7 @@ export function HandoffDemo({ state }: { state: HandoffDemoState }) {
       </Step>
 
       <Step n={3} title="A new volunteer picks up - with a briefing" active={offline} done={reassigned}>
-        <p className="text-sm text-zinc-600 dark:text-zinc-400">
+        <p className="text-sm text-ink-2 ">
           The incoming volunteer doesn&apos;t start cold. Assign them and the Continuity
           Fingerprint generates a handoff briefing from the pod&apos;s real history.
         </p>
@@ -170,7 +170,7 @@ export function HandoffDemo({ state }: { state: HandoffDemoState }) {
             value={pick}
             onChange={(e) => setPick(e.target.value)}
             disabled={pending || online}
-            className="rounded-md border border-black/15 bg-white px-2 py-1 text-sm dark:border-white/20 dark:bg-zinc-900"
+            className="rounded-md border border-border bg-surface px-2 py-1 text-sm  "
           >
             <option value="">Choose a volunteer…</option>
             {state.candidates.map((v) => (
@@ -190,7 +190,7 @@ export function HandoffDemo({ state }: { state: HandoffDemoState }) {
                 router.refresh();
               })
             }
-            className="rounded-lg bg-emerald-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-emerald-500 disabled:opacity-50"
+            className="rounded-lg bg-teal px-3 py-1.5 text-sm font-medium text-white hover:bg-teal-strong disabled:opacity-50"
           >
             {pending ? "Handing off…" : "Assign + generate briefing"}
           </button>
@@ -204,7 +204,7 @@ export function HandoffDemo({ state }: { state: HandoffDemoState }) {
             />
           </div>
         ) : state.latestBriefingAt && online ? (
-          <p className="mt-2 text-xs text-zinc-500 dark:text-zinc-400">
+          <p className="mt-2 text-xs text-ink-3 ">
             A briefing already exists for this pod.{" "}
             <Link href="/admin/continuity" className="underline underline-offset-2">
               See it on the Continuity Fingerprint view

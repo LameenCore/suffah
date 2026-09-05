@@ -100,6 +100,37 @@
   }
 }
 
+/* Force-light subtree (print pages, embeds) - re-assert the light palette. */
+[data-theme="light"] {
+  color-scheme: light;
+  --bg: #faf4ea;
+  --bg-tint: #f3e9d8;
+  --surface: #fffdf8;
+  --surface-2: #f7efe1;
+  --border: #e7d8bf;
+  --border-strong: #d9c3a0;
+  --ink: #2c2521;
+  --ink-2: #574d44;
+  --ink-3: #857868;
+  --ink-4: #a99a86;
+  --terracotta: #c05e3b;
+  --terracotta-strong: #a54a2c;
+  --terracotta-soft: #f3ddd0;
+  --teal: #2f7d78;
+  --teal-strong: #245f5b;
+  --teal-soft: #d6e8e6;
+  --mustard: #cf9a34;
+  --mustard-soft: #f6e6c4;
+  --coral: #e28368;
+  --coral-soft: #f8dcd2;
+  --success: #3f8a5b;
+  --success-soft: #d8ece0;
+  --warning: #cf9a34;
+  --warning-soft: #f6e6c4;
+  --danger: #bf4630;
+  --danger-soft: #f5d9d2;
+}
+
 :root[data-theme="dark"] {
   color-scheme: dark;
 

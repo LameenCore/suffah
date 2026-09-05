@@ -45,17 +45,17 @@ export function SeerahContributions({
 
   return (
     <div className="space-y-4">
-      <section className="rounded-xl border border-black/10 bg-white p-4 dark:border-white/15 dark:bg-zinc-950">
+      <section className="rounded-xl border border-border bg-surface p-4  ">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <h2 className="font-medium">Contributions · {nodeTitle}</h2>
-          <span className="text-xs text-zinc-500 dark:text-zinc-400">
+          <span className="text-xs text-ink-3 ">
             lesson v{version}
             {version > 1 ? " · revised with community input" : ""}
           </span>
         </div>
 
         {contributions.length === 0 ? (
-          <p className="mt-2 text-sm text-zinc-400">No contributions yet.</p>
+          <p className="mt-2 text-sm text-ink-4">No contributions yet.</p>
         ) : (
           <ul className="mt-2 divide-y divide-black/5 dark:divide-white/10">
             {contributions.map((c) => (
@@ -63,20 +63,20 @@ export function SeerahContributions({
                 <div className="flex flex-wrap items-baseline gap-x-2">
                   <span className="font-medium">{c.contributorName}</span>
                   {c.contributorRole && (
-                    <span className="text-xs text-zinc-400">{c.contributorRole}</span>
+                    <span className="text-xs text-ink-4">{c.contributorRole}</span>
                   )}
                   <span
                     className={`rounded px-1.5 py-0.5 text-[11px] font-medium ${
                       c.incorporated
-                        ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300"
-                        : "bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-200"
+                        ? "bg-teal-soft text-teal-strong  "
+                        : "bg-amber-100 text-ink-2 dark:bg-amber-900/40 "
                     }`}
                   >
                     {c.incorporated ? "incorporated" : "pending"}
                   </span>
-                  <span className="text-xs text-zinc-400">{fmtDate(c.createdAt)}</span>
+                  <span className="text-xs text-ink-4">{fmtDate(c.createdAt)}</span>
                 </div>
-                <p className="mt-0.5 text-zinc-600 dark:text-zinc-300">{c.note}</p>
+                <p className="mt-0.5 text-ink-2 ">{c.note}</p>
               </li>
             ))}
           </ul>
@@ -91,7 +91,7 @@ export function SeerahContributions({
               `Incorporated ${pendingCount} contribution${pendingCount === 1 ? "" : "s"}`,
             )
           }
-          className="mt-3 rounded-md bg-emerald-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-emerald-500 disabled:opacity-50"
+          className="mt-3 rounded-md bg-teal px-3 py-1.5 text-sm font-medium text-white hover:bg-teal-strong disabled:opacity-50"
         >
           {pending
             ? "Working…"
@@ -110,41 +110,41 @@ export function SeerahContributions({
             formRef.current?.reset(),
           );
         }}
-        className="rounded-xl border border-black/10 bg-white p-4 dark:border-white/15 dark:bg-zinc-950"
+        className="rounded-xl border border-border bg-surface p-4  "
       >
         <h2 className="font-medium">Add a contribution</h2>
-        <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
+        <p className="mt-1 text-xs text-ink-3 ">
           A scholar or elder&apos;s note on this lesson draft. Text for the demo; voice
           capture is the productionization step.
         </p>
         <input type="hidden" name="nodeId" value={nodeId} />
         <div className="mt-3 grid gap-3 sm:grid-cols-2">
           <label className="block text-sm">
-            <span className="text-xs font-medium text-zinc-500 dark:text-zinc-400">Name</span>
+            <span className="text-xs font-medium text-ink-3 ">Name</span>
             <input
               name="name"
               required
-              className="mt-1 w-full rounded-md border border-black/15 bg-white px-2 py-1.5 text-sm dark:border-white/20 dark:bg-zinc-900"
+              className="mt-1 w-full rounded-md border border-border bg-surface px-2 py-1.5 text-sm  "
             />
           </label>
           <label className="block text-sm">
-            <span className="text-xs font-medium text-zinc-500 dark:text-zinc-400">
+            <span className="text-xs font-medium text-ink-3 ">
               Role (optional)
             </span>
             <input
               name="role"
               placeholder="imam · elder · hafiz"
-              className="mt-1 w-full rounded-md border border-black/15 bg-white px-2 py-1.5 text-sm dark:border-white/20 dark:bg-zinc-900"
+              className="mt-1 w-full rounded-md border border-border bg-surface px-2 py-1.5 text-sm  "
             />
           </label>
         </div>
         <label className="mt-3 block text-sm">
-          <span className="text-xs font-medium text-zinc-500 dark:text-zinc-400">Note</span>
+          <span className="text-xs font-medium text-ink-3 ">Note</span>
           <textarea
             name="note"
             rows={3}
             required
-            className="mt-1 w-full rounded-md border border-black/15 bg-white px-2 py-1.5 text-sm dark:border-white/20 dark:bg-zinc-900"
+            className="mt-1 w-full rounded-md border border-border bg-surface px-2 py-1.5 text-sm  "
             placeholder="e.g. Mention the boycott of Banu Hashim here."
           />
         </label>
@@ -152,7 +152,7 @@ export function SeerahContributions({
           <button
             type="submit"
             disabled={pending}
-            className="rounded-md border border-black/15 px-3 py-1.5 text-sm font-medium hover:bg-zinc-50 disabled:opacity-50 dark:border-white/20 dark:hover:bg-zinc-900"
+            className="rounded-md border border-border px-3 py-1.5 text-sm font-medium hover:bg-surface-2 disabled:opacity-50  "
           >
             {pending ? "Saving…" : "Add contribution"}
           </button>
@@ -161,7 +161,7 @@ export function SeerahContributions({
               className={`text-xs ${
                 msg.kind === "err"
                   ? "text-red-600 dark:text-red-400"
-                  : "text-emerald-700 dark:text-emerald-400"
+                  : "text-teal-strong "
               }`}
             >
               {msg.text}

@@ -5,6 +5,8 @@ import { assembleComplianceReport, getLatestStoredReport } from "@/lib/complianc
 import { ComplianceReportView } from "@/components/compliance/ComplianceReportView";
 import { SnapshotBar } from "@/components/compliance/SnapshotBar";
 import { RegulationNote } from "@/components/RegulationNote";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { Card } from "@/components/ui/Card";
 
 export default async function AdminCompliancePage({
   searchParams,
@@ -32,38 +34,25 @@ export default async function AdminCompliancePage({
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between text-sm">
-        <Link
-          href="/admin"
-          className="text-zinc-500 underline underline-offset-2 hover:text-zinc-800 dark:hover:text-zinc-200"
-        >
-          ← Admin
-        </Link>
-      </div>
-
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Compliance report</h1>
-        <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
-          Assembled continuously from checkpoint, unit-assessment and term-exam data. Each
-          course shows a forward-looking status - on track, watch, or gap forming - not just
-          a backward record. Save a snapshot for the file when a term closes.
-        </p>
-      </div>
+      <PageHeader
+        kicker="Compliance"
+        title="Progress & evaluation record"
+        lede="Assembled continuously from checkpoint, unit-assessment and term-exam data. Each course carries a forward-looking status - on track, watch, or gap forming - not just a backward record."
+        back={{ href: "/admin", label: "Overview" }}
+      />
 
       <RegulationNote>
-        Whether this record satisfies Québec&apos;s home-instruction evaluation
-        requirement, and in what format, must be confirmed against current
-        regulation. The status thresholds here are illustrative.
+        Whether this record satisfies Quebec&apos;s home-instruction evaluation requirement,
+        and in what format, must be confirmed against current regulation. The status
+        thresholds here are illustrative.
       </RegulationNote>
 
       {loadError ? (
-        <p className="rounded-xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900 dark:border-amber-700/60 dark:bg-amber-950/40 dark:text-amber-200">
+        <Card tone="warning" className="p-4 text-sm text-ink-2">
           {loadError}. Run <code>npm run seed</code>.
-        </p>
+        </Card>
       ) : students.length === 0 ? (
-        <p className="rounded-xl border border-black/10 p-6 text-sm text-zinc-500 dark:border-white/15">
-          No students yet.
-        </p>
+        <Card className="p-6 text-sm text-ink-3">No students yet.</Card>
       ) : (
         <>
           <div className="flex flex-wrap gap-2">
@@ -71,10 +60,10 @@ export default async function AdminCompliancePage({
               <Link
                 key={s.id}
                 href={`/admin/compliance?student=${s.id}`}
-                className={`rounded-lg border px-3 py-1.5 text-sm ${
+                className={`rounded-full border px-3.5 py-1.5 text-sm transition-colors ${
                   selected?.id === s.id
-                    ? "border-emerald-400 bg-emerald-50 font-medium text-emerald-800 dark:border-emerald-500 dark:bg-emerald-950/40 dark:text-emerald-200"
-                    : "border-black/10 text-zinc-600 hover:border-emerald-300 dark:border-white/15 dark:text-zinc-300"
+                    ? "border-terracotta bg-terracotta-soft font-medium text-terracotta-strong"
+                    : "border-border text-ink-3 hover:border-border-strong"
                 }`}
               >
                 {s.name}

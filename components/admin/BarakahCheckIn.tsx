@@ -52,22 +52,22 @@ export function BarakahCheckIn({
       <form
         ref={formRef}
         onSubmit={submit}
-        className="rounded-xl border border-black/10 bg-white p-4 dark:border-white/15 dark:bg-zinc-950"
+        className="rounded-xl border border-border bg-surface p-4  "
       >
         <h2 className="font-medium">Weekly check-in</h2>
-        <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
+        <p className="mt-1 text-xs text-ink-3 ">
           A short observation about consistency, cooperation, reflection, or adab.
           Not a grade - these are never scored or ranked.
         </p>
 
         <div className="mt-3 grid gap-3 sm:grid-cols-2">
           <label className="block text-sm">
-            <span className="text-xs font-medium text-zinc-500 dark:text-zinc-400">Pod</span>
+            <span className="text-xs font-medium text-ink-3 ">Pod</span>
             <select
               name="podId"
               value={podId}
               onChange={(e) => setPodId(e.target.value)}
-              className="mt-1 w-full rounded-md border border-black/15 bg-white px-2 py-1.5 text-sm dark:border-white/20 dark:bg-zinc-900"
+              className="mt-1 w-full rounded-md border border-border bg-surface px-2 py-1.5 text-sm  "
             >
               {pods.map((p) => (
                 <option key={p.id} value={p.id}>{p.name}</option>
@@ -76,11 +76,11 @@ export function BarakahCheckIn({
           </label>
 
           <label className="block text-sm">
-            <span className="text-xs font-medium text-zinc-500 dark:text-zinc-400">About</span>
+            <span className="text-xs font-medium text-ink-3 ">About</span>
             <select
               name="studentUserId"
               defaultValue=""
-              className="mt-1 w-full rounded-md border border-black/15 bg-white px-2 py-1.5 text-sm dark:border-white/20 dark:bg-zinc-900"
+              className="mt-1 w-full rounded-md border border-border bg-surface px-2 py-1.5 text-sm  "
             >
               <option value="">The whole pod</option>
               {students.map((s) => (
@@ -90,11 +90,11 @@ export function BarakahCheckIn({
           </label>
 
           <label className="block text-sm">
-            <span className="text-xs font-medium text-zinc-500 dark:text-zinc-400">Indicator</span>
+            <span className="text-xs font-medium text-ink-3 ">Indicator</span>
             <select
               name="indicator"
               defaultValue={BARAKAH_INDICATORS[0].key}
-              className="mt-1 w-full rounded-md border border-black/15 bg-white px-2 py-1.5 text-sm dark:border-white/20 dark:bg-zinc-900"
+              className="mt-1 w-full rounded-md border border-border bg-surface px-2 py-1.5 text-sm  "
             >
               {BARAKAH_INDICATORS.map((i) => (
                 <option key={i.key} value={i.key}>{i.label}</option>
@@ -103,24 +103,24 @@ export function BarakahCheckIn({
           </label>
 
           <label className="block text-sm">
-            <span className="text-xs font-medium text-zinc-500 dark:text-zinc-400">
+            <span className="text-xs font-medium text-ink-3 ">
               Recorded by
             </span>
             <input
               name="recordedBy"
               defaultValue="Br. Kareem"
-              className="mt-1 w-full rounded-md border border-black/15 bg-white px-2 py-1.5 text-sm dark:border-white/20 dark:bg-zinc-900"
+              className="mt-1 w-full rounded-md border border-border bg-surface px-2 py-1.5 text-sm  "
             />
           </label>
         </div>
 
         <label className="mt-3 block text-sm">
-          <span className="text-xs font-medium text-zinc-500 dark:text-zinc-400">Note</span>
+          <span className="text-xs font-medium text-ink-3 ">Note</span>
           <textarea
             name="note"
             rows={2}
             required
-            className="mt-1 w-full rounded-md border border-black/15 bg-white px-2 py-1.5 text-sm dark:border-white/20 dark:bg-zinc-900"
+            className="mt-1 w-full rounded-md border border-border bg-surface px-2 py-1.5 text-sm  "
             placeholder="e.g. Helped a podmate without being asked."
           />
         </label>
@@ -129,7 +129,7 @@ export function BarakahCheckIn({
           <button
             type="submit"
             disabled={pending}
-            className="rounded-md bg-emerald-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-emerald-500 disabled:opacity-50"
+            className="rounded-md bg-teal px-3 py-1.5 text-sm font-medium text-white hover:bg-teal-strong disabled:opacity-50"
           >
             {pending ? "Saving…" : "Record note"}
           </button>
@@ -137,10 +137,10 @@ export function BarakahCheckIn({
         </div>
       </form>
 
-      <section className="rounded-xl border border-black/10 bg-white p-4 dark:border-white/15 dark:bg-zinc-950">
+      <section className="rounded-xl border border-border bg-surface p-4  ">
         <h2 className="font-medium">Recent notes</h2>
         {recentNotes.length === 0 ? (
-          <p className="mt-2 text-sm text-zinc-400">No notes recorded yet.</p>
+          <p className="mt-2 text-sm text-ink-4">No notes recorded yet.</p>
         ) : (
           <ul className="mt-1 divide-y divide-black/5 dark:divide-white/10">
             {recentNotes.map((n) => (
@@ -149,15 +149,15 @@ export function BarakahCheckIn({
                   <span className="font-medium">
                     {n.studentName ?? `${n.podName} (whole pod)`}
                   </span>
-                  <span className="rounded bg-zinc-100 px-1.5 py-0.5 text-[11px] text-zinc-600 dark:bg-zinc-800 dark:text-zinc-300">
+                  <span className="rounded bg-surface-2 px-1.5 py-0.5 text-[11px] text-ink-2  ">
                     {n.indicatorLabel}
                   </span>
-                  <span className="text-xs text-zinc-400">
+                  <span className="text-xs text-ink-4">
                     {fmtDate(n.recordedAt)} · {n.recordedBy}
                   </span>
                 </div>
                 {n.note && (
-                  <p className="mt-0.5 text-zinc-600 dark:text-zinc-300">{n.note}</p>
+                  <p className="mt-0.5 text-ink-2 ">{n.note}</p>
                 )}
               </li>
             ))}

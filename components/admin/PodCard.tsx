@@ -39,14 +39,14 @@ export function PodCard({
   }
 
   return (
-    <section className="rounded-xl border border-black/10 bg-white p-4 dark:border-white/15 dark:bg-zinc-950">
+    <section className="rounded-xl border border-border bg-surface p-4  ">
       <div className="flex items-center justify-between">
         <h3 className="font-medium">{pod.name}</h3>
         <span
           className={`rounded px-1.5 py-0.5 text-[11px] font-medium ${
             full
-              ? "bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-200"
-              : "bg-zinc-100 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400"
+              ? "bg-amber-100 text-ink-2 dark:bg-amber-900/40 "
+              : "bg-surface-2 text-ink-3  "
           }`}
         >
           {pod.students.length} / {pod.maxStudents} students
@@ -54,11 +54,11 @@ export function PodCard({
       </div>
 
       {/* Volunteer */}
-      <label className="mt-3 block text-xs font-medium text-zinc-500 dark:text-zinc-400">
+      <label className="mt-3 block text-xs font-medium text-ink-3 ">
         Volunteer
       </label>
       <select
-        className="mt-1 w-full rounded-md border border-black/15 bg-white px-2 py-1.5 text-sm dark:border-white/20 dark:bg-zinc-900"
+        className="mt-1 w-full rounded-md border border-border bg-surface px-2 py-1.5 text-sm  "
         value={pod.volunteer?.id ?? ""}
         disabled={pending}
         onChange={(e) =>
@@ -74,17 +74,17 @@ export function PodCard({
       </select>
 
       {/* Students */}
-      <div className="mt-4 text-xs font-medium text-zinc-500 dark:text-zinc-400">
+      <div className="mt-4 text-xs font-medium text-ink-3 ">
         Students
       </div>
       {pod.students.length === 0 ? (
-        <p className="mt-1 text-sm text-zinc-400">No students assigned.</p>
+        <p className="mt-1 text-sm text-ink-4">No students assigned.</p>
       ) : (
         <ul className="mt-1 space-y-1">
           {pod.students.map((s) => (
             <li
               key={s.id}
-              className="flex items-center justify-between rounded-md bg-zinc-50 px-2 py-1 text-sm dark:bg-zinc-900"
+              className="flex items-center justify-between rounded-md bg-surface-2 px-2 py-1 text-sm "
             >
               <span>{s.name}</span>
               <button
@@ -93,7 +93,7 @@ export function PodCard({
                 onClick={() =>
                   dispatch(() => unassignStudentAction(pod.id, s.id))
                 }
-                className="text-xs text-zinc-400 underline underline-offset-2 hover:text-red-600 disabled:opacity-50"
+                className="text-xs text-ink-4 underline underline-offset-2 hover:text-red-600 disabled:opacity-50"
               >
                 remove
               </button>
@@ -105,7 +105,7 @@ export function PodCard({
       {/* Add a student */}
       <div className="mt-2 flex gap-2">
         <select
-          className="min-w-0 flex-1 rounded-md border border-black/15 bg-white px-2 py-1.5 text-sm disabled:opacity-50 dark:border-white/20 dark:bg-zinc-900"
+          className="min-w-0 flex-1 rounded-md border border-border bg-surface px-2 py-1.5 text-sm disabled:opacity-50  "
           value={toAdd}
           disabled={pending || full || unassignedStudents.length === 0}
           onChange={(e) => setToAdd(e.target.value)}
@@ -131,7 +131,7 @@ export function PodCard({
             setToAdd("");
             dispatch(() => assignStudentAction(pod.id, id));
           }}
-          className="rounded-md bg-emerald-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-emerald-500 disabled:opacity-50"
+          className="rounded-md bg-teal px-3 py-1.5 text-sm font-medium text-white hover:bg-teal-strong disabled:opacity-50"
         >
           Add
         </button>

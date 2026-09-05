@@ -51,7 +51,7 @@ export default async function AdminSeerahPage({
       <div className="flex items-center justify-between text-sm">
         <Link
           href="/admin"
-          className="text-zinc-500 underline underline-offset-2 hover:text-zinc-800 dark:hover:text-zinc-200"
+          className="text-ink-3 underline underline-offset-2 hover:text-ink "
         >
           ← Admin
         </Link>
@@ -59,7 +59,7 @@ export default async function AdminSeerahPage({
 
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">Seerah - community input</h1>
-        <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
+        <p className="mt-1 text-sm text-ink-3 ">
           Seerah has no external curriculum vendor. The masjid&apos;s scholars and elders
           annotate the lesson draft; their notes are folded into the next version
           of the lesson.
@@ -67,12 +67,12 @@ export default async function AdminSeerahPage({
       </div>
 
       {loadError ? (
-        <p className="rounded-xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900 dark:border-amber-700/60 dark:bg-amber-950/40 dark:text-amber-200">
+        <p className="rounded-xl border border-warning/40 bg-warning-soft p-4 text-sm text-ink-2   ">
           Unavailable: {loadError}. Configure Supabase, run the seed, and generate the
           Seerah lessons (`npm run gen:lessons`).
         </p>
       ) : nodes.length === 0 ? (
-        <p className="rounded-xl border border-black/10 p-6 text-sm text-zinc-500 dark:border-white/15">
+        <p className="rounded-xl border border-border p-6 text-sm text-ink-3 ">
           No Seerah lesson nodes found.
         </p>
       ) : (
@@ -84,8 +84,8 @@ export default async function AdminSeerahPage({
                 href={`/admin/seerah?node=${n.id}`}
                 className={`block rounded-lg border px-3 py-2 text-sm ${
                   selected?.id === n.id
-                    ? "border-emerald-400 bg-emerald-50 dark:border-emerald-500 dark:bg-emerald-950/30"
-                    : "border-black/10 hover:bg-zinc-50 dark:border-white/15 dark:hover:bg-zinc-900"
+                    ? "border-emerald-400 bg-success-soft  "
+                    : "border-border hover:bg-surface-2  "
                 }`}
               >
                 <div className="flex items-center justify-between gap-2">
@@ -93,12 +93,12 @@ export default async function AdminSeerahPage({
                     {n.sequenceOrder}. {n.title}
                   </span>
                   {n.pendingContributions > 0 && (
-                    <span className="shrink-0 rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-medium text-amber-800 dark:bg-amber-900/40 dark:text-amber-200">
+                    <span className="shrink-0 rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-medium text-ink-2 dark:bg-amber-900/40 ">
                       {n.pendingContributions}
                     </span>
                   )}
                 </div>
-                <div className="mt-0.5 text-[11px] text-zinc-400">
+                <div className="mt-0.5 text-[11px] text-ink-4">
                   {n.hasLesson ? `lesson v${n.version}` : "no lesson yet"}
                 </div>
               </Link>
@@ -108,12 +108,12 @@ export default async function AdminSeerahPage({
           <div className="space-y-4">
             {selected && lesson ? (
               <>
-                <section className="rounded-xl border border-black/10 bg-white p-4 dark:border-white/15 dark:bg-zinc-950">
+                <section className="rounded-xl border border-border bg-surface p-4  ">
                   <h2 className="font-medium">Current draft</h2>
-                  <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-300">
+                  <p className="mt-1 text-sm text-ink-2 ">
                     {lesson.summary}
                   </p>
-                  <ul className="mt-2 space-y-1 text-sm text-zinc-500 dark:text-zinc-400">
+                  <ul className="mt-2 space-y-1 text-sm text-ink-3 ">
                     {lesson.sections.map((s, i) => (
                       <li key={i} className="flex gap-2">
                         <span aria-hidden>·</span>
@@ -131,7 +131,7 @@ export default async function AdminSeerahPage({
                 />
               </>
             ) : selected ? (
-              <p className="rounded-xl border border-black/10 p-6 text-sm text-zinc-500 dark:border-white/15">
+              <p className="rounded-xl border border-border p-6 text-sm text-ink-3 ">
                 This node has no generated lesson yet. Run{" "}
                 <code>npm run gen:lessons</code> first.
               </p>

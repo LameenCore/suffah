@@ -44,7 +44,7 @@ export default async function AdminPodsPage() {
       <div className="flex items-center justify-between text-sm">
         <Link
           href="/admin"
-          className="text-zinc-500 underline underline-offset-2 hover:text-zinc-800 dark:hover:text-zinc-200"
+          className="text-ink-3 underline underline-offset-2 hover:text-ink "
         >
           ← Admin
         </Link>
@@ -52,7 +52,7 @@ export default async function AdminPodsPage() {
 
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">Pods</h1>
-        <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
+        <p className="mt-1 text-sm text-ink-3 ">
           Assign a volunteer and up to {POD_MAX_STUDENTS} students per pod. The
           continuity view shows where each pod is in every course, so a new
           volunteer can pick up mid-stream.
@@ -66,12 +66,12 @@ export default async function AdminPodsPage() {
       </RegulationNote>
 
       {loadError ? (
-        <p className="rounded-xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900 dark:border-amber-700/60 dark:bg-amber-950/40 dark:text-amber-200">
+        <p className="rounded-xl border border-warning/40 bg-warning-soft p-4 text-sm text-ink-2   ">
           Pod data is unavailable: {loadError}. Configure Supabase and run the seed
           to populate this view.
         </p>
       ) : pods.length === 0 ? (
-        <p className="rounded-xl border border-black/10 p-6 text-sm text-zinc-500 dark:border-white/15">
+        <p className="rounded-xl border border-border p-6 text-sm text-ink-3 ">
           No pods yet.
         </p>
       ) : (
@@ -88,26 +88,26 @@ export default async function AdminPodsPage() {
           </div>
 
           {/* Continuity matrix - pod x course -> current node */}
-          <section className="rounded-xl border border-black/10 bg-white p-4 dark:border-white/15 dark:bg-zinc-950">
+          <section className="rounded-xl border border-border bg-surface p-4  ">
             <h2 className="font-medium">Continuity view</h2>
-            <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
+            <p className="mt-1 text-xs text-ink-3 ">
               Current pathway node per pod, per course. This is what a replacement
               volunteer sees on day one.
             </p>
             <div className="mt-3 overflow-x-auto">
               <table className="w-full border-collapse text-sm">
                 <thead>
-                  <tr className="text-left text-xs uppercase tracking-wide text-zinc-400">
-                    <th className="border-b border-black/10 py-2 pr-4 dark:border-white/15">
+                  <tr className="text-left text-xs uppercase tracking-wide text-ink-4">
+                    <th className="border-b border-border py-2 pr-4 ">
                       Pod
                     </th>
-                    <th className="border-b border-black/10 py-2 pr-4 dark:border-white/15">
+                    <th className="border-b border-border py-2 pr-4 ">
                       Volunteer
                     </th>
                     {courseColumns?.map((c) => (
                       <th
                         key={c.id}
-                        className="border-b border-black/10 py-2 pr-4 dark:border-white/15"
+                        className="border-b border-border py-2 pr-4 "
                       >
                         {c.name}
                       </th>
@@ -117,20 +117,20 @@ export default async function AdminPodsPage() {
                 <tbody>
                   {pods.map((pod) => (
                     <tr key={pod.id} className="align-top">
-                      <td className="border-b border-black/5 py-2 pr-4 font-medium dark:border-white/10">
+                      <td className="border-b border-black/5 py-2 pr-4 font-medium ">
                         {pod.name}
                       </td>
-                      <td className="border-b border-black/5 py-2 pr-4 text-zinc-500 dark:border-white/10 dark:text-zinc-400">
+                      <td className="border-b border-black/5 py-2 pr-4 text-ink-3  ">
                         {pod.volunteer?.name ?? "-"}
                       </td>
                       {pod.progress.map((p) => (
                         <td
                           key={p.courseId}
-                          className="border-b border-black/5 py-2 pr-4 dark:border-white/10"
+                          className="border-b border-black/5 py-2 pr-4 "
                         >
                           {p.currentNodeTitle ? (
                             <>
-                              <span className="text-zinc-400">
+                              <span className="text-ink-4">
                                 node {p.nodePosition}
                                 {p.totalNodes ? ` / ${p.totalNodes}` : ""}
                               </span>
@@ -138,7 +138,7 @@ export default async function AdminPodsPage() {
                               {p.currentNodeTitle}
                             </>
                           ) : (
-                            <span className="text-zinc-400">not started</span>
+                            <span className="text-ink-4">not started</span>
                           )}
                         </td>
                       ))}
