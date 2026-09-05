@@ -34,6 +34,19 @@ export function ComplianceReportView({ report }: { report: ComplianceReport }) {
         </div>
       </Card>
 
+      {report.retention && report.retention.totalItems > 0 ? (
+        <p className="text-xs text-ink-4">
+          Spaced review: {report.retention.totalItems} items tracked
+          {report.retention.reviewedLast7 > 0
+            ? `, ${report.retention.reviewedLast7} reviewed in the last week` +
+              (report.retention.accuracyLast7 != null
+                ? ` (${Math.round(report.retention.accuracyLast7 * 100)}% recalled)`
+                : "")
+            : ""}
+          .
+        </p>
+      ) : null}
+
       <div className="space-y-4">
         {report.courses.map(({ status, evidence }) => (
           <Card

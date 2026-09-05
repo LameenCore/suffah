@@ -1,7 +1,10 @@
 import { requireRole } from "@/lib/auth";
 import { getStudentTracks } from "@/lib/db/queries";
+import Link from "next/link";
 import { getConsistency } from "@/lib/db/consistency-queries";
+import { getRetentionSignal, seedReviewItems } from "@/lib/review";
 import { RegulationNote } from "@/components/RegulationNote";
+import { Card } from "@/components/ui/Card";
 import { CoursePath } from "@/components/student/CoursePath";
 import { ConsistencyStrip } from "@/components/student/ConsistencyStrip";
 import { Mascot } from "@/components/ui/Mascot";
@@ -14,6 +17,8 @@ export default async function StudentHome() {
     user.masjidId,
   );
   const consistency = await getConsistency(user.id, user.masjidId);
+  await seedReviewItems(user.id, user.masjidId).catch(() => {});
+  const retention = await getRetentionSignal(user.id, user.masjidId).catch(() => null);
   const firstName = user.name.split(" ")[0];
 
   return (
@@ -62,6 +67,24 @@ export default async function StudentHome() {
             ))}
           </div>
         </section>
+      ) : null}
+
+      {pod && retention && retention.dueNow > 0 ? (
+        <Card as="section" tone="teal" className="flex flex-wrap items-center justify-between gap-3 p-5">
+          <div>
+            <h3 className="font-display text-lg font-semibold text-ink">Review is ready</h3>
+            <p className="mt-0.5 text-sm text-ink-2">
+              {retention.dueNow} quick question{retention.dueNow === 1 ? "" : "s"} from lessons
+              you&apos;ve already passed.
+            </p>
+          </div>
+          <Link
+            href="/student/review"
+            className="shrink-0 rounded-full bg-teal px-4 py-2 text-sm font-medium text-white hover:bg-teal-strong"
+          >
+            Start review
+          </Link>
+        </Card>
       ) : null}
 
       {pod ? <ConsistencyStrip consistency={consistency} audience="student" /> : null}

@@ -36,6 +36,7 @@ export default async function StudentLayout({ children }: LayoutProps<"/student"
       label: c.name,
       icon: <NavIcon name="book" />,
     })),
+    { href: "/student/review", label: "Review", icon: <NavIcon name="spark" /> },
   ];
 
   return <DashboardChrome user={user} nav={nav}>{children}</DashboardChrome>;

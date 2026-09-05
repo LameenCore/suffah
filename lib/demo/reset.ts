@@ -57,6 +57,7 @@ export async function resetWalkthroughState(masjidId: string): Promise<ResetSumm
   await db.from("term_exam_results").delete().in("student_user_id", students);
   await db.from("compliance_reports").delete().in("student_user_id", students);
   await db.from("lesson_progress").delete().in("student_user_id", students);
+  await db.from("review_items").delete().in("student_user_id", students);
 
   // 2. Wipe the continuity trail so demo step 3 regenerates a fresh briefing.
   await db.from("pod_briefings").delete().eq("pod_id", DEMO.pod);

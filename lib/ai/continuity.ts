@@ -98,6 +98,16 @@ function renderSignals(s: PodLearningSignals): string {
       );
     }
   }
+  const activeRetention = s.retention.filter((r) => r.reviewedLast7 > 0 || r.dueNow > 0);
+  if (activeRetention.length) {
+    lines.push("");
+    lines.push("Spaced review (retention of earlier material):");
+    for (const r of activeRetention) {
+      const acc =
+        r.accuracyLast7 != null ? `${Math.round(r.accuracyLast7 * 100)}% right last 7d` : "not reviewed lately";
+      lines.push(`- ${r.studentName}: ${r.dueNow} due now, ${acc}`);
+    }
+  }
   if (s.notes.length) {
     lines.push("");
     lines.push("Session notes (most recent first):");
@@ -179,6 +189,11 @@ export function fallbackBriefing(s: PodLearningSignals): PodBriefing {
   const watchFor: string[] = [];
   const stuckCourses = perCourse.filter((c) => c.status === "stuck" || c.status === "some friction");
   for (const c of stuckCourses) watchFor.push(`Review ${c.course} with the pod - ${c.note}`);
+  for (const r of s.retention) {
+    if (r.accuracyLast7 != null && r.accuracyLast7 < 0.6) {
+      watchFor.push(`${r.studentName} is missing spaced-review questions from earlier lessons.`);
+    }
+  }
   for (const n of s.notes.slice(0, 2)) watchFor.push(`From notes: ${n.note}`);
   if (watchFor.length < 2) watchFor.push("Check each student's last checkpoint before moving the pod forward.");
   if (watchFor.length < 2) watchFor.push("Ask the pod what the previous session covered.");

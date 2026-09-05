@@ -1,7 +1,7 @@
 # BOARD — Suffa progress snapshot
 
 **Derived from `progress/tasks/`. Not authoritative. Regenerate after any claim/finish.**
-Last regenerated: 2026-09-05 (T64 done — learning analytics)
+Last regenerated: 2026-09-05 (T44, T64 done)
 
 | id  | phase | status | owner | title |
 |-----|-------|--------|-------|-------|
@@ -58,7 +58,7 @@ Get a clean demo state: `npm run demo:setup` (full, hits the API) or `npm run de
 | T41 | 10 | todo | — | Content moderation + child safety for UGC |
 | T42 | 11 | todo | — | Adaptive path: remediation branch + skip-ahead |
 | T43 | 11 | todo | — | Prerequisite / skill-tree mapping |
-| T44 | 11 | todo | — | Spaced-repetition review deck |
+| T44 | 11 | done | — | Spaced-repetition review deck |
 | T45 | 11 | todo | — | AI lesson tutor (grounded Q&A) |
 | T46 | 11 | todo | — | Next-step recommendations |
 | T47 | 11 | todo | — | Pod discussion / Q&A board |

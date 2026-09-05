@@ -14,6 +14,7 @@ import {
   type CheckpointGrade,
 } from "@/lib/ai/checkpoint";
 import { generateTermExam, gradeTermExam, type TermExamGrade } from "@/lib/ai/term-exam";
+import { submitReview, type ReviewResult } from "@/lib/review";
 import { DEMO_TERM_LABEL } from "@/lib/types";
 
 async function requireStudent() {
@@ -96,4 +97,12 @@ export async function submitTermExamAction(
 ): Promise<TermExamGrade> {
   const user = await requireStudent();
   return gradeTermExam(courseId, DEMO_TERM_LABEL, user.id, user.masjidId, answers);
+}
+
+/** Grade a spaced-repetition review session and reschedule the items (T44). */
+export async function submitReviewAction(
+  answers: Record<string, string>,
+): Promise<ReviewResult> {
+  const user = await requireStudent();
+  return submitReview(user.id, user.masjidId, answers);
 }

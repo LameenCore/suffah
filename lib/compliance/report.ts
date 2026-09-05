@@ -7,6 +7,7 @@
 
 import { getServiceClient } from "@/lib/db";
 import { getChildReport, type ChildReport } from "@/lib/db/parent-queries";
+import { getRetentionSignal } from "@/lib/review";
 import {
   computeCourseStatus,
   computeOverall,
@@ -25,6 +26,13 @@ export interface ComplianceReport {
     status: CourseComplianceStatus;
     evidence: ChildReport["courses"][number];
   }>;
+  /** Spaced-repetition retention (T44), when assembled with a DB (not the pure path). */
+  retention?: {
+    totalItems: number;
+    dueNow: number;
+    reviewedLast7: number;
+    accuracyLast7: number | null;
+  };
 }
 
 /**
@@ -58,7 +66,19 @@ export async function assembleComplianceReport(
   termLabel: string = DEMO_TERM_LABEL,
 ): Promise<ComplianceReport> {
   const child = await getChildReport({ id: studentUserId, name: studentName }, masjidId);
-  return assembleFromChildReport(child, termLabel);
+  const report = assembleFromChildReport(child, termLabel);
+  try {
+    const r = await getRetentionSignal(studentUserId, masjidId);
+    report.retention = {
+      totalItems: r.totalItems,
+      dueNow: r.dueNow,
+      reviewedLast7: r.reviewedLast7,
+      accuracyLast7: r.accuracyLast7,
+    };
+  } catch {
+    // retention is supplementary - a lookup failure must not break the report
+  }
+  return report;
 }
 
 /** Assemble + persist a snapshot into compliance_reports. Returns the report + row id. */

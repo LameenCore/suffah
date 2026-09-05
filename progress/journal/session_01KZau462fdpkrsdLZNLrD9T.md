@@ -232,3 +232,20 @@ Claimed T52 (no deps). Parallel session on T29 (marketing) + T37 landed (consent
 
 Verified live on both routes ("shown up 1 day in the last week" for Yusuf).
 build + lint + tsc + 57 tests green. Commit <t52>.
+
+## 2026-09-05 — T44 done (spaced-repetition review deck)
+Claimed T44 (no deps).
+
+- migration 0013_review_items. lib/review.ts: scheduleNext() pure trimmed SM-2
+  (tested); seedReviewItems (lazy, capped 12/run, staggered); getReviewDeck;
+  submitReview (gradeQuestion + reschedule); getRetentionSignal.
+- /student/review + ReviewDeck.tsx + "Review is ready" card on /student + a
+  Review sidebar item. submitReviewAction.
+- Retention -> continuity briefing (PodLearningSignals.retention -> renderSignals
+  + fallbackBriefing watchFor <0.6) AND compliance (ComplianceReport.retention on
+  the DB path -> ComplianceReportView line). demo:reset clears review_items.
+- tests/review.test.ts (5). 62 total.
+
+Verified via script: 3-card deck -> submit 1/3 -> rescheduled -> deck empties;
+retention dueNow 3->0, accuracyLast7 -> 0.33. Ran demo:reset after.
+build + lint + tsc + 62 tests + check:integrity green. Commit <t44>.

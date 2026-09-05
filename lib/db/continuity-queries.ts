@@ -4,6 +4,7 @@
 import { getServiceClient } from "@/lib/db";
 import type { CourseName } from "@/lib/types";
 import type { PodBriefing } from "@/lib/ai/continuity";
+import { getRetentionSignal } from "@/lib/review";
 
 function unwrap<T>(rel: T | T[] | null | undefined): T | null {
   if (rel == null) return null;
@@ -134,6 +135,13 @@ export interface PodLearningSignals {
     score: number;
     passed: boolean;
   }[];
+  /** Spaced-repetition retention, per student (T44). */
+  retention: {
+    studentName: string;
+    dueNow: number;
+    reviewedLast7: number;
+    accuracyLast7: number | null;
+  }[];
   notes: PodSessionNote[];
 }
 
@@ -261,6 +269,18 @@ export async function gatherPodLearningSignals(
 
   const notes = await listPodSessionNotes(podId, masjidId, 25);
 
+  const retention = await Promise.all(
+    students.map(async (s) => {
+      const r = await getRetentionSignal(s.id, masjidId);
+      return {
+        studentName: s.name,
+        dueNow: r.dueNow,
+        reviewedLast7: r.reviewedLast7,
+        accuracyLast7: r.accuracyLast7,
+      };
+    }),
+  );
+
   return {
     pod: { id: podRow.id as string, name: podRow.name as string, volunteerName },
     students,
@@ -276,6 +296,7 @@ export async function gatherPodLearningSignals(
     }),
     checkpoints,
     assessments,
+    retention,
     notes,
   };
 }
