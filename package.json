@@ -20,7 +20,8 @@
     "check:integrity": "tsx --env-file=.env.local scripts/check-integrity.ts",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "seed:auth": "tsx --env-file=.env.local scripts/seed-auth.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.124.0",

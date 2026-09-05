@@ -54,7 +54,7 @@ async function seed() {
     await db.from("users").insert([
       { id: U.admin, masjid_id: MASJID, role: "admin", name: "Masjid Admin", email: "admin@suffa.demo" },
       { id: U.parent, masjid_id: MASJID, role: "parent", name: "Parent (Demo Family)", email: "parent@suffa.demo" },
-      { id: U.yusuf, masjid_id: MASJID, role: "student", name: "Yusuf (Secondary 1)", email: "yusuf@suffa.demo" },
+      { id: U.yusuf, masjid_id: MASJID, role: "student", name: "Yusuf (Secondary 1)", email: "student@suffa.demo" },
       { id: U.maryam, masjid_id: MASJID, role: "student", name: "Maryam (Secondary 1)", email: "maryam@suffa.demo" },
       { id: U.idris, masjid_id: MASJID, role: "student", name: "Idris (Secondary 1)", email: "idris@suffa.demo" },
       { id: U.safiya, masjid_id: MASJID, role: "student", name: "Safiya (Secondary 1)", email: "safiya@suffa.demo" },

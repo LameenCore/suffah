@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import type { SessionUser } from "@/lib/types";
 import { Star8 } from "@/components/ui/Motif";
 import { DemoResetButton } from "@/components/DemoResetButton";
+import { signOutAction } from "@/app/logout/actions";
 
 export interface NavItem {
   href: string;
@@ -91,12 +92,14 @@ export function Sidebar({
             <p className="truncate text-xs text-ink-4">{user.email}</p>
           )}
         </div>
-        <Link
-          href="/"
-          className="shrink-0 rounded-full border border-border px-2.5 py-1 text-xs text-ink-3 transition-colors hover:border-teal hover:text-teal"
-        >
-          switch
-        </Link>
+        <form action={signOutAction} className="shrink-0">
+          <button
+            type="submit"
+            className="rounded-full border border-border px-2.5 py-1 text-xs text-ink-3 transition-colors hover:border-teal hover:text-teal"
+          >
+            sign out
+          </button>
+        </form>
       </div>
     </div>
   );

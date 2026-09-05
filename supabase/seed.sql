@@ -17,7 +17,7 @@ insert into masjids (id, name) values
 insert into users (id, masjid_id, role, name, email) values
   ('00000000-0000-0000-0000-0000000000a1', '00000000-0000-0000-0000-000000000001', 'admin',   'Masjid Admin',          'admin@suffa.demo'),
   ('00000000-0000-0000-0000-0000000000b1', '00000000-0000-0000-0000-000000000001', 'parent',  'Parent (Demo Family)',  'parent@suffa.demo'),
-  ('00000000-0000-0000-0000-0000000000c1', '00000000-0000-0000-0000-000000000001', 'student', 'Yusuf (Secondary 1)',   'yusuf@suffa.demo'),
+  ('00000000-0000-0000-0000-0000000000c1', '00000000-0000-0000-0000-000000000001', 'student', 'Yusuf (Secondary 1)',   'student@suffa.demo'),
   ('00000000-0000-0000-0000-0000000000c2', '00000000-0000-0000-0000-000000000001', 'student', 'Maryam (Secondary 1)',  'maryam@suffa.demo'),
   ('00000000-0000-0000-0000-0000000000c3', '00000000-0000-0000-0000-000000000001', 'student', 'Idris (Secondary 1)',   'idris@suffa.demo'),
   ('00000000-0000-0000-0000-0000000000c4', '00000000-0000-0000-0000-000000000001', 'student', 'Safiya (Secondary 1)',  'safiya@suffa.demo');
