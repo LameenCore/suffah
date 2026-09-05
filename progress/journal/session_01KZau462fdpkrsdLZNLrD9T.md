@@ -49,4 +49,15 @@ Not done (documented in the task outcome): screenshot pass on pods / continuity 
 handoff-demo / compliance / print / mobile drawer — needs a browser, folded into
 T28 (demo recording) prep.
 
-Flipped all Done-when boxes, marked T25 done, regenerated BOARD. Commit <t25-final>.
+Flipped all Done-when boxes, marked T25 done, regenerated BOARD. Commit e370f70.
+
+## 2026-09-05 — T54 done (CI)
+Claimed T54 (dep T55 done). Added .github/workflows/ci.yml: push-to-main + PR-to-main
+trigger, one `verify` job — npm ci → lint → build → test. No tsc step (next build
+type-checks and generates the route types; a bare tsc would need .next/types first).
+No env vars (lib/env.ts never throws at import; DB/AI paths all have unconfigured
+fallbacks — the prior sessions already build clean without .env.local). Caches npm
+deps + .next/cache; concurrency-cancels superseded runs. Node 22 (LTS; repo dev is
+on 24). Verified lint+build+test green locally; `npm ci --dry-run` = lockfile in sync.
+Two done-when items aren't repo files, documented in the task: branch-protection
+"required check" is a Settings toggle; per-PR Vercel preview waits on T27. Commit <t54>.

@@ -1,0 +1,52 @@
+name: CI
+
+# Gate every change to main (the team ships straight to main - see git-workflow.md)
+# and every PR once the pilot moves to a PR flow (T30+).
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# One run per branch/PR; a new push cancels the in-flight run.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: lint + build + test
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      # Cache the Next build so incremental CI builds are fast.
+      - name: Cache Next.js build
+        uses: actions/cache@v4
+        with:
+          path: .next/cache
+          key: nextjs-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-${{ hashFiles('**/*.ts', '**/*.tsx') }}
+          restore-keys: |
+            nextjs-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-
+
+      - name: Install
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      # `next build` also type-checks (it generates the PageProps/LayoutProps
+      # route types this repo uses, then runs tsc). No env vars needed - lib/env.ts
+      # never throws at import time and every DB/AI call has an unconfigured path.
+      - name: Build
+        run: npm run build
+
+      - name: Test
+        run: npm test
