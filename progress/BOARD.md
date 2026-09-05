@@ -44,7 +44,7 @@ Get a clean demo state: `npm run demo:setup` (full, hits the API) or `npm run de
 | T27 | 8 | todo  | — | Deploy to Vercel (staging + prod) |
 | T28 | 8 | todo  | — | Recorded demo walkthrough (video / GIF) |
 | T29 | 8 | todo  | — | Public landing / marketing page |
-| T30 | 9 | todo  | — | Replace dev-cookie auth with Supabase Auth |
+| T30 | 9 | todo  | — | Real auth - sign-up/sign-in page + 3 role accounts (replace dev cookie) |
 | T31 | 9 | todo  | — | Postgres RLS policies per table |
 | T32 | 9 | todo  | — | Volunteer logins + delegated pod access |
 | T33 | 9 | todo  | — | Platform super-admin + masjid provisioning |
@@ -84,6 +84,25 @@ Get a clean demo state: `npm run demo:setup` (full, hits the API) or `npm run de
 
 Pilot order: T26 → T27, then T30 → T31 → T36 → T37 → T38, then T55 → T54 → T53,
 then T59 → T60, then Phase 11 depth; T63 is the multi-masjid scale unlock.
+
+## Phase 14 — MuslimHacks judging-rubric prep (Business 40 / Technical 30 / Delivery 30)
+
+| id  | phase | status | owner | title |
+|-----|-------|--------|-------|-------|
+| T67 | 14 | todo | — | One well-defined problem slice, stated plainly (Business) |
+| T68 | 14 | todo | — | Cost-of-running + sustainability argument, defensible (Business) |
+| T69 | 14 | todo | — | Documented market/competitor research (Business) |
+| T70 | 14 | todo | — | Plain-language "what is this" explainer (Business) |
+| T71 | 14 | todo | — | Architecture: legible + justified (Technical-sw) |
+| T72 | 14 | todo | — | Cohesion / coupling / readability pass (Technical-sw) |
+| T73 | 14 | todo | — | Performance check + notes (Technical-sw) |
+| T74 | 14 | todo | — | Test coverage: measure it, report the number (Technical-sw) |
+| T75 | 14 | todo | — | Design-decision log — how we arrived at this (Technical) |
+| T76 | 14 | todo | — | Demo rehearsal + fallback recording + walkthrough script (Delivery) |
+| T77 | 14 | done | — | Judge Q&A prep bank — drafted answers (Delivery) |
+| T78 | 14 | todo | — | Mock Q&A round (Delivery) |
+
+`docs/qa-prep.md` is drafted (T77). Team/process answers in it need the team to fill.
 
 ## Legend
 todo = free to claim · doing = owned now · blocked = see task's `blocker:` · done = see task's `outcome:`
