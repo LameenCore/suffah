@@ -74,13 +74,21 @@ insert into pod_progress (pod_id, course_id, current_node_id) values
 
 -- Funding (mock) --------------------------------------------------------------
 
+-- Mock ledger — no payment processing. Story: principal stays locked at 250k;
+-- only the returns are spent (rising quarterly operating draws); sadaqah tops up
+-- the scholarship pool. Principal must never be summed into "spendable" totals.
 insert into waqf_ledger (masjid_id, entry_type, amount, note, created_at) values
-  ('00000000-0000-0000-0000-000000000001', 'principal_deposit',     250000.00, 'Founding waqf endowment (locked principal)', now() - interval '1 year'),
-  ('00000000-0000-0000-0000-000000000001', 'return_disbursed',       -3200.00, 'Q1 operating draw (platform + coordination)', now() - interval '9 months'),
-  ('00000000-0000-0000-0000-000000000001', 'return_disbursed',       -3400.00, 'Q2 operating draw',                          now() - interval '6 months'),
-  ('00000000-0000-0000-0000-000000000001', 'return_disbursed',       -3550.00, 'Q3 operating draw',                          now() - interval '3 months'),
-  ('00000000-0000-0000-0000-000000000001', 'sadaqah_received',        5000.00, 'Ramadan scholarship drive',                  now() - interval '5 months'),
-  ('00000000-0000-0000-0000-000000000001', 'scholarship_allocated',  -1200.00, 'Safiya — full fee scholarship (term)',       now() - interval '2 months');
+  ('00000000-0000-0000-0000-000000000001', 'principal_deposit',     250000.00, 'Founding waqf endowment (locked principal)',            now() - interval '15 months'),
+  ('00000000-0000-0000-0000-000000000001', 'return_disbursed',       -3000.00, 'Operating draw — hosting + pod coordination',           now() - interval '13 months'),
+  ('00000000-0000-0000-0000-000000000001', 'return_disbursed',       -3150.00, 'Operating draw',                                       now() - interval '10 months'),
+  ('00000000-0000-0000-0000-000000000001', 'return_disbursed',       -3300.00, 'Operating draw',                                       now() - interval '7 months'),
+  ('00000000-0000-0000-0000-000000000001', 'return_disbursed',       -3450.00, 'Operating draw',                                       now() - interval '4 months'),
+  ('00000000-0000-0000-0000-000000000001', 'return_disbursed',       -3600.00, 'Operating draw',                                       now() - interval '1 month'),
+  ('00000000-0000-0000-0000-000000000001', 'sadaqah_received',        2000.00, 'Eid al-Adha giving campaign',                          now() - interval '11 months'),
+  ('00000000-0000-0000-0000-000000000001', 'sadaqah_received',        5000.00, 'Ramadan scholarship drive',                            now() - interval '5 months'),
+  ('00000000-0000-0000-0000-000000000001', 'sadaqah_received',        1200.00, 'Weekly jumu''ah sadaqah (aggregated)',                  now() - interval '1 month'),
+  ('00000000-0000-0000-0000-000000000001', 'scholarship_allocated',  -1200.00, 'Safiya — full fee scholarship (Term 1)',                now() - interval '6 months'),
+  ('00000000-0000-0000-0000-000000000001', 'scholarship_allocated',  -1200.00, 'Safiya — full fee scholarship (Term 2)',                now() - interval '1 month');
 
 insert into family_fee_status (masjid_id, student_user_id, status) values
   ('00000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-0000000000c1', 'fee_paid'),

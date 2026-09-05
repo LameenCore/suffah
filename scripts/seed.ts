@@ -134,14 +134,22 @@ async function seed() {
     ]),
   );
 
+  // Mock ledger — no payment processing. Principal stays locked at 250k; only
+  // the returns are spent (rising quarterly operating draws); sadaqah tops up the
+  // scholarship pool. Principal must never be summed into "spendable" totals.
   check(
     await db.from("waqf_ledger").insert([
-      { masjid_id: MASJID, entry_type: "principal_deposit", amount: 250000, note: "Founding waqf endowment (locked principal)", created_at: daysAgo(365) },
-      { masjid_id: MASJID, entry_type: "return_disbursed", amount: -3200, note: "Q1 operating draw (platform + coordination)", created_at: monthsAgo(9) },
-      { masjid_id: MASJID, entry_type: "return_disbursed", amount: -3400, note: "Q2 operating draw", created_at: monthsAgo(6) },
-      { masjid_id: MASJID, entry_type: "return_disbursed", amount: -3550, note: "Q3 operating draw", created_at: monthsAgo(3) },
+      { masjid_id: MASJID, entry_type: "principal_deposit", amount: 250000, note: "Founding waqf endowment (locked principal)", created_at: monthsAgo(15) },
+      { masjid_id: MASJID, entry_type: "return_disbursed", amount: -3000, note: "Operating draw — hosting + pod coordination", created_at: monthsAgo(13) },
+      { masjid_id: MASJID, entry_type: "return_disbursed", amount: -3150, note: "Operating draw", created_at: monthsAgo(10) },
+      { masjid_id: MASJID, entry_type: "return_disbursed", amount: -3300, note: "Operating draw", created_at: monthsAgo(7) },
+      { masjid_id: MASJID, entry_type: "return_disbursed", amount: -3450, note: "Operating draw", created_at: monthsAgo(4) },
+      { masjid_id: MASJID, entry_type: "return_disbursed", amount: -3600, note: "Operating draw", created_at: monthsAgo(1) },
+      { masjid_id: MASJID, entry_type: "sadaqah_received", amount: 2000, note: "Eid al-Adha giving campaign", created_at: monthsAgo(11) },
       { masjid_id: MASJID, entry_type: "sadaqah_received", amount: 5000, note: "Ramadan scholarship drive", created_at: monthsAgo(5) },
-      { masjid_id: MASJID, entry_type: "scholarship_allocated", amount: -1200, note: "Safiya — full fee scholarship (term)", created_at: monthsAgo(2) },
+      { masjid_id: MASJID, entry_type: "sadaqah_received", amount: 1200, note: "Weekly jumu'ah sadaqah (aggregated)", created_at: monthsAgo(1) },
+      { masjid_id: MASJID, entry_type: "scholarship_allocated", amount: -1200, note: "Safiya — full fee scholarship (Term 1)", created_at: monthsAgo(6) },
+      { masjid_id: MASJID, entry_type: "scholarship_allocated", amount: -1200, note: "Safiya — full fee scholarship (Term 2)", created_at: monthsAgo(1) },
     ]),
   );
 

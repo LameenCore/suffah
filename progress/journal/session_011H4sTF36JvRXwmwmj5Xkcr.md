@@ -67,3 +67,11 @@ rows + 4 family_fee_status rows. T13 is mostly satisfied — plan is to verify +
 mock ledger into a fuller ~15-month quarterly series so T14's "principal flat vs return
 spent" chart has real shape, keeping supabase/seed.sql and scripts/seed.ts in exact sync.
 No new migration needed. Commit the claim, then the data.
+
+## 2026-09-05 — T13 done
+Enriched the mock waqf_ledger to 11 rows over ~15 months in both supabase/seed.sql and
+scripts/seed.ts (kept identical): 1 locked principal deposit (250k), 5 rising quarterly
+return_disbursed operating draws (-3000..-3600), 3 sadaqah_received (Eid 2k, Ramadan 5k,
+aggregated jumu'ah 1.2k), 2 scholarship_allocated (Safiya term 1 + 2, -1200 each).
+No new migration (table is in 0001_init.sql). build + lint green. Not run against a live
+DB. Commit <t13>. Next: T16.
