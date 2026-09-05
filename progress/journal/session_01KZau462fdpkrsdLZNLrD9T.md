@@ -214,3 +214,21 @@ Claimed T49 (dep T12 done). Parallel session on T29 (marketing) - no overlap.
 Verified live: admin 200 / linked parent 200 / non-linked parent 404 / student
 viewing another student 403; CSV columns correct. build + lint + tsc + 57 tests +
 check:integrity green. Commit <t49>.
+
+## 2026-09-05 — T52 done (consistency indicator)
+Claimed T52 (no deps). Parallel session on T29 (marketing) + T37 landed (consent)
+- both touch app/parent, merged clean.
+
+- lib/db/consistency-queries.ts: getConsistency - distinct America/Toronto
+  calendar days with activity (lesson_progress.completed_at + the 3 results
+  tables' attempted_at). daysThisWeek / daysThisMonth / lastActive / 28-day
+  active array. No new table.
+- components/student/ConsistencyStrip.tsx: calm teal card + 28-dot strip +
+  explicit "only for you, never compared with anyone else". audience prop
+  ("student"|"parent") swaps the pronoun. Empty state leans on itqan.
+- /student (below courses) + /parent (per child block).
+- Ethos: no streak number, no badge/point/prize, no streak-break shaming,
+  nothing cross-student.
+
+Verified live on both routes ("shown up 1 day in the last week" for Yusuf).
+build + lint + tsc + 57 tests green. Commit <t52>.

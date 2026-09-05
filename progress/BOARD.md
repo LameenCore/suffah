@@ -1,7 +1,7 @@
 # BOARD — Suffa progress snapshot
 
 **Derived from `progress/tasks/`. Not authoritative. Regenerate after any claim/finish.**
-Last regenerated: 2026-09-05 (T34-T38, T56, T49 done)
+Last regenerated: 2026-09-05 (T34-T38, T56, T49, T52 done)
 
 | id  | phase | status | owner | title |
 |-----|-------|--------|-------|-------|
@@ -66,7 +66,7 @@ Get a clean demo state: `npm run demo:setup` (full, hits the API) or `npm run de
 | T49 | 11 | done | — | Term-completion record / transcript export |
 | T50 | 11 | todo | — | Admin course-authoring UI |
 | T51 | 11 | todo | — | Question bank management + item analytics |
-| T52 | 11 | todo | — | Consistency indicator (habit, not points) |
+| T52 | 11 | done | — | Consistency indicator (habit, not points) |
 | T53 | 12 | todo | — | Error + uptime + performance monitoring |
 | T54 | 12 | done | — | CI: lint + typecheck + build + tests on every PR |
 | T55 | 12 | done | — | Automated tests for the core loop |

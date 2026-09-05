@@ -15,6 +15,8 @@ import {
   getChildBarakahSummary,
   type ChildBarakahSummary,
 } from "@/lib/db/barakah-queries";
+import { getConsistency, type Consistency } from "@/lib/db/consistency-queries";
+import { ConsistencyStrip } from "@/components/student/ConsistencyStrip";
 import { assembleFromChildReport } from "@/lib/compliance/report";
 import { LEVEL_LABEL, type ComplianceLevel } from "@/lib/compliance/status";
 import { getActiveConsent } from "@/lib/consent";
@@ -199,9 +201,11 @@ function BarakahSummary({ barakah }: { barakah: ChildBarakahSummary }) {
 async function ChildBlock({
   report,
   barakah,
+  consistency,
 }: {
   report: ChildReport;
   barakah: ChildBarakahSummary;
+  consistency: Consistency;
 }) {
   // report is already loaded by ParentHome - assemble the status view in memory
   // rather than re-fetching the whole child report.
@@ -239,6 +243,7 @@ async function ChildBlock({
         ))}
       </div>
       <BarakahSummary barakah={barakah} />
+      <ConsistencyStrip consistency={consistency} audience="parent" />
 
       <div className="flex flex-wrap gap-3 text-sm">
         <a
@@ -263,7 +268,11 @@ async function ChildBlock({
 export default async function ParentHome() {
   const user = await requireRole("parent");
 
-  let blocks: { report: ChildReport; barakah: ChildBarakahSummary }[] = [];
+  let blocks: {
+    report: ChildReport;
+    barakah: ChildBarakahSummary;
+    consistency: Consistency;
+  }[] = [];
   let loadError: string | null = null;
   let needsConsent: string[] = [];
 
@@ -273,6 +282,7 @@ export default async function ParentHome() {
       children.map(async (c) => ({
         report: await getChildReport(c, user.masjidId),
         barakah: await getChildBarakahSummary(c.id, user.masjidId),
+        consistency: await getConsistency(c.id, user.masjidId),
       })),
     );
     const consent = await Promise.all(
@@ -320,7 +330,12 @@ export default async function ParentHome() {
       ) : (
         <div className="space-y-9">
           {blocks.map((b) => (
-            <ChildBlock key={b.report.child.id} report={b.report} barakah={b.barakah} />
+            <ChildBlock
+              key={b.report.child.id}
+              report={b.report}
+              barakah={b.barakah}
+              consistency={b.consistency}
+            />
           ))}
         </div>
       )}

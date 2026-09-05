@@ -1,7 +1,9 @@
 import { requireRole } from "@/lib/auth";
 import { getStudentTracks } from "@/lib/db/queries";
+import { getConsistency } from "@/lib/db/consistency-queries";
 import { RegulationNote } from "@/components/RegulationNote";
 import { CoursePath } from "@/components/student/CoursePath";
+import { ConsistencyStrip } from "@/components/student/ConsistencyStrip";
 import { Mascot } from "@/components/ui/Mascot";
 import { Crescent, Lantern, Flourish } from "@/components/ui/Motif";
 
@@ -11,6 +13,7 @@ export default async function StudentHome() {
     user.id,
     user.masjidId,
   );
+  const consistency = await getConsistency(user.id, user.masjidId);
   const firstName = user.name.split(" ")[0];
 
   return (
@@ -60,6 +63,8 @@ export default async function StudentHome() {
           </div>
         </section>
       ) : null}
+
+      {pod ? <ConsistencyStrip consistency={consistency} audience="student" /> : null}
 
       <RegulationNote>
         Assessment formats and exam equivalency shown here are for the demo and must be
