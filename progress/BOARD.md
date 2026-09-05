@@ -40,7 +40,7 @@ Get a clean demo state: `npm run demo:setup` (full, hits the API) or `npm run de
 | id  | phase | status | owner | title |
 |-----|-------|--------|-------|-------|
 | T25 | 8 | doing | session_01SKEyp | Full UI/UX redesign — warm community design system |
-| T26 | 8 | todo  | — | Pitch one-pager + unit-economics model |
+| T26 | 8 | done  | — | Pitch one-pager + unit-economics model |
 | T27 | 8 | todo  | — | Deploy to Vercel (staging + prod) |
 | T28 | 8 | todo  | — | Recorded demo walkthrough (video / GIF) |
 | T29 | 8 | todo  | — | Public landing / marketing page |

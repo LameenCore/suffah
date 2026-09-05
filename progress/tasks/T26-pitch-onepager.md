@@ -13,7 +13,7 @@ outcome: docs/pitch.md - problem -> model -> waqf funding -> unit economics -> m
   moat -> what's built -> the ask, with a 30-second TL;DR. docs/research/model-economics.md
   backs the numbers (Quebec homeschool + Muslim population figures, endowment 4% draw,
   Sonnet 5 pricing -> ~$0.30 one-time content cost per unit per masjid, ~$0 grading).
-commits: <t26>
+commits: 3b83dc1
 ---
 
 ## Why
