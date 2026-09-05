@@ -145,12 +145,14 @@ Families pay a small flat fee. Donors fund the endowment and scholarships
 _Backed by: `docs/pitch.md`._
 
 **Cost of running / is it sustainable?**
-Content is generated once and persisted, and grading is code — so AI is a
-one-time ~$0.30 per curriculum unit per masjid, not a per-student cost. The
-marginal cost of another student in an existing pod is ≈ nothing. A $250K
-endowment at 4% yields ~$10K/year, which covers estimated per-masjid operating
-cost (~$6–10K). Viable from the first family. _Backed by:
-`docs/research/model-economics.md`, `docs/pitch.md` → Unit economics._
+Content is generated once and persisted, and grading is code — so AI is
+**~$1 per masjid per year** and the marginal cost of another student is ≈ nothing.
+Infra is a rounding error (multi-tenant: one Supabase + one Vercel host many
+masjids). The only real recurring cost is an *optional* part-time coordinator
+stipend (~$4K/yr, or $0 if volunteer). A **~$100K founding waqf** at a 4% draw
+covers the base case in perpetuity — one fundraising drive, a fraction of what a
+masjid raises for a building. Viable from the first family. _Backed by:
+`docs/cost-model.md` (measured AI costs + a 3-scenario sensitivity table)._
 
 ---
 
