@@ -243,4 +243,12 @@ generator must not block the seed steps). Commit <bugfix>.
   /student (Yusuf: Math ready, Seerah complete), /student/<math>, /student/<math>/exam,
   /parent, /parent/compliance, /admin/handoff-demo (both volunteers), /admin/continuity
   (briefing), /admin/compliance (Idris = gap, pass rate 0%), .../print, /admin/ledger.
-Commit <t17>.
+Commit 6bb1548 (rebased to 570761a).
+
+## 2026-09-05 — session wrap
+This session did T05, T06, T07, T08, T09, T12, T16, T17, T18, T19, T20 + the Phase 7
+planning (T18-T24 tasks, PRD §5.4). Session 011H4sTF did T10, T11, T13, T14, T15, T21,
+T22, T23, T24 + a repo-wide em-dash sweep + a security-review pass that tenant-scoped my
+compliance helpers (markReportExported / getLatestStoredReport). **All 24 tasks done.**
+Demo verified end to end on localhost:3000 via `npm run demo:setup`. `npm run demo:reset`
+restores state between runs. Walkthrough in TASKS.md.
