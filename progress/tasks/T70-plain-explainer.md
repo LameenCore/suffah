@@ -2,9 +2,9 @@
 id: T70
 title: Plain-language 'what is this' explainer
 phase: 14
-status: todo
-owner: —
-claimed: —
+status: doing
+owner: https://claude.ai/code/session_011H4sTF36JvRXwmwmj5Xkcr
+claimed: 2026-09-06T03:10:00Z
 updated: 2026-09-05
 depends_on: [T25]
 rubric: Business 40%
