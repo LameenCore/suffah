@@ -36,6 +36,21 @@ Read `CLAUDE.md`, `PRD.md`, `docs/ARCHITECTURE.md`, and `docs/DATA_MODEL.md` bef
 - [ ] "Verify with current regulation" disclaimer visible on any compliance/legal-adjacent screen
 - [ ] Seed data cleaned up so the demo walkthrough is smooth start to finish (one pod, 3–4 students, one volunteer, all three courses with at least one completed unit)
 
+## Phase 7 — Differentiators (the moat)
+
+Added after competitive research (see PRD §5.4). AI tutoring and waqf-transparency both
+exist separately; the defensible thing is the *combination* for this specific problem.
+Build priority: **T18 → T19** first (unique IP, demoable), then **T20**; T21/T22 as
+mocked pitch screens.
+
+- [ ] **T18 · Continuity Fingerprint** — `pod_session_notes` + `lib/ai/continuity.ts` generates a persisted AI handoff briefing (how the pod learns, not just where it is); surfaced on the Admin continuity view
+- [ ] **T19 · Live "empty seat" simulation** — repeatable on-stage flow: volunteer offline → pod unaffected → reassign → T18 briefing generates live; one-click reset
+- [ ] **T20 · Living compliance report** — `lib/compliance/status.ts` computes per-course on-track / watch / gap from live data with human-readable signals; shown on parent + admin, export is a snapshot of it
+- [ ] **T21 · Waqf-to-outcome linking** (mock) — sponsorship map (ledger entry → pod + unit) → anonymized outcome trace in the transparency view
+- [ ] **T22 · Community Seerah sourcing** (mock/text) — `lesson_contributions` + regenerate a lesson folding in scholar notes; "revised with community input" indicator
+- [ ] **T23 · Pod "Barakah meter"** — `pod_barakah_log` + check-in form; values-framed summary (adab/cooperation/consistency), no points or leaderboard
+- [ ] **T24 · Waqf principal "never touched" visual** — inline SVG on the ledger view: locked principal vs. thin returns-spent outflow, theme-aware
+
 ## What to skip entirely (do not spend time here)
 - Real payments, real donation processing
 - Real volunteer background-check integration
@@ -46,8 +61,8 @@ Read `CLAUDE.md`, `PRD.md`, `docs/ARCHITECTURE.md`, and `docs/DATA_MODEL.md` bef
 ## Demo script (for when you present)
 1. Show a student completing a lesson + checkpoint in the playground (proves AI-as-constant-teacher)
 2. Show the parent dashboard reflecting that result immediately (proves the monitoring layer)
-3. Show the admin continuity view — reassign the pod's volunteer, show the new volunteer instantly sees the current node (proves the churn-resilience pitch point)
-4. Show the compliance report auto-generating from checkpoint + assessment + exam data (proves the regulatory pain point is solved)
-5. Show the waqf ledger view — principal untouched, returns funding operations (proves the "viable after year one" funding story)
+3. **Live handoff simulation (T19):** take the pod's volunteer offline mid-session — the student's playground keeps working — then reassign a new volunteer and watch the **Continuity Fingerprint** briefing generate on screen (proves churn-resilience by *performing* it, not describing it)
+4. Show the **living compliance report** (T20) — per-course "on track / gap forming" assembled from checkpoint + assessment + exam data, exportable (proves the regulatory pain point is solved, and turns it forward-looking)
+5. Show the waqf ledger view — principal untouched (T24 visual), returns funding operations; optionally the waqf-to-outcome screen (T21) linking a donation to a pod's actual unit completion (proves the "viable after year one" funding story *and* donor trust)
 
 This order mirrors the pitch's problem → model → funding structure, so the demo doubles as the pitch narrative.

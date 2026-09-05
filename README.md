@@ -14,20 +14,45 @@ Next.js 16 (App Router, TS, Tailwind v4) · Supabase (Postgres + Auth) · Anthro
 
 ## Local setup
 
+The project runs **locally first** (`npm run dev`). Vercel is only for later.
+The database is hosted Supabase (Postgres), but everything else — the app, the AI
+calls, the content-generation and migration scripts — runs on your machine.
+
 ```bash
 npm install
-cp .env.example .env.local   # fill in when Supabase / Anthropic are wired up
-npm run dev                  # http://localhost:3000
+cp .env.example .env.local        # then fill in the values below
+npm run migrate                   # apply supabase/migrations/*.sql
+npm run seed                      # load the demo masjid / pod / courses
+npm run gen:lessons               # generate + persist the 3 demo lessons (Anthropic)
+npm run gen:checkpoints           # then the checkpoints
+npm run gen:assessments           # then the unit assessments
+npm run dev                       # http://localhost:3000
 ```
 
-The app builds and runs without any credentials — the landing page is a dev role
-picker that drops a `suffa-dev-role` cookie and enters the chosen dashboard. Real
-Supabase Auth replaces this (see `lib/auth/`).
+`.env.local` keys:
+
+| key | where |
+|---|---|
+| `NEXT_PUBLIC_SUPABASE_URL` | Supabase → Project Settings → API (`https://<ref>.supabase.co`) |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` / `SUPABASE_SERVICE_ROLE_KEY` | same page |
+| `SUPABASE_DB_URL` | Project Settings → Database → **Connection string → URI**. Use the **pooler** host (`aws-*-<region>.pooler.supabase.com`, user `postgres.<ref>`), not `db.<ref>.supabase.co` (that one is IPv6-only). Only `migrate` / `seed` use it. |
+| `ANTHROPIC_API_KEY` | console.anthropic.com — needed for the `gen:*` scripts and live generation |
+
+The app builds and runs without any credentials, but the dashboards need the DB +
+seed data to show anything. The landing page is a dev role picker that drops a
+`suffa-dev-role` cookie and enters the chosen dashboard (`NEXT_PUBLIC_SUFFA_DEV_ROLE`
+skips the picker). Real Supabase Auth replaces this later — see `lib/auth/`.
 
 ## Database
 
-Schema lives in `supabase/migrations/0001_init.sql` — paste into the Supabase SQL
-editor or run `supabase db push`.
+- **Migrations:** `supabase/migrations/*.sql`, applied in order by `npm run migrate`
+  (tracks `schema_migrations`; `0001` is auto-baselined if the core schema is already
+  present). You can also paste them into the Supabase SQL editor.
+- **Seed:** `npm run seed` ports `supabase/seed.sql` through the service-role client
+  (idempotent — wipes the demo masjid via FK cascade, re-inserts).
+- **Generated content** (`pathway_nodes.lesson_content` / `.checkpoint_content`,
+  `units.assessment_content`) is persisted once and not regenerated on view. Re-run a
+  `gen:*` script with `-- --force` to regenerate.
 
 ## Layout
 
