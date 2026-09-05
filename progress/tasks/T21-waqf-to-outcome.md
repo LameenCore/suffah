@@ -40,4 +40,4 @@ education, see it happen".
   seed` on a live DB. Outcomes read from real pod_progress / unit_assessment_results.
 - lib/db/sponsorship-queries.ts; components/admin/SponsoredOutcomes.tsx (server).
   build + lint green; not verified vs live data.
-- commits: <t21>. Session tally: T10,T11,T13,T14,T15,T21,T24.
+- commits: 5c93603. Session tally: T10,T11,T13,T14,T15,T21,T24.

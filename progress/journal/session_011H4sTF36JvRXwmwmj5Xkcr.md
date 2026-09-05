@@ -139,6 +139,6 @@ DB. Commit c6d3abb. Next: T16.
   /admin/ledger, with an "illustrative" disclaimer.
 - Supabase typed-select needed an `as unknown as Record<string,unknown>[]` cast (no
   generated DB types in this repo) — same pattern as the other query files.
-- build + lint green; not verified vs live data. commit <t21>.
+- build + lint green; not verified vs live data. commit 5c93603.
 - Remaining unclaimed in my lane: T22 (mock/text), T23 (build). T18/T19/T20 with the
   other session or blocked on T12.
