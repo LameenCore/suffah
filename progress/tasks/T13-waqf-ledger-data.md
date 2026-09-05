@@ -2,9 +2,9 @@
 id: T13
 title: waqf_ledger table + mock entries
 phase: 5
-status: todo
-owner: —
-claimed: —
+status: doing
+owner: https://claude.ai/code/session_011H4sTF36JvRXwmwmj5Xkcr
+claimed: 2026-09-05T15:20:00Z
 updated: 2026-09-05
 depends_on: [T03]
 ---

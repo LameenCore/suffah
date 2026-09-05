@@ -60,3 +60,10 @@ rather than a separate one (hackathon git-workflow: lockfile hygiene not worth t
 - Verified: `next build` green (route ƒ /admin/pods listed), `eslint` clean. Not run
   against a live DB (no .env.local here). Commit 3a42a5b.
 - Left T07 alone (dep T06 still doing). Next free tasks: T13, T16.
+
+## 2026-09-05 — claimed T13 (waqf_ledger table + mock entries)
+Table already exists in 0001_init.sql; seed.sql + scripts/seed.ts already insert 6 ledger
+rows + 4 family_fee_status rows. T13 is mostly satisfied — plan is to verify + enrich the
+mock ledger into a fuller ~15-month quarterly series so T14's "principal flat vs return
+spent" chart has real shape, keeping supabase/seed.sql and scripts/seed.ts in exact sync.
+No new migration needed. Commit the claim, then the data.

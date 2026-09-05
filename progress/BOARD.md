@@ -17,7 +17,7 @@ Last regenerated: 2026-09-05 (T11 done; T06 done; T07 claimed)
 | T10 | 4 | todo  | — | Parent dashboard — progress + results per course |
 | T11 | 4 | done  | — | Admin dashboard — pods, assignment, continuity view |
 | T12 | 4 | todo  | — | Compliance report generation + exportable view |
-| T13 | 5 | todo  | — | waqf_ledger table + mock entries |
+| T13 | 5 | doing | session_011H4sTF | waqf_ledger table + mock entries |
 | T14 | 5 | todo  | — | Admin ledger view + family fee status |
 | T15 | 6 | todo  | — | Volunteer onboarding form + churn log |
 | T16 | 6 | todo  | — | Regulation-verification disclaimers |
