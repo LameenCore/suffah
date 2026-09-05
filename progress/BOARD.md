@@ -1,7 +1,7 @@
 # BOARD — Suffa progress snapshot
 
 **Derived from `progress/tasks/`. Not authoritative. Regenerate after any claim/finish.**
-Last regenerated: 2026-09-05 (T05 done)
+Last regenerated: 2026-09-05 (T11 claimed)
 
 | id  | phase | status | owner | title |
 |-----|-------|--------|-------|-------|
@@ -15,7 +15,7 @@ Last regenerated: 2026-09-05 (T05 done)
 | T08 | 3 | todo  | — | lib/ai/assessment.ts — unit assessment |
 | T09 | 3 | todo  | — | Term exam variant (timed) + term_exam_results |
 | T10 | 4 | todo  | — | Parent dashboard — progress + results per course |
-| T11 | 4 | todo  | — | Admin dashboard — pods, assignment, continuity view |
+| T11 | 4 | doing | session_011H4sTF | Admin dashboard — pods, assignment, continuity view |
 | T12 | 4 | todo  | — | Compliance report generation + exportable view |
 | T13 | 5 | todo  | — | waqf_ledger table + mock entries |
 | T14 | 5 | todo  | — | Admin ledger view + family fee status |
@@ -24,7 +24,7 @@ Last regenerated: 2026-09-05 (T05 done)
 | T17 | 6 | todo  | — | Seed data cleanup for demo walkthrough |
 
 ## Next up (deps met, unclaimed)
-- **T06** — Student playground renders a real lesson + mark complete (deps T05, T04 done)
+- **T13** — waqf_ledger table + mock entries (dep T03 done)
 - **T16** — regulation disclaimers (no deps, can run anytime)
 
 ## Legend
