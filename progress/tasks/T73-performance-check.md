@@ -22,7 +22,7 @@ outcome: |
   /parent/compliance -72%, /admin -47%, /admin/compliance -63%, /admin/ledger -68%,
   /admin/pods -48%. Rendered output diffed before/after across 8 routes - identical
   bar report timestamps. build + lint + tsc + 38 tests + check:integrity green.
-commits: <t73>
+commits: 2c0aee7
 ---
 
 ## Why
