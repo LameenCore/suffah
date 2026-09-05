@@ -2,9 +2,9 @@
 id: T24
 title: Waqf principal "never touched" visual
 phase: 7
-status: todo
-owner: —
-claimed: —
+status: doing
+owner: https://claude.ai/code/session_011H4sTF36JvRXwmwmj5Xkcr
+claimed: 2026-09-05T17:25:00Z
 updated: 2026-09-05
 depends_on: [T14]
 tier: 3
