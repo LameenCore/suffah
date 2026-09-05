@@ -32,3 +32,31 @@ Plan:
   revalidatePath('/admin/pods').
 - app/admin/page.tsx — point the "Pods" card at /admin/pods.
 - RegulationNote on the pods page for the 4-student cap.
+
+## 2026-09-05 — BUG: `next build` red on main (pg deps declared, not installed)
+The T06 wip commit f6f676a added `pg` + `@types/pg` to package.json and `scripts/migrate.ts`,
+but this checkout's node_modules didn't have them, so `next build` failed type-checking
+migrate.ts (TS2307 cannot find 'pg', TS7006 implicit any). Root fix: `npm install`. That
+also reconciled the pre-existing `M package-lock.json` (npm-version `libc`-field churn on
+optional platform packages — cosmetic). Folded the lockfile change into the T11 commit
+rather than a separate one (hackathon git-workflow: lockfile hygiene not worth the churn).
+
+## 2026-09-05 — T11 done
+- lib/db/admin-queries.ts — masjid-scoped: listPods (volunteer + members + per-course
+  continuity), listVolunteers, listStudents (with current pod), and writes addStudentToPod
+  / removeStudentFromPod / setPodVolunteer. addStudentToPod enforces tenancy + the
+  POD_MAX_STUDENTS cap + one-pod-per-student, all with human-readable errors; the DB
+  trigger from 0001 stays as the backstop.
+- app/admin/pods/actions.ts — "use server", requireAdmin() on every action, masjid taken
+  from the session (never the client). Actions return {ok,error} so cap violations render
+  inline instead of throwing the Next error overlay. revalidatePath('/admin/pods').
+- components/admin/PodCard.tsx — client: volunteer <select>, student roster with remove,
+  add-student <select>+button (disabled when full / nothing to add), inline error line.
+- app/admin/pods/page.tsx — pod cards grid + continuity matrix (pods x 3 courses, cell =
+  "node N / total" + title). try/catch around the loads → friendly panel when Supabase
+  isn't configured. RegulationNote on the 4-student cap.
+- app/admin/page.tsx — "Pods" card is now a live link to /admin/pods (kept the other 3
+  as stubs).
+- Verified: `next build` green (route ƒ /admin/pods listed), `eslint` clean. Not run
+  against a live DB (no .env.local here). Commit <t11>.
+- Left T07 alone (dep T06 still doing). Next free tasks: T13, T16.
