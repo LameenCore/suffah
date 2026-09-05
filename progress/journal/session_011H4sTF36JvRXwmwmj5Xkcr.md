@@ -75,3 +75,18 @@ return_disbursed operating draws (-3000..-3600), 3 sadaqah_received (Eid 2k, Ram
 aggregated jumu'ah 1.2k), 2 scholarship_allocated (Safiya term 1 + 2, -1200 each).
 No new migration (table is in 0001_init.sql). build + lint green. Not run against a live
 DB. Commit c6d3abb. Next: T16.
+
+## 2026-09-05 — T14 done
+- lib/db/ledger-queries.ts — getLedgerSummary (principal / returns / sadaqah / scholarships
+  as separate lines; principal never in a "spent" total per DATA_MODEL) + cumulative-out
+  spendSeries; getFamilyFeeStatus (masjid-scoped, sorted).
+- components/admin/LedgerChart.tsx — client, inline SVG. Single y-axis 0..principal, one
+  area+line series (cumulative money out), dashed principal reference line, direct label
+  on last point, hover crosshair + tooltip. dataviz palette validator PASS light+dark
+  (#2a78d6 / #3987e5).
+- app/admin/ledger/page.tsx — 4 stat tiles + chart + table-view <details> + family fee
+  list w/ paying/scholarship counts + mock-data disclaimer. try/catch -> friendly panel
+  when Supabase unconfigured.
+- app/admin/page.tsx — "Waqf & donation ledger" card now links to /admin/ledger.
+- build + lint green. Not visually verified vs live data (no .env.local). Commit <t14>.
+- Next free: T10, T15, T16. T08 is taken by the other session.
