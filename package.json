@@ -16,7 +16,8 @@
     "seed:continuity": "tsx --env-file=.env.local scripts/seed-continuity.ts",
     "seed:progress": "tsx --env-file=.env.local scripts/seed-demo-progress.ts",
     "demo:setup": "tsx scripts/demo-setup.ts",
-    "demo:reset": "tsx scripts/demo-setup.ts --reset-only"
+    "demo:reset": "tsx scripts/demo-setup.ts --reset-only",
+    "check:integrity": "tsx --env-file=.env.local scripts/check-integrity.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.124.0",
