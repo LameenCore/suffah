@@ -13,7 +13,7 @@ outcome: waqf_ledger already exists (0001_init.sql). Enriched the mock ledger to
   1 locked principal deposit (250k), 5 rising quarterly return_disbursed draws, 3
   sadaqah_received top-ups, 2 scholarship_allocated. Gives T14's "principal flat vs
   return spent" chart real shape. No new migration. build + lint green.
-commits: <t13>
+commits: c6d3abb
 ---
 
 ## Goal

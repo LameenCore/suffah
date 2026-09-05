@@ -74,4 +74,4 @@ scripts/seed.ts (kept identical): 1 locked principal deposit (250k), 5 rising qu
 return_disbursed operating draws (-3000..-3600), 3 sadaqah_received (Eid 2k, Ramadan 5k,
 aggregated jumu'ah 1.2k), 2 scholarship_allocated (Safiya term 1 + 2, -1200 each).
 No new migration (table is in 0001_init.sql). build + lint green. Not run against a live
-DB. Commit <t13>. Next: T16.
+DB. Commit c6d3abb. Next: T16.
