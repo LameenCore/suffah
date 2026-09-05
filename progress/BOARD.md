@@ -1,7 +1,7 @@
 # BOARD — Suffa progress snapshot
 
 **Derived from `progress/tasks/`. Not authoritative. Regenerate after any claim/finish.**
-Last regenerated: 2026-09-05 (T25 + T54 + T73 + T35 done)
+Last regenerated: 2026-09-05 (T38 done — legal pages)
 
 | id  | phase | status | owner | title |
 |-----|-------|--------|-------|-------|
@@ -52,7 +52,7 @@ Get a clean demo state: `npm run demo:setup` (full, hits the API) or `npm run de
 | T35 | 9 | done  | — | Audit logging for sensitive actions |
 | T36 | 10 | todo | — | Quebec Law 25 baseline (privacy) |
 | T37 | 10 | todo | — | Parental consent flow for minors |
-| T38 | 10 | todo | — | Terms of Service / Privacy Policy / AUP |
+| T38 | 10 | done | — | Terms of Service / Privacy Policy / AUP |
 | T39 | 10 | done | — | Canadian data residency + data map |
 | T40 | 10 | done | — | Quebec home-instruction regulation: real citations |
 | T41 | 10 | todo | — | Content moderation + child safety for UGC |

@@ -106,6 +106,12 @@ export default async function LoginPage({ searchParams }: PageProps<"/login">) {
             <code>parent@suffa.demo</code> / <code>student@suffa.demo</code>.
           </p>
         </div>
+
+        <p className="flex flex-wrap justify-center gap-4 text-xs text-ink-4">
+          <Link href="/terms" className="hover:text-teal">Terms</Link>
+          <Link href="/privacy" className="hover:text-teal">Privacy</Link>
+          <Link href="/acceptable-use" className="hover:text-teal">Acceptable use</Link>
+        </p>
       </div>
     </div>
   );

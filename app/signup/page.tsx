@@ -103,6 +103,18 @@ export default async function SignupPage({ searchParams }: PageProps<"/signup">)
             Sign in
           </Link>
         </p>
+
+        <p className="text-center text-xs text-ink-4">
+          By creating an account you agree to the{" "}
+          <Link href="/terms" className="hover:text-teal underline underline-offset-2">
+            Terms
+          </Link>{" "}
+          and{" "}
+          <Link href="/privacy" className="hover:text-teal underline underline-offset-2">
+            Privacy Policy
+          </Link>
+          .
+        </p>
       </div>
     </div>
   );

@@ -281,3 +281,34 @@ Phase 14 (T67-T78) added from the MuslimHacks rubric. Done this stretch:
   tight and broke bulk lesson gen (Seerah node 3 failed). Raised to 90s +
   SUFFA_AI_TIMEOUT_MS override. Content re-generated clean afterwards.
 Commits: dc8d21d, fb06c89, 412745f, 6fdc7e3, 6a8b3e3, ee47c27, 6e192d0 (+ hashes).
+
+## T38 — legal pages (/terms, /privacy, /acceptable-use)
+
+- components/LegalDoc.tsx: shared shell — back-to-Suffa link, title + "last updated"
+  stamp, mustard "Not legal advice / pilot stage / verify with counsel" banner,
+  .legal-body prose styling, footer cross-links.
+- app/terms/page.tsx: who can use, what Suffa is/is not (does NOT file with the
+  ministère; parent keeps every legal obligation incl. ministerial exams; compliance
+  status is an internal aid with illustrative thresholds), acceptable-use pointer,
+  fees (flat family fee, waqf + sadaqah, scholarships), availability/termination,
+  liability, Quebec governing law, contact. Multiple "(verify with counsel)".
+- app/privacy/page.tsx: mirrors docs/data-map.md — collected (account, family link,
+  learning results, volunteer notes, consent records; deliberately NOT address/phone/
+  DOB/health), purposes (no sale, no ads, no third-party analytics), processors
+  (Supabase US region → ca-central-1 pre-launch step [T39]; Anthropic incl. the one
+  cross-border continuity-briefing call that sends a first name + progress, to be
+  pseudonymised + PIA'd; Vercel), retention (operator-set, placeholder), Law 25
+  data-subject rights (access/rectify/withdraw consent/erasure/portability), child
+  consent gate, security, breach response (CAI notification + incident register),
+  privacy-officer placeholder.
+- app/acceptable-use/page.tsx: use-for-purpose, respect other families' privacy (no
+  URL/identifier guessing or API probing; report accidental access), lawful content,
+  responsible use of generated lessons (review them; no jailbreak/data-extraction
+  attempts; no bulk generation), account hygiene, no attacking the service (coordinated
+  disclosure welcome), enforcement.
+- Footer legal links added to /login; /signup gets a "by creating an account you agree
+  to the Terms and Privacy Policy" line.
+- Privacy-officer name/email + exact retention window left as explicit operator
+  placeholders — decisions, not code.
+- eslint clean; next build clean (all 3 pages prerender static).
+Commit: PLACEHOLDER38
