@@ -28,7 +28,7 @@ outcome: |
   cost math (53 total). Verified live: page shows $0.51 / 24 calls / by-feature;
   dropping the limit to $0.01 -> state=over -> assertWithinAiBudget throws
   AiBudgetExceededError. build + lint + tsc + 53 tests + check:integrity green.
-commits: <t56>
+commits: fc67d20
 ---
 
 ## Why
