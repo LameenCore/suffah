@@ -23,6 +23,7 @@ export default async function AdminLayout({ children }: LayoutProps<"/admin">) {
     { href: "/admin/compliance", label: "Compliance", icon: <NavIcon name="clipboard" /> },
     { href: "/admin/ledger", label: "Waqf ledger", icon: <NavIcon name="coins" /> },
     { href: "/admin/seerah", label: "Seerah studio", icon: <NavIcon name="book" /> },
+    { href: "/admin/audit", label: "Audit trail", icon: <NavIcon name="shield" /> },
     {
       href: "/admin/inbox",
       label: "Help requests",

@@ -6,6 +6,7 @@
 
 import { revalidatePath } from "next/cache";
 import { getCurrentUser } from "@/lib/auth";
+import { recordAudit } from "@/lib/audit";
 import { recordDeparture, reinstateVolunteer } from "@/lib/db/volunteer-queries";
 import { setPodVolunteer } from "@/lib/db/admin-queries";
 import { getHandoffDemoState } from "@/lib/db/continuity-queries";
@@ -25,6 +26,13 @@ export async function takeVolunteerOfflineAction(): Promise<void> {
   if (!state.pod) throw new Error("demo pod not found - run npm run seed");
   if (state.currentVolunteer) {
     await recordDeparture(user.masjidId, state.currentVolunteer.id);
+    await recordAudit({
+      actor: user,
+      action: "volunteer.departure",
+      targetType: "volunteer",
+      targetId: state.currentVolunteer.id,
+      metadata: { simulation: true },
+    });
   }
   revalidatePath("/admin/handoff-demo");
 }
@@ -40,6 +48,13 @@ export async function assignReplacementAction(
   await reinstateVolunteer(user.masjidId, volunteerId); // no-op if never departed
   await setPodVolunteer(user.masjidId, state.pod.id, volunteerId);
   const result = await generatePodBriefing(state.pod.id, user.masjidId);
+  await recordAudit({
+    actor: user,
+    action: "pod.volunteer_set",
+    targetType: "pod",
+    targetId: state.pod.id,
+    metadata: { volunteerId, simulation: true },
+  });
 
   revalidatePath("/admin/handoff-demo");
   return { briefing: result.briefing, source: result.source, generatedAt: result.generatedAt };

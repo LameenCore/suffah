@@ -101,3 +101,34 @@ Note: dev-mode timings were useless - pure Next-dev overhead + a parallel sessio
 mutating the shared demo DB mid-measurement (saw admin "lessons prepared" flip
 2<->1 between captures, unrelated to my code). Prod build is the honest number.
 Commit <t73>.
+
+## 2026-09-05 — T35 done (audit logging)
+Claimed T35 (dep T30 done). Session 011H4sTF is on Phase 14 docs - no overlap with
+migrations / lib / admin actions.
+
+- migration 0010_audit_log: table + a BEFORE UPDATE OR DELETE trigger that raises
+  -> append-only enforced by the DB, not just a convention.
+- lib/audit.ts: recordAudit() (best-effort, catches + logs, never throws so it
+  can't break the action it records) + listAuditEntries() (joins the actor's
+  users.name via audit_log_actor_user_id_fkey).
+- Wired recordAudit into every mutating admin Server Action across 8 action
+  files. volunteers + pods use a shared run() wrapper (extended to take an audit
+  spec); the rest call recordAudit inline after the mutation. handoff-demo
+  departures/volunteer-sets tagged metadata {simulation:true} so the trail shows
+  they came from the on-stage demo.
+- /admin/audit page: admin-gated, ACTION_LABEL map -> human sentences, shows
+  actor/role/target/metadata/time, filters the `simulation` key out of the meta
+  line but shows a "simulation" badge. Added to admin sidebar nav (new "shield"
+  NavIcon).
+- Seed: 5 illustrative rows in supabase/seed.sql + scripts/seed.ts (kept in
+  sync). Inserted them into the live DB via a throwaway script (didn't run full
+  `npm run seed` - that FK-cascades the masjid and would nuke the generated
+  content + auth links per T30's note).
+- check-integrity.ts check 11: negative test that UPDATE + DELETE on audit_log
+  are both rejected. Ran it - both REJECTED, all 11 checks pass.
+- DATA_MODEL.md: added audit_log + a "later migrations" pointer (the doc had
+  drifted - only documented 0001).
+
+Verified: tsc + lint + build + 38 tests + check:integrity green. /admin/audit
+renders the 5 seed entries live; parent hitting /admin/audit -> 307 to /parent.
+Commit <t35>.

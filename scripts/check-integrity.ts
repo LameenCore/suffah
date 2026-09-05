@@ -6,7 +6,9 @@
  *   npm run check:integrity
  *
  * Exit 0 = all clear. Exit 1 = at least one FAIL (wire into CI / a nightly job).
- * Read-only: it never writes.
+ * Read-only, with one exception: check 11 attempts an UPDATE + DELETE on
+ * audit_log to prove the append-only trigger rejects them - both writes fail by
+ * design, so nothing is mutated.
  */
 
 import { getServiceClient } from "@/lib/db";
@@ -167,6 +169,24 @@ async function main() {
     const one = <T,>(v: T | T[]) => (Array.isArray(v) ? v[0] : v);
     const bad = (data ?? []).filter((r) => (one(r.s) as Row)?.role !== "student");
     report("compliance_reports point at a student", bad as Row[], (r) => `report ${r.id}`);
+  }
+
+  // --- 11. audit_log is append-only (T35) --------------------------
+  // Negative check: an UPDATE and a DELETE must both be rejected by the DB
+  // trigger. Nothing is actually mutated - the writes fail by design.
+  {
+    const { data } = await db.from("audit_log").select("id").limit(1);
+    const id = data?.[0]?.id as string | undefined;
+    if (!id) {
+      console.log("  skip  audit_log append-only (no rows to probe)");
+    } else {
+      const upd = await db.from("audit_log").update({ action: "__probe__" }).eq("id", id);
+      const del = await db.from("audit_log").delete().eq("id", id);
+      const bad: Row[] = [];
+      if (!upd.error) bad.push({ op: "UPDATE", note: "was allowed" });
+      if (!del.error) bad.push({ op: "DELETE", note: "was allowed" });
+      report("audit_log is append-only (UPDATE/DELETE rejected)", bad, (r) => `${r.op} ${r.note}`);
+    }
   }
 
   console.log(failures === 0 ? "\nAll checks passed." : `\n${failures} check(s) FAILED.`);

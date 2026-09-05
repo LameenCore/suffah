@@ -6,6 +6,8 @@
 
 import { revalidatePath } from "next/cache";
 import { getCurrentUser } from "@/lib/auth";
+import { recordAudit } from "@/lib/audit";
+import type { SessionUser } from "@/lib/types";
 import {
   addStudentToPod,
   removeStudentFromPod,
@@ -24,10 +26,22 @@ async function requireAdmin() {
   return user;
 }
 
-async function run(fn: () => Promise<void>): Promise<ActionResult> {
+async function run(
+  fn: () => Promise<void>,
+  audit?: { user: SessionUser; action: string; targetId: string; metadata?: Record<string, unknown> },
+): Promise<ActionResult> {
   try {
     await fn();
     revalidatePath("/admin/pods");
+    if (audit) {
+      await recordAudit({
+        actor: audit.user,
+        action: audit.action,
+        targetType: "pod",
+        targetId: audit.targetId,
+        metadata: audit.metadata,
+      });
+    }
     return { ok: true };
   } catch (err) {
     const error = err instanceof Error ? err.message : "action failed";
@@ -40,7 +54,12 @@ export async function assignStudentAction(
   studentUserId: string,
 ): Promise<ActionResult> {
   const user = await requireAdmin();
-  return run(() => addStudentToPod(user.masjidId, podId, studentUserId));
+  return run(() => addStudentToPod(user.masjidId, podId, studentUserId), {
+    user,
+    action: "pod.student_added",
+    targetId: podId,
+    metadata: { studentUserId },
+  });
 }
 
 export async function unassignStudentAction(
@@ -48,7 +67,12 @@ export async function unassignStudentAction(
   studentUserId: string,
 ): Promise<ActionResult> {
   const user = await requireAdmin();
-  return run(() => removeStudentFromPod(user.masjidId, podId, studentUserId));
+  return run(() => removeStudentFromPod(user.masjidId, podId, studentUserId), {
+    user,
+    action: "pod.student_removed",
+    targetId: podId,
+    metadata: { studentUserId },
+  });
 }
 
 export async function setVolunteerAction(
@@ -56,5 +80,10 @@ export async function setVolunteerAction(
   volunteerId: string | null,
 ): Promise<ActionResult> {
   const user = await requireAdmin();
-  return run(() => setPodVolunteer(user.masjidId, podId, volunteerId || null));
+  return run(() => setPodVolunteer(user.masjidId, podId, volunteerId || null), {
+    user,
+    action: "pod.volunteer_set",
+    targetId: podId,
+    metadata: { volunteerId: volunteerId || null },
+  });
 }

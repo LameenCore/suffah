@@ -127,4 +127,14 @@ insert into pod_barakah_log (masjid_id, pod_id, student_user_id, indicator, note
   ('00000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-0000000000e1', '00000000-0000-0000-0000-0000000000c1', 'reflection',  'Thoughtful reflection on what "prediction, not knowledge" means.',      'Br. Kareem', now() - interval '9 days'),
   ('00000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-0000000000e1', '00000000-0000-0000-0000-0000000000c2', 'cooperation', 'Maryam slowed down to check her work and explained a step to Safiya.', 'Br. Kareem', now() - interval '6 days');
 
+-- Audit trail (T35) - audit_log is created by migration 0010. Append-only record
+-- of sensitive admin actions; ids + action names only. A few illustrative past
+-- entries so the /admin/audit view is not empty in the demo.
+insert into audit_log (masjid_id, actor_user_id, actor_role, action, target_type, target_id, metadata, at) values
+  ('00000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-0000000000a1', 'admin', 'pod.student_added',          'pod',               '00000000-0000-0000-0000-0000000000e1', '{"studentUserId":"00000000-0000-0000-0000-0000000000c4"}'::jsonb, now() - interval '30 days'),
+  ('00000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-0000000000a1', 'admin', 'pod.volunteer_set',          'pod',               '00000000-0000-0000-0000-0000000000e1', '{"volunteerId":"00000000-0000-0000-0000-0000000000d1"}'::jsonb, now() - interval '28 days'),
+  ('00000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-0000000000a1', 'admin', 'volunteer.departure',        'volunteer',         '00000000-0000-0000-0000-0000000000d2', '{}'::jsonb, now() - interval '20 days'),
+  ('00000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-0000000000a1', 'admin', 'compliance.snapshot_saved',  'compliance_report', 'seed-report-idris', '{"studentId":"00000000-0000-0000-0000-0000000000c3"}'::jsonb, now() - interval '7 days'),
+  ('00000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-0000000000a1', 'admin', 'compliance.report_exported', 'compliance_report', 'seed-report-idris', '{}'::jsonb, now() - interval '7 days');
+
 commit;

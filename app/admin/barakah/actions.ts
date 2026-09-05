@@ -5,6 +5,7 @@
 
 import { revalidatePath } from "next/cache";
 import { getCurrentUser } from "@/lib/auth";
+import { recordAudit } from "@/lib/audit";
 import { addBarakahNote } from "@/lib/db/barakah-queries";
 
 export interface ActionResult {
@@ -32,6 +33,13 @@ export async function addBarakahNoteAction(formData: FormData): Promise<ActionRe
       indicator,
       note,
       recordedBy,
+    });
+    await recordAudit({
+      actor: user,
+      action: "barakah.note_added",
+      targetType: "pod",
+      targetId: podId,
+      metadata: { indicator, wholePod: !studentRaw },
     });
     revalidatePath("/admin/barakah");
     revalidatePath("/parent");

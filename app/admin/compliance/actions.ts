@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { getCurrentUser } from "@/lib/auth";
+import { recordAudit } from "@/lib/audit";
 import { generateComplianceReport, markReportExported } from "@/lib/compliance/report";
 
 async function requireAdmin() {
@@ -17,6 +18,13 @@ export async function generateSnapshotAction(
 ): Promise<{ reportId: string }> {
   const user = await requireAdmin();
   const { reportId } = await generateComplianceReport(studentId, studentName, user.masjidId);
+  await recordAudit({
+    actor: user,
+    action: "compliance.snapshot_saved",
+    targetType: "compliance_report",
+    targetId: reportId,
+    metadata: { studentId },
+  });
   revalidatePath("/admin/compliance");
   return { reportId };
 }
@@ -24,5 +32,11 @@ export async function generateSnapshotAction(
 export async function markExportedAction(reportId: string): Promise<void> {
   const user = await requireAdmin();
   await markReportExported(reportId, user.masjidId);
+  await recordAudit({
+    actor: user,
+    action: "compliance.report_exported",
+    targetType: "compliance_report",
+    targetId: reportId,
+  });
   revalidatePath("/admin/compliance");
 }

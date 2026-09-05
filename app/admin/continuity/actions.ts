@@ -5,6 +5,7 @@
 
 import { revalidatePath } from "next/cache";
 import { getCurrentUser } from "@/lib/auth";
+import { recordAudit } from "@/lib/audit";
 import { addPodSessionNote } from "@/lib/db/continuity-queries";
 import { generatePodBriefing, type PodBriefing } from "@/lib/ai/continuity";
 
@@ -20,6 +21,13 @@ export async function generateBriefingAction(
 ): Promise<{ briefing: PodBriefing; source: string; generatedAt: string }> {
   const user = await requireAdmin();
   const result = await generatePodBriefing(podId, user.masjidId);
+  await recordAudit({
+    actor: user,
+    action: "continuity.briefing_generated",
+    targetType: "pod",
+    targetId: podId,
+    metadata: { source: result.source },
+  });
   revalidatePath("/admin/continuity");
   return { briefing: result.briefing, source: result.source, generatedAt: result.generatedAt };
 }
@@ -35,6 +43,12 @@ export async function addSessionNoteAction(
     authorKind: "volunteer",
     authorName: user.name,
     courseId: courseId ?? null,
+  });
+  await recordAudit({
+    actor: user,
+    action: "continuity.session_note_added",
+    targetType: "pod",
+    targetId: podId,
   });
   revalidatePath("/admin/continuity");
 }

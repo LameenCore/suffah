@@ -6,13 +6,14 @@
 
 import { revalidatePath } from "next/cache";
 import { getCurrentUser } from "@/lib/auth";
+import { recordAudit } from "@/lib/audit";
 import {
   addVolunteer,
   recordDeparture,
   reinstateVolunteer,
   setVolunteerStatus,
 } from "@/lib/db/volunteer-queries";
-import type { VolunteerStatus } from "@/lib/types";
+import type { SessionUser, VolunteerStatus } from "@/lib/types";
 
 export interface ActionResult {
   ok: boolean;
@@ -26,11 +27,23 @@ async function requireAdmin() {
   return user;
 }
 
-async function run(fn: () => Promise<void>): Promise<ActionResult> {
+async function run(
+  fn: () => Promise<void>,
+  audit?: { user: SessionUser; action: string; targetId?: string; metadata?: Record<string, unknown> },
+): Promise<ActionResult> {
   try {
     await fn();
     revalidatePath("/admin/volunteers");
     revalidatePath("/admin/pods");
+    if (audit) {
+      await recordAudit({
+        actor: audit.user,
+        action: audit.action,
+        targetType: "volunteer",
+        targetId: audit.targetId,
+        metadata: audit.metadata,
+      });
+    }
     return { ok: true };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : "action failed" };
@@ -41,7 +54,10 @@ export async function addVolunteerAction(formData: FormData): Promise<ActionResu
   const user = await requireAdmin();
   const name = String(formData.get("name") ?? "");
   const certificationNote = String(formData.get("certificationNote") ?? "");
-  return run(() => addVolunteer(user.masjidId, { name, certificationNote }));
+  return run(() => addVolunteer(user.masjidId, { name, certificationNote }), {
+    user,
+    action: "volunteer.added",
+  });
 }
 
 const VALID_STATUS: VolunteerStatus[] = ["active", "inactive", "pending_vetting"];
@@ -52,15 +68,28 @@ export async function setVolunteerStatusAction(
 ): Promise<ActionResult> {
   const user = await requireAdmin();
   if (!VALID_STATUS.includes(status)) return { ok: false, error: "invalid status" };
-  return run(() => setVolunteerStatus(user.masjidId, id, status));
+  return run(() => setVolunteerStatus(user.masjidId, id, status), {
+    user,
+    action: "volunteer.status_changed",
+    targetId: id,
+    metadata: { status },
+  });
 }
 
 export async function recordDepartureAction(id: string): Promise<ActionResult> {
   const user = await requireAdmin();
-  return run(() => recordDeparture(user.masjidId, id));
+  return run(() => recordDeparture(user.masjidId, id), {
+    user,
+    action: "volunteer.departure",
+    targetId: id,
+  });
 }
 
 export async function reinstateVolunteerAction(id: string): Promise<ActionResult> {
   const user = await requireAdmin();
-  return run(() => reinstateVolunteer(user.masjidId, id));
+  return run(() => reinstateVolunteer(user.masjidId, id), {
+    user,
+    action: "volunteer.reinstated",
+    targetId: id,
+  });
 }

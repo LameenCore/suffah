@@ -6,6 +6,7 @@
 
 import { revalidatePath } from "next/cache";
 import { getCurrentUser } from "@/lib/auth";
+import { recordAudit } from "@/lib/audit";
 import { addContribution } from "@/lib/db/contribution-queries";
 import { incorporateContributions } from "@/lib/ai/lesson-revision";
 
@@ -38,6 +39,12 @@ export async function addContributionAction(formData: FormData): Promise<ActionR
 
   try {
     await addContribution(user.masjidId, nodeId, { name, role, note });
+    await recordAudit({
+      actor: user,
+      action: "seerah.contribution_added",
+      targetType: "pathway_node",
+      targetId: nodeId,
+    });
     revalidatePath("/admin/seerah");
     return { ok: true };
   } catch (err) {
@@ -55,6 +62,13 @@ export async function incorporateAction(nodeId: string): Promise<ActionResult> {
 
   try {
     const res = await incorporateContributions(nodeId, user.masjidId);
+    await recordAudit({
+      actor: user,
+      action: "seerah.contributions_incorporated",
+      targetType: "pathway_node",
+      targetId: nodeId,
+      metadata: { version: res.version },
+    });
     revalidatePath("/admin/seerah");
     revalidatePath("/student", "layout");
     return { ok: true, version: res.version };

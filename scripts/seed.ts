@@ -216,6 +216,19 @@ async function seed() {
     ]),
   );
 
+  // Audit trail (audit_log - migration 0010). Append-only record of sensitive
+  // admin actions; ids + action names only. A few illustrative past entries so
+  // the /admin/audit view is not empty in the demo.
+  check(
+    await db.from("audit_log").insert([
+      { masjid_id: MASJID, actor_user_id: U.admin, actor_role: "admin", action: "pod.student_added", target_type: "pod", target_id: POD, metadata: { studentUserId: U.safiya }, at: daysAgo(30) },
+      { masjid_id: MASJID, actor_user_id: U.admin, actor_role: "admin", action: "pod.volunteer_set", target_type: "pod", target_id: POD, metadata: { volunteerId: VOLUNTEER }, at: daysAgo(28) },
+      { masjid_id: MASJID, actor_user_id: U.admin, actor_role: "admin", action: "volunteer.departure", target_type: "volunteer", target_id: "00000000-0000-0000-0000-0000000000d2", metadata: {}, at: daysAgo(20) },
+      { masjid_id: MASJID, actor_user_id: U.admin, actor_role: "admin", action: "compliance.snapshot_saved", target_type: "compliance_report", target_id: "seed-report-idris", metadata: { studentId: U.idris }, at: daysAgo(7) },
+      { masjid_id: MASJID, actor_user_id: U.admin, actor_role: "admin", action: "compliance.report_exported", target_type: "compliance_report", target_id: "seed-report-idris", metadata: {}, at: daysAgo(7) },
+    ]),
+  );
+
   console.log("Seeded demo masjid:", MASJID);
 }
 

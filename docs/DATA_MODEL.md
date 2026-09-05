@@ -50,6 +50,20 @@ Postgres schema, hackathon scope. Every table includes `masjid_id` for multi-ten
 ### `family_fee_status`
 - `id`, `masjid_id`, `student_user_id`, `status` (`fee_paid` | `scholarship_covered`), `updated_at`
 
+### Later migrations (0002+)
+The core table set above is `0001_init.sql`. Subsequent migrations add:
+`lesson_progress`, `pathway_nodes.checkpoint_content` / `units.assessment_content`,
+`parent_children`, `pod_session_notes` + `pod_briefings`, `sponsorships`,
+`pod_barakah_log`, `term_exams`, `lesson_contributions`, `support_requests`,
+`users.auth_id` (Supabase Auth link), and `audit_log`. See `supabase/migrations/`.
+
+### `audit_log` (migration 0010)
+- `id`, `masjid_id`, `actor_user_id` (nullable), `actor_role`, `action` (dotted
+  verb, e.g. `pod.student_added`), `target_type`, `target_id`, `metadata` (jsonb,
+  ids only - no PII), `at`
+- **Append-only**: a `BEFORE UPDATE OR DELETE` trigger rejects any mutation. Every
+  sensitive admin Server Action writes one entry; `/admin/audit` reads the trail.
+
 ## Key relationships
 
 - A **pod** has one volunteer (nullable) and up to 4 students (`pod_students`)
