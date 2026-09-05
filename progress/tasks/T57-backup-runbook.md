@@ -2,9 +2,9 @@
 id: T57
 title: Backup / restore runbook + integrity check
 phase: 12
-status: todo
-owner: —
-claimed: —
+status: doing
+owner: https://claude.ai/code/session_011H4sTF36JvRXwmwmj5Xkcr
+claimed: 2026-09-05T22:20:00Z
 updated: 2026-09-05
 depends_on: []
 source: post-hackathon roadmap (EdTech-checklist analysis)
