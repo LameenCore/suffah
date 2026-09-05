@@ -116,4 +116,4 @@ DB. Commit c6d3abb. Next: T16.
 - app/admin/volunteers/page.tsx + admin home link. Seed gains departed "Sr. Amina"
   so the churn log is non-empty.
 - No migration (volunteers table already has status/certification_note/left_at).
-- build + lint green; not verified vs live data. Commit <t15>. Next free: T16.
+- build + lint green; not verified vs live data. Commit cf8920e. Next free: T16.

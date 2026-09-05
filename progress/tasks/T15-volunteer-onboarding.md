@@ -15,7 +15,7 @@ outcome: /admin/volunteers — onboarding form (name + mock cert note, new volun
   the continuity story. lib/db/volunteer-queries.ts + app/admin/volunteers/actions.ts
   ({ok,error}); no migration (volunteers table already has left_at). Seed gains a
   departed volunteer (Sr. Amina) so the log isn't empty.
-commits: <t15>
+commits: cf8920e
 ---
 
 ## Goal
