@@ -53,8 +53,8 @@ Get a clean demo state: `npm run demo:setup` (full, hits the API) or `npm run de
 | T36 | 10 | todo | — | Quebec Law 25 baseline (privacy) |
 | T37 | 10 | todo | — | Parental consent flow for minors |
 | T38 | 10 | todo | — | Terms of Service / Privacy Policy / AUP |
-| T39 | 10 | todo | — | Canadian data residency + data map |
-| T40 | 10 | todo | — | Quebec home-instruction regulation: real citations |
+| T39 | 10 | done | — | Canadian data residency + data map |
+| T40 | 10 | done | — | Quebec home-instruction regulation: real citations |
 | T41 | 10 | todo | — | Content moderation + child safety for UGC |
 | T42 | 11 | todo | — | Adaptive path: remediation branch + skip-ahead |
 | T43 | 11 | todo | — | Prerequisite / skill-tree mapping |
@@ -69,9 +69,9 @@ Get a clean demo state: `npm run demo:setup` (full, hits the API) or `npm run de
 | T52 | 11 | todo | — | Consistency indicator (habit, not points) |
 | T53 | 12 | todo | — | Error + uptime + performance monitoring |
 | T54 | 12 | todo | — | CI: lint + typecheck + build + tests on every PR |
-| T55 | 12 | todo | — | Automated tests for the core loop |
+| T55 | 12 | done | — | Automated tests for the core loop |
 | T56 | 12 | todo | — | AI spend monitoring + budget alerts + metering |
-| T57 | 12 | todo | — | Backup / restore runbook + integrity check |
+| T57 | 12 | done | — | Backup / restore runbook + integrity check |
 | T58 | 12 | todo | — | Transactional email service |
 | T59 | 13 | todo | — | French (Quebec) localization |
 | T60 | 13 | todo | — | Accessibility pass to WCAG 2.2 AA |

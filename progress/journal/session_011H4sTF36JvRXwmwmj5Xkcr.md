@@ -221,3 +221,36 @@ Cleanliness sweep of all files:
   source + rendered UI, no stray "AI" self-labelling
 Verified: next build + eslint clean; 13/13 routes 200 with real data.
 Commits: b0aa3ae (+ earlier this session through 448555f).
+
+## 2026-09-05 - roadmap batch: T26, T40, T39, T57, T55 (+ T59 sharpen, 1 bug fix)
+Working the post-hackathon roadmap while another session holds app/ + components/
+for the T25 UI redesign - so everything here is docs / lib / scripts / tests.
+
+- T26 pitch one-pager - docs/pitch.md + docs/research/model-economics.md. Crux:
+  content is generated once + persisted and grading is deterministic code, so AI
+  is a one-time ~$0.30/unit/masjid, not per-student -> breaks even at one family.
+  Numbers: Quebec homeschool ~7,900 / Muslims ~421,710 (2021 census) / 4%
+  endowment draw / Sonnet 5 $2+$10 per MTok. Commit 3b83dc1.
+- T40 Quebec home-instruction citations - docs/compliance/quebec-home-instruction.md.
+  The 7 obligations w/ deadlines, 4 evaluation modes, a table mapping each Suffa
+  report field to what it evidences (+ where it does NOT substitute), 8-item
+  lawyer/DEM checklist led by the <=4-cap basis. Commit 4cbfb70.
+- T39 data map - docs/data-map.md. Every table -> store -> region -> PIM? ->
+  sent-to-Anthropic. FINDING: demo DB is in AWS us-west-2 (US), not Canada; 6-step
+  migration plan to ca-central-1; the continuity-briefing call is the one
+  sensitive cross-border flow (child names + progress) - pseudonymise before it.
+  Commit 539caf8.
+- T57 backup + integrity - docs/ops/backup-restore.md (PITR + nightly encrypted
+  dump, RPO<=5min/RTO<=2h, 3 restore procedures + a drill) and
+  scripts/check-integrity.ts (npm run check:integrity) - 10 checks FKs don't
+  enforce. Verified live: all pass; negative-tested a wrong-sign ledger row.
+  Commit 9d29ba8.
+- T55 core-loop tests - vitest@2 + config + 33 passing tests
+  (tests/{questions,compliance-status,ledger}.test.ts). Extracted
+  summariseLedgerEntries() as a pure export so "principal never spendable" is
+  testable. BUG FOUND + FIXED: normalize() kept a trailing '.', so 'Paris.' was
+  graded wrong - own commit 0916e15. Tests commit 7248ad6.
+- T59 sharpened (not done): headline is a visible EN<->FR switch that re-renders
+  the whole app, persisted per user, FR settable as tenant default.
+- BOARD roadmap rows corrected (T39/T40/T55/T57 were stale at todo).
+Pushed through c351e12. main: build + lint + test + check:integrity green.
