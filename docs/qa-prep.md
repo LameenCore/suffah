@@ -235,12 +235,17 @@ pilot. _Backed by: `docs/data-map.md` → migration plan, `docs/pitch.md` → Th
 ## Closing questions
 
 **What makes it different from existing options?**
-AI tutoring is crowded and on-chain waqf transparency exists — separately. Nobody
-combines pod continuity + Islamic education + community-funded compliance for this
-problem. Concretely: no tutoring platform treats volunteer handoff as pedagogical
-memory transfer; existing homeschool tools are backward-looking recordkeeping,
-not an early-warning system; existing waqf-tech stops at "where did the money go".
-_Backed by: `PRD.md` §5.4, `docs/pitch.md` → The moat._
+We looked at three adjacent markets and each stops short. AI tutors (Khanmigo at
+$15/student/yr, MagicSchool, MATHia) tutor subjects, seat-priced, for schooled
+kids — no Islamic content, no compliance, no continuity. Islamic homeschool
+programs are either full accredited schools on tuition (Sahlah) or live-teacher
+services with the exact churn+cost problem we target (Zaid), or content only
+(Allamah). Waqf-tech (WaqfChain, baraka.fund) shows fund flow and stops at "where
+did the money go". Nobody combines **pod continuity + Islamic education +
+community-funded compliance** — and our three sharp features each land where the
+nearest competitor stops: handoff-as-memory-transfer, early-warning compliance
+(not recordkeeping), and contribution-to-outcome (not just fund flow). _Backed
+by: `docs/research/market-and-competitors.md`, `PRD.md` §5.4._
 
 **What help or resources would you need to keep going?**
 Introductions to Greater-Montreal masjids willing to run a pilot pod; a Quebec

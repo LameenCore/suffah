@@ -112,7 +112,13 @@ neighbourhood. Suffa can.
 
 ## The moat
 
-AI tutoring is crowded and on-chain waqf transparency exists. The defensible
+AI tutoring is crowded and on-chain waqf transparency exists — but the three
+adjacent markets each stop short (full comparison in
+`docs/research/market-and-competitors.md`): AI tutors (Khanmigo, MagicSchool,
+MATHia) tutor subjects, seat-priced, no Islamic content or compliance or
+continuity; Islamic homeschool is full accredited schools on tuition (Sahlah) or
+live-teacher services with the churn+cost problem (Zaid) or content only
+(Allamah); waqf-tech (WaqfChain, baraka.fund) stops at fund flow. The defensible
 thing is the **combination for this specific problem**: **pod continuity +
 Islamic education + community-funded compliance.** Concretely:
 
