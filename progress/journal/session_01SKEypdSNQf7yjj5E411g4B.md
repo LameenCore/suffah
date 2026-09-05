@@ -252,3 +252,53 @@ T22, T23, T24 + a repo-wide em-dash sweep + a security-review pass that tenant-s
 compliance helpers (markReportExported / getLatestStoredReport). **All 24 tasks done.**
 Demo verified end to end on localhost:3000 via `npm run demo:setup`. `npm run demo:reset`
 restores state between runs. Walkthrough in TASKS.md.
+
+## 2026-09-05 — T25 UI/UX redesign — IN PROGRESS (checkpoint save, user stepped away)
+
+State so far (built + verified in browser walkthrough on localhost:3000):
+- Design system: app/globals.css warm token set (terracotta/teal/mustard/coral over
+  sand) light+dark, @theme inline maps, .geo-field 8-point-star tile. layout.tsx fonts
+  Fraunces (display) + Plus Jakarta Sans (body) via next/font/google.
+- Primitives: components/ui/{Button,Card,Badge,Motif,Mascot,PageHeader,StatCard,NavIcon}.tsx.
+- Chrome: components/Sidebar.tsx (client, desktop rail + mobile drawer) + DashboardChrome.tsx.
+  Per-dashboard app/{admin,parent,student}/layout.tsx supply nav items.
+- Landing app/page.tsx redesigned (mascot, role cards, top-fade geo-field).
+- Sidebar footer: DemoResetButton (admin+demoMode), "Get help & report a bug" -> /help,
+  profile block w/ switch link.
+- In-app help: migration 0009_support_requests.sql (APPLIED), lib/db/support-queries.ts,
+  app/help/* (standalone), components/HelpForm.tsx, app/admin/inbox/* + SupportInbox.tsx.
+  Sidebar inbox badge = countOpenSupport. VERIFIED working (submit -> badge -> resolve).
+- Admin metrics: lib/db/metrics-queries.ts getAdminMetrics; app/admin/page.tsx is now a
+  full metrics dashboard (at-a-glance / learning / by-course bars / compliance spread /
+  waqf & community / manage grid). VERIFIED.
+- Student: app/student/page.tsx hero + CoursePath cards; LessonView, Checkpoint, TermExam,
+  MarkCompleteButton, GenerateLessonPanel all restyled. VERIFIED lesson + playground render.
+- Parent: app/parent/page.tsx rewrite + /parent/compliance restyled. VERIFIED.
+  Just changed BarakahSummary "In the circle" phrases from a capitalize'd run-on string
+  to teal pill badges (was rendering "Shows Good Adab In The Circle").
+- Admin sub-pages (pods, volunteers, continuity, handoff-demo, compliance, seerah, barakah,
+  ledger) token-migrated + PageHeader/Card. VERIFIED volunteers/seerah/barakah/ledger/overview.
+- BUG FIX: components/admin/{WaqfFlowDiagram,LedgerChart}.tsx had hardcoded grey/blue SVG
+  colors clashing with the palette -> now use var(--terracotta)/var(--teal)/var(--mustard-soft)
+  etc. Deleted unused components/StubSection.tsx. DemoResetButton amber->warning tokens.
+- build + lint + tsc: GREEN as of this checkpoint.
+
+Uncommitted at checkpoint: app/page.tsx, app/parent/page.tsx, app/student/page.tsx,
+components/DemoResetButton.tsx, components/admin/LedgerChart.tsx,
+components/admin/WaqfFlowDiagram.tsx, components/student/CoursePath.tsx,
+components/ui/Card.tsx, (deleted) components/StubSection.tsx.
+-> committing now so main stays green.
+
+REMAINING for T25:
+- Verify the parent BarakahSummary pill change renders right (didn't re-screenshot).
+- Walk the student lesson -> Mark complete -> checkpoint -> pass -> pod advances flow,
+  and the term exam, in the redesigned UI (was mid-scroll to the checkpoint when paused).
+- Check /admin/pods, /admin/continuity, /admin/handoff-demo, /admin/compliance,
+  /admin/compliance/[id]/print visually (token-migrated but not re-screenshotted this pass).
+- Check mobile / narrow viewport (Sidebar drawer).
+- Sidebar profile block: role line shows the name twice-ish ("Masjid Admin" / "Masjid
+  Admin") — confirm it's showing role not a dup, tidy if needed.
+- Then flip the "Done when" boxes, regenerate BOARD.md, mark T25 done, commit+push.
+
+Note: parallel session may hold T59 (EN<->FR switch) — high collision risk with this
+redesign (touches every string). Coordinate before that starts.

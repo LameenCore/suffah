@@ -24,27 +24,14 @@ export function WaqfFlowDiagram({
     <div className="waqf-flow">
       <style>{`
         .waqf-flow {
-          --wf-surface: #fcfcfb;
-          --wf-ink: #0b0b0b;
-          --wf-sub: #52514e;
-          --wf-muted: #898781;
-          --wf-lock-fill: #ece9e2;
-          --wf-lock-stroke: #b7b1a3;
-          --wf-flow: #2a78d6;
-          --wf-sadaqah: #1baf7a;
-          --wf-box: #f2f1ee;
-        }
-        @media (prefers-color-scheme: dark) {
-          :root:not([data-theme="light"]) .waqf-flow {
-            --wf-surface: #1a1a19; --wf-ink: #ffffff; --wf-sub: #c3c2b7; --wf-muted: #898781;
-            --wf-lock-fill: #2a2a27; --wf-lock-stroke: #4a4741;
-            --wf-flow: #3987e5; --wf-sadaqah: #199e70; --wf-box: #242320;
-          }
-        }
-        :root[data-theme="dark"] .waqf-flow {
-          --wf-surface: #1a1a19; --wf-ink: #ffffff; --wf-sub: #c3c2b7; --wf-muted: #898781;
-          --wf-lock-fill: #2a2a27; --wf-lock-stroke: #4a4741;
-          --wf-flow: #3987e5; --wf-sadaqah: #199e70; --wf-box: #242320;
+          --wf-ink: var(--ink);
+          --wf-sub: var(--ink-2);
+          --wf-muted: var(--ink-3);
+          --wf-lock-fill: var(--mustard-soft);
+          --wf-lock-stroke: var(--border-strong);
+          --wf-flow: var(--terracotta);
+          --wf-sadaqah: var(--teal);
+          --wf-box: var(--surface-2);
         }
         .wf-stream {
           stroke-dasharray: 6 8;

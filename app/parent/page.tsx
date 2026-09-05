@@ -165,7 +165,16 @@ function BarakahSummary({ barakah }: { barakah: ChildBarakahSummary }) {
         What the pod&apos;s volunteers have noticed &mdash; adab and cooperation, not a score.
       </p>
       {barakah.phrases.length > 0 && (
-        <p className="mt-2 text-sm capitalize text-ink-2">{barakah.phrases.join(" · ")}</p>
+        <div className="mt-3 flex flex-wrap gap-1.5">
+          {barakah.phrases.map((p) => (
+            <span
+              key={p}
+              className="inline-block rounded-full bg-teal-soft px-2.5 py-1 text-xs font-medium text-teal-strong first-letter:uppercase"
+            >
+              {p}
+            </span>
+          ))}
+        </div>
       )}
       {barakah.entries.length > 0 && (
         <ul className="mt-2 space-y-1 text-sm text-ink-2">

@@ -83,30 +83,12 @@ export function LedgerChart({
     <div className="viz-root relative">
       <style>{`
         .viz-root {
-          --surface-1: #fcfcfb;
-          --text-secondary: #52514e;
-          --muted: #898781;
-          --grid: #e1e0d9;
-          --baseline: #c3c2b7;
-          --series-1: #2a78d6;
-        }
-        @media (prefers-color-scheme: dark) {
-          :root:not([data-theme="light"]) .viz-root {
-            --surface-1: #1a1a19;
-            --text-secondary: #c3c2b7;
-            --muted: #898781;
-            --grid: #2c2c2a;
-            --baseline: #383835;
-            --series-1: #3987e5;
-          }
-        }
-        :root[data-theme="dark"] .viz-root {
-          --surface-1: #1a1a19;
-          --text-secondary: #c3c2b7;
-          --muted: #898781;
-          --grid: #2c2c2a;
-          --baseline: #383835;
-          --series-1: #3987e5;
+          --surface-1: var(--surface);
+          --text-secondary: var(--ink-2);
+          --muted: var(--ink-3);
+          --grid: var(--border);
+          --baseline: var(--border-strong);
+          --series-1: var(--terracotta);
         }
       `}</style>
 

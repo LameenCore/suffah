@@ -32,10 +32,10 @@ export function CoursePath({ track }: { track: CourseTrack }) {
   const status = !currentNode
     ? null
     : checkpointPassed
-      ? { tone: "success" as const, text: "Passed" }
+      ? { tone: "success" as const, text: "Done" }
       : lessonComplete
-        ? { tone: "mustard" as const, text: "Checkpoint" }
-        : { tone: "teal" as const, text: "Lesson ready" };
+        ? { tone: "mustard" as const, text: "Quiz" }
+        : { tone: "teal" as const, text: "Ready" };
 
   const shell = `group flex h-full flex-col rounded-[var(--radius-lg)] border border-border bg-surface p-5 shadow-[var(--shadow-card)] transition-all ${
     currentNode

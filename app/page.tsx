@@ -56,7 +56,10 @@ const DASHBOARDS: {
 export default function Home({ searchParams }: PageProps<"/">) {
   return (
     <div className="relative flex min-h-full flex-col">
-      <div className="geo-field pointer-events-none absolute inset-0 opacity-60" aria-hidden />
+      <div
+        className="geo-field pointer-events-none absolute inset-x-0 top-0 h-72 opacity-40 [mask-image:linear-gradient(to_bottom,black,transparent)]"
+        aria-hidden
+      />
       <div className="relative mx-auto flex w-full max-w-3xl flex-1 flex-col justify-center gap-10 px-6 py-16">
         <div className="flex items-start gap-5">
           <Mascot size={84} mood="cheer" className="shrink-0" />

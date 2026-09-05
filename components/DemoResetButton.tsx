@@ -40,12 +40,12 @@ export function DemoResetButton() {
         type="button"
         onClick={reset}
         disabled={busy || pending}
-        className="rounded border border-amber-400 px-2 py-0.5 text-xs font-medium text-amber-700 hover:bg-amber-50 disabled:opacity-50 dark:border-amber-600 dark:text-amber-300 dark:hover:bg-amber-950/40"
+        className="rounded-full border border-warning/40 bg-warning-soft px-2.5 py-0.5 text-xs font-medium text-[color:var(--warning)] hover:bg-warning/15 disabled:opacity-50"
         title="Re-seed the demo walkthrough state (no AI regeneration)"
       >
         {busy || pending ? "Resetting…" : done ? "Reset ✓" : "Reset walkthrough"}
       </button>
-      {error && <span className="text-xs text-red-600 dark:text-red-400">{error}</span>}
+      {error && <span className="text-xs text-danger">{error}</span>}
     </span>
   );
 }

@@ -16,7 +16,7 @@ export default async function StudentHome() {
   return (
     <div className="space-y-8">
       <section className="relative overflow-hidden rounded-[var(--radius-lg)] border border-border bg-surface p-6 shadow-[var(--shadow-card)] sm:p-8">
-        <div className="geo-field pointer-events-none absolute inset-0 opacity-50" aria-hidden />
+        <div className="geo-field pointer-events-none absolute inset-0 opacity-30" aria-hidden />
         <div className="relative flex items-start gap-5">
           <Mascot size={92} mood="happy" className="hidden shrink-0 sm:block" />
           <div className="space-y-2">

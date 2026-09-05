@@ -50,7 +50,7 @@ export function Card({
     >
       {motif ? (
         <div
-          className="geo-field pointer-events-none absolute inset-0 opacity-70"
+          className="geo-field pointer-events-none absolute inset-0 opacity-40"
           aria-hidden
         />
       ) : null}
