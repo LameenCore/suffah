@@ -2,9 +2,9 @@
 id: T73
 title: Performance: check it and be able to speak to it
 phase: 14
-status: todo
-owner: —
-claimed: —
+status: doing
+owner: https://claude.ai/code/session_01KZau462fdpkrsdLZNLrD9T
+claimed: 2026-09-06T02:00:00Z
 updated: 2026-09-05
 depends_on: []
 rubric: Technical 30% (sw)
