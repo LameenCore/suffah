@@ -1,7 +1,7 @@
 # BOARD — Suffa progress snapshot
 
 **Derived from `progress/tasks/`. Not authoritative. Regenerate after any claim/finish.**
-Last regenerated: 2026-09-05 (T34 + T35 + T38 done)
+Last regenerated: 2026-09-05 (T34 + T35 + T36 + T38 done)
 
 | id  | phase | status | owner | title |
 |-----|-------|--------|-------|-------|
@@ -50,7 +50,7 @@ Get a clean demo state: `npm run demo:setup` (full, hits the API) or `npm run de
 | T33 | 9 | todo  | — | Platform super-admin + masjid provisioning |
 | T34 | 9 | done  | — | Rate limiting + abuse guards on AI endpoints |
 | T35 | 9 | done  | — | Audit logging for sensitive actions |
-| T36 | 10 | todo | — | Quebec Law 25 baseline (privacy) |
+| T36 | 10 | done | — | Quebec Law 25 baseline (privacy) |
 | T37 | 10 | todo | — | Parental consent flow for minors |
 | T38 | 10 | done | — | Terms of Service / Privacy Policy / AUP |
 | T39 | 10 | done | — | Canadian data residency + data map |

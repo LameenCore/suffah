@@ -312,3 +312,36 @@ Commits: dc8d21d, fb06c89, 412745f, 6fdc7e3, 6a8b3e3, ee47c27, 6e192d0 (+ hashes
   placeholders — decisions, not code.
 - eslint clean; next build clean (all 3 pages prerender static).
 Commit: a18b8c8
+
+## T36 — Quebec Law 25 baseline
+
+- migration 0011_consent_records: append-only table (masjid_id, student, guardian,
+  consent_version, purposes[], granted, document_hash, recorded_at) + a
+  BEFORE UPDATE OR DELETE trigger that rejects mutation (same pattern as audit_log).
+- lib/consent.ts: CONSENT_VERSION = "2026-09"; CONSENT_PURPOSES (curriculum /
+  ai_instruction / compliance_record / retention, each with label + detail);
+  recordConsentDecision, listConsentRecords, getActiveConsent (latest row for the
+  current version, granted), hasActiveConsent. Withdrawal = a new granted=false row.
+- lib/db/privacy-queries.ts: exportFamilyData(guardian) — guardian profile + every
+  linked child (getChildrenForParent, masjid+relationship scoped) with pods,
+  lesson_progress, checkpoint/unit/term results, compliance_reports, pod_barakah_log
+  (child-specific), consent_records. requestDataErasure(guardian, reason) — files a
+  support_requests row (category 'data-erasure') + recordAudit
+  'privacy.erasure_requested'; does NOT delete.
+- app/parent/privacy/page.tsx (nav: "Your data", shield icon) — download export,
+  correct-something pointer, deletion-request form + the guardian's own request list.
+  app/parent/privacy/export/route.ts — GET, parent-only, JSON attachment, audits
+  'privacy.data_exported'. app/parent/privacy/actions.ts — requestErasureAction.
+- SupportCategory gained 'data-erasure'; CAT_TONE maps updated in app/help/page.tsx
+  + components/admin/SupportInbox.tsx (build caught the two indexers).
+- docs/privacy/law25-baseline.md: person responsible (operator placeholder), consent
+  standard + how Suffa meets it, data-subject rights table (with the still-open
+  scripted-erasure + export-UI items called out), retention table with defensible
+  defaults, cross-border summary (-> T39), breach response (CAI + 5yr incident
+  register), governance checklist, and an "Open items summary".
+- Verified live: migrate applied 0011; exportFamilyData for the demo family returns
+  Yusuf with pods=1/checkpoints=1/barakah=2; consent grant->active, withdraw->
+  inactive, history kept (3 rows), UPDATE blocked by the trigger; demo child left in
+  a consented state so the T37 gate won't lock the walkthrough.
+- eslint + next build clean.
+Commit: PLACEHOLDER36

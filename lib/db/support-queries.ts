@@ -3,7 +3,8 @@
 import { getServiceClient } from "@/lib/db";
 import type { SessionUser } from "@/lib/types";
 
-export type SupportCategory = "question" | "bug" | "idea";
+// "data-erasure" is filed by the parent privacy page (T36), not the help form.
+export type SupportCategory = "question" | "bug" | "idea" | "data-erasure";
 export type SupportStatus = "open" | "resolved";
 
 export interface SupportRequest {

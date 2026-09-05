@@ -13,7 +13,12 @@ const HOME: Record<string, string> = {
   student: "/student",
 };
 
-const CAT_TONE = { question: "teal", bug: "danger", idea: "mustard" } as const;
+const CAT_TONE = {
+  question: "teal",
+  bug: "danger",
+  idea: "mustard",
+  "data-erasure": "warning",
+} as const;
 
 export default async function HelpPage() {
   const user = await getCurrentUser();

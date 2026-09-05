@@ -8,7 +8,12 @@ import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import type { SupportRequest } from "@/lib/db/support-queries";
 
-const CAT_TONE = { question: "teal", bug: "danger", idea: "mustard" } as const;
+const CAT_TONE = {
+  question: "teal",
+  bug: "danger",
+  idea: "mustard",
+  "data-erasure": "warning",
+} as const;
 
 function Row({ req }: { req: SupportRequest }) {
   const router = useRouter();
