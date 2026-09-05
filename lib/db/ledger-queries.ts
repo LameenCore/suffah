@@ -41,21 +41,12 @@ export interface LedgerSummary {
 
 const OUT_TYPES: LedgerEntryType[] = ["return_disbursed", "scholarship_allocated"];
 
-export async function getLedgerSummary(masjidId: string): Promise<LedgerSummary> {
-  const { data, error } = await getServiceClient()
-    .from("waqf_ledger")
-    .select("entry_type, amount, note, created_at")
-    .eq("masjid_id", masjidId)
-    .order("created_at", { ascending: true });
-  if (error) throw new Error(`getLedgerSummary: ${error.message}`);
-
-  const entries: LedgerEntry[] = (data ?? []).map((r) => ({
-    entryType: r.entry_type as LedgerEntryType,
-    amount: Number(r.amount),
-    note: (r.note as string | null) ?? null,
-    createdAt: r.created_at as string,
-  }));
-
+/**
+ * Aggregate ledger entries. Pure - no DB - so the "principal is never counted as
+ * spendable" invariant is unit-testable (see tests/ledger.test.ts). Entries are
+ * expected in chronological order for `spendSeries` to be monotonic.
+ */
+export function summariseLedgerEntries(entries: LedgerEntry[]): Omit<LedgerSummary, "entries"> {
   let principal = 0;
   let returnsDisbursed = 0;
   let sadaqahReceived = 0;
@@ -89,10 +80,28 @@ export async function getLedgerSummary(masjidId: string): Promise<LedgerSummary>
     returnsDisbursed,
     sadaqahReceived,
     scholarshipsAllocated,
+    // principal is deliberately NOT part of totalOut - it is the locked endowment.
     totalOut: returnsDisbursed + scholarshipsAllocated,
     spendSeries,
-    entries,
   };
+}
+
+export async function getLedgerSummary(masjidId: string): Promise<LedgerSummary> {
+  const { data, error } = await getServiceClient()
+    .from("waqf_ledger")
+    .select("entry_type, amount, note, created_at")
+    .eq("masjid_id", masjidId)
+    .order("created_at", { ascending: true });
+  if (error) throw new Error(`getLedgerSummary: ${error.message}`);
+
+  const entries: LedgerEntry[] = (data ?? []).map((r) => ({
+    entryType: r.entry_type as LedgerEntryType,
+    amount: Number(r.amount),
+    note: (r.note as string | null) ?? null,
+    createdAt: r.created_at as string,
+  }));
+
+  return { ...summariseLedgerEntries(entries), entries };
 }
 
 export interface FamilyFeeRow {

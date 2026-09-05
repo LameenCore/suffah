@@ -17,7 +17,9 @@
     "seed:progress": "tsx --env-file=.env.local scripts/seed-demo-progress.ts",
     "demo:setup": "tsx scripts/demo-setup.ts",
     "demo:reset": "tsx scripts/demo-setup.ts --reset-only",
-    "check:integrity": "tsx --env-file=.env.local scripts/check-integrity.ts"
+    "check:integrity": "tsx --env-file=.env.local scripts/check-integrity.ts",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.124.0",
@@ -39,6 +41,7 @@
     "eslint-config-next": "16.3.4",
     "tailwindcss": "^4",
     "tsx": "^4.23.13",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^2.1.9"
   }
 }
