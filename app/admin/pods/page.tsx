@@ -62,7 +62,7 @@ export default async function AdminPodsPage() {
       <RegulationNote>
         The {POD_MAX_STUDENTS}-student cap mirrors Quebec&apos;s home-instruction
         exemption threshold (fewer than five children per instructor) as currently
-        understood — confirm against active regulation before relying on it.
+        understood - confirm against active regulation before relying on it.
       </RegulationNote>
 
       {loadError ? (
@@ -87,7 +87,7 @@ export default async function AdminPodsPage() {
             ))}
           </div>
 
-          {/* Continuity matrix — pod x course -> current node */}
+          {/* Continuity matrix - pod x course -> current node */}
           <section className="rounded-xl border border-black/10 bg-white p-4 dark:border-white/15 dark:bg-zinc-950">
             <h2 className="font-medium">Continuity view</h2>
             <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
@@ -121,7 +121,7 @@ export default async function AdminPodsPage() {
                         {pod.name}
                       </td>
                       <td className="border-b border-black/5 py-2 pr-4 text-zinc-500 dark:border-white/10 dark:text-zinc-400">
-                        {pod.volunteer?.name ?? "—"}
+                        {pod.volunteer?.name ?? "-"}
                       </td>
                       {pod.progress.map((p) => (
                         <td

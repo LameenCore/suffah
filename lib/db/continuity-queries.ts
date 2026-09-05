@@ -87,7 +87,7 @@ export async function addPodSessionNote(
 
 /**
  * Best-effort system note (e.g. the playground noticing a repeated checkpoint
- * fail). Never throws — a note failing must not break the caller.
+ * fail). Never throws - a note failing must not break the caller.
  */
 export async function tryAddSystemNote(
   podId: string,
@@ -344,7 +344,7 @@ export interface HandoffDemoState {
   currentVolunteer: { id: string; name: string } | null;
   /** Volunteers who could take the pod (in the masjid, not currently on this pod). */
   candidates: { id: string; name: string; status: string }[];
-  /** The pod's home volunteer from seed data — the reset target. */
+  /** The pod's home volunteer from seed data - the reset target. */
   homeVolunteer: { id: string; name: string } | null;
   /** Whether a student in the pod has a current lesson ready right now. */
   playgroundOnline: boolean;

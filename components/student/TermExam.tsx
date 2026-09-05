@@ -61,7 +61,7 @@ export function TermExam({
         <h2 className="text-sm font-semibold uppercase tracking-wide text-zinc-500">Term exam</h2>
         <p className="text-sm text-zinc-600 dark:text-zinc-400">
           {priorResult
-            ? `You've taken this term exam — ${Math.round(priorResult.score * 100)}%.`
+            ? `You've taken this term exam - ${Math.round(priorResult.score * 100)}%.`
             : "A timed, cumulative exam across the whole course. No help mid-exam."}
         </p>
         <button

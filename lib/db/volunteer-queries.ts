@@ -1,5 +1,5 @@
 // Masjid-scoped reads + writes for volunteer onboarding and the churn log (T15).
-// Vetting is mocked — `status` is a plain enum, no background-check integration
+// Vetting is mocked - `status` is a plain enum, no background-check integration
 // (see ARCHITECTURE.md / PRD non-goals).
 //
 // The churn story: when a volunteer departs we stamp `left_at`, flip status to
@@ -21,9 +21,9 @@ export interface VolunteerRow {
 }
 
 export interface VolunteerRoster {
-  /** Still here (left_at is null) — any status. */
+  /** Still here (left_at is null) - any status. */
   active: VolunteerRow[];
-  /** Departed (left_at set) — the churn log. */
+  /** Departed (left_at set) - the churn log. */
   churned: VolunteerRow[];
 }
 

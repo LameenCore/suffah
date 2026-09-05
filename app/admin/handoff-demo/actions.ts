@@ -18,24 +18,24 @@ async function requireAdmin() {
   return user;
 }
 
-/** Step 1 — the pod's volunteer goes offline (departs). Pod keeps pod_progress. */
+/** Step 1 - the pod's volunteer goes offline (departs). Pod keeps pod_progress. */
 export async function takeVolunteerOfflineAction(): Promise<void> {
   const user = await requireAdmin();
   const state = await getHandoffDemoState(user.masjidId);
-  if (!state.pod) throw new Error("demo pod not found — run npm run seed");
+  if (!state.pod) throw new Error("demo pod not found - run npm run seed");
   if (state.currentVolunteer) {
     await recordDeparture(user.masjidId, state.currentVolunteer.id);
   }
   revalidatePath("/admin/handoff-demo");
 }
 
-/** Step 2 — assign a replacement volunteer and generate the handoff briefing. */
+/** Step 2 - assign a replacement volunteer and generate the handoff briefing. */
 export async function assignReplacementAction(
   volunteerId: string,
 ): Promise<{ briefing: PodBriefing; source: string; generatedAt: string }> {
   const user = await requireAdmin();
   const state = await getHandoffDemoState(user.masjidId);
-  if (!state.pod) throw new Error("demo pod not found — run npm run seed");
+  if (!state.pod) throw new Error("demo pod not found - run npm run seed");
 
   await reinstateVolunteer(user.masjidId, volunteerId); // no-op if never departed
   await setPodVolunteer(user.masjidId, state.pod.id, volunteerId);
@@ -45,7 +45,7 @@ export async function assignReplacementAction(
   return { briefing: result.briefing, source: result.source, generatedAt: result.generatedAt };
 }
 
-/** Reset — put the pod's home volunteer back so the demo can be re-run. */
+/** Reset - put the pod's home volunteer back so the demo can be re-run. */
 export async function resetHandoffDemoAction(): Promise<void> {
   const user = await requireAdmin();
   const state = await getHandoffDemoState(user.masjidId);

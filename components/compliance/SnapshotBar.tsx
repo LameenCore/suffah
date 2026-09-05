@@ -42,7 +42,7 @@ export function SnapshotBar({
       <span className="text-xs text-zinc-500 dark:text-zinc-400">
         {lastSnapshotAt
           ? `Last snapshot: ${new Date(lastSnapshotAt).toLocaleString()}`
-          : "No snapshot saved yet — the view above is live."}
+          : "No snapshot saved yet - the view above is live."}
       </span>
     </div>
   );

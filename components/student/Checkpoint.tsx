@@ -134,7 +134,7 @@ export function Checkpoint({
                       : "text-red-600 dark:text-red-400"
                   }`}
                 >
-                  {g.correct ? "Correct." : `Not quite — answer: ${g.correctAnswer}.`}{" "}
+                  {g.correct ? "Correct." : `Not quite - answer: ${g.correctAnswer}.`}{" "}
                   <span className="text-zinc-500 dark:text-zinc-400">{g.explanation}</span>
                 </p>
               ) : null}
@@ -157,7 +157,7 @@ export function Checkpoint({
       ) : grade.passed ? (
         <div className="space-y-2 rounded-lg border border-emerald-300 bg-emerald-50 p-3 text-sm dark:border-emerald-700/60 dark:bg-emerald-950/40">
           <p className="font-semibold text-emerald-900 dark:text-emerald-200">
-            Passed — {grade.correctCount}/{grade.total} ({Math.round(grade.score * 100)}%).
+            Passed - {grade.correctCount}/{grade.total} ({Math.round(grade.score * 100)}%).
           </p>
           <p className="text-emerald-800 dark:text-emerald-300">
             {grade.advancedToNodeId
@@ -177,7 +177,7 @@ export function Checkpoint({
       ) : (
         <div className="space-y-2 rounded-lg border border-amber-300 bg-amber-50 p-3 text-sm dark:border-amber-700/60 dark:bg-amber-950/40">
           <p className="font-semibold text-amber-900 dark:text-amber-200">
-            Score {grade.correctCount}/{grade.total} ({Math.round(grade.score * 100)}%) — you
+            Score {grade.correctCount}/{grade.total} ({Math.round(grade.score * 100)}%) - you
             need 70%.
           </p>
           <p className="text-amber-800 dark:text-amber-300">

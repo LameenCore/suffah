@@ -137,7 +137,7 @@ function BarakahSummary({ barakah }: { barakah: ChildBarakahSummary }) {
     <section className="rounded-xl border border-black/10 bg-white p-4 dark:border-white/15 dark:bg-zinc-950">
       <h3 className="font-medium">Character &amp; community</h3>
       <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
-        What the pod&apos;s volunteers have noticed — not a score.
+        What the pod&apos;s volunteers have noticed - not a score.
       </p>
       {barakah.phrases.length > 0 && (
         <p className="mt-2 text-sm capitalize text-zinc-700 dark:text-zinc-200">

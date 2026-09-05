@@ -11,7 +11,7 @@ import { env, isSupabaseConfigured } from "@/lib/env";
 let serviceClient: SupabaseClient | null = null;
 
 /**
- * Service-role client — bypasses RLS. Use ONLY in trusted server code (API
+ * Service-role client - bypasses RLS. Use ONLY in trusted server code (API
  * routes, server actions) and always filter by masjid_id explicitly.
  */
 export function getServiceClient(): SupabaseClient {

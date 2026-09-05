@@ -1,6 +1,6 @@
 /**
  * Seed a believable spread of student results so the compliance report (T12/T20)
- * and the parent dashboard have something real to show — on track / watch / gap
+ * and the parent dashboard have something real to show - on track / watch / gap
  * across the pod.
  *
  *   npm run seed:progress            # insert (skips if results already exist)
@@ -55,11 +55,11 @@ async function main() {
     .select("id", { count: "exact", head: true })
     .in("student_user_id", students);
   if ((count ?? 0) > 0 && !reset) {
-    console.log(`Pod already has ${count} checkpoint result(s) — pass --reset to redo.`);
+    console.log(`Pod already has ${count} checkpoint result(s) - pass --reset to redo.`);
     return;
   }
 
-  // Yusuf — on track: passes Math 1 & 2, Math unit assessment, Seerah 1.
+  // Yusuf - on track: passes Math 1 & 2, Math unit assessment, Seerah 1.
   await db.from("checkpoint_results").insert([
     { student_user_id: S.yusuf, pathway_node_id: NODE.math1, passed: true, answer_data: { score: 1 }, attempted_at: daysAgo(12) },
     { student_user_id: S.yusuf, pathway_node_id: NODE.math2, passed: true, answer_data: { score: 0.75 }, attempted_at: daysAgo(6) },
@@ -69,21 +69,21 @@ async function main() {
     student_user_id: S.yusuf, unit_id: UNIT.math, score: 0.86, passed: true, answer_data: {}, attempted_at: daysAgo(3),
   });
 
-  // Maryam — watch: Math 1 passed on the 2nd try, no unit assessment.
+  // Maryam - watch: Math 1 passed on the 2nd try, no unit assessment.
   await db.from("checkpoint_results").insert([
     { student_user_id: S.maryam, pathway_node_id: NODE.math1, passed: false, answer_data: { score: 0.5 }, attempted_at: daysAgo(11) },
     { student_user_id: S.maryam, pathway_node_id: NODE.math1, passed: true, answer_data: { score: 0.75 }, attempted_at: daysAgo(10) },
     { student_user_id: S.maryam, pathway_node_id: NODE.seerah1, passed: true, answer_data: { score: 1 }, attempted_at: daysAgo(8) },
   ]);
 
-  // Idris — gap in Math: attempted, low pass rate. Seerah fine.
+  // Idris - gap in Math: attempted, low pass rate. Seerah fine.
   await db.from("checkpoint_results").insert([
     { student_user_id: S.idris, pathway_node_id: NODE.math1, passed: false, answer_data: { score: 0.25 }, attempted_at: daysAgo(10) },
     { student_user_id: S.idris, pathway_node_id: NODE.math1, passed: false, answer_data: { score: 0.5 }, attempted_at: daysAgo(7) },
     { student_user_id: S.idris, pathway_node_id: NODE.seerah1, passed: true, answer_data: { score: 1 }, attempted_at: daysAgo(6) },
   ]);
 
-  // Safiya — gap in AI Literacy: term exam attempted and failed.
+  // Safiya - gap in AI Literacy: term exam attempted and failed.
   await db.from("checkpoint_results").insert([
     { student_user_id: S.safiya, pathway_node_id: NODE.ai1, passed: true, answer_data: { score: 0.75 }, attempted_at: daysAgo(9) },
     { student_user_id: S.safiya, pathway_node_id: NODE.math1, passed: true, answer_data: { score: 1 }, attempted_at: daysAgo(9) },

@@ -2,7 +2,7 @@
 
 // Cumulative operating spend over time, on a single y-axis that runs 0 → the
 // locked principal. The story the chart tells: spending (from returns + sadaqah)
-// barely lifts off the floor — the principal is never touched. One series, one
+// barely lifts off the floor - the principal is never touched. One series, one
 // axis, a dashed reference line for the principal. Inline SVG, no chart library.
 //
 // Palette + mark specs from the dataviz skill (series-1 blue; thin marks; hover
@@ -170,7 +170,7 @@ export function LedgerChart({
           fontSize={11}
           fill="var(--text-secondary)"
         >
-          Principal {money(principal)} — untouched
+          Principal {money(principal)} - untouched
         </text>
 
         {/* area + line */}

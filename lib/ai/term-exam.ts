@@ -1,4 +1,4 @@
-// Term exam — the unit-assessment machinery (lib/ai/assessment.ts) behind a flag:
+// Term exam - the unit-assessment machinery (lib/ai/assessment.ts) behind a flag:
 // cumulative across a whole course, timed, no remedial branch (T09 / PRD §5.3).
 //
 // Reuses buildAssessmentPrompt(..., "term") and the shared objective grading in
@@ -69,7 +69,7 @@ export interface GenerateTermExamResult {
 
 /**
  * Generate + persist the term exam for a course. Returns the existing one
- * unchanged unless `force`. No offline fallback — a term exam is not on the
+ * unchanged unless `force`. No offline fallback - a term exam is not on the
  * live demo's critical path (checkpoints + unit assessment are).
  */
 export async function generateTermExam(
@@ -98,7 +98,7 @@ export async function generateTermExam(
   const { system, user } = buildAssessmentPrompt(
     course.name,
     course.grade_band,
-    `${course.name} — ${termLabel}`,
+    `${course.name} - ${termLabel}`,
     nodes,
     "term",
   );
@@ -108,7 +108,7 @@ export async function generateTermExam(
     max_tokens: 8000,
     system:
       system +
-      " This is a timed end-of-term exam with no help available mid-exam — make it fair " +
+      " This is a timed end-of-term exam with no help available mid-exam - make it fair " +
       "but comprehensive.",
     messages: [{ role: "user", content: user }],
     output_config: { format: zodOutputFormat(TermExamBodySchema) },
@@ -142,14 +142,14 @@ export interface TermExamGrade {
   score: number; // 0..1
   correctCount: number;
   total: number;
-  passed: boolean; // informational — a term exam has no remedial branch
+  passed: boolean; // informational - a term exam has no remedial branch
   perQuestion: QuestionGrade[];
   termLabel: string;
 }
 
 /**
  * Grade a submitted term exam and persist the attempt. No remedial branch, no
- * pod advancement — the result is a compliance record, full stop.
+ * pod advancement - the result is a compliance record, full stop.
  */
 export async function gradeTermExam(
   courseId: string,

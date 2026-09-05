@@ -65,7 +65,7 @@ export function PodCard({
           dispatch(() => setVolunteerAction(pod.id, e.target.value || null))
         }
       >
-        <option value="">— unassigned —</option>
+        <option value="">(unassigned)</option>
         {volunteers.map((v) => (
           <option key={v.id} value={v.id}>
             {v.name} ({STATUS_LABEL[v.status]})

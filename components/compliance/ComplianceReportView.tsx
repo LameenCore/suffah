@@ -1,4 +1,4 @@
-// Shared render of a ComplianceReport — used on the admin view, the parent view,
+// Shared render of a ComplianceReport - used on the admin view, the parent view,
 // and the print page. Pure presentation.
 
 import { RegulationNote } from "@/components/RegulationNote";
@@ -33,7 +33,7 @@ export function ComplianceReportView({ report }: { report: ComplianceReport }) {
     <div className="space-y-5">
       <div className="border-b border-black/10 pb-3 dark:border-white/15">
         <h2 className="text-lg font-semibold">
-          Progress &amp; evaluation record — {report.student.name}
+          Progress &amp; evaluation record - {report.student.name}
         </h2>
         <p className="text-sm text-zinc-500 dark:text-zinc-400">
           {report.podName ? `${report.podName} · ` : ""}

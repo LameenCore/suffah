@@ -1,7 +1,7 @@
 // POST /api/lessons/generate  { nodeId: string, force?: boolean }
 //
 // Generates (or returns the already-persisted) lesson for a pathway node and
-// writes it to the DB before responding — never raw model output straight to the
+// writes it to the DB before responding - never raw model output straight to the
 // client (see .claude/skills/api-design.md). Role- and masjid-scoped at the
 // handler, not just the UI.
 

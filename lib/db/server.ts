@@ -25,7 +25,7 @@ export async function getServerClient() {
             cookieStore.set(name, value, options);
           }
         } catch {
-          // Called from a Server Component — safe to ignore when a proxy/route
+          // Called from a Server Component - safe to ignore when a proxy/route
           // handler is responsible for refreshing the session.
         }
       },

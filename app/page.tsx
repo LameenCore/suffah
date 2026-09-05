@@ -25,7 +25,7 @@ const DASHBOARDS: { role: Role; title: string; blurb: string; accent: string }[]
   {
     role: "student",
     title: "Student Playground",
-    blurb: "AI-led lessons, checkpoints, and assessments — self-paced within the pod's unit.",
+    blurb: "AI-led lessons, checkpoints, and assessments - self-paced within the pod's unit.",
     accent: "hover:border-violet-500",
   },
   {
@@ -70,7 +70,7 @@ export default function Home({ searchParams }: PageProps<"/">) {
       </div>
 
       <p className="text-xs text-zinc-400">
-        Demo auth only — a role cookie, not a real login.{" "}
+        Demo auth only - a role cookie, not a real login.{" "}
         <Link href="/admin" className="underline underline-offset-2">
           Build order in TASKS.md
         </Link>

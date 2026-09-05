@@ -21,7 +21,7 @@ async function main() {
     .order("name", { ascending: true });
   if (error) throw new Error(error.message);
   const courses = (data ?? []) as { id: string; name: string }[];
-  if (courses.length === 0) throw new Error("No courses — run npm run seed first.");
+  if (courses.length === 0) throw new Error("No courses - run npm run seed first.");
 
   console.log(
     `Generating "${DEMO_TERM_LABEL}" term exams for ${courses.length} course(s)${

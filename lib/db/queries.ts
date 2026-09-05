@@ -1,6 +1,6 @@
 // Masjid-scoped read/write helpers. Route handlers and server code call these
 // instead of hand-rolling Supabase queries so that masjid_id scoping stays in
-// one place (see .claude/skills/api-design.md — every query filters by tenant).
+// one place (see .claude/skills/api-design.md - every query filters by tenant).
 
 import { getServiceClient } from "@/lib/db";
 import type { CourseName } from "@/lib/types";

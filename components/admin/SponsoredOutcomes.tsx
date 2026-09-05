@@ -57,7 +57,7 @@ export function SponsoredOutcomes({ outcomes }: { outcomes: SponsoredOutcome[] }
         ))}
       </div>
       <p className="text-xs text-zinc-400">
-        Sponsorship links are illustrative. Outcomes are pod-level and anonymized —
+        Sponsorship links are illustrative. Outcomes are pod-level and anonymized,
         drawn from real pathway progress and unit-assessment results.
       </p>
     </div>

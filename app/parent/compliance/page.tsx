@@ -40,7 +40,7 @@ export default async function ParentCompliancePage({
         <h1 className="text-2xl font-semibold tracking-tight">Evaluation status</h1>
         <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
           A live read on where your child stands against the term&apos;s evaluation
-          requirement — updated as they work, so there are no surprises at term-end.
+          requirement - updated as they work, so there are no surprises at term-end.
         </p>
       </div>
 

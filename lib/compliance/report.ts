@@ -27,7 +27,7 @@ export interface ComplianceReport {
   }>;
 }
 
-/** Build the living report from current data — no persistence. */
+/** Build the living report from current data - no persistence. */
 export async function assembleComplianceReport(
   studentUserId: string,
   studentName: string,

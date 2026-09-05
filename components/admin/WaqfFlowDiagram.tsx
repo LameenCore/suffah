@@ -2,7 +2,7 @@
 // that never changes; only its *returns* flow out to operations; sadaqah is a
 // separate stream into the scholarship pool. Inline SVG, theme-aware via CSS
 // vars, no chart library. The flow dashes animate unless the viewer asks for
-// reduced motion. Server component — SMIL-free, pure CSS animation.
+// reduced motion. Server component - SMIL-free, pure CSS animation.
 
 const money = (v: number) =>
   v.toLocaleString("en-CA", { style: "currency", currency: "CAD", maximumFractionDigits: 0 });
@@ -64,7 +64,7 @@ export function WaqfFlowDiagram({
           sadaqahReceived,
         )} funds a scholarship pool.`}
       >
-        {/* Principal — the locked block */}
+        {/* Principal - the locked block */}
         <rect x="24" y="46" width="236" height="150" rx="10"
           fill="var(--wf-lock-fill)" stroke="var(--wf-lock-stroke)" strokeWidth="2" />
         {/* padlock */}
@@ -77,7 +77,7 @@ export function WaqfFlowDiagram({
           {money(principal)}
         </text>
         <text x="142" y="150" textAnchor="middle" fontSize="12" fill="var(--wf-sub)">
-          Principal — locked
+          Principal - locked
         </text>
         <text x="142" y="174" textAnchor="middle" fontSize="11" fill="var(--wf-muted)">
           unchanged since founding
@@ -90,7 +90,7 @@ export function WaqfFlowDiagram({
           stroke="var(--wf-flow)" strokeWidth="2.5" className="wf-stream" opacity="0.9" />
         <polygon points="452,39 462,44 452,49" fill="var(--wf-flow)" />
         <text x="356" y="34" textAnchor="middle" fontSize="10.5" fill="var(--wf-muted)">
-          returns only — never principal
+          returns only - never principal
         </text>
 
         {/* Operations box */}
@@ -102,7 +102,7 @@ export function WaqfFlowDiagram({
           {money(returnsDisbursed)}
         </text>
 
-        {/* Sadaqah stream — a separate system, does not touch the principal */}
+        {/* Sadaqah stream - a separate system, does not touch the principal */}
         <text x="150" y="222" textAnchor="middle" fontSize="11" fill="var(--wf-muted)">
           Community sadaqah
         </text>
@@ -126,7 +126,7 @@ export function WaqfFlowDiagram({
       </svg>
 
       <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
-        The endowment principal is a fixed, locked block — it is never spent. Only the
+        The endowment principal is a fixed, locked block - it is never spent. Only the
         returns it earns flow out to operations, and sadaqah funds scholarships as a
         separate stream.
       </p>

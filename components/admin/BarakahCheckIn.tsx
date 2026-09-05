@@ -57,7 +57,7 @@ export function BarakahCheckIn({
         <h2 className="font-medium">Weekly check-in</h2>
         <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
           A short observation about consistency, cooperation, reflection, or adab.
-          Not a grade — these are never scored or ranked.
+          Not a grade - these are never scored or ranked.
         </p>
 
         <div className="mt-3 grid gap-3 sm:grid-cols-2">

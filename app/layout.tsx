@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Suffa — AI-sustained homeschool pods",
+  title: "Suffa - AI-sustained homeschool pods",
   description:
     "Three-dashboard platform for pod-based homeschooling: AI-led curriculum playground, parent monitoring, masjid admin and compliance.",
 };

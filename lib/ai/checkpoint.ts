@@ -1,8 +1,8 @@
-// Checkpoint generation + grading — the second AI call type (see docs/ARCHITECTURE.md).
+// Checkpoint generation + grading - the second AI call type (see docs/ARCHITECTURE.md).
 //
 // A checkpoint is a short, low-stakes check tied to one lesson node. It is
 // generated from that node's persisted lesson, persisted onto the node
-// (checkpoint_content), graded objectively (see lib/ai/questions.ts — NO rubric
+// (checkpoint_content), graded objectively (see lib/ai/questions.ts - NO rubric
 // grading, PRD Non-Goal), and the attempt is written to checkpoint_results.
 // Passing advances the pod to the next node.
 
@@ -78,11 +78,11 @@ async function generateWithModel(node: PathwayNode): Promise<CheckpointContent> 
   const system =
     "You write short objective checkpoints for a self-paced homeschool playground. " +
     "The student just finished one lesson. Write 3-4 questions that check the lesson's " +
-    "core ideas — a mix of multiple-choice and short-answer. Every question must have a " +
+    "core ideas - a mix of multiple-choice and short-answer. Every question must have a " +
     "single objective answer that can be graded by exact/numeric match, never a rubric. " +
     "Short answers should be one number or a few words. Keep it at a 12-year-old's level.";
   const user = [
-    `Course: ${node.course.name} — node ${node.sequence_order}: "${node.title}"`,
+    `Course: ${node.course.name} - node ${node.sequence_order}: "${node.title}"`,
     "",
     "Lesson summary:",
     lesson.summary,
@@ -227,7 +227,7 @@ export async function gradeCheckpoint(
       await tryAddSystemNote(
         pod.id,
         node.course_id,
-        `${node.course.name}: a student has now missed the "${node.title}" checkpoint ${attempts}× — worth reviewing with the pod.`,
+        `${node.course.name}: a student has now missed the "${node.title}" checkpoint ${attempts}× - worth reviewing with the pod.`,
       );
     }
   }

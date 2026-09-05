@@ -2,7 +2,7 @@
 //
 // Used only when the Anthropic call fails or isn't configured (see lib/ai/lesson.ts).
 // Keyed by "<course name>#<sequence_order>" so the demo's first node in each course
-// always has a real lesson to show even offline. Later nodes have no fallback — a
+// always has a real lesson to show even offline. Later nodes have no fallback - a
 // missing key surfaces the underlying model error rather than hiding it.
 
 import type { PathwayNode } from "@/lib/db/queries";
@@ -94,7 +94,7 @@ const FALLBACKS: Record<string, { body: LessonBody; regulationNote?: string }> =
     body: {
       summary:
         "Before the Prophet Muhammad ﷺ received revelation, Mecca was a trading city built around " +
-        "the Ka'bah. Understanding what that society was like — its strengths and its injustices — " +
+        "the Ka'bah. Understanding what that society was like - its strengths and its injustices - " +
         "makes it clear why the message that came later was such a turning point.",
       objectives: [
         "Describe Mecca's role as a centre of trade and pilgrimage",
@@ -115,8 +115,8 @@ const FALLBACKS: Record<string, { body: LessonBody; regulationNote?: string }> =
           body:
             "There was no police force and no court. Your safety came from your tribe: an attack on " +
             "one member was answered by the whole clan. This kept powerful families secure but left " +
-            "the weak — orphans, widows, the poor, enslaved people, and anyone without a strong " +
-            "tribe — with little protection.",
+            "the weak - orphans, widows, the poor, enslaved people, and anyone without a strong " +
+            "tribe - with little protection.",
         },
         {
           heading: "Strengths and injustices",
@@ -184,7 +184,7 @@ const FALLBACKS: Record<string, { body: LessonBody; regulationNote?: string }> =
           body:
             "During training the model reads an enormous amount of text and plays one game over " +
             "and over: given the words so far, guess what comes next. After enough rounds it gets " +
-            "very good at that game. When you chat with it, it is still playing the same game — " +
+            "very good at that game. When you chat with it, it is still playing the same game - " +
             "building its answer a small piece at a time, each piece chosen because it fits the " +
             "pattern of what came before.",
         },
@@ -202,7 +202,7 @@ const FALLBACKS: Record<string, { body: LessonBody; regulationNote?: string }> =
             "If a fact appeared often and consistently in training text, the model usually repeats " +
             "it reliably. If it was rare, contested, or after the training cut-off, the model may " +
             "fill the gap with something plausible. A model that can use tools (search, a " +
-            "calculator, a database) can actually check — that is a different and more trustworthy " +
+            "calculator, a database) can actually check - that is a different and more trustworthy " +
             "mode than recall alone.",
         },
       ],
@@ -236,7 +236,7 @@ const FALLBACKS: Record<string, { body: LessonBody; regulationNote?: string }> =
       key_terms: [
         {
           term: "Token",
-          definition: "A small chunk of text — a word or part of a word — that the model reads and writes.",
+          definition: "A small chunk of text - a word or part of a word - that the model reads and writes.",
         },
         {
           term: "Next-token prediction",

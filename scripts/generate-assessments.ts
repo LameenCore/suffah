@@ -22,7 +22,7 @@ async function main() {
     const c = Array.isArray(u.course) ? u.course[0] : u.course;
     return c?.masjid_id === DEMO_MASJID_ID;
   });
-  if (units.length === 0) throw new Error("No units found — run npm run seed first.");
+  if (units.length === 0) throw new Error("No units found - run npm run seed first.");
 
   console.log(`Generating assessments for ${units.length} unit(s)${force ? " (force)" : ""}…\n`);
 

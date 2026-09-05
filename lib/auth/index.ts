@@ -14,7 +14,7 @@ import { ROLES } from "@/lib/types";
 
 export const DEV_ROLE_COOKIE = "suffa-dev-role";
 
-/** The single demo masjid — matches supabase/seed.sql. */
+/** The single demo masjid - matches supabase/seed.sql. */
 export const DEMO_MASJID_ID = "00000000-0000-0000-0000-000000000001";
 
 // IDs match supabase/seed.sql so dashboard queries hit real seeded rows.

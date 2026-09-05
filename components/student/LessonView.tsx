@@ -1,4 +1,4 @@
-// Renders a persisted lesson (LessonContent). Pure presentation — no data access.
+// Renders a persisted lesson (LessonContent). Pure presentation - no data access.
 
 import { RegulationNote } from "@/components/RegulationNote";
 import type { LessonContent } from "@/lib/ai/lesson";

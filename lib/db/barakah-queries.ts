@@ -1,4 +1,4 @@
-// Pod "barakah" notes (T23). Soft, values-framed observations — consistency,
+// Pod "barakah" notes (T23). Soft, values-framed observations - consistency,
 // helping others, reflection, adab. Deliberately NOT scored and NOT ranked:
 // reads return observations and calm summary phrases, never a number or a
 // leaderboard position.
@@ -16,7 +16,7 @@ export const BARAKAH_INDICATORS: { key: BarakahIndicator; label: string; hint: s
 
 const LABEL = new Map(BARAKAH_INDICATORS.map((i) => [i.key, i.label]));
 
-// Calm phrases surfaced to parents — one per indicator that has any notes.
+// Calm phrases surfaced to parents - one per indicator that has any notes.
 const PHRASE: Record<BarakahIndicator, string> = {
   attendance: "attends consistently",
   cooperation: "helps others in group sessions",
@@ -83,9 +83,9 @@ async function shapeRows(
       return {
         id: r.id as string,
         podId: r.pod_id as string,
-        podName: podName.get(r.pod_id as string) ?? "—",
+        podName: podName.get(r.pod_id as string) ?? "-",
         studentUserId: sid,
-        studentName: sid ? (studentName.get(sid) ?? "—") : null,
+        studentName: sid ? (studentName.get(sid) ?? "-") : null,
         indicator: ind,
         indicatorLabel: LABEL.get(ind) ?? ind,
         note: (r.note as string | null) ?? null,
@@ -117,7 +117,7 @@ export interface ChildBarakahSummary {
   entries: BarakahEntry[];
 }
 
-/** Values-framed summary for one child — for the parent view. */
+/** Values-framed summary for one child - for the parent view. */
 export async function getChildBarakahSummary(
   studentUserId: string,
   masjidId: string,

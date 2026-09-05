@@ -1,8 +1,8 @@
-// Assessment generation + grading — the third AI call type (see docs/ARCHITECTURE.md).
+// Assessment generation + grading - the third AI call type (see docs/ARCHITECTURE.md).
 //
 // A unit assessment is cumulative: it draws on every lesson node in a unit, is
 // generated once from those lessons and persisted (units.assessment_content),
-// graded objectively (lib/ai/questions.ts — no rubric grading), and each attempt
+// graded objectively (lib/ai/questions.ts - no rubric grading), and each attempt
 // is written to unit_assessment_results as a compliance-relevant record.
 //
 // T09 (term exam) reuses the question generation + grading here behind a flag;
@@ -39,7 +39,7 @@ const AssessmentBodySchema = z.object({
     .min(5)
     .max(8)
     .describe(
-      "Cumulative across the whole unit — spread coverage over every node, mix mcq and short.",
+      "Cumulative across the whole unit - spread coverage over every node, mix mcq and short.",
     ),
 });
 
@@ -52,7 +52,7 @@ export interface AssessmentContent extends AssessmentBody {
   kind: AssessmentKind;
   generatedBy: string;
   generatedAt: string;
-  /** Titles of the nodes this assessment covers — shown to the student. */
+  /** Titles of the nodes this assessment covers - shown to the student. */
   coversTitles: string[];
 }
 
@@ -88,7 +88,7 @@ export function buildAssessmentPrompt(
   const system =
     `You write objective ${label}s for a self-paced homeschool playground. ` +
     "The reader is about 12 years old. Every question must have one objective answer that " +
-    "can be graded by exact or numeric match — never an essay or a rubric. Short answers " +
+    "can be graded by exact or numeric match - never an essay or a rubric. Short answers " +
     "are one number or a few words. Spread the questions across all the lessons listed, " +
     "not just the last one.";
   const lessons = nodes

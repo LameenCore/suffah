@@ -33,9 +33,9 @@ export default async function TermExamPage({ params }: PageProps<"/student/[cour
       </div>
 
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">{entry.course.name} — term exam</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">{entry.course.name} - term exam</h1>
         <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
-          Timed, cumulative, no help mid-exam — modelled on a real school exam. The result is
+          Timed, cumulative, no help mid-exam - modelled on a real school exam. The result is
           the primary artifact in the compliance report.
         </p>
       </div>

@@ -21,7 +21,7 @@ export default async function CompliancePrintPage({
     <div className="mx-auto max-w-3xl bg-white p-8 text-zinc-900 dark:bg-white dark:text-zinc-900">
       <div className="mb-6 flex items-baseline justify-between border-b border-zinc-300 pb-2">
         <div>
-          <p className="text-lg font-semibold">Suffa — home-instruction progress record</p>
+          <p className="text-lg font-semibold">Suffa - home-instruction progress record</p>
           <p className="text-xs text-zinc-500">
             Masjid As-Suffa (Demo) · generated {new Date(report.assembledAt).toLocaleDateString()}
           </p>

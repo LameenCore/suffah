@@ -1,4 +1,4 @@
-// Hand-authored fallback unit assessments — used only when the Anthropic call
+// Hand-authored fallback unit assessments - used only when the Anthropic call
 // fails or isn't configured (see lib/ai/assessment.ts). Keyed "<course>#<unit seq>",
 // covering unit 1 of each demo course.
 
@@ -83,7 +83,7 @@ const FALLBACKS: Record<string, AssessmentBody> = {
         prompt: "What was the first command revealed?",
         options: ["Read (Iqra)", "Pray", "Fight", "Give charity"],
         answerIndex: 0,
-        explanation: "The first revealed word was 'Iqra' — Read / Recite.",
+        explanation: "The first revealed word was 'Iqra' - Read / Recite.",
       },
       {
         id: "q4",
@@ -91,7 +91,7 @@ const FALLBACKS: Record<string, AssessmentBody> = {
         prompt: "What is the term for the era in Arabia before Islam?",
         answer: "Jahiliyyah",
         acceptable: ["jahiliyya", "age of ignorance", "days of ignorance"],
-        explanation: "Jahiliyyah — often translated 'the age of ignorance'.",
+        explanation: "Jahiliyyah - often translated 'the age of ignorance'.",
       },
       {
         id: "q5",

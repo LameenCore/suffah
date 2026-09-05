@@ -1,4 +1,4 @@
-// Hand-authored fallback checkpoints — used only when the Anthropic call fails
+// Hand-authored fallback checkpoints - used only when the Anthropic call fails
 // or isn't configured (see lib/ai/checkpoint.ts). Keyed "<course>#<sequence_order>",
 // covering node 1 of each course so the demo loop survives offline.
 

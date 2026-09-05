@@ -17,7 +17,7 @@ export const ShortQuestionSchema = z.object({
   id: z.string(),
   type: z.literal("short"),
   prompt: z.string(),
-  answer: z.string().describe("The canonical short answer — a number or a few words."),
+  answer: z.string().describe("The canonical short answer - a number or a few words."),
   acceptable: z
     .array(z.string())
     .describe("Other answers that should be marked correct (spellings, phrasings, units)."),
@@ -31,7 +31,7 @@ export const QuestionSchema = z.discriminatedUnion("type", [
 
 export type Question = z.infer<typeof QuestionSchema>;
 
-/** A question as shown to a student — no answers leaked. */
+/** A question as shown to a student - no answers leaked. */
 export type QuestionForStudent =
   | { id: string; type: "mcq"; prompt: string; options: string[] }
   | { id: string; type: "short"; prompt: string };

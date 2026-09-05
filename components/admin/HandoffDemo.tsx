@@ -145,7 +145,7 @@ export function HandoffDemo({ state }: { state: HandoffDemoState }) {
                 : "text-zinc-400"
             }`}
           >
-            ● Student playground: {state.playgroundOnline ? "online — the pod keeps learning" : "no lesson ready"}
+            ● Student playground: {state.playgroundOnline ? "online - the pod keeps learning" : "no lesson ready"}
             {"  "}
             <Link href="/student" target="_blank" className="underline underline-offset-2">
               open it
@@ -154,13 +154,13 @@ export function HandoffDemo({ state }: { state: HandoffDemoState }) {
         </div>
         {offline ? (
           <p className="mt-2 text-xs text-zinc-500 dark:text-zinc-400">
-            The pod&apos;s <code>pod_progress</code> is untouched — nothing was lost, and the
+            The pod&apos;s <code>pod_progress</code> is untouched - nothing was lost, and the
             students never stopped.
           </p>
         ) : null}
       </Step>
 
-      <Step n={3} title="A new volunteer picks up — with a briefing" active={offline} done={reassigned}>
+      <Step n={3} title="A new volunteer picks up - with a briefing" active={offline} done={reassigned}>
         <p className="text-sm text-zinc-600 dark:text-zinc-400">
           The incoming volunteer doesn&apos;t start cold. Assign them and the Continuity
           Fingerprint generates a handoff briefing from the pod&apos;s real history.
@@ -205,9 +205,9 @@ export function HandoffDemo({ state }: { state: HandoffDemoState }) {
           </div>
         ) : state.latestBriefingAt && online ? (
           <p className="mt-2 text-xs text-zinc-500 dark:text-zinc-400">
-            A briefing already exists for this pod —{" "}
+            A briefing already exists for this pod.{" "}
             <Link href="/admin/continuity" className="underline underline-offset-2">
-              see it on the Continuity Fingerprint view
+              See it on the Continuity Fingerprint view
             </Link>
             .
           </p>

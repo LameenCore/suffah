@@ -1,7 +1,7 @@
 "use server";
 
 // Server actions for volunteer onboarding + churn (T15). Reachable by direct
-// POST — every action re-checks the admin session and re-scopes to the caller's
+// POST - every action re-checks the admin session and re-scopes to the caller's
 // masjid.
 
 import { revalidatePath } from "next/cache";

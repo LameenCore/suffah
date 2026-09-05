@@ -13,7 +13,7 @@ const ROLE_ACCENT: Record<SessionUser["role"], string> = {
   student: "bg-violet-600",
 };
 
-/** Shared shell for all three dashboards — header, role badge, dev role switch. */
+/** Shared shell for all three dashboards - header, role badge, dev role switch. */
 export function DashboardChrome({
   user,
   children,

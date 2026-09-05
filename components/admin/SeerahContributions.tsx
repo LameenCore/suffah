@@ -36,7 +36,7 @@ export function SeerahContributions({
       else {
         setMsg({
           kind: "ok",
-          text: res.version ? `${okText} — lesson is now version ${res.version}.` : okText,
+          text: res.version ? `${okText} - lesson is now version ${res.version}.` : okText,
         });
         onOk?.();
       }

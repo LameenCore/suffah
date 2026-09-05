@@ -1,8 +1,8 @@
 // Masjid-scoped reads for the admin waqf/donation transparency view (T14).
-// Mock data only — no payment processing (see DATA_MODEL.md / PRD non-goals).
+// Mock data only - no payment processing (see DATA_MODEL.md / PRD non-goals).
 //
 // HARD RULE from DATA_MODEL.md: principal_deposit entries are the locked
-// endowment. They are never summed into "spent" or "spendable" totals — the
+// endowment. They are never summed into "spent" or "spendable" totals - the
 // whole point of the model is that the principal is untouched. Every aggregate
 // here keeps principal on its own line.
 
@@ -24,11 +24,11 @@ export interface SpendPoint {
 }
 
 export interface LedgerSummary {
-  /** Locked endowment — sum of principal_deposit. Never spent. */
+  /** Locked endowment - sum of principal_deposit. Never spent. */
   principal: number;
-  /** Sum of |return_disbursed| — operating costs funded from returns. */
+  /** Sum of |return_disbursed| - operating costs funded from returns. */
   returnsDisbursed: number;
-  /** Sum of sadaqah_received — tops up the scholarship pool. */
+  /** Sum of sadaqah_received - tops up the scholarship pool. */
   sadaqahReceived: number;
   /** Sum of |scholarship_allocated|. */
   scholarshipsAllocated: number;
@@ -115,7 +115,7 @@ export async function getFamilyFeeStatus(masjidId: string): Promise<FamilyFeeRow
         | null;
       return {
         studentUserId: r.student_user_id as string,
-        studentName: student?.name ?? "—",
+        studentName: student?.name ?? "-",
         status: r.status as FeeStatus,
         masjidOk: student?.masjid_id === masjidId,
       };

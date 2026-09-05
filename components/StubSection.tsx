@@ -1,4 +1,4 @@
-// Placeholder card for features not yet built — makes the Phase 1 skeleton
+// Placeholder card for features not yet built - makes the Phase 1 skeleton
 // communicate the intended surface and its build phase (see TASKS.md).
 
 export function StubSection({

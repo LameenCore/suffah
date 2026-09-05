@@ -3,7 +3,7 @@
  *
  *   npm run migrate
  *
- * Needs SUPABASE_DB_URL in .env.local — the Postgres connection string from
+ * Needs SUPABASE_DB_URL in .env.local - the Postgres connection string from
  * Supabase → Project Settings → Database (use the "Session" pooler or direct
  * connection URI, including the password).
  *
@@ -52,7 +52,7 @@ async function main() {
           "insert into schema_migrations (filename) values ('0001_init.sql') on conflict do nothing",
         );
         applied.add("0001_init.sql");
-        console.log("· 0001_init.sql (baselined — core schema already present)");
+        console.log("· 0001_init.sql (baselined - core schema already present)");
       }
     }
 

@@ -1,11 +1,11 @@
-// Lesson generation — the first of the three AI call types (see docs/ARCHITECTURE.md).
+// Lesson generation - the first of the three AI call types (see docs/ARCHITECTURE.md).
 //
 // Given a pathway node, generate the lesson a student reads before the checkpoint,
 // then PERSIST it onto pathway_nodes.lesson_content. Content is generated once and
 // never regenerated on view: a pod's continuity depends on stable, referenceable
 // lessons (PRD constraint). If the Anthropic call fails mid-demo we fall back to a
 // hand-authored lesson for that node rather than letting the walkthrough break
-// (see .claude/skills/api-design.md — AI calls need a graceful fallback).
+// (see .claude/skills/api-design.md - AI calls need a graceful fallback).
 
 import { z } from "zod";
 import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
@@ -52,7 +52,7 @@ const LessonBodySchema = z.object({
         answer: z
           .string()
           .describe(
-            "The objective answer — a number or a short phrase, gradeable without a rubric.",
+            "The objective answer - a number or a short phrase, gradeable without a rubric.",
           ),
         explanation: z.string(),
       }),
@@ -106,14 +106,14 @@ function courseBrief(course: CourseRef): { guidance: string; regulationNote?: st
     case "Seerah":
       return {
         guidance:
-          "This is a community-designed Seerah course — there is no external curriculum " +
+          "This is a community-designed Seerah course - there is no external curriculum " +
           "body. Teach from the mainstream Sunni historical tradition, name events plainly, " +
           "and stay age-appropriate. Say 'the Prophet Muhammad ﷺ' on first mention.",
       };
     case "AI Literacy":
       return {
         guidance:
-          "Teach how language models actually work at a 12-year-old's level — prediction " +
+          "Teach how language models actually work at a 12-year-old's level - prediction " +
           "over next tokens, training data, confident mistakes. Concrete examples over jargon.",
       };
     default:
@@ -127,7 +127,7 @@ function buildPrompt(node: PathwayNode): { system: string; user: string } {
     "You write short, warm, precise lessons for a self-paced homeschool playground. " +
     "The reader is about 12 years old (Québec Secondary 1). Every lesson is followed by " +
     "an objective checkpoint, so your practice items must have a single checkable answer " +
-    "(a number or a short phrase) — never an essay prompt. Plain prose, no markdown " +
+    "(a number or a short phrase) - never an essay prompt. Plain prose, no markdown " +
     "headers inside section bodies. Be accurate; do not invent facts.";
   const user = [
     `Course: ${node.course.name} (${node.course.grade_band})`,

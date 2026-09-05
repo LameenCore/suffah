@@ -1,7 +1,7 @@
 "use server";
 
-// Server actions for the Continuity Fingerprint view. Reachable by direct POST —
-// each re-checks the admin session.
+// Server actions for the Continuity Fingerprint view. Reachable by direct POST,
+// so each re-checks the admin session.
 
 import { revalidatePath } from "next/cache";
 import { getCurrentUser } from "@/lib/auth";

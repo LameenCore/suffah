@@ -4,7 +4,7 @@
  *   npm run seed
  *
  * Idempotent: deletes the demo masjid first (FK cascade clears every child row),
- * then re-inserts. Mirrors supabase/seed.sql exactly — keep the two in sync.
+ * then re-inserts. Mirrors supabase/seed.sql exactly - keep the two in sync.
  * Needs NEXT_PUBLIC_SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY in .env.local.
  *
  * This exists because the SQL file can only be run in the Supabase SQL editor or
@@ -74,7 +74,7 @@ async function seed() {
         left_at: null,
       },
       {
-        // Departed volunteer — seeds a non-empty churn log (T15). Her pod kept
+        // Departed volunteer - seeds a non-empty churn log (T15). Her pod kept
         // its pod_progress and was picked up by Br. Kareem.
         id: "00000000-0000-0000-0000-0000000000d2",
         masjid_id: MASJID,
@@ -149,13 +149,13 @@ async function seed() {
     ]),
   );
 
-  // Mock ledger — no payment processing. Principal stays locked at 250k; only
+  // Mock ledger - no payment processing. Principal stays locked at 250k; only
   // the returns are spent (rising quarterly operating draws); sadaqah tops up the
   // scholarship pool. Principal must never be summed into "spendable" totals.
   check(
     await db.from("waqf_ledger").insert([
       { masjid_id: MASJID, entry_type: "principal_deposit", amount: 250000, note: "Founding waqf endowment (locked principal)", created_at: monthsAgo(15) },
-      { masjid_id: MASJID, entry_type: "return_disbursed", amount: -3000, note: "Operating draw — hosting + pod coordination", created_at: monthsAgo(13) },
+      { masjid_id: MASJID, entry_type: "return_disbursed", amount: -3000, note: "Operating draw - hosting + pod coordination", created_at: monthsAgo(13) },
       { masjid_id: MASJID, entry_type: "return_disbursed", amount: -3150, note: "Operating draw", created_at: monthsAgo(10) },
       { masjid_id: MASJID, entry_type: "return_disbursed", amount: -3300, note: "Operating draw", created_at: monthsAgo(7) },
       { masjid_id: MASJID, entry_type: "return_disbursed", amount: -3450, note: "Operating draw", created_at: monthsAgo(4) },
@@ -163,8 +163,8 @@ async function seed() {
       { masjid_id: MASJID, entry_type: "sadaqah_received", amount: 2000, note: "Eid al-Adha giving campaign", created_at: monthsAgo(11) },
       { masjid_id: MASJID, entry_type: "sadaqah_received", amount: 5000, note: "Ramadan scholarship drive", created_at: monthsAgo(5) },
       { masjid_id: MASJID, entry_type: "sadaqah_received", amount: 1200, note: "Weekly jumu'ah sadaqah (aggregated)", created_at: monthsAgo(1) },
-      { masjid_id: MASJID, entry_type: "scholarship_allocated", amount: -1200, note: "Safiya — full fee scholarship (Term 1)", created_at: monthsAgo(6) },
-      { masjid_id: MASJID, entry_type: "scholarship_allocated", amount: -1200, note: "Safiya — full fee scholarship (Term 2)", created_at: monthsAgo(1) },
+      { masjid_id: MASJID, entry_type: "scholarship_allocated", amount: -1200, note: "Safiya - full fee scholarship (Term 1)", created_at: monthsAgo(6) },
+      { masjid_id: MASJID, entry_type: "scholarship_allocated", amount: -1200, note: "Safiya - full fee scholarship (Term 2)", created_at: monthsAgo(1) },
     ]),
   );
 
@@ -177,7 +177,7 @@ async function seed() {
     ]),
   );
 
-  // Family link (parent_children — migration 0005): the demo parent monitors
+  // Family link (parent_children - migration 0005): the demo parent monitors
   // Yusuf, the student who moves through the playground during the demo.
   check(
     await db.from("parent_children").insert([
@@ -185,26 +185,26 @@ async function seed() {
     ]),
   );
 
-  // Waqf-to-outcome links (sponsorships — migration 0006). Illustrative mapping;
+  // Waqf-to-outcome links (sponsorships - migration 0006). Illustrative mapping;
   // outcomes are read from real pod_progress / unit_assessment_results.
   check(
     await db.from("sponsorships").insert([
       { masjid_id: MASJID, sponsor_label: "Founding endowment allocation", amount: 1500, pod_id: POD, unit_id: UNIT.math, note: "Sponsors Pod Al-Farabi through the integers unit (Math)." },
-      { masjid_id: MASJID, sponsor_label: "Ramadan drive — anonymous", amount: 900, pod_id: POD, unit_id: UNIT.seerah, note: "Sponsors the Meccan Period unit (Seerah)." },
+      { masjid_id: MASJID, sponsor_label: "Ramadan drive - anonymous", amount: 900, pod_id: POD, unit_id: UNIT.seerah, note: "Sponsors the Meccan Period unit (Seerah)." },
       { masjid_id: MASJID, sponsor_label: "Local family gift", amount: 750, pod_id: POD, unit_id: UNIT.ai, note: "Sponsors the AI-literacy intro unit." },
     ]),
   );
 
-  // Community contributions to a Seerah lesson (lesson_contributions — migration
+  // Community contributions to a Seerah lesson (lesson_contributions - migration
   // 0008). N.seerah1 = "Mecca before the revelation".
   check(
     await db.from("lesson_contributions").insert([
-      { node_id: N.seerah1, contributor_name: "Sh. Yusuf", contributor_role: "imam", note: "Mention the tribal guardianship of the Kaaba by Quraysh and why that gave them standing across Arabia — it sets up why opposition to the Prophet ﷺ later cost them politically." },
-      { node_id: N.seerah1, contributor_name: "Hajja Fatima", contributor_role: "elder", note: 'The date is debated among historians — say "around 570 CE" for the Year of the Elephant rather than a fixed year, and note that oral genealogy kept these records.' },
+      { node_id: N.seerah1, contributor_name: "Sh. Yusuf", contributor_role: "imam", note: "Mention the tribal guardianship of the Kaaba by Quraysh and why that gave them standing across Arabia - it sets up why opposition to the Prophet ﷺ later cost them politically." },
+      { node_id: N.seerah1, contributor_name: "Hajja Fatima", contributor_role: "elder", note: 'The date is debated among historians - say "around 570 CE" for the Year of the Elephant rather than a fixed year, and note that oral genealogy kept these records.' },
     ]),
   );
 
-  // Barakah notes (pod_barakah_log — migration 0007). Short observations, never
+  // Barakah notes (pod_barakah_log - migration 0007). Short observations, never
   // scores. student_user_id null = whole-pod note.
   check(
     await db.from("pod_barakah_log").insert([

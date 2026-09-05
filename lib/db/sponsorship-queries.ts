@@ -1,6 +1,6 @@
 // Waqf-to-outcome linking (T21). Reads the illustrative sponsorship mapping and
 // joins it to *real* learning outcomes (pod pathway position + unit assessment
-// results). Everything is reported at the pod level — no student names — so this
+// results). Everything is reported at the pod level - no student names - so this
 // can face a donor.
 
 import { getServiceClient } from "@/lib/db";

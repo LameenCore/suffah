@@ -3,7 +3,7 @@
 // student-playground logic stay in their own files (one file, one writer).
 //
 // Every function takes `masjidId` and filters by it before returning or writing
-// anything — see .claude/skills/api-design.md (tenant scoping is non-negotiable,
+// anything - see .claude/skills/api-design.md (tenant scoping is non-negotiable,
 // even in a single-masjid demo).
 
 import { getServiceClient } from "@/lib/db";
@@ -242,7 +242,7 @@ async function assertStudentInMasjid(studentUserId: string, masjidId: string): P
 
 /**
  * Add a student to a pod. Enforces (a) tenancy, (b) the hard cap of
- * {@link POD_MAX_STUDENTS} (Quebec exemption threshold — also a DB trigger),
+ * {@link POD_MAX_STUDENTS} (Quebec exemption threshold - also a DB trigger),
  * (c) one pod per student. Throws a human-readable Error on any violation.
  */
 export async function addStudentToPod(
@@ -259,7 +259,7 @@ export async function addStudentToPod(
     .select("id, pod_id")
     .eq("student_user_id", studentUserId);
   if (exErr) throw new Error(`addStudentToPod: ${exErr.message}`);
-  if ((existing ?? []).some((r) => r.pod_id === podId)) return; // already a member — no-op
+  if ((existing ?? []).some((r) => r.pod_id === podId)) return; // already a member - no-op
   if ((existing ?? []).length > 0) {
     throw new Error("student is already assigned to another pod");
   }

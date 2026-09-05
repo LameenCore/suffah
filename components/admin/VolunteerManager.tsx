@@ -66,7 +66,7 @@ function OnboardForm() {
       <h2 className="font-medium">Onboard a volunteer</h2>
       <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
         New volunteers start as <em>pending vetting</em>. Vetting is simulated for the
-        demo — no real background check.
+        demo - no real background check.
       </p>
       <div className="mt-3 space-y-3">
         <div>
@@ -164,7 +164,7 @@ function ChurnedRow({ v }: { v: VolunteerRow }) {
       <div>
         <span className="font-medium">{v.name}</span>
         <span className="ml-2 text-xs text-zinc-400">
-          {fmtDate(v.joinedAt)} – {v.leftAt ? fmtDate(v.leftAt) : "—"}
+          {fmtDate(v.joinedAt)} – {v.leftAt ? fmtDate(v.leftAt) : "-"}
           {v.leftAt ? ` · ${tenure(v.joinedAt, v.leftAt)}` : ""}
         </span>
       </div>
@@ -216,7 +216,7 @@ export function VolunteerManager({
         </div>
         <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
           When a volunteer leaves, their pods are detached but keep their place in the
-          curriculum — a replacement picks up from the same node.
+          curriculum - a replacement picks up from the same node.
         </p>
         {churned.length === 0 ? (
           <p className="mt-2 text-sm text-zinc-400">No departures recorded.</p>

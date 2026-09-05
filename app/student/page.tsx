@@ -13,7 +13,7 @@ export default async function StudentHome() {
         <h1 className="text-2xl font-semibold tracking-tight">Playground</h1>
         <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
           {pod
-            ? `You're in ${pod.name}. Learn at your own pace — the AI teaches the lesson, then a checkpoint before you move on.`
+            ? `You're in ${pod.name}. Learn at your own pace - the AI teaches the lesson, then a checkpoint before you move on.`
             : "You're not in a pod yet. Ask the masjid admin to add you to one."}
         </p>
       </div>
@@ -29,7 +29,7 @@ export default async function StudentHome() {
               <div className="flex items-center justify-between">
                 <h2 className="font-medium">{course.name}</h2>
                 <span className="text-[11px] text-zinc-400">
-                  {totalNodes > 0 ? `Node ${nodePosition} / ${totalNodes}` : "—"}
+                  {totalNodes > 0 ? `Node ${nodePosition} / ${totalNodes}` : "-"}
                 </span>
               </div>
               <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-300">
@@ -37,7 +37,7 @@ export default async function StudentHome() {
               </p>
               <p className="mt-3 text-xs">
                 {!currentNode ? (
-                  <span className="text-zinc-400">—</span>
+                  <span className="text-zinc-400">-</span>
                 ) : lessonComplete ? (
                   <span className="font-medium text-emerald-600 dark:text-emerald-400">
                     Lesson complete

@@ -150,7 +150,7 @@ export async function getChildReport(
       .map((r) => {
         const node = rel(r.node as unknown as { title: string });
         return {
-          nodeTitle: node?.title ?? "—",
+          nodeTitle: node?.title ?? "-",
           passed: Boolean(r.passed),
           attemptedAt: r.attempted_at as string,
         };
@@ -161,7 +161,7 @@ export async function getChildReport(
       .map((r) => {
         const unit = rel(r.unit as unknown as { title: string });
         return {
-          unitTitle: unit?.title ?? "—",
+          unitTitle: unit?.title ?? "-",
           score: Number(r.score),
           passed: Boolean(r.passed),
           attemptedAt: r.attempted_at as string,

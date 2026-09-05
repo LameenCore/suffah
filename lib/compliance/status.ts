@@ -1,4 +1,4 @@
-// Living-compliance status engine (T20). Pure functions — no DB, no I/O.
+// Living-compliance status engine (T20). Pure functions - no DB, no I/O.
 //
 // Turns a student's raw results into a forward-looking read: for each course,
 // "on track / watch / gap" plus the concrete signals behind it. This is what
@@ -15,7 +15,7 @@ export interface CourseComplianceStatus {
   courseId: string;
   courseName: string;
   level: ComplianceLevel;
-  /** Human-readable reasons — both concerns and positives. */
+  /** Human-readable reasons - both concerns and positives. */
   signals: string[];
   metrics: {
     checkpointsPassed: number;
@@ -81,18 +81,18 @@ export function computeCourseStatus(
   }
   if (termExamTaken && !termExamPassed) {
     level = "gap";
-    signals.push(`Term exam ${Math.round((termExamScore ?? 0) * 100)}% — below the ${Math.round(PASS_THRESHOLD * 100)}% threshold.`);
+    signals.push(`Term exam ${Math.round((termExamScore ?? 0) * 100)}% - below the ${Math.round(PASS_THRESHOLD * 100)}% threshold.`);
   }
 
   // --- watch conditions (only if not already a gap) ---
   if (level !== "gap") {
     if (checkpointsAttempted === 0 && podPosition >= 1) {
       level = "watch";
-      signals.push("Not started here yet — no checkpoint attempted.");
+      signals.push("Not started here yet - no checkpoint attempted.");
     }
     if (checkpointsAttempted > 0 && passRate < PASS_THRESHOLD) {
       level = "watch";
-      signals.push(`Checkpoint pass rate ${Math.round(passRate * 100)}% — below the ${Math.round(PASS_THRESHOLD * 100)}% mark.`);
+      signals.push(`Checkpoint pass rate ${Math.round(passRate * 100)}% - below the ${Math.round(PASS_THRESHOLD * 100)}% mark.`);
     }
     if (podPosition >= 2 && !unitAssessmentAttempted) {
       level = "watch";
@@ -120,7 +120,7 @@ export function computeCourseStatus(
     signals.push(`Term exam passed (${Math.round((termExamScore ?? 0) * 100)}%).`);
   }
   if (signals.length === 0) {
-    signals.push("On track — no concerns from the data so far.");
+    signals.push("On track - no concerns from the data so far.");
   }
 
   return {
@@ -161,9 +161,9 @@ export function computeOverall(statuses: CourseComplianceStatus[]): OverallCompl
 
   const headline =
     level === "gap"
-      ? `Attention needed — ${counts.gap} course${counts.gap === 1 ? "" : "s"} with a forming gap.`
+      ? `Attention needed - ${counts.gap} course${counts.gap === 1 ? "" : "s"} with a forming gap.`
       : level === "watch"
-        ? `Mostly on track — ${counts.watch} course${counts.watch === 1 ? "" : "s"} to watch.`
+        ? `Mostly on track - ${counts.watch} course${counts.watch === 1 ? "" : "s"} to watch.`
         : "On track across all courses for the evaluation requirement.";
 
   return { level, headline, counts };

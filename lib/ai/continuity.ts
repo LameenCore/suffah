@@ -1,9 +1,9 @@
-// Continuity Fingerprint — the volunteer-handoff briefing (T18 / PRD §5.4).
+// Continuity Fingerprint - the volunteer-handoff briefing (T18 / PRD §5.4).
 //
 // When a volunteer leaves, the next one shouldn't just inherit "Node 4 of Unit 2".
-// This generates a short narrative of HOW the pod has been learning — from the
+// This generates a short narrative of HOW the pod has been learning - from the
 // pod's real progress + checkpoint/assessment history + the session notes
-// volunteers leave — and persists it (pod_briefings) so it's a stable artifact,
+// volunteers leave - and persists it (pod_briefings) so it's a stable artifact,
 // not something regenerated on every page view.
 
 import { z } from "zod";
@@ -26,7 +26,7 @@ const BriefingSchema = z.object({
         course: z.string(),
         position: z.string().describe("e.g. 'node 2 of 3'"),
         status: z.enum(["moving well", "some friction", "stuck", "not started"]),
-        note: z.string().describe("One line — what's happening in this course."),
+        note: z.string().describe("One line - what's happening in this course."),
       }),
     )
     .describe("One entry per course."),
@@ -36,7 +36,7 @@ const BriefingSchema = z.object({
         name: z.string(),
         observation: z
           .string()
-          .describe("One line — how this student is doing, grounded in the data/notes."),
+          .describe("One line - how this student is doing, grounded in the data/notes."),
       }),
     )
     .describe("One entry per student in the pod."),
@@ -69,7 +69,7 @@ function renderSignals(s: PodLearningSignals): string {
     lines.push(
       `- ${c.courseName}: ${
         c.currentNodeTitle
-          ? `node ${c.nodePosition} of ${c.totalNodes} — "${c.currentNodeTitle}"`
+          ? `node ${c.nodePosition} of ${c.totalNodes} - "${c.currentNodeTitle}"`
           : "not started"
       }`,
     );
@@ -110,7 +110,7 @@ function renderSignals(s: PodLearningSignals): string {
 async function generateWithModel(s: PodLearningSignals): Promise<PodBriefing> {
   const system =
     "You are briefing a community volunteer who is taking over a homeschool pod from " +
-    "someone who just left. Write a short, concrete handoff — how the group has been " +
+    "someone who just left. Write a short, concrete handoff - how the group has been " +
     "learning, not just where they are. Ground every statement in the data and notes " +
     "provided; do not invent specifics. Warm, plain, practical. No preamble.";
   const user = [
@@ -138,7 +138,7 @@ async function generateWithModel(s: PodLearningSignals): Promise<PodBriefing> {
   return body;
 }
 
-/** A deterministic briefing assembled straight from the signals — no model. */
+/** A deterministic briefing assembled straight from the signals - no model. */
 export function fallbackBriefing(s: PodLearningSignals): PodBriefing {
   const perCourse = s.courses.map((c) => {
     const cps = s.checkpoints.filter((x) => x.courseName === c.courseName);
@@ -174,7 +174,7 @@ export function fallbackBriefing(s: PodLearningSignals): PodBriefing {
 
   const watchFor: string[] = [];
   const stuckCourses = perCourse.filter((c) => c.status === "stuck" || c.status === "some friction");
-  for (const c of stuckCourses) watchFor.push(`Review ${c.course} with the pod — ${c.note}`);
+  for (const c of stuckCourses) watchFor.push(`Review ${c.course} with the pod - ${c.note}`);
   for (const n of s.notes.slice(0, 2)) watchFor.push(`From notes: ${n.note}`);
   if (watchFor.length < 2) watchFor.push("Check each student's last checkpoint before moving the pod forward.");
   if (watchFor.length < 2) watchFor.push("Ask the pod what the previous session covered.");

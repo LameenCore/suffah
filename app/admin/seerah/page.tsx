@@ -58,7 +58,7 @@ export default async function AdminSeerahPage({
       </div>
 
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Seerah — community input</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">Seerah - community input</h1>
         <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
           Seerah has no external curriculum vendor. The masjid&apos;s scholars and elders
           annotate the AI draft; their notes are folded into the next version of the

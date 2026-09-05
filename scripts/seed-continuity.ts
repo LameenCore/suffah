@@ -23,7 +23,7 @@ const COURSE = {
 
 const NOTES: { note: string; courseId: string | null; author: string }[] = [
   {
-    note: "Group session went well — Yusuf explained integer signs to Idris using a number line drawn on the whiteboard; that clicked for the whole pod.",
+    note: "Group session went well - Yusuf explained integer signs to Idris using a number line drawn on the whiteboard; that clicked for the whole pod.",
     courseId: COURSE.math,
     author: "Br. Kareem",
   },
@@ -33,17 +33,17 @@ const NOTES: { note: string; courseId: string | null; author: string }[] = [
     author: "Br. Kareem",
   },
   {
-    note: "Seerah discussion on Meccan society was lively — Safiya asked good questions about why tribe mattered so much. Consider a map next time.",
+    note: "Seerah discussion on Meccan society was lively - Safiya asked good questions about why tribe mattered so much. Consider a map next time.",
     courseId: COURSE.seerah,
     author: "Br. Kareem",
   },
   {
-    note: "AI literacy: the 'confident but wrong' idea landed best with a live example — I asked the class chatbot something it got wrong and we caught it together.",
+    note: "AI literacy: the 'confident but wrong' idea landed best with a live example - I asked the class chatbot something it got wrong and we caught it together.",
     courseId: COURSE.ai,
     author: "Br. Kareem",
   },
   {
-    note: "Attendance solid this week — all four present both sessions. Idris was quiet on Thursday, worth a check-in.",
+    note: "Attendance solid this week - all four present both sessions. Idris was quiet on Thursday, worth a check-in.",
     courseId: null,
     author: "Br. Kareem",
   },
@@ -96,14 +96,14 @@ async function main() {
     }
     console.log(`Inserted ${NOTES.length} session notes.`);
   } else {
-    console.log(`Pod already has ${count} volunteer note(s) — skipping insert.`);
+    console.log(`Pod already has ${count} volunteer note(s) - skipping insert.`);
   }
 
   const result = await generatePodBriefing(POD, DEMO_MASJID_ID);
   console.log(`\nBriefing generated (source=${result.source}):\n`);
   console.log("  " + result.briefing.headline);
   for (const c of result.briefing.perCourse) {
-    console.log(`  ${c.course}: ${c.status} — ${c.note}`);
+    console.log(`  ${c.course}: ${c.status} - ${c.note}`);
   }
   console.log("\n  Watch for:");
   for (const w of result.briefing.watchFor) console.log("   -", w);

@@ -1,5 +1,5 @@
 // Shared domain types for Suffa.
-// Mirrors docs/DATA_MODEL.md — keep in sync when the schema changes.
+// Mirrors docs/DATA_MODEL.md - keep in sync when the schema changes.
 
 export type Role = "admin" | "parent" | "student";
 

@@ -42,7 +42,7 @@ export async function ensureLessonAction(
   return { source: result.source };
 }
 
-/** Prepare the checkpoint for a node — only after its lesson is marked complete. */
+/** Prepare the checkpoint for a node - only after its lesson is marked complete. */
 export async function startCheckpointAction(
   nodeId: string,
 ): Promise<{ source: "existing" | "model" | "fallback" }> {

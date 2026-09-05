@@ -31,7 +31,7 @@ export async function getCourseForMasjid(
   return { id: data.id as string, name: data.name as CourseName, grade_band: data.grade_band as string };
 }
 
-/** Every lesson node in a course, ordered — the material a term exam draws on. */
+/** Every lesson node in a course, ordered - the material a term exam draws on. */
 export async function getCourseNodes(
   courseId: string,
   masjidId: string,

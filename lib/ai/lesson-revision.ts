@@ -1,6 +1,6 @@
 // Fold community contributions into a persisted lesson (T22).
 //
-// Hackathon scope ("mock"): a deterministic merge — the scholars'/elders' text
+// Hackathon scope ("mock"): a deterministic merge - the scholars'/elders' text
 // notes are appended as a "Community input" section and the lesson's
 // communityRevision.version is bumped. Productionization step (stated in the
 // pitch): send the current lesson JSON + the notes to the model for a real

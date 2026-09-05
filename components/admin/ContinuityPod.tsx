@@ -82,7 +82,7 @@ export function ContinuityPod({ pod }: { pod: ContinuityPodData }) {
         />
       ) : (
         <p className="text-xs text-zinc-500 dark:text-zinc-400">
-          No briefing yet. Generate one to see how this pod has been learning — where it got
+          No briefing yet. Generate one to see how this pod has been learning - where it got
           stuck, which students needed extra attempts, what the notes say.
         </p>
       )}
@@ -108,7 +108,7 @@ export function ContinuityPod({ pod }: { pod: ContinuityPodData }) {
                     {n.authorKind === "system" ? "system" : n.authorName ?? "volunteer"}
                     {n.courseName ? ` · ${n.courseName}` : ""}
                   </span>{" "}
-                  — {n.note}
+                  - {n.note}
                 </li>
               ))
             )}

@@ -40,7 +40,7 @@ export default async function AdminBarakahPage() {
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">Barakah notes</h1>
         <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
-          What the community values beyond test scores — consistency, helping one
+          What the community values beyond test scores - consistency, helping one
           another, reflection, and adab in the circle. Observations, never points or
           rankings.
         </p>
@@ -53,7 +53,7 @@ export default async function AdminBarakahPage() {
         </p>
       ) : pods.length === 0 ? (
         <p className="rounded-xl border border-black/10 p-6 text-sm text-zinc-500 dark:border-white/15">
-          No pods yet — create a pod before recording notes.
+          No pods yet - create a pod before recording notes.
         </p>
       ) : (
         <BarakahCheckIn pods={pods} recentNotes={notes} />
