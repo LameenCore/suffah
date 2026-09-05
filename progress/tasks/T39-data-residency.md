@@ -2,9 +2,9 @@
 id: T39
 title: Canadian data residency + data map
 phase: 10
-status: todo
-owner: —
-claimed: —
+status: doing
+owner: https://claude.ai/code/session_011H4sTF36JvRXwmwmj5Xkcr
+claimed: 2026-09-05T21:50:00Z
 updated: 2026-09-05
 depends_on: []
 source: post-hackathon roadmap (EdTech-checklist analysis)
