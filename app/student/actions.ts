@@ -5,8 +5,13 @@
 
 import { revalidatePath } from "next/cache";
 import { getCurrentUser } from "@/lib/auth";
-import { markLessonComplete } from "@/lib/db/queries";
+import { markLessonComplete, isLessonComplete } from "@/lib/db/queries";
 import { generateLessonForNode } from "@/lib/ai/lesson";
+import {
+  generateCheckpointForNode,
+  gradeCheckpoint,
+  type CheckpointGrade,
+} from "@/lib/ai/checkpoint";
 
 async function requireStudent() {
   const user = await getCurrentUser();
@@ -33,4 +38,31 @@ export async function ensureLessonAction(
   const result = await generateLessonForNode(nodeId, user.masjidId);
   revalidatePath("/student", "layout");
   return { source: result.source };
+}
+
+/** Prepare the checkpoint for a node — only after its lesson is marked complete. */
+export async function startCheckpointAction(
+  nodeId: string,
+): Promise<{ source: "existing" | "model" | "fallback" }> {
+  const user = await requireStudent();
+  if (!(await isLessonComplete(user.id, nodeId))) {
+    throw new Error("finish the lesson before starting the checkpoint");
+  }
+  const result = await generateCheckpointForNode(nodeId, user.masjidId);
+  revalidatePath("/student", "layout");
+  return { source: result.source };
+}
+
+/** Grade a submitted checkpoint. Persists the attempt and advances the pod on a pass. */
+export async function submitCheckpointAction(
+  nodeId: string,
+  answers: Record<string, string>,
+): Promise<CheckpointGrade> {
+  const user = await requireStudent();
+  if (!(await isLessonComplete(user.id, nodeId))) {
+    throw new Error("finish the lesson before submitting the checkpoint");
+  }
+  const grade = await gradeCheckpoint(nodeId, user.id, user.masjidId, answers);
+  revalidatePath("/student", "layout");
+  return grade;
 }

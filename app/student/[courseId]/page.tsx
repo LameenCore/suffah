@@ -1,10 +1,12 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requireRole } from "@/lib/auth";
-import { getPlayground } from "@/lib/db/queries";
+import { getPlayground, getLatestCheckpointResult } from "@/lib/db/queries";
+import { stripAnswers } from "@/lib/ai/checkpoint";
 import { LessonView } from "@/components/student/LessonView";
 import { MarkCompleteButton } from "@/components/student/MarkCompleteButton";
 import { GenerateLessonPanel } from "@/components/student/GenerateLessonPanel";
+import { Checkpoint } from "@/components/student/Checkpoint";
 
 export default async function CourseLessonPage({
   params,
@@ -17,6 +19,10 @@ export default async function CourseLessonPage({
   if (!entry) notFound();
 
   const { course, currentNode, lessonComplete, nodePosition, totalNodes } = entry;
+
+  const priorPassed = currentNode
+    ? (await getLatestCheckpointResult(user.id, currentNode.id))?.passed === true
+    : false;
 
   return (
     <div className="space-y-6">
@@ -42,7 +48,24 @@ export default async function CourseLessonPage({
       ) : (
         <>
           <LessonView title={currentNode.title} lesson={currentNode.lesson_content} />
-          <MarkCompleteButton nodeId={currentNode.id} completed={lessonComplete} />
+
+          {!lessonComplete ? (
+            <MarkCompleteButton nodeId={currentNode.id} completed={false} />
+          ) : (
+            <>
+              <MarkCompleteButton nodeId={currentNode.id} completed />
+              <Checkpoint
+                nodeId={currentNode.id}
+                checkpoint={
+                  currentNode.checkpoint_content
+                    ? stripAnswers(currentNode.checkpoint_content)
+                    : null
+                }
+                priorPassed={priorPassed}
+                isLastNode={nodePosition >= totalNodes}
+              />
+            </>
+          )}
         </>
       )}
     </div>

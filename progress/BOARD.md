@@ -1,7 +1,7 @@
 # BOARD — Suffa progress snapshot
 
 **Derived from `progress/tasks/`. Not authoritative. Regenerate after any claim/finish.**
-Last regenerated: 2026-09-05 (T11 done; T06 done; T07 claimed)
+Last regenerated: 2026-09-05 (T07 done — Phase 2 milestone; T11 done; T13 in progress)
 
 | id  | phase | status | owner | title |
 |-----|-------|--------|-------|-------|
@@ -11,7 +11,7 @@ Last regenerated: 2026-09-05 (T11 done; T06 done; T07 claimed)
 | T04 | 1 | done  | — | Three route groups + role-gated auth |
 | T05 | 2 | done  | — | lib/ai/lesson.ts — generate + persist lesson nodes |
 | T06 | 2 | done  | — | Student playground — render lesson, mark complete |
-| T07 | 2 | doing | session_01SKEyp | lib/ai/checkpoint.ts — checkpoint gen/grade, gate progression |
+| T07 | 2 | done  | — | lib/ai/checkpoint.ts — checkpoint gen/grade, gate progression |
 | T08 | 3 | todo  | — | lib/ai/assessment.ts — unit assessment |
 | T09 | 3 | todo  | — | Term exam variant (timed) + term_exam_results |
 | T10 | 4 | todo  | — | Parent dashboard — progress + results per course |
@@ -24,10 +24,11 @@ Last regenerated: 2026-09-05 (T11 done; T06 done; T07 claimed)
 | T17 | 6 | todo  | — | Seed data cleanup for demo walkthrough |
 
 ## Next up (deps met, unclaimed)
-- **T08** — lib/ai/assessment.ts (dep T07 — claimed, not yet done)
-- **T10** — Parent dashboard (dep T07 — claimed, not yet done)
-- **T13** — waqf_ledger table + mock entries (dep T03 done) — free to claim
-- **T16** — regulation disclaimers (no deps, can run anytime) — free to claim
+- **T08** — lib/ai/assessment.ts — unit assessment (dep T07 done)
+- **T09** — Term exam variant (dep T08)
+- **T10** — Parent dashboard — progress + results per course (deps T07, T11 done)
+- **T12** — Compliance report generation (deps T09, T10)
+- **T16** — regulation disclaimers (no deps, can run anytime)
 
 ## Legend
 todo = free to claim · doing = owned now · blocked = see task's `blocker:` · done = see task's `outcome:`

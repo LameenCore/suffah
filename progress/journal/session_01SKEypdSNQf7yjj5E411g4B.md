@@ -83,3 +83,40 @@ gitignored — noted for the user.
   the "checkpoint unlocks here (T07)" note.
 Reset demo lesson_progress so the walkthrough starts clean. build+lint+tsc green.
 Commit <t06>.
+
+## 2026-09-05 — concurrency note
+Session 011H4sTF is running in parallel — claimed T11 (admin dashboard), Phase 4.
+My T06 push bounced, pull --rebase, resolved BOARD.md conflict, pushed 752f77a.
+T07 files (lib/ai/checkpoint.ts, app/student/*, app/api/checkpoints/*) don't touch
+their app/admin/* — no collision.
+
+## 2026-09-05 — T07 in progress
+Claimed T07 (commit b3f7efb). Plan:
+- migration 0003: pathway_nodes.checkpoint_content jsonb (symmetric w/ lesson_content)
+- lib/ai/checkpoint.ts: generate 3-4 objective questions (mcq + short) from the node's
+  lesson_content; grade (index match / normalized string+numeric match, no rubric);
+  PASS_THRESHOLD 0.7; persist checkpoint_results; on pass advance pod_progress to next node
+- fallback-checkpoints.ts for offline
+- student UI: after lesson complete → StartCheckpoint → CheckpointPanel → submit → score +
+  per-question feedback + advance
+- POST /api/checkpoints/generate + /grade
+
+## 2026-09-05 — T07 done — PHASE 2 MILESTONE
+- migration 0003 applied (pathway_nodes.checkpoint_content).
+- lib/ai/checkpoint.ts: generateCheckpointForNode (structured output from the node's
+  lesson; persisted; continuity guard; offline fallback) + gradeCheckpoint (index match /
+  normalized string + numeric match; PASS_THRESHOLD 0.7; writes checkpoint_results; on pass
+  advances pod_progress via getNextNode/advancePodProgress with a forward-only guard).
+- lib/ai/fallback-checkpoints.ts — node-1 checkpoint per course.
+- app/student/actions.ts: startCheckpointAction (lesson-gated) + submitCheckpointAction.
+- components/student/Checkpoint.tsx — start → answer (radio/text) → submit → per-question
+  feedback → pass advances pod / fail retry.
+- /student/[courseId] wired: lesson → mark complete → checkpoint.
+- API: POST /api/checkpoints/generate + /grade.
+- scripts/generate-checkpoints.ts + npm run gen:checkpoints. Ran it: all 3 node-1
+  checkpoints generated source=model.
+- VERIFIED end to end: mark lesson complete → grade all-correct → score 1.0 passed →
+  pod_progress advanced node 1→2 for Math. Forward-only guard confirmed. UI: checkpoint
+  hidden until lesson complete, then renders questions + Submit.
+- Reset demo state (pod back to node 1, cleared Yusuf's progress). build+lint+tsc green.
+Commit <t07>.

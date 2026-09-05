@@ -5,6 +5,7 @@
 import { getServiceClient } from "@/lib/db";
 import type { CourseName } from "@/lib/types";
 import type { LessonContent } from "@/lib/ai/lesson";
+import type { CheckpointContent } from "@/lib/ai/checkpoint";
 
 export interface CourseRef {
   id: string;
@@ -20,12 +21,13 @@ export interface PathwayNode {
   sequence_order: number;
   title: string;
   lesson_content: LessonContent | null;
+  checkpoint_content: CheckpointContent | null;
   course: CourseRef;
 }
 
 /** pathway_nodes -> courses join, then an explicit masjid_id check. */
 const NODE_SELECT =
-  "id, course_id, unit_id, sequence_order, title, lesson_content, " +
+  "id, course_id, unit_id, sequence_order, title, lesson_content, checkpoint_content, " +
   "course:courses!inner ( id, name, grade_band, masjid_id )";
 
 function shapeNode(row: Record<string, unknown>): PathwayNode {
@@ -38,6 +40,7 @@ function shapeNode(row: Record<string, unknown>): PathwayNode {
     sequence_order: row.sequence_order as number,
     title: row.title as string,
     lesson_content: (row.lesson_content as LessonContent | null) ?? null,
+    checkpoint_content: (row.checkpoint_content as CheckpointContent | null) ?? null,
     course: course as CourseRef,
   };
 }
@@ -247,4 +250,115 @@ export async function markLessonComplete(
       { onConflict: "student_user_id,pathway_node_id", ignoreDuplicates: true },
     );
   if (error) throw new Error(`markLessonComplete: ${error.message}`);
+}
+
+// --- Checkpoints ------------------------------------------------------
+
+/** Persist generated checkpoint questions onto a node (tenant-guarded). */
+export async function saveCheckpointContent(
+  nodeId: string,
+  masjidId: string,
+  content: CheckpointContent,
+): Promise<PathwayNode> {
+  const existing = await getPathwayNode(nodeId, masjidId);
+  if (!existing) throw new Error(`saveCheckpointContent: node ${nodeId} not in masjid ${masjidId}`);
+
+  const { error } = await getServiceClient()
+    .from("pathway_nodes")
+    .update({ checkpoint_content: content })
+    .eq("id", nodeId);
+  if (error) throw new Error(`saveCheckpointContent: ${error.message}`);
+
+  const updated = await getPathwayNode(nodeId, masjidId);
+  if (!updated) throw new Error("saveCheckpointContent: node vanished after update");
+  return updated;
+}
+
+export interface CheckpointResultRow {
+  passed: boolean;
+  answer_data: unknown;
+  attempted_at: string;
+}
+
+/** Most recent checkpoint attempt for this student on this node, or null. */
+export async function getLatestCheckpointResult(
+  studentUserId: string,
+  nodeId: string,
+): Promise<CheckpointResultRow | null> {
+  const { data, error } = await getServiceClient()
+    .from("checkpoint_results")
+    .select("passed, answer_data, attempted_at")
+    .eq("student_user_id", studentUserId)
+    .eq("pathway_node_id", nodeId)
+    .order("attempted_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  if (error) throw new Error(`getLatestCheckpointResult: ${error.message}`);
+  return (data as CheckpointResultRow | null) ?? null;
+}
+
+export async function saveCheckpointResult(
+  studentUserId: string,
+  nodeId: string,
+  passed: boolean,
+  answerData: unknown,
+): Promise<void> {
+  const { error } = await getServiceClient().from("checkpoint_results").insert({
+    student_user_id: studentUserId,
+    pathway_node_id: nodeId,
+    passed,
+    answer_data: answerData,
+  });
+  if (error) throw new Error(`saveCheckpointResult: ${error.message}`);
+}
+
+/** The node one step further along the same course, or null if this is the last. */
+export async function getNextNode(
+  courseId: string,
+  currentSequenceOrder: number,
+  masjidId: string,
+): Promise<PathwayNode | null> {
+  const { data, error } = await getServiceClient()
+    .from("pathway_nodes")
+    .select(NODE_SELECT)
+    .eq("course_id", courseId)
+    .eq("sequence_order", currentSequenceOrder + 1)
+    .maybeSingle();
+  if (error) throw new Error(`getNextNode: ${error.message}`);
+  if (!data) return null;
+  const node = shapeNode(data as unknown as Record<string, unknown>);
+  return node.course.masjid_id === masjidId ? node : null;
+}
+
+/**
+ * Move a pod's position for a course to `nextNodeId`. Only advances forward:
+ * a no-op if the pod is already at or past that node.
+ */
+export async function advancePodProgress(
+  podId: string,
+  courseId: string,
+  nextNode: PathwayNode,
+): Promise<boolean> {
+  const db = getServiceClient();
+  const { data: current, error: readErr } = await db
+    .from("pod_progress")
+    .select("current_node_id")
+    .eq("pod_id", podId)
+    .eq("course_id", courseId)
+    .maybeSingle();
+  if (readErr) throw new Error(`advancePodProgress: ${readErr.message}`);
+
+  const currentNodeId = (current?.current_node_id as string | null) ?? null;
+  if (currentNodeId) {
+    const currentNode = await getPathwayNode(currentNodeId, nextNode.course.masjid_id);
+    if (currentNode && currentNode.sequence_order >= nextNode.sequence_order) return false;
+  }
+
+  const { error } = await db
+    .from("pod_progress")
+    .update({ current_node_id: nextNode.id })
+    .eq("pod_id", podId)
+    .eq("course_id", courseId);
+  if (error) throw new Error(`advancePodProgress: ${error.message}`);
+  return true;
 }

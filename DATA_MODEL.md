@@ -23,7 +23,7 @@ Postgres schema, hackathon scope. Every table includes `masjid_id` for multi-ten
 - `id`, `masjid_id`, `name` (`Math` | `Seerah` | `AI Literacy`), `grade_band` (e.g. `Secondary 1`)
 
 ### `pathway_nodes`
-- `id`, `course_id`, `sequence_order`, `title`, `lesson_content` (generated + persisted, not regenerated per view), `unit_id` (groups nodes into units for unit-assessment scoping)
+- `id`, `course_id`, `sequence_order`, `title`, `lesson_content` (generated + persisted, not regenerated per view), `checkpoint_content` (jsonb — the node's checkpoint questions, generated once from `lesson_content` and persisted; added in migration `0003`), `unit_id` (groups nodes into units for unit-assessment scoping)
 
 ### `units`
 - `id`, `course_id`, `title`, `sequence_order`

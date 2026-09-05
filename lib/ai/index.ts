@@ -14,3 +14,15 @@ export {
   type LessonSource,
   type GenerateLessonResult,
 } from "@/lib/ai/lesson";
+export {
+  generateCheckpointForNode,
+  gradeCheckpoint,
+  stripAnswers,
+  type CheckpointBody,
+  type CheckpointContent,
+  type CheckpointQuestion,
+  type CheckpointForStudent,
+  type CheckpointGrade,
+  type QuestionGrade,
+  type GenerateCheckpointResult,
+} from "@/lib/ai/checkpoint";
