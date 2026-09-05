@@ -24,7 +24,7 @@ outcome: |
   verified live (both REJECTED). No PII beyond ids. build + lint + tsc + 38
   tests + check:integrity green; page verified live (renders trail; parent
   redirected off it).
-commits: <t35>
+commits: 8a259e6
 depends_on: [T30]
 source: post-hackathon roadmap (EdTech-checklist analysis)
 ---

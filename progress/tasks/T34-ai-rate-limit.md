@@ -29,7 +29,7 @@ outcome: |
   seed.sql + seed.ts; check-integrity check 12 proves append-only.
   Tests: tests/ratelimit.test.ts (7) + tests/ai-usage.test.ts (5). 50 total green.
   This unblocks T56 (AI-spend rollup view builds on model_call_log).
-commits: <t34>
+commits: 05cbdb5
 ---
 
 ## Why
