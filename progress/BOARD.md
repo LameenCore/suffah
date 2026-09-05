@@ -1,7 +1,7 @@
 # BOARD — Suffa progress snapshot
 
 **Derived from `progress/tasks/`. Not authoritative. Regenerate after any claim/finish.**
-Last regenerated: 2026-09-05 (T15 done; T18–T24 differentiator tasks present)
+Last regenerated: 2026-09-05 (T24 done)
 
 | id  | phase | status | owner | title |
 |-----|-------|--------|-------|-------|
@@ -28,7 +28,7 @@ Last regenerated: 2026-09-05 (T15 done; T18–T24 differentiator tasks present)
 | T21 | 7 | todo  | — | Waqf-to-outcome linking (donor sees learning) |
 | T22 | 7 | todo  | — | Multi-generational knowledge sourcing for Seerah content |
 | T23 | 7 | todo  | — | Pod "Barakah meter" — character/community indicators |
-| T24 | 7 | todo  | — | Waqf principal "never touched" visual |
+| T24 | 7 | done  | — | Waqf principal "never touched" visual |
 
 ## Next up (deps met, unclaimed)
 - **T09** — Term exam variant (timed) + term_exam_results (dep T08 done)
@@ -37,7 +37,6 @@ Last regenerated: 2026-09-05 (T15 done; T18–T24 differentiator tasks present)
 - **T21** — Waqf-to-outcome linking (deps T14, T08 done)
 - **T22** — Seerah community sourcing (dep T05 done, mock/text)
 - **T23** — Barakah meter (dep T11 done)
-- **T24** — Waqf principal "never touched" visual (dep T14 done)
 - blocked: T12 (needs T09), T17 (needs T12), T19 (needs T18), T20 (needs T12)
 
 ## Phase 7 — differentiators (see PRD §5.4)

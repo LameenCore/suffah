@@ -117,3 +117,13 @@ DB. Commit c6d3abb. Next: T16.
   so the churn log is non-empty.
 - No migration (volunteers table already has status/certification_note/left_at).
 - build + lint green; not verified vs live data. Commit cf8920e. Next free: T16.
+
+## 2026-09-05 — T24 done
+- components/admin/WaqfFlowDiagram.tsx — inline-SVG "how the waqf works" primer:
+  a locked padlock block for the fixed principal + two thin animated streams
+  (returns->operations, sadaqah->scholarship pool) that never touch the principal.
+  Server component, CSS-var theming (light+dark), pure-CSS dash animation gated by
+  prefers-reduced-motion. Wired into /admin/ledger above the time-series chart.
+- Principal-never-spendable rule already enforced in getLedgerSummary (T14).
+- build + lint green; geometry hand-checked (not rendered live, no .env.local).
+- commit <t24>. Session tally: T10,T11,T13,T14,T15,T24.

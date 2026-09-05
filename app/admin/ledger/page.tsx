@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { requireRole } from "@/lib/auth";
 import { LedgerChart } from "@/components/admin/LedgerChart";
+import { WaqfFlowDiagram } from "@/components/admin/WaqfFlowDiagram";
 import {
   getFamilyFeeStatus,
   getLedgerSummary,
@@ -122,6 +123,21 @@ export default async function AdminLedgerPage() {
               accent="text-violet-700 dark:text-violet-400"
             />
           </div>
+
+          <section className="rounded-xl border border-black/10 bg-white p-4 dark:border-white/15 dark:bg-zinc-950">
+            <h2 className="font-medium">How the waqf works</h2>
+            <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
+              The endowment model at a glance — for anyone new to waqf.
+            </p>
+            <div className="mt-3">
+              <WaqfFlowDiagram
+                principal={summary.principal}
+                returnsDisbursed={summary.returnsDisbursed}
+                sadaqahReceived={summary.sadaqahReceived}
+                scholarshipsAllocated={summary.scholarshipsAllocated}
+              />
+            </div>
+          </section>
 
           <section className="rounded-xl border border-black/10 bg-white p-4 dark:border-white/15 dark:bg-zinc-950">
             <h2 className="font-medium">Spending vs. principal, over time</h2>
