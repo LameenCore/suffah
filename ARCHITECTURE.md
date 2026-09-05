@@ -1,8 +1,8 @@
-# Architecture — Suffa
+# Architecture - Suffa
 
 ## System shape
 
-Single Next.js app, three route groups sharing one backend and one database. Not three separate apps — the dashboards differ in UI/permissions, not in underlying system.
+Single Next.js app, three route groups sharing one backend and one database. Not three separate apps - the dashboards differ in UI/permissions, not in underlying system.
 
 ```
 suffa/
@@ -19,7 +19,7 @@ suffa/
 │   │   └── ledger/      # waqf/donation mock ledger
 │   └── layout.tsx
 ├── lib/
-│   ├── ai/              # Claude API wrapper — all LLM calls go through here
+│   ├── ai/              # Claude API wrapper - all LLM calls go through here
 │   ├── db/              # Postgres client + query helpers
 │   └── auth/            # role-based auth helpers (admin/parent/student)
 ├── components/          # shared UI components across dashboards
@@ -32,15 +32,15 @@ suffa/
 
 ## Where AI calls happen (this is the core of the product)
 
-All LLM calls route through `lib/ai/` — do not call the Anthropic API directly from route handlers. This keeps prompt templates centralized and swappable.
+All LLM calls route through `lib/ai/` - do not call the Anthropic API directly from route handlers. This keeps prompt templates centralized and swappable.
 
 **Three AI call types, matching the three-tier assessment structure:**
 
-1. **Lesson generation** (`lib/ai/lesson.ts`) — given a course + pathway node, generate the lesson content and interactive practice. Persist the output; do not regenerate on every view (continuity depends on stable content — see PRD constraint).
-2. **Checkpoint generation + grading** (`lib/ai/checkpoint.ts`) — generate a short check question per lesson node; grade the student's objective answer; return pass/fail + remedial branch decision.
-3. **Assessment generation + grading** (`lib/ai/assessment.ts`) — generate unit assessments (cumulative, several nodes) and term exams (timed, no remedial branching); grade objectively (MCQ / short numeric / short-answer matching); persist results as compliance-relevant records.
+1. **Lesson generation** (`lib/ai/lesson.ts`) - given a course + pathway node, generate the lesson content and interactive practice. Persist the output; do not regenerate on every view (continuity depends on stable content - see PRD constraint).
+2. **Checkpoint generation + grading** (`lib/ai/checkpoint.ts`) - generate a short check question per lesson node; grade the student's objective answer; return pass/fail + remedial branch decision.
+3. **Assessment generation + grading** (`lib/ai/assessment.ts`) - generate unit assessments (cumulative, several nodes) and term exams (timed, no remedial branching); grade objectively (MCQ / short numeric / short-answer matching); persist results as compliance-relevant records.
 
-**Important:** grading in this scope is objective-format only (see PRD Non-Goals). Do not build subjective/rubric grading for the hackathon — it adds risk without adding demo value.
+**Important:** grading in this scope is objective-format only (see PRD Non-Goals). Do not build subjective/rubric grading for the hackathon - it adds risk without adding demo value.
 
 ## Data flow (one full loop, this is what the demo shows)
 
@@ -64,6 +64,6 @@ Three roles: `admin`, `parent`, `student`. Simplest viable approach for a hackat
 
 ## What NOT to build (see PRD Non-Goals for full list)
 
-- No real payment/donation processing — `ledger` API returns/accepts mock data only
-- No real background-check integration for volunteers — a status enum field is sufficient
-- No multi-jurisdiction legal engine — Quebec rules only, hardcoded, with a UI disclaimer
+- No real payment/donation processing - `ledger` API returns/accepts mock data only
+- No real background-check integration for volunteers - a status enum field is sufficient
+- No multi-jurisdiction legal engine - Quebec rules only, hardcoded, with a UI disclaimer
