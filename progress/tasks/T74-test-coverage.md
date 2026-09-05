@@ -16,7 +16,7 @@ outcome: @vitest/coverage-v8 + `npm run test:coverage`, coverage config scoped t
   (engine) ~98%, overall lib/ ~8% by line (DB glue - needs the T54 harness; covered by
   check:integrity + live e2e instead). Honest statement written into README + pitch +
   docs/qa-prep.md.
-commits: <t74>
+commits: 412745f
 ---
 
 ## Why
