@@ -45,25 +45,25 @@ export function CoursePath({ track }: { track: CourseTrack }) {
 
   const body = (
     <>
-      <div className="flex items-start gap-3">
-        <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-mustard-soft text-terracotta-strong">
-          <CourseIcon name={course.name} />
-        </span>
-        <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-2">
-            <h3 className="truncate font-display text-lg font-semibold text-ink">
+      <div className="flex items-start justify-between gap-2">
+        <div className="flex items-center gap-3">
+          <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-mustard-soft text-terracotta-strong">
+            <CourseIcon name={course.name} />
+          </span>
+          <div>
+            <h3 className="font-display text-lg font-semibold leading-tight text-ink">
               {course.name}
             </h3>
-            {status ? (
-              <Badge tone={status.tone} className="shrink-0">
-                {status.text}
-              </Badge>
-            ) : null}
+            <p className="text-xs text-ink-4">
+              {total > 0 ? `Step ${Math.max(position, 1)} of ${total}` : "No path yet"}
+            </p>
           </div>
-          <p className="text-xs text-ink-4">
-            {total > 0 ? `Step ${Math.max(position, 1)} of ${total}` : "No path yet"}
-          </p>
         </div>
+        {status ? (
+          <Badge tone={status.tone} className="mt-0.5 shrink-0">
+            {status.text}
+          </Badge>
+        ) : null}
       </div>
 
       {nodes.length > 0 ? (
