@@ -2,17 +2,23 @@
 id: T20
 title: Compliance report as a living document (early-warning, not export)
 phase: 7
-status: doing
+status: done
 owner: https://claude.ai/code/session_01SKEypdSNQf7yjj5E411g4B
 claimed: 2026-09-05T00:00:00Z
 updated: 2026-09-05
+completed: 2026-09-05T00:00:00Z
 depends_on: [T12]
 tier: 1
 build_or_mock: build
+outcome: lib/compliance/status.ts — per-course on_track/watch/gap with human-readable
+  signals, computed live from checkpoint/unit/exam data + pod position; computeOverall =
+  worst-of. Rendered on /admin/compliance AND /parent/compliance; the export (print page)
+  is a snapshot of the same live view. Built as one piece with T12.
+commits: 7ab3e4b, <t12t20>
 ---
 
-> Claimed alongside T12 and built as one piece — the status engine (T20) is baked
-> into the compliance report from the start rather than retrofitted.
+> Built as one piece with T12 — the status engine is baked into the compliance
+> report from the start rather than retrofitted.
 
 ## Why
 Existing homeschool tools are backward-looking recordkeeping. Reframe the regulatory
@@ -35,9 +41,9 @@ Extend T12's compliance report so it is:
 - Parent dashboard (T10) and Admin compliance view (T12) both render the same status.
 
 ## Done when
-- [ ] Per-course status (on-track / watch / gap) computed from live data
-- [ ] Each status carries human-readable signals explaining it
-- [ ] Shown on both parent and admin views; export reflects current state
-- [ ] Regulation-verification note present
+- [x] Per-course status (on-track / watch / gap) computed from live data
+- [x] Each status carries human-readable signals explaining it
+- [x] Shown on both parent and admin views; export reflects current state
+- [x] Regulation-verification note present
 
 ## Notes (owner appends)

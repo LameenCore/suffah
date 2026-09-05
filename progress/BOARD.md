@@ -1,7 +1,7 @@
 # BOARD — Suffa progress snapshot
 
 **Derived from `progress/tasks/`. Not authoritative. Regenerate after any claim/finish.**
-Last regenerated: 2026-09-05 (T09 done; Phase 7 all but T20 done)
+Last regenerated: 2026-09-05 (T12 + T20 done — compliance report; only T16, T17 left)
 
 | id  | phase | status | owner | title |
 |-----|-------|--------|-------|-------|
@@ -16,7 +16,7 @@ Last regenerated: 2026-09-05 (T09 done; Phase 7 all but T20 done)
 | T09 | 3 | done  | — | Term exam variant (timed) + term_exam_results |
 | T10 | 4 | done  | — | Parent dashboard — progress + results per course |
 | T11 | 4 | done  | — | Admin dashboard — pods, assignment, continuity view |
-| T12 | 4 | todo  | — | Compliance report generation + exportable view |
+| T12 | 4 | done  | — | Compliance report generation + exportable view |
 | T13 | 5 | done  | — | waqf_ledger table + mock entries |
 | T14 | 5 | done  | — | Admin ledger view + family fee status |
 | T15 | 6 | done  | — | Volunteer onboarding form + churn log |
@@ -24,22 +24,18 @@ Last regenerated: 2026-09-05 (T09 done; Phase 7 all but T20 done)
 | T17 | 6 | todo  | — | Seed data cleanup for demo walkthrough |
 | T18 | 7 | done  | — | Continuity Fingerprint — AI volunteer-handoff briefing |
 | T19 | 7 | done  | — | Live "empty seat" handoff simulation (demo feature) |
-| T20 | 7 | todo  | — | Compliance report as a living document (early-warning) |
+| T20 | 7 | done  | — | Compliance report as a living document (early-warning) |
 | T21 | 7 | done  | — | Waqf-to-outcome linking (donor sees learning) |
 | T22 | 7 | done  | — | Multi-generational knowledge sourcing for Seerah content |
 | T23 | 7 | done  | — | Pod "Barakah meter" — character/community indicators |
 | T24 | 7 | done  | — | Waqf principal "never touched" visual |
 
 ## Next up (deps met, unclaimed)
-- **T12** — Compliance report generation + exportable view (deps T08, T11 done; T09 done → exam data available)
-- **T16** — regulation disclaimers (no deps, can run anytime)
-- blocked: T17 (needs T12), T20 (needs T12)
+- **T16** — regulation-verification disclaimers sweep (no deps)
+- **T17** — seed/demo cleanup for a smooth walkthrough (deps met — T12 done)
 
-Phase 7 differentiators: T18, T19, T21, T22, T23, T24 done. Remaining: T20 (needs T12).
-
-## Phase 7 — differentiators (see PRD §5.4)
-Build order: T18 → T19 (unique IP, demoable), then T20. T21/T22 as mocked pitch screens.
-T18 unblocks T19. T20 depends on T12.
+Everything else is done. T16 + T17 are the last two — both polish.
+Demo content scripts: `npm run seed && seed:continuity && seed:progress && gen:lessons && gen:checkpoints && gen:assessments && gen:exams`.
 
 ## Legend
 todo = free to claim · doing = owned now · blocked = see task's `blocker:` · done = see task's `outcome:`

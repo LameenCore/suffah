@@ -28,6 +28,7 @@ npm run gen:checkpoints           # then the checkpoints
 npm run gen:assessments           # then the unit assessments
 npm run gen:exams                 # then the term exams
 npm run seed:continuity           # demo session notes + first pod handoff briefing
+npm run seed:progress             # a believable spread of student results
 npm run dev                       # http://localhost:3000
 ```
 

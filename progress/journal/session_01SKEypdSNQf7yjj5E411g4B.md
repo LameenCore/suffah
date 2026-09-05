@@ -198,3 +198,22 @@ Claimed T09 (5f8ad73).
 - Migration collisions (0006 x2, 0007 x2 from parallel agents) — harmless, all use
   `if not exists`, no cross-deps. Noted in T09 for a future timestamp scheme.
 Commit <t09>. This unblocks the full compliance-report story (T12 → T20).
+
+## 2026-09-05 — T12 + T20 done (built together)
+Claimed both (7ab3e4b) — T20's status engine baked into T12 rather than retrofitted.
+- lib/compliance/status.ts: pure per-course status (on_track | watch | gap) + signals,
+  from a CourseReport (reused the other agent's lib/db/parent-queries getChildReport —
+  it already gathers checkpoints/unit/exam + pod position). computeOverall = worst-of.
+- lib/compliance/report.ts: assembleComplianceReport (living) + generateComplianceReport
+  (persists a compliance_reports snapshot) + getLatestStoredReport + markReportExported.
+- components/compliance/ComplianceReportView.tsx (shared) + SnapshotBar (client).
+- /admin/compliance (student picker, live report, save snapshot, printable link),
+  /admin/compliance/[studentId]/print (print-clean), /parent/compliance (parent's child,
+  read-only live). Link card on /admin (replaced the stub).
+- POST /api/reports/generate.
+- scripts/seed-demo-progress.ts + npm run seed:progress — a spread across the pod:
+  Yusuf on track, Maryam watch, Idris gap (Math 0% pass rate), Safiya gap (failed AI term
+  exam). Tuned the thresholds so "not started" is watch, not gap.
+- VERIFIED: per-student report computes the spread; snapshot persists; all 4 routes
+  render (admin, print, parent). build+lint+tsc green.
+Commits: 7ab3e4b, <t12t20>.
