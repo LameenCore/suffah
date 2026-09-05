@@ -51,3 +51,16 @@ re-inserts). Keep in sync with supabase/seed.sql. Commit <seed>.
 - `scripts/generate-lessons.ts` + `npm run gen:lessons` — generate node 1 of all 3 courses.
 - Ran it: all 3 lessons generated source=model, persisted, verified in DB. Re-run = no-op.
 - build + lint + tsc all green. Commit <t05>.
+
+## 2026-09-05 — T06 in progress
+Claimed T06 (commit 6294ba4). Needed a per-student lesson-completion record — schema only
+had pod-level pod_progress + per-student assessment results. Added:
+- migration 0002_lesson_progress.sql (table lesson_progress)
+- scripts/migrate.ts + npm run migrate (node-postgres; schema_migrations tracking;
+  baselines 0001 when core schema already present so it won't re-run non-idempotent DDL)
+- SUPABASE_DB_URL documented in .env.example
+Built the playground: /student (course list w/ status), /student/[courseId] (LessonView +
+MarkCompleteButton + GenerateLessonPanel fallback), app/student/actions.ts server actions,
+getPlayground/markLessonComplete/etc in queries.ts. DATA_MODEL.md updated.
+Builds green (wip commit f6f676a). BLOCKED ON: user to add SUPABASE_DB_URL to .env.local so
+I can `npm run migrate` (apply 0002) and verify render + mark-complete end to end.
