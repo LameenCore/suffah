@@ -15,7 +15,7 @@ outcome: docs/compliance/quebec-home-instruction.md - the 7 obligations (notice,
   compliance-report field to the obligation it evidences (and where it explicitly does
   NOT substitute); an 8-item lawyer/DEM checklist incl. the ≤4-cap basis, program mapping,
   portfolio composition, objective-only grading, and filing responsibility.
-commits: <t40>
+commits: 4cbfb70
 ---
 
 ## Why
