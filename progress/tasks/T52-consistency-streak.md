@@ -20,7 +20,7 @@ outcome: |
   loss-aversion "don't break your streak" copy; nothing cross-student. Empty
   state: "A little each day beats a lot once in a while. The first day counts."
   Verified live on /student and /parent. build + lint + tsc + 57 tests green.
-commits: <t52>
+commits: f3590ad
 depends_on: []
 source: post-hackathon roadmap (EdTech-checklist analysis)
 ---
