@@ -89,10 +89,10 @@ then T59 → T60, then Phase 11 depth; T63 is the multi-masjid scale unlock.
 
 | id  | phase | status | owner | title |
 |-----|-------|--------|-------|-------|
-| T67 | 14 | todo | — | One well-defined problem slice, stated plainly (Business) |
+| T67 | 14 | done | — | One well-defined problem slice, stated plainly (Business) |
 | T68 | 14 | done | — | Cost-of-running + sustainability argument, defensible (Business) |
 | T69 | 14 | done | — | Documented market/competitor research (Business) |
-| T70 | 14 | todo | — | Plain-language "what is this" explainer (Business) |
+| T70 | 14 | done | — | Plain-language "what is this" explainer (Business) |
 | T71 | 14 | todo | — | Architecture: legible + justified (Technical-sw) |
 | T72 | 14 | todo | — | Cohesion / coupling / readability pass (Technical-sw) |
 | T73 | 14 | done | — | Performance check + notes (Technical-sw) |

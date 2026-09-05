@@ -33,6 +33,11 @@ export default async function LoginPage({ searchParams }: PageProps<"/login">) {
           </div>
         </div>
 
+        <p className="text-sm text-ink-3">
+          Community-run homeschool pods where the software carries the curriculum, so
+          learning doesn&apos;t stop when a volunteer moves on.
+        </p>
+
         {error ? (
           <p className="rounded-[var(--radius)] border border-danger/30 bg-danger-soft px-3 py-2 text-sm text-[color:var(--ink)]">
             {error}
