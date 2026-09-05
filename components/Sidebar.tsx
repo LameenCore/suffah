@@ -1,0 +1,158 @@
+"use client";
+
+import { useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import type { SessionUser } from "@/lib/types";
+import { Star8 } from "@/components/ui/Motif";
+import { DemoResetButton } from "@/components/DemoResetButton";
+
+export interface NavItem {
+  href: string;
+  label: string;
+  icon: React.ReactNode;
+  badge?: number;
+}
+
+const ROLE_LABEL: Record<SessionUser["role"], string> = {
+  admin: "Masjid Admin",
+  parent: "Family",
+  student: "Playground",
+};
+
+function isActive(pathname: string, href: string, roots: string[]) {
+  if (pathname === href) return true;
+  if (roots.includes(href)) return false;
+  return pathname.startsWith(`${href}/`) || pathname.startsWith(href);
+}
+
+export function Sidebar({
+  user,
+  items,
+  demoReset = false,
+}: {
+  user: SessionUser;
+  items: NavItem[];
+  demoReset?: boolean;
+}) {
+  const pathname = usePathname();
+  const [open, setOpen] = useState(false);
+  const roots = ["/admin", "/parent", "/student"];
+
+  const nav = (
+    <nav className="flex flex-1 flex-col gap-0.5 overflow-y-auto px-3 py-4">
+      {items.map((item) => {
+        const active = isActive(pathname, item.href, roots);
+        return (
+          <Link
+            key={item.href}
+            href={item.href}
+            onClick={() => setOpen(false)}
+            className={`flex items-center gap-3 rounded-[var(--radius)] px-3 py-2 text-sm transition-colors ${
+              active
+                ? "bg-terracotta-soft font-medium text-terracotta-strong"
+                : "text-ink-2 hover:bg-surface-2"
+            }`}
+          >
+            <span className={active ? "text-terracotta" : "text-ink-4"}>{item.icon}</span>
+            <span className="flex-1">{item.label}</span>
+            {item.badge ? (
+              <span className="rounded-full bg-terracotta px-1.5 py-0.5 text-[10px] font-semibold text-white">
+                {item.badge}
+              </span>
+            ) : null}
+          </Link>
+        );
+      })}
+    </nav>
+  );
+
+  const foot = (
+    <div className="border-t border-border p-3">
+      {demoReset ? (
+        <div className="mb-1 px-1">
+          <DemoResetButton />
+        </div>
+      ) : null}
+      <Link
+        href="/help"
+        onClick={() => setOpen(false)}
+        className="flex items-center justify-between rounded-[var(--radius)] px-3 py-2 text-sm text-ink-2 hover:bg-surface-2"
+      >
+        <span>Get help &amp; report a bug</span>
+        <span aria-hidden>?</span>
+      </Link>
+      <div className="mt-1 flex items-center justify-between rounded-[var(--radius)] px-3 py-2">
+        <div className="min-w-0">
+          <p className="truncate text-sm font-medium text-ink">{user.name}</p>
+          <p className="text-xs text-ink-4">{ROLE_LABEL[user.role]}</p>
+        </div>
+        <Link
+          href="/"
+          className="shrink-0 rounded-full border border-border px-2.5 py-1 text-xs text-ink-3 transition-colors hover:border-teal hover:text-teal"
+        >
+          switch
+        </Link>
+      </div>
+    </div>
+  );
+
+  const brand = (
+    <div className="flex items-center gap-2.5 px-5 py-4">
+      <Star8 className="h-6 w-6 text-terracotta" />
+      <span className="font-display text-lg font-semibold text-ink">Suffa</span>
+    </div>
+  );
+
+  return (
+    <>
+      {/* mobile top bar */}
+      <div className="sticky top-0 z-30 flex items-center justify-between border-b border-border bg-surface/90 px-4 py-2.5 backdrop-blur md:hidden">
+        <div className="flex items-center gap-2">
+          <Star8 className="h-5 w-5 text-terracotta" />
+          <span className="font-display font-semibold text-ink">Suffa</span>
+        </div>
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          className="rounded-lg border border-border px-2.5 py-1.5 text-sm text-ink-2"
+          aria-label="Open menu"
+        >
+          Menu
+        </button>
+      </div>
+
+      {/* desktop rail */}
+      <aside className="sticky top-0 hidden h-screen w-60 shrink-0 flex-col border-r border-border bg-surface md:flex">
+        {brand}
+        {nav}
+        {foot}
+      </aside>
+
+      {/* mobile drawer */}
+      {open ? (
+        <div className="fixed inset-0 z-40 md:hidden">
+          <div
+            className="absolute inset-0 bg-ink/40"
+            onClick={() => setOpen(false)}
+            aria-hidden
+          />
+          <div className="absolute inset-y-0 left-0 flex w-64 flex-col bg-surface shadow-[var(--shadow-pop)]">
+            <div className="flex items-center justify-between pr-3">
+              {brand}
+              <button
+                type="button"
+                onClick={() => setOpen(false)}
+                className="rounded-lg border border-border px-2 py-1 text-xs text-ink-3"
+              >
+                Close
+              </button>
+            </div>
+            {nav}
+            {foot}
+          </div>
+        </div>
+      ) : null}
+    </>
+  );
+}
