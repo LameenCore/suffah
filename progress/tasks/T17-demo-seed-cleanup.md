@@ -2,7 +2,9 @@
 id: T17
 title: Seed data cleanup for demo walkthrough
 phase: 6
-status: todo
+status: doing
+owner: https://claude.ai/code/session_01SKEypdSNQf7yjj5E411g4B
+claimed: 2026-09-05T00:00:00Z
 owner: —
 claimed: —
 updated: 2026-09-05
