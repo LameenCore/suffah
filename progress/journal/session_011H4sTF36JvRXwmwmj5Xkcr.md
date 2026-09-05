@@ -173,6 +173,6 @@ DB. Commit c6d3abb. Next: T16.
   "Incorporate N pending -> new version" button. Admin home card.
 - No pathway_nodes ALTER (revision metadata rides in the lesson JSON).
 - build + lint green on merged tree (other session landed T19). Not verified vs live
-  data. commit <t22>.
+  data. commit c6b60df.
 - All my lane is now done. Remaining board: T09/T12/T16/T17/T20 — other session or
   blocked on T12.

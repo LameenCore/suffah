@@ -45,4 +45,4 @@ human-authored. Only makes sense with exactly this community structure.
 - Migration filename note: 0006/0007/0008 chosen sequentially; 0006 already collides
   with the other session's 0006_continuity_fingerprint (harmless — runner tracks full
   filenames).
-- commits: <t22>. Session tally: T10,T11,T13,T14,T15,T21,T22,T23,T24.
+- commits: c6b60df. Session tally: T10,T11,T13,T14,T15,T21,T22,T23,T24.
