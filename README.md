@@ -1,11 +1,11 @@
 # Suffa
 
-AI-sustained, pod-based homeschool platform for Quebec Muslim families. Three
-dashboards over one Next.js app: **Student playground** (AI-taught curriculum),
-**Parent** (read-only monitoring), **Masjid Admin** (pods, volunteers, compliance,
-waqf ledger).
+Pod-based homeschool platform for Quebec Muslim families, sustained by the
+community. Three dashboards over one Next.js app: **Student playground**
+(self-paced curriculum), **Parent** (read-only monitoring), **Masjid Admin**
+(pods, volunteers, compliance, waqf ledger).
 
-Read `CLAUDE.md` → `PRD.md` → `ARCHITECTURE.md` → `DATA_MODEL.md` → `TASKS.md`
+Read `CLAUDE.md` → `PRD.md` → `docs/ARCHITECTURE.md` → `docs/DATA_MODEL.md` → `TASKS.md`
 before contributing.
 
 ## Stack
@@ -73,4 +73,4 @@ components/                 # shared UI
 ## Build order
 
 `TASKS.md` - build in phases, each phase leaves something demoable. Commit at every
-completed checklist item (`.claude/skills/git-workflow.md`... currently `git-workflow.md`).
+completed checklist item (see `git-workflow.md`).

@@ -48,7 +48,9 @@ function isRole(value: string | undefined): value is Role {
 
 /** Resolve the current session user, or null if no role is selected. */
 export async function getCurrentUser(): Promise<SessionUser | null> {
-  // TODO(Phase 1): replace with Supabase Auth session lookup + users.role.
+  // Demo scope (see PRD non-goals): auth is a dev role cookie, not a real login.
+  // The production swap is a Supabase Auth session lookup + a users.role read;
+  // every call site already uses SessionUser, so it is a one-file change here.
   const cookieRole = (await cookies()).get(DEV_ROLE_COOKIE)?.value;
   const role = isRole(cookieRole)
     ? cookieRole

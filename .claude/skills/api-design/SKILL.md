@@ -30,7 +30,7 @@ Applies to every file under `app/api/` and every `"use server"` action file
    (`/api/*/generate`, revision, briefing) write the result to the DB and then
    return the persisted row - never stream raw model output straight to the
    client. Continuity depends on stable, referenceable content (see
-   ARCHITECTURE.md). If content already exists, return it as-is unless `force`.
+   docs/ARCHITECTURE.md). If content already exists, return it as-is unless `force`.
 4. **Every AI call has a fallback.** A model timeout must not break a live demo.
    Catch failures and fall back to the hand-authored content in
    `lib/ai/fallback-*.ts`; label the response `source: "fallback"`.

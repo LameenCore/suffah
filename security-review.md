@@ -1,4 +1,7 @@
-# Skill: Security Review - Suffa
+# Security Review - Suffa
+
+> Superseded by `.claude/skills/security-review/SKILL.md` (invoke it with `/security-review`).
+> Kept here as the original short-form notes.
 
 This project handles data about children (students aged 10–13) and their guardians. Treat data scoping and access control as a first-class concern even in hackathon mode - not because of regulatory pressure in a demo, but because it's the responsible default for a product concept involving minors, and it's a question judges may reasonably ask.
 

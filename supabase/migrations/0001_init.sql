@@ -136,7 +136,7 @@ create table unit_assessment_results (
   student_user_id uuid not null references users(id) on delete cascade,
   unit_id         uuid not null references units(id) on delete cascade,
   score           numeric(5,2) not null,
-  passed          boolean not null,     -- threshold TBD; default 0.70 (see DATA_MODEL.md)
+  passed          boolean not null,     -- threshold TBD; default 0.70 (see docs/DATA_MODEL.md)
   answer_data     jsonb,
   attempted_at    timestamptz not null default now()
 );

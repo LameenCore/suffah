@@ -63,7 +63,7 @@ async function main() {
         continue;
       }
       const sql = await readFile(join(MIGRATIONS_DIR, file), "utf8");
-      process.stdout.write(`▸ ${file} … `);
+      process.stdout.write(`▸ ${file} ... `);
       await client.query("begin");
       try {
         await client.query(sql);

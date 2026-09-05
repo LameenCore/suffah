@@ -1,7 +1,7 @@
 // Masjid-scoped reads for the admin waqf/donation transparency view (T14).
-// Mock data only - no payment processing (see DATA_MODEL.md / PRD non-goals).
+// Mock data only - no payment processing (see docs/DATA_MODEL.md / PRD non-goals).
 //
-// HARD RULE from DATA_MODEL.md: principal_deposit entries are the locked
+// HARD RULE from docs/DATA_MODEL.md: principal_deposit entries are the locked
 // endowment. They are never summed into "spent" or "spendable" totals - the
 // whole point of the model is that the principal is untouched. Every aggregate
 // here keeps principal on its own line.

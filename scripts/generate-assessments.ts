@@ -24,7 +24,7 @@ async function main() {
   });
   if (units.length === 0) throw new Error("No units found - run npm run seed first.");
 
-  console.log(`Generating assessments for ${units.length} unit(s)${force ? " (force)" : ""}…\n`);
+  console.log(`Generating assessments for ${units.length} unit(s)${force ? " (force)" : ""}...\n`);
 
   let failures = 0;
   for (const u of units) {

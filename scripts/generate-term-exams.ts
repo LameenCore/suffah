@@ -26,7 +26,7 @@ async function main() {
   console.log(
     `Generating "${DEMO_TERM_LABEL}" term exams for ${courses.length} course(s)${
       force ? " (force)" : ""
-    }…\n`,
+    }...\n`,
   );
 
   let failures = 0;

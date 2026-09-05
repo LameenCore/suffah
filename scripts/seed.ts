@@ -45,7 +45,7 @@ async function seed() {
     return res.data;
   };
 
-  // Wipe (FK cascade from masjids clears users, pods, courses, ledger, …)
+  // Wipe (FK cascade from masjids clears users, pods, courses, ledger, ...)
   check(await db.from("masjids").delete().eq("id", MASJID));
 
   check(await db.from("masjids").insert({ id: MASJID, name: "Masjid As-Suffa (Demo)" }));

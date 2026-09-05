@@ -1,6 +1,6 @@
 // Masjid-scoped reads + writes for volunteer onboarding and the churn log (T15).
 // Vetting is mocked - `status` is a plain enum, no background-check integration
-// (see ARCHITECTURE.md / PRD non-goals).
+// (see docs/ARCHITECTURE.md / PRD non-goals).
 //
 // The churn story: when a volunteer departs we stamp `left_at`, flip status to
 // inactive, AND detach them from any pod (pods.volunteer_id -> null). The pod's

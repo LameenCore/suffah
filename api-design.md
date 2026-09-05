@@ -1,4 +1,7 @@
-# Skill: API Design - Suffa
+# API Design - Suffa
+
+> Superseded by `.claude/skills/api-design/SKILL.md` (invoke it with `/api-design`).
+> Kept here as the original short-form notes.
 
 Applies to all routes under `app/api/`.
 

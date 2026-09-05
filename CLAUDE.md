@@ -61,7 +61,10 @@ See `TASKS.md` for the recommended build sequence given limited time. Read it be
 - `docs/ARCHITECTURE.md` - system design, folder structure, where AI calls happen
 - `docs/DATA_MODEL.md` - database schema and entity relationships
 - `TASKS.md` - build-order checklist for the hackathon window
-- `.claude/skills/` - project-specific skills for API design, security review, and git workflow, adapted from prior project conventions
+- `.claude/skills/` - invokable skills: `research`, `api-design`, `app-verification`, `security-review`
+- `api-design.md`, `security-review.md` - the original notes; superseded by the skills of the same name
+- `git-workflow.md` - commit / branch / push conventions for the hackathon
+- `docs/research/`, `docs/review/` - dated research notes and audit reports
 - `AGENTS.md` - Next.js 16 agent rules (auto-maintained by `next dev`); this repo runs **Next.js 16**, which has breaking changes vs. older versions - consult `node_modules/next/dist/docs/` before writing framework code
 
 @AGENTS.md
