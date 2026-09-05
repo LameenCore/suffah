@@ -379,15 +379,23 @@ export async function getHandoffDemoState(masjidId: string): Promise<HandoffDemo
 
   const { data: vols, error: vErr } = await db
     .from("volunteers")
-    .select("id, name, status")
+    .select("id, name, status, left_at")
     .eq("masjid_id", masjidId)
     .order("name", { ascending: true });
   if (vErr) throw new Error(`getHandoffDemoState: ${vErr.message}`);
-  const volunteers = (vols ?? []) as { id: string; name: string; status: string }[];
+  const volunteers = (vols ?? []) as {
+    id: string;
+    name: string;
+    status: string;
+    left_at: string | null;
+  }[];
 
   const homeVolunteer =
     volunteers.find((v) => v.name === DEMO_HOME_VOLUNTEER_NAME) ?? null;
-  const candidates = volunteers.filter((v) => v.id !== current?.id);
+  // Someone the pod can actually be handed to: not on this pod, and still here.
+  const candidates = volunteers.filter(
+    (v) => v.id !== current?.id && v.left_at == null,
+  );
 
   // Playground "online" = the pod's current node in any course has a lesson ready.
   const { data: progressRows, error: pErr } = await db

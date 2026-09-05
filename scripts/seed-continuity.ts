@@ -62,22 +62,22 @@ async function main() {
   }
 
   // A standby volunteer so the live handoff simulation (T19) has someone to hand
-  // off TO. Unassigned; the seed pod keeps Br. Kareem.
-  const { data: standby } = await db
-    .from("volunteers")
-    .select("id")
-    .eq("masjid_id", MASJID)
-    .eq("name", "Sr. Amina Diallo")
-    .maybeSingle();
-  if (!standby) {
-    await db.from("volunteers").insert({
+  // off TO. Fixed id, active, unassigned. Distinct from "Sr. Amina" (d2 in
+  // seed.ts, the departed churn-log volunteer). Clean up any earlier stray copy.
+  const STANDBY_ID = "00000000-0000-0000-0000-0000000000d3";
+  await db.from("volunteers").delete().eq("masjid_id", MASJID).eq("name", "Sr. Amina Diallo");
+  await db.from("volunteers").upsert(
+    {
+      id: STANDBY_ID,
       masjid_id: MASJID,
-      name: "Sr. Amina Diallo",
+      name: "Sr. Halima Bello",
       status: "active",
-      certification_note: "Former Sec-1 teacher; available as a substitute (mock).",
-    });
-    console.log("Added standby volunteer: Sr. Amina Diallo.");
-  }
+      certification_note: "Former Sec-1 teacher; on the substitute roster (mock).",
+      left_at: null,
+    },
+    { onConflict: "id" },
+  );
+  console.log("Standby volunteer ready: Sr. Halima Bello.");
 
   const { count } = await db
     .from("pod_session_notes")

@@ -15,8 +15,8 @@ export function MarkCompleteButton({
   if (completed) {
     return (
       <div className="rounded-lg border border-emerald-300 bg-emerald-50 px-4 py-3 text-sm text-emerald-900 dark:border-emerald-700/60 dark:bg-emerald-950/40 dark:text-emerald-200">
-        <span className="font-semibold">Lesson complete.</span> The checkpoint for this
-        node unlocks here next (Phase 2 · T07).
+        <span className="font-semibold">Lesson complete.</span> Take the checkpoint below to
+        move on.
       </div>
     );
   }
@@ -28,7 +28,7 @@ export function MarkCompleteButton({
       onClick={() => startTransition(() => completeLessonAction(nodeId))}
       className="rounded-lg bg-violet-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-violet-500 disabled:opacity-60"
     >
-      {pending ? "Saving…" : "Mark lesson complete"}
+      {pending ? "Saving..." : "Mark lesson complete"}
     </button>
   );
 }

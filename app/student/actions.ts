@@ -55,7 +55,12 @@ export async function startCheckpointAction(
   return { source: result.source };
 }
 
-/** Grade a submitted checkpoint. Persists the attempt and advances the pod on a pass. */
+/**
+ * Grade a submitted checkpoint. Persists the attempt and advances the pod on a
+ * pass. Deliberately does NOT revalidate — the Checkpoint component shows the
+ * result (and, on a pass, a "go to next lesson" button that refreshes). Forcing
+ * a re-render here would replace that result before the student sees it.
+ */
 export async function submitCheckpointAction(
   nodeId: string,
   answers: Record<string, string>,
@@ -64,9 +69,7 @@ export async function submitCheckpointAction(
   if (!(await isLessonComplete(user.id, nodeId))) {
     throw new Error("finish the lesson before submitting the checkpoint");
   }
-  const grade = await gradeCheckpoint(nodeId, user.id, user.masjidId, answers);
-  revalidatePath("/student", "layout");
-  return grade;
+  return gradeCheckpoint(nodeId, user.id, user.masjidId, answers);
 }
 
 /** Prepare the term exam for a course (generate + persist if missing). */
@@ -77,13 +80,14 @@ export async function startTermExamAction(courseId: string): Promise<{ source: s
   return { source: r.source };
 }
 
-/** Grade a submitted term exam. Records the attempt to term_exam_results. */
+/**
+ * Grade a submitted term exam. Records the attempt to term_exam_results. Like the
+ * checkpoint, no revalidate — the TermExam component renders the result itself.
+ */
 export async function submitTermExamAction(
   courseId: string,
   answers: Record<string, string>,
 ): Promise<TermExamGrade> {
   const user = await requireStudent();
-  const grade = await gradeTermExam(courseId, DEMO_TERM_LABEL, user.id, user.masjidId, answers);
-  revalidatePath("/student", "layout");
-  return grade;
+  return gradeTermExam(courseId, DEMO_TERM_LABEL, user.id, user.masjidId, answers);
 }
