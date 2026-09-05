@@ -58,5 +58,5 @@ rather than a separate one (hackathon git-workflow: lockfile hygiene not worth t
 - app/admin/page.tsx — "Pods" card is now a live link to /admin/pods (kept the other 3
   as stubs).
 - Verified: `next build` green (route ƒ /admin/pods listed), `eslint` clean. Not run
-  against a live DB (no .env.local here). Commit <t11>.
+  against a live DB (no .env.local here). Commit 709fe74.
 - Left T07 alone (dep T06 still doing). Next free tasks: T13, T16.

@@ -13,7 +13,7 @@ outcome: /admin/pods renders pod cards (volunteer picker, student roster w/ add+
   student, and tenancy in app code (DB trigger is the backstop). Reads/writes in
   lib/db/admin-queries.ts; server actions in app/admin/pods/actions.ts return {ok,error}
   so the UI shows cap violations inline instead of a 500.
-commits: <t11>
+commits: 709fe74
 ---
 
 ## Goal
