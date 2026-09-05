@@ -195,6 +195,15 @@ async function seed() {
     ]),
   );
 
+  // Community contributions to a Seerah lesson (lesson_contributions — migration
+  // 0008). N.seerah1 = "Mecca before the revelation".
+  check(
+    await db.from("lesson_contributions").insert([
+      { node_id: N.seerah1, contributor_name: "Sh. Yusuf", contributor_role: "imam", note: "Mention the tribal guardianship of the Kaaba by Quraysh and why that gave them standing across Arabia — it sets up why opposition to the Prophet ﷺ later cost them politically." },
+      { node_id: N.seerah1, contributor_name: "Hajja Fatima", contributor_role: "elder", note: 'The date is debated among historians — say "around 570 CE" for the Year of the Elephant rather than a fixed year, and note that oral genealogy kept these records.' },
+    ]),
+  );
+
   // Barakah notes (pod_barakah_log — migration 0007). Short observations, never
   // scores. student_user_id null = whole-pod note.
   check(

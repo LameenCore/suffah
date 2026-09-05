@@ -112,6 +112,12 @@ insert into sponsorships (masjid_id, sponsor_label, amount, pod_id, unit_id, not
   ('00000000-0000-0000-0000-000000000001', 'Ramadan drive — anonymous',     900.00, '00000000-0000-0000-0000-0000000000e1', '00000000-0000-0000-0000-000000010002', 'Sponsors the Meccan Period unit (Seerah).'),
   ('00000000-0000-0000-0000-000000000001', 'Local family gift',             750.00, '00000000-0000-0000-0000-0000000000e1', '00000000-0000-0000-0000-000000010003', 'Sponsors the AI-literacy intro unit.');
 
+-- Community contributions to a Seerah lesson (T22) — lesson_contributions is
+-- created by migration 0008. Node ...020101 = "Mecca before the revelation".
+insert into lesson_contributions (node_id, contributor_name, contributor_role, note) values
+  ('00000000-0000-0000-0000-000000020101', 'Sh. Yusuf',   'imam',  'Mention the tribal guardianship of the Kaaba by Quraysh and why that gave them standing across Arabia — it sets up why opposition to the Prophet ﷺ later cost them politically.'),
+  ('00000000-0000-0000-0000-000000020101', 'Hajja Fatima', 'elder', 'The date is debated among historians — say "around 570 CE" for the Year of the Elephant rather than a fixed year, and note that oral genealogy kept these records.');
+
 -- Barakah notes (T23) — pod_barakah_log is created by migration 0007. Short
 -- observations, never scores. student_user_id null = whole-pod note.
 insert into pod_barakah_log (masjid_id, pod_id, student_user_id, indicator, note, recorded_by, recorded_at) values

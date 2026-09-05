@@ -157,3 +157,22 @@ DB. Commit c6d3abb. Next: T16.
   (mine 0006_sponsorships already on main from T21). Migrate runner sorts by full
   filename + tracks each separately, so both apply — cosmetic only, left as-is.
 - build + lint green on the merged tree; not verified vs live data. commit 104c9ca.
+
+## 2026-09-05 — T22 done
+- migration 0008_lesson_contributions (node_id, contributor_name/role, note,
+  incorporated). Seed adds 2 contributions on the Seerah node-1 lesson.
+- lib/db/contribution-queries.ts — listSeerahNodes (lesson presence + version +
+  pending/incorporated counts), listContributions, addContribution (tenancy via
+  node->course->masjid).
+- lib/ai/lesson-revision.ts — incorporateContributions(nodeId, masjidId): deterministic
+  merge of pending notes into a "Community input" section, bumps
+  lesson_content.communityRevision.version, marks contributions incorporated. Model
+  rewrite is the productionization step (same persistence/version contract).
+- app/admin/seerah/{page,actions}.ts + components/admin/SeerahContributions.tsx —
+  node picker (pending badges), draft preview, contributions list, add form,
+  "Incorporate N pending -> new version" button. Admin home card.
+- No pathway_nodes ALTER (revision metadata rides in the lesson JSON).
+- build + lint green on merged tree (other session landed T19). Not verified vs live
+  data. commit <t22>.
+- All my lane is now done. Remaining board: T09/T12/T16/T17/T20 — other session or
+  blocked on T12.
