@@ -20,7 +20,7 @@ outcome: >
   controls left at 24px+ (documented; WCAG 2.5.8 AA). Verified: build + 62 tests +
   lint green; overflow-x:clip confirmed in the built CSS bundle; all routes
   render 200 with the dev-role cookie.
-commits: PLACEHOLDER62
+commits: 1666f8c
 depends_on: [T25]
 source: post-hackathon roadmap (EdTech-checklist analysis)
 ---

@@ -451,4 +451,4 @@ Commit: 31d895e
   footer links. Drawer focus-trap + prefers-reduced-motion deferred to T60.
 - Verified: next build + 62 tests + eslint green; overflow-x:clip present in the
   built CSS bundle; every route 200 with the dev-role cookie.
-Commit: PLACEHOLDER62
+Commit: 1666f8c
