@@ -2,9 +2,9 @@
 id: T82
 title: RLS — remaining reads (newer query files) + move user-action writes off service-role
 phase: 9
-status: todo
-owner: —
-claimed: —
+status: doing
+owner: https://claude.ai/code/session_011H4sTF36JvRXwmwmj5Xkcr
+claimed: 2026-09-06T02:00:00Z
 updated: 2026-09-06
 depends_on: [T80]
 source: split from T80 (its out-of-scope files + the writes axis)
