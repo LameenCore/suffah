@@ -2,9 +2,9 @@
 id: T61
 title: PWA + offline: download a unit, work offline, sync
 phase: 13
-status: todo
-owner: —
-claimed: —
+status: doing
+owner: background agent (T61)
+claimed: 2026-09-06T00:31:00Z
 updated: 2026-09-05
 depends_on: []
 source: post-hackathon roadmap (EdTech-checklist analysis)
