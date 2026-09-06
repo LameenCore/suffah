@@ -3,16 +3,19 @@ id: T27
 title: Deploy to Vercel (staging + prod)
 phase: 8
 status: blocked
-owner: https://claude.ai/code/session_01KZau462fdpkrsdLZNLrD9T
-claimed: 2026-09-06T07:10:00Z
+owner: —
+claimed: —
 updated: 2026-09-06
 depends_on: []
 source: post-hackathon roadmap (EdTech-checklist analysis)
 blocker: >
-  Team decision (2026-09-06): staying local-first. Vercel now asks for payment to
-  keep the project running, and the demo does not need a hosted URL — it runs on
-  `npm run dev` (or a recorded walkthrough, T28). Unblock only if the team decides
-  to pay for Vercel or move to another host.
+  Team decision (2026-09-06): Vercel is out — it now asks for payment, and its
+  deploy's DB-backed routes 500'd anyway. The demo runs on `npm run dev` (or a
+  recording, T28); a hosted URL is a nice-to-have, not required.
+  As of 2026-09-06 another Claude session is exploring **Cloudflare Pages** as a
+  free alternative — if that's you, just claim this task (the "Done when" below
+  applies to any host, not only Vercel) or split a T82 for it. Released to
+  owner:— so you don't have to wait out the stale-reclaim window.
 ---
 
 ## Why

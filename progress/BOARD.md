@@ -15,7 +15,7 @@ Last regenerated: 2026-09-06 (T59 — whole UI now in FR; only generated-content
 
 | id  | notes |
 |-----|-------|
-| T27 | `blocked` — team decided to stay local-only (Vercel now wants payment; the deploy's DB-backed routes 500'd anyway). Demo = `npm run dev` or a recording. |
+| T27 | `blocked`, owner:— — Vercel out (payment; routes 500'd). Another session exploring Cloudflare Pages; claim it or split a T82. Demo works local: `npm run dev`. |
 | T28 T53 T58 T76 T78 | demo recording / Sentry / email service / rehearsal / mock Q&A — infra + delivery, need the user/team |
 
 **Recent bug fixes (E2E audit, 2026-09-06):** hydration mismatch on every student
@@ -61,7 +61,7 @@ Get a clean demo state: `npm run demo:setup` (full, hits the API) or `npm run de
 |-----|-------|--------|-------|-------|
 | T25 | 8 | done  | — | Full UI/UX redesign — warm community design system |
 | T26 | 8 | done  | — | Pitch one-pager + unit-economics model |
-| T27 | 8 | blocked | session_01KZau4 | Deploy to Vercel (staging + prod) — team staying local-only, see blocker |
+| T27 | 8 | blocked | — | Deploy to Vercel (staging + prod) — Vercel out (payment); another session exploring Cloudflare Pages, see blocker |
 | T28 | 8 | todo  | — | Recorded demo walkthrough (video / GIF) |
 | T29 | 8 | done  | — | Public landing / marketing page |
 | T30 | 9 | done  | — | Real auth - sign-up/sign-in + 3 demo accounts |
