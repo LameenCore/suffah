@@ -8,11 +8,13 @@ import {
   type ActionResult,
 } from "@/app/admin/pods/actions";
 import type { AdminPod, AdminVolunteer, PodMember } from "@/lib/db/admin-queries";
+import { useT } from "@/lib/i18n/client";
+import type { MessageKey } from "@/lib/i18n";
 
-const STATUS_LABEL: Record<AdminVolunteer["status"], string> = {
-  active: "active",
-  inactive: "inactive",
-  pending_vetting: "pending vetting",
+const STATUS_KEY: Record<AdminVolunteer["status"], MessageKey> = {
+  active: "admin.pods.statusActive",
+  inactive: "admin.pods.statusInactive",
+  pending_vetting: "admin.pods.statusPending",
 };
 
 export function PodCard({
@@ -24,6 +26,7 @@ export function PodCard({
   volunteers: AdminVolunteer[];
   unassignedStudents: PodMember[];
 }) {
+  const t = useT();
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [toAdd, setToAdd] = useState("");
@@ -34,7 +37,7 @@ export function PodCard({
     setError(null);
     startTransition(async () => {
       const res = await action();
-      if (!res.ok) setError(res.error ?? "action failed");
+      if (!res.ok) setError(res.error ?? t("admin.pods.cardActionFailed"));
     });
   }
 
@@ -49,13 +52,13 @@ export function PodCard({
               : "bg-surface-2 text-ink-3  "
           }`}
         >
-          {pod.students.length} / {pod.maxStudents} students
+          {t("admin.pods.cardStudents", { n: pod.students.length, max: pod.maxStudents })}
         </span>
       </div>
 
       {/* Volunteer */}
       <label className="mt-3 block text-xs font-medium text-ink-3 ">
-        <span className="block">Volunteer</span>
+        <span className="block">{t("admin.pods.cardVolunteer")}</span>
         <select
           className="mt-1 w-full rounded-md border border-border bg-surface px-2 py-1.5 text-sm  "
           value={pod.volunteer?.id ?? ""}
@@ -64,10 +67,13 @@ export function PodCard({
             dispatch(() => setVolunteerAction(pod.id, e.target.value || null))
           }
         >
-          <option value="">(unassigned)</option>
+          <option value="">{t("admin.pods.cardUnassigned")}</option>
           {volunteers.map((v) => (
             <option key={v.id} value={v.id}>
-              {v.name} ({STATUS_LABEL[v.status]})
+              {t("admin.pods.cardVolunteerOption", {
+                name: v.name,
+                status: t(STATUS_KEY[v.status]),
+              })}
             </option>
           ))}
         </select>
@@ -75,10 +81,10 @@ export function PodCard({
 
       {/* Students */}
       <div className="mt-4 text-xs font-medium text-ink-3 ">
-        Students
+        {t("admin.pods.cardStudentsLabel")}
       </div>
       {pod.students.length === 0 ? (
-        <p className="mt-1 text-sm text-ink-4">No students assigned.</p>
+        <p className="mt-1 text-sm text-ink-4">{t("admin.pods.cardNoStudents")}</p>
       ) : (
         <ul className="mt-1 space-y-1">
           {pod.students.map((s) => (
@@ -95,7 +101,7 @@ export function PodCard({
                 }
                 className="text-xs text-ink-4 underline underline-offset-2 hover:text-danger disabled:opacity-50"
               >
-                remove
+                {t("admin.pods.cardRemove")}
               </button>
             </li>
           ))}
@@ -112,10 +118,10 @@ export function PodCard({
         >
           <option value="">
             {full
-              ? "pod is full"
+              ? t("admin.pods.cardFull")
               : unassignedStudents.length === 0
-                ? "no unassigned students"
-                : "add a student…"}
+                ? t("admin.pods.cardNoUnassigned")
+                : t("admin.pods.cardAddStudent")}
           </option>
           {unassignedStudents.map((s) => (
             <option key={s.id} value={s.id}>
@@ -133,7 +139,7 @@ export function PodCard({
           }}
           className="rounded-md bg-teal px-3 py-1.5 text-sm font-medium text-white hover:bg-teal-strong disabled:opacity-50"
         >
-          Add
+          {t("admin.pods.cardAdd")}
         </button>
       </div>
 

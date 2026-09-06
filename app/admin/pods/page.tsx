@@ -1,4 +1,5 @@
 import { requireRole } from "@/lib/auth";
+import { getT } from "@/lib/i18n";
 import { RegulationNote } from "@/components/RegulationNote";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Card } from "@/components/ui/Card";
@@ -16,6 +17,7 @@ import { POD_MAX_STUDENTS } from "@/lib/types";
 
 export default async function AdminPodsPage() {
   const user = await requireRole("admin");
+  const { t } = await getT(user);
 
   let pods: AdminPod[] = [];
   let volunteers: AdminVolunteer[] = [];
@@ -46,26 +48,27 @@ export default async function AdminPodsPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        kicker="Pods"
-        title="Pods & assignment"
-        lede={`Assign a volunteer and up to ${POD_MAX_STUDENTS} students per pod. The continuity matrix shows where each pod is in every course, so a new volunteer can pick up mid-stream.`}
-        back={{ href: "/admin", label: "Overview" }}
+        kicker={t("admin.pods.kicker")}
+        title={t("admin.pods.title")}
+        lede={t("admin.pods.lede", { max: POD_MAX_STUDENTS })}
+        back={{ href: "/admin", label: t("admin.common.back") }}
       />
 
       <RegulationNote>
-        The {POD_MAX_STUDENTS}-student cap mirrors Quebec&apos;s home-instruction
-        exemption threshold (fewer than five children per instructor) as currently
-        understood - confirm against active regulation before relying on it.
+        {t("admin.pods.regulationNote", { max: POD_MAX_STUDENTS })}
       </RegulationNote>
 
       {fastTrack.length > 0 ? (
         <Card tone="teal" className="p-4">
-          <p className="text-sm font-medium text-ink">Ready to move faster</p>
+          <p className="text-sm font-medium text-ink">{t("admin.pods.fastTrackTitle")}</p>
           <ul className="mt-1 space-y-0.5 text-sm text-ink-2">
             {fastTrack.map((s, i) => (
               <li key={i}>
-                {s.studentName} passed &quot;{s.nodeTitle}&quot; ({s.courseName}) cold - consider
-                advancing the pod past it once others are ready.
+                {t("admin.pods.fastTrackItem", {
+                  student: s.studentName,
+                  node: s.nodeTitle,
+                  course: s.courseName,
+                })}
               </li>
             ))}
           </ul>
@@ -74,12 +77,11 @@ export default async function AdminPodsPage() {
 
       {loadError ? (
         <p className="rounded-xl border border-warning/40 bg-warning-soft p-4 text-sm text-ink-2   ">
-          Pod data is unavailable: {loadError}. Configure Supabase and run the seed
-          to populate this view.
+          {t("admin.pods.unavailable", { detail: loadError })}
         </p>
       ) : pods.length === 0 ? (
         <p className="rounded-xl border border-border p-6 text-sm text-ink-3 ">
-          No pods yet.
+          {t("admin.pods.empty")}
         </p>
       ) : (
         <>
@@ -96,20 +98,19 @@ export default async function AdminPodsPage() {
 
           {/* Continuity matrix - pod x course -> current node */}
           <Card as="section" className="p-5">
-            <h2 className="font-display text-lg font-semibold text-ink">Continuity matrix</h2>
-            <p className="mt-1 text-xs text-ink-3">
-              Current pathway node per pod, per course. This is what a replacement
-              volunteer sees on day one.
-            </p>
+            <h2 className="font-display text-lg font-semibold text-ink">
+              {t("admin.pods.matrixTitle")}
+            </h2>
+            <p className="mt-1 text-xs text-ink-3">{t("admin.pods.matrixLede")}</p>
             <div className="mt-3 overflow-x-auto">
               <table className="w-full min-w-[30rem] border-collapse text-sm">
                 <thead>
                   <tr className="text-left text-xs uppercase tracking-wide text-ink-4">
                     <th className="border-b border-border py-2 pr-4 ">
-                      Pod
+                      {t("admin.pods.colPod")}
                     </th>
                     <th className="border-b border-border py-2 pr-4 ">
-                      Volunteer
+                      {t("admin.pods.colVolunteer")}
                     </th>
                     {courseColumns?.map((c) => (
                       <th
@@ -138,14 +139,18 @@ export default async function AdminPodsPage() {
                           {p.currentNodeTitle ? (
                             <>
                               <span className="text-ink-4">
-                                node {p.nodePosition}
-                                {p.totalNodes ? ` / ${p.totalNodes}` : ""}
+                                {p.totalNodes
+                                  ? t("admin.pods.nodePosOfTotal", {
+                                      pos: p.nodePosition,
+                                      total: p.totalNodes,
+                                    })
+                                  : t("admin.pods.nodePos", { pos: p.nodePosition })}
                               </span>
                               <br />
                               {p.currentNodeTitle}
                             </>
                           ) : (
-                            <span className="text-ink-4">not started</span>
+                            <span className="text-ink-4">{t("admin.pods.notStarted")}</span>
                           )}
                         </td>
                       ))}

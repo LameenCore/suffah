@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { setBudgetAction } from "@/app/admin/ai-spend/actions";
 import { Button } from "@/components/ui/Button";
+import { useT } from "@/lib/i18n/client";
 
 export function BudgetForm({
   monthlyLimitUsd,
@@ -13,6 +14,7 @@ export function BudgetForm({
   softAlertPercent: number;
   hardCapEnabled: boolean;
 }) {
+  const t = useT();
   const [pending, start] = useTransition();
   const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null);
 
@@ -24,8 +26,8 @@ export function BudgetForm({
       const res = await setBudgetAction(fd);
       setMsg(
         res.ok
-          ? { ok: true, text: "Saved." }
-          : { ok: false, text: res.error ?? "Could not save." },
+          ? { ok: true, text: t("admin.aiSpend.formSaved") }
+          : { ok: false, text: res.error ?? t("admin.aiSpend.formCouldNotSave") },
       );
     });
   }
@@ -33,7 +35,9 @@ export function BudgetForm({
   return (
     <form onSubmit={submit} className="grid gap-4 sm:grid-cols-[1fr_1fr_auto] sm:items-end">
       <label className="text-sm">
-        <span className="mb-1 block text-xs font-medium text-ink-3">Monthly limit (USD)</span>
+        <span className="mb-1 block text-xs font-medium text-ink-3">
+          {t("admin.aiSpend.formMonthlyLimit")}
+        </span>
         <input
           name="monthlyLimitUsd"
           type="number"
@@ -44,7 +48,9 @@ export function BudgetForm({
         />
       </label>
       <label className="text-sm">
-        <span className="mb-1 block text-xs font-medium text-ink-3">Soft alert at (%)</span>
+        <span className="mb-1 block text-xs font-medium text-ink-3">
+          {t("admin.aiSpend.formSoftAlert")}
+        </span>
         <input
           name="softAlertPercent"
           type="number"
@@ -56,11 +62,11 @@ export function BudgetForm({
         />
       </label>
       <Button type="submit" size="sm" disabled={pending}>
-        {pending ? "Saving..." : "Save budget"}
+        {pending ? t("admin.aiSpend.formSaving") : t("admin.aiSpend.formSaveBudget")}
       </Button>
       <label className="flex items-center gap-2 text-sm text-ink-2 sm:col-span-3">
         <input name="hardCapEnabled" type="checkbox" defaultChecked={hardCapEnabled} />
-        Hard cap: stop calling the model past the limit and serve cached content
+        {t("admin.aiSpend.formHardCap")}
       </label>
       {msg ? (
         <p
