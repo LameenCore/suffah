@@ -21,7 +21,7 @@ outcome: >
   demo/seed/test tooling that is correctly demo-scoped. Verified live: submit →
   dedupe → list → approve → masjid+admin+3 courses created → application closed →
   cleanup. eslint + build + 62 tests + check:i18n (208 keys) green.
-commits: PLACEHOLDER63
+commits: ca5e82e
 depends_on: [T30, T33]
 source: post-hackathon roadmap (EdTech-checklist analysis)
 ---

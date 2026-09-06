@@ -538,4 +538,4 @@ Commit: (fork branch — parent to cherry-pick/merge)
 - Bullet 2 (adopt/fork curriculum) split to new task T81 (depends on T50).
 - Verified live: submit → dedupe → approve → masjid+admin+3 courses (fr) → app
   closed → cleanup. eslint + build + 62 tests + check:i18n (208 keys) green.
-Commit: PLACEHOLDER63
+Commit: ca5e82e
