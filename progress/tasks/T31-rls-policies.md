@@ -22,7 +22,7 @@ outcome: >
   green; login/signup/dashboards confirmed working post-RLS (they use service-role
   for data; the one authed users-row lookup in getCurrentUser/signInAction reads
   the caller's own row, which the policy allows).
-commits: PLACEHOLDER31
+commits: d555124
 depends_on: [T30]
 source: post-hackathon roadmap (EdTech-checklist analysis)
 ---

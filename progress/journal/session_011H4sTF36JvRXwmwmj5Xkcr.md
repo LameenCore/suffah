@@ -476,4 +476,4 @@ Commit: 1666f8c
 - docs/architecture-rationale.md updated (tenancy para + tradeoffs row).
 - Verified: migrate applied; check:rls 13/13; check:integrity all pass; 62 tests;
   next build; dashboards + / + /login all 200 (post-merge with T59 i18n).
-Commit: PLACEHOLDER31
+Commit: d555124
