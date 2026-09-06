@@ -156,6 +156,30 @@ export const en = {
     transcriptPrintable: "Term-completion record (printable)",
     downloadCsv: "Download as CSV",
   },
+
+  offline: {
+    // /offline fallback page
+    title: "You're offline",
+    body: "This page isn't available without a connection. Anything you already downloaded still works.",
+    hint: "Your progress is saved and will sync when you're back online.",
+    retry: "Back to my courses",
+    // status pill
+    online: "Online",
+    offline: "Offline",
+    pending: "{count} to sync",
+    syncOk: "Checkpoint synced.",
+    syncSuperseded: "Already completed on the server — your offline attempt was recorded.",
+    syncDropped: "An offline attempt couldn't be submitted and was discarded.",
+    // download-for-offline control
+    download: "Download for offline",
+    downloading: "Downloading…",
+    downloaded: "Available offline",
+    downloadRetry: "Download failed — retry",
+    // queued checkpoint
+    queuedTitle: "Saved offline",
+    queuedBody: "You answered this checkpoint offline. It will be submitted and graded automatically when you're back online.",
+    queueFailed: "Could not save your answers offline.",
+  },
 };
 
 export type Messages = typeof en;

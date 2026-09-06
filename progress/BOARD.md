@@ -75,7 +75,7 @@ Get a clean demo state: `npm run demo:setup` (full, hits the API) or `npm run de
 | T58 | 12 | todo | — | Transactional email service |
 | T59 | 13 | doing | session_01KZau4 | French (Quebec) localization (foundation + switch shipped; deep-page strings + FR content remaining) |
 | T60 | 13 | todo | — | Accessibility pass to WCAG 2.2 AA |
-| T61 | 13 | todo | — | PWA + offline: download a unit, work offline, sync |
+| T61 | 13 | done | — | PWA + offline: download a unit, work offline, sync |
 | T62 | 13 | done | — | Mobile / responsive audit |
 | T63 | 13 | todo | — | Multi-masjid onboarding + per-masjid content library |
 | T64 | 13 | done | — | Learning analytics dashboard |
