@@ -696,3 +696,18 @@ Commit: 2b74dc8
 - check:i18n 707, tsc, build, 68 tests, eslint green.
 - NOTE: the FR legal text is a model first pass — flag for native
   Quebec-French / legal review (T59 item 7).
+
+## T59 — remaining admin sub-pages + wrap
+
+Finished T59 item 2 (all 11 remaining admin screens + components) across five
+commits: volunteers/inbox/skill-tree/barakah/question-bank/authoring
+(2a4f279, bc298de), pods/ai-spend (4471b6f), seerah/audit (1f82ed1),
+analytics + CourseAuthoringEditor + [courseId] page (9dd1f95). ~250 new keys/
+batch, 1087 total, in sync. Each batch: check:i18n + tsc + next build + 68 tests
++ eslint . green.
+
+The whole UI is now FR. Updated T59 PICK UP HERE + BOARD.md: items 1-5 DONE,
+only item 6 (generated content in FR — AI generators + locale-keyed persistence,
+own migration, real code) and item 7 (native Quebec-French review, doc-only)
+remain. Wrote docs/review/2026-09-06-french-l10n-native-review.md for item 7.
+T59 stays `doing` (item 6 is code, not yet started).

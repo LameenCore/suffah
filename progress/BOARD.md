@@ -1,15 +1,15 @@
 # BOARD — Suffa progress snapshot
 
 **Derived from `progress/tasks/`. Not authoritative. Regenerate after any claim/finish.**
-Last regenerated: 2026-09-06 (T83 done — authed-client writes)
+Last regenerated: 2026-09-06 (T59 — whole UI now in FR; only generated-content + native review left)
 
 ## Open tasks
 
-**In-repo, unclaimed, deps met:**
+**In progress:**
 
-| id  | phase | title | notes |
-|-----|-------|-------|-------|
-| T59 | 13 | French (Quebec) localization | 01KZ's active task; compliance / privacy / platform screens + FR content remain |
+| id  | phase | owner | title | notes |
+|-----|-------|-------|-------|-------|
+| T59 | 13 | 011H4sTF | French (Quebec) localization | Whole UI is FR (1087 keys, verified). Only item 6 (generated content in FR — AI generators + `locale` column + `(node,locale)` keying) and item 7 (native Quebec-French review, DOCUMENT-only) remain. See the task's "PICK UP HERE". |
 
 **Blocked / needs a person or infra:**
 
@@ -92,7 +92,7 @@ Get a clean demo state: `npm run demo:setup` (full, hits the API) or `npm run de
 | T56 | 12 | done | — | AI spend monitoring + budget alerts + metering |
 | T57 | 12 | done | — | Backup / restore runbook + integrity check |
 | T58 | 12 | todo | — | Transactional email service |
-| T59 | 13 | todo | — | French (Quebec) localization — SEE the task's "PICK UP HERE": framework + switch + landing + chrome + student path + parent home + 4/5 demo-path admin screens done (486 keys); compliance screen + remaining admin sub-pages + FR generated content + native review left |
+| T59 | 13 | doing | 011H4sTF | French (Quebec) localization — whole UI in FR (1087 keys, verified). ONLY item 6 (generated content in FR) + item 7 (native review, doc-only) left. See "PICK UP HERE". |
 | T60 | 13 | done | — | Accessibility pass to WCAG 2.2 AA (SR/keyboard pass = manual, doc) |
 | T61 | 13 | done | — | PWA + offline: download a unit, work offline, sync |
 | T62 | 13 | done | — | Mobile / responsive audit |
