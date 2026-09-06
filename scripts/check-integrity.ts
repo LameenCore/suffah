@@ -221,6 +221,39 @@ async function main() {
     }
   }
 
+  // --- 14. skill tree has no cycles (T43) ------------------------
+  {
+    const { data: edges } = await db
+      .from("node_prerequisites")
+      .select("node_id, prereq_node_id");
+    const adj = new Map<string, string[]>();
+    for (const e of edges ?? []) {
+      const list = adj.get(e.node_id as string) ?? [];
+      list.push(e.prereq_node_id as string);
+      adj.set(e.node_id as string, list);
+    }
+    const WHITE = 0, GREY = 1, BLACK = 2;
+    const colour = new Map<string, number>();
+    const bad: Row[] = [];
+    const visit = (n: string): boolean => {
+      colour.set(n, GREY);
+      for (const m of adj.get(n) ?? []) {
+        const c = colour.get(m) ?? WHITE;
+        if (c === GREY) return true;
+        if (c === WHITE && visit(m)) return true;
+      }
+      colour.set(n, BLACK);
+      return false;
+    };
+    for (const n of adj.keys()) {
+      if ((colour.get(n) ?? WHITE) === WHITE && visit(n)) {
+        bad.push({ node: n });
+        break;
+      }
+    }
+    report("node_prerequisites is acyclic", bad, (r) => `cycle through ${r.node}`);
+  }
+
   console.log(failures === 0 ? "\nAll checks passed." : `\n${failures} check(s) FAILED.`);
   if (failures > 0) process.exitCode = 1;
 }

@@ -268,6 +268,23 @@ async function seed() {
     }),
   );
 
+  // Skill tree (T43) - concept tags + prerequisite edges (migration 0017).
+  for (const [id, tag] of [
+    [N.math1, "integer sense"],
+    [N.math2, "integer operations"],
+    [N.math3, "order of operations"],
+    [N.ai3, "model reasoning"],
+  ] as const) {
+    check(await db.from("pathway_nodes").update({ concept_tag: tag }).eq("id", id));
+  }
+  check(
+    await db.from("node_prerequisites").insert([
+      { node_id: N.math3, prereq_node_id: N.math2 },
+      { node_id: N.math2, prereq_node_id: N.math1 },
+      { node_id: N.ai3, prereq_node_id: N.math1 },
+    ]),
+  );
+
   console.log("Seeded demo masjid:", MASJID);
 }
 

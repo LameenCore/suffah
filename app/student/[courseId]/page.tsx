@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requireRole } from "@/lib/auth";
 import { getPlayground, getLatestCheckpointResult } from "@/lib/db/queries";
+import { getPrereqStatus } from "@/lib/db/skill-tree-queries";
 import { stripAnswers } from "@/lib/ai/checkpoint";
 import { LessonView } from "@/components/student/LessonView";
 import { TutorPanel } from "@/components/student/TutorPanel";
@@ -25,6 +26,12 @@ export default async function CourseLessonPage({
   const priorPassed = currentNode
     ? (await getLatestCheckpointResult(user.id, currentNode.id))?.passed === true
     : false;
+
+  // Skill tree (T43): is the current node locked behind an unmet prerequisite?
+  const lock = currentNode
+    ? (await getPrereqStatus(user.id, user.masjidId).catch(() => null))?.get(currentNode.id) ??
+      null
+    : null;
 
   return (
     <div className="space-y-6">
@@ -50,6 +57,25 @@ export default async function CourseLessonPage({
         <p className="rounded-[var(--radius-lg)] border border-border bg-surface p-6 text-sm text-ink-3">
           Your pod isn&apos;t on this course yet. Ask the masjid to place it.
         </p>
+      ) : lock?.locked ? (
+        <div className="rounded-[var(--radius-lg)] border border-mustard/40 bg-mustard-soft p-6 text-sm">
+          <p className="font-display text-base font-semibold text-ink">
+            Locked for now
+          </p>
+          <p className="mt-1 text-ink-2">
+            Finish{" "}
+            {lock.unmet.map((u, i) => (
+              <span key={u.id}>
+                {i > 0 ? " and " : ""}
+                <span className="font-medium">
+                  &ldquo;{u.title}&rdquo;
+                </span>{" "}
+                <span className="text-ink-4">({u.courseName})</span>
+              </span>
+            ))}{" "}
+            first - it&apos;s what this lesson builds on.
+          </p>
+        </div>
       ) : !currentNode.lesson_content ? (
         <GenerateLessonPanel nodeId={currentNode.id} />
       ) : (

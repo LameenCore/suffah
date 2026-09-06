@@ -33,6 +33,7 @@ export const en = {
     ledger: "Waqf ledger",
     aiSpend: "AI spend",
     seerah: "Seerah studio",
+    skillTree: "Skill tree",
     audit: "Audit trail",
     analytics: "Learning analytics",
     helpRequests: "Help requests",

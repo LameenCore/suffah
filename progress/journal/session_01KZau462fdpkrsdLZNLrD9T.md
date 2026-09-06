@@ -320,3 +320,27 @@ LEFT (documented in the task): deep components + admin sub-pages + auth/legal
 pages string extraction; FR generated content (thread locale through the AI
 generators); date/currency call-site swaps; admin default_locale toggle; a
 native-FR review of the strings. T59 stays `doing`.
+
+## 2026-09-05 — T43 done (prerequisite / skill-tree)
+Claimed T43 (no deps).
+
+- migration 0017_skill_tree: pathway_nodes.concept_tag + node_prerequisites
+  (cross-course edges, self-edge check).
+- lib/db/skill-tree-queries.ts: listSkillGraph, getPrereqStatus (per-node
+  {locked, unmet[]} from the student's passed checkpoints), addPrerequisite
+  (tenancy + DFS cycle guard), removePrerequisite, setConceptTag.
+- /student/[courseId]: locked current node -> "Locked for now - finish X first"
+  panel instead of the lesson (cross-course adaptivity gate; pods still go in
+  order within their course).
+- /admin/skill-tree + SkillTreeEditor (client): concept tag inline edit, prereq
+  chips (removable), add-prereq select. Actions audited. Nav + i18n key.
+- Seed: concept tags + edges Math3<-Math2<-Math1 + AI-Lit3<-Math1. check-integrity
+  check 14 (acyclic, iterative 3-colour DFS).
+
+Verified via script: edges seeded; cycle guard rejects math1<-math3; Yusuf (fresh)
+sees math2 + ai3 locked behind "Adding and subtracting integers". Admin page +
+routes render. build + lint + tsc + 62 tests + check:integrity(14) green.
+Commit <t43>.
+
+Also this turn: extended T59 to /student course cards (CoursePath) +
+ConsistencyStrip (Translator-prop pattern for leaf server components). 131 keys.

@@ -31,6 +31,7 @@ export const fr: Messages = {
     ledger: "Registre du waqf",
     aiSpend: "Dépenses IA",
     seerah: "Atelier Sîra",
+    skillTree: "Arbre de compétences",
     audit: "Journal d'audit",
     analytics: "Analytique de l'apprentissage",
     helpRequests: "Demandes d'aide",

@@ -159,4 +159,17 @@ insert into masjid_ai_budget (masjid_id, monthly_limit_usd, soft_alert_ratio, ha
 values ('00000000-0000-0000-0000-000000000001', 25.00, 0.800, true)
 on conflict (masjid_id) do nothing;
 
+-- Skill tree (T43) - concept tags + prerequisite edges (migration 0017).
+update pathway_nodes set concept_tag = 'integer sense'       where id = '00000000-0000-0000-0000-000000020001';
+update pathway_nodes set concept_tag = 'integer operations'  where id = '00000000-0000-0000-0000-000000020002';
+update pathway_nodes set concept_tag = 'order of operations' where id = '00000000-0000-0000-0000-000000020003';
+update pathway_nodes set concept_tag = 'model reasoning'     where id = '00000000-0000-0000-0000-000000020203';
+insert into node_prerequisites (node_id, prereq_node_id) values
+  -- Math is a real chain
+  ('00000000-0000-0000-0000-000000020003', '00000000-0000-0000-0000-000000020002'),
+  ('00000000-0000-0000-0000-000000020002', '00000000-0000-0000-0000-000000020001'),
+  -- cross-course: reasoning about "confidently wrong" leans on number sense
+  ('00000000-0000-0000-0000-000000020203', '00000000-0000-0000-0000-000000020001')
+on conflict (node_id, prereq_node_id) do nothing;
+
 commit;

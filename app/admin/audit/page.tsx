@@ -23,6 +23,8 @@ const ACTION_LABEL: Record<string, string> = {
   "continuity.briefing_generated": "Generated a handoff briefing",
   "continuity.session_note_added": "Added a pod session note",
   "ai_budget.updated": "Updated the AI budget",
+  "skill_tree.prereq_added": "Added a prerequisite edge",
+  "skill_tree.prereq_removed": "Removed a prerequisite edge",
 };
 
 function label(action: string): string {
