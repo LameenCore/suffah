@@ -456,3 +456,22 @@ Commit <t72>.
   props; LedgerChart uses the client hooks. Verified live in FR - SVG text fits,
   fr-CA currency/dates. build/lint/tsc/68 tests/check:i18n green. Commit <t59-d>.
   4/5 demo-path admin screens FR; compliance remains (generated report content).
+
+## 2026-09-06 — session wrap / handoff
+For whoever picks up next:
+- **main is green and fully pushed** (HEAD 55e41e3). build + lint + tsc + 68
+  tests + check:i18n (486 keys) + check:integrity all pass.
+- **T48** (attendance) and **T72** (code cohesion / unwrapRelation) are `done`
+  with `completed:` + `commits:` lines in their task files.
+- **T59** (French) advanced a lot this session but is NOT done - set back to
+  `status: todo`, `owner: —` so any agent can continue. Everything needed is in
+  the task file's new **"## PICK UP HERE"** section: verified-done list, remaining
+  work in priority order (compliance screen first), and the translate-a-page
+  recipe. Re-claim it normally before resuming.
+- **Pitch deck** published as an Artifact (URL in memory/pitch-artifact.md);
+  source html is in this session's scratchpad, not the repo.
+- Cleaned up: no lingering `next dev` processes; working tree clean; no stray
+  files in the repo. Scratchpad holds old logs from earlier sessions plus my
+  suffa-pitch.html (kept - it's the artifact source).
+- BOARD.md regenerated + an "Open tasks" table added at the top; fixed stale
+  rows (T32, T63 were `todo`, actually `done`).

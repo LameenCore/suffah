@@ -1,7 +1,20 @@
 # BOARD — Suffa progress snapshot
 
 **Derived from `progress/tasks/`. Not authoritative. Regenerate after any claim/finish.**
-Last regenerated: 2026-09-06 (T48 T72 done; T59 doing)
+Last regenerated: 2026-09-06 (T48 T72 done; T59 advanced then released to `todo`)
+
+## Open tasks (unclaimed, deps met — pick one)
+
+| id  | phase | title | notes |
+|-----|-------|-------|-------|
+| T59 | 13 | French (Quebec) localization | **partially done** — see the task's "PICK UP HERE" section; compliance screen is the highest-value remaining piece |
+| T47 | 11 | Pod discussion / Q&A board | dep T32 done; adds UGC → T41 moderation follows |
+| T60 | 13 | Accessibility pass to WCAG 2.2 AA | dep T25 done; large, partly needs a human (screen-reader passes) |
+| T80 | 9  | Finish user-facing `lib/db` reads on `getReadClient()` | dep T79 done; security boundary; needs verification against a real signed-in session |
+| T81 | 13 | Per-masjid curriculum — adopt shared or fork/author | dep T50 done, **T63 done** (frontmatter was stale) |
+| T41 | 10 | Content moderation + child safety for UGC | blocked on T47 |
+| T27 T28 T53 T58 T76 T78 | — | deploy / demo recording / monitoring / email / rehearsal / mock Q&A | infra + delivery, mostly not pure-code |
+
 
 | id  | phase | status | owner | title |
 |-----|-------|--------|-------|-------|
@@ -46,7 +59,7 @@ Get a clean demo state: `npm run demo:setup` (full, hits the API) or `npm run de
 | T29 | 8 | done  | — | Public landing / marketing page |
 | T30 | 9 | done  | — | Real auth - sign-up/sign-in + 3 demo accounts |
 | T31 | 9 | done  | — | Postgres RLS policies per table |
-| T32 | 9 | todo  | — | Volunteer logins + delegated pod access |
+| T32 | 9 | done  | — | Volunteer logins + delegated pod access |
 | T33 | 9 | done  | — | Platform super-admin + masjid provisioning |
 | T34 | 9 | done  | — | Rate limiting + abuse guards on AI endpoints |
 | T35 | 9 | done  | — | Audit logging for sensitive actions |
@@ -73,11 +86,11 @@ Get a clean demo state: `npm run demo:setup` (full, hits the API) or `npm run de
 | T56 | 12 | done | — | AI spend monitoring + budget alerts + metering |
 | T57 | 12 | done | — | Backup / restore runbook + integrity check |
 | T58 | 12 | todo | — | Transactional email service |
-| T59 | 13 | doing | session_01KZau4 | French (Quebec) localization (foundation + switch shipped; deep-page strings + FR content remaining) |
+| T59 | 13 | todo | — | French (Quebec) localization — SEE the task's "PICK UP HERE": framework + switch + landing + chrome + student path + parent home + 4/5 demo-path admin screens done (486 keys); compliance screen + remaining admin sub-pages + FR generated content + native review left |
 | T60 | 13 | todo | — | Accessibility pass to WCAG 2.2 AA |
 | T61 | 13 | done | — | PWA + offline: download a unit, work offline, sync |
 | T62 | 13 | done | — | Mobile / responsive audit |
-| T63 | 13 | todo | — | Multi-masjid onboarding + per-masjid content library |
+| T63 | 13 | done | — | Multi-masjid onboarding + per-masjid content library |
 | T64 | 13 | done | — | Learning analytics dashboard |
 | T65 | 13 | done | — | Define + instrument the core metrics |
 | T66 | 13 | todo | — | Cognitive-accessibility "simple mode" for the playground |

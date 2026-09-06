@@ -5,7 +5,9 @@ phase: 14
 status: done
 owner: https://claude.ai/code/session_01KZau462fdpkrsdLZNLrD9T
 claimed: 2026-09-06T22:20:00Z
+completed: 2026-09-06T22:35:00Z
 updated: 2026-09-06
+commits: f277828 (claim), 0585f79 (implementation)
 outcome: >
   New lib/db/rel.ts owns unwrapRelation - the "PostgREST to-one embed is an object
   or a 1-element array, take first or null" step that was hand-inlined in ~15

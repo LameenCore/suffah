@@ -5,9 +5,11 @@ phase: 11
 status: done
 owner: https://claude.ai/code/session_01KZau462fdpkrsdLZNLrD9T
 claimed: 2026-09-06T13:40:00Z
+completed: 2026-09-06T21:45:00Z
 updated: 2026-09-06
 depends_on: [T32]
 source: post-hackathon roadmap (EdTech-checklist analysis)
+commits: 5656bb7 (claim), 93c70dc (implementation + root-cause fix)
 outcome: >
   Migration 0021_attendance.sql adds enrichment_sessions + attendance_records
   (both masjid/pod-scoped, unique per pod+date and session+student). Volunteer

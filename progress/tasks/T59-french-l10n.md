@@ -2,12 +2,18 @@
 id: T59
 title: French (Quebec) localization
 phase: 13
-status: doing
-owner: https://claude.ai/code/session_01KZau462fdpkrsdLZNLrD9T
-claimed: 2026-09-06T10:30:00Z
-updated: 2026-09-05
+status: todo
+owner: —
+claimed: —
+updated: 2026-09-06
 depends_on: []
 source: post-hackathon roadmap (EdTech-checklist analysis)
+commits: (partial, many) foundation 71356b4 6b4e6fb; 2026-09-06 ac8deca 2306eba 9c37b72 55e41e3
+note: >
+  Substantially advanced across several sessions but NOT done - released so
+  another agent can continue. All progress is in the "## PICK UP HERE" section
+  and the Progress log below. Re-claim it normally (status: doing + owner) before
+  resuming.
 ---
 
 ## Why
@@ -25,6 +31,69 @@ Requested explicitly: a single control that switches the **whole app** EN <-> FR
       be produced in FR; the compliance report + printable view available in FR
 - [ ] Dates / numbers / currency localised (fr-CA); Arabic quoted text (Seerah) renders
       correctly in both locales; the marketing/landing page (T29) localised too
+
+## PICK UP HERE (state as of 2026-09-06, 486 message keys)
+
+**Done and verified live in FR:** the i18n framework + the EN/FR switch (persists
+per user, `masjids.default_locale` for tenant default); landing page; the whole
+app chrome (sidebar nav, footer, mobile menu) for all 3 dashboards; `/login`,
+`/signup`; the **full student path** (course cards, ConsistencyStrip, LessonView,
+Checkpoint, TutorPanel, generate/complete, skill-tree locked panel); the **full
+parent dashboard home** (`app/parent/page.tsx` incl. CourseCard, BarakahSummary,
+AttendanceSummary, consent banner, compliance badge + `overallHeadline()`); and
+**4 of the 5 demo-path admin screens**: overview (`app/admin/page.tsx`),
+Continuity Fingerprint (`app/admin/continuity/page.tsx` + `ContinuityPod` +
+`BriefingView`), handoff simulation (`app/admin/handoff-demo/page.tsx` +
+`HandoffDemo`), waqf ledger (`app/admin/ledger/page.tsx` + `WaqfFlowDiagram` +
+`SponsoredOutcomes` + `LedgerChart`).
+
+**Remaining, roughly in priority order:**
+
+1. **Compliance screen** (the last demo-path screen, and the hardest). `app/admin/
+   compliance/page.tsx` + `ComplianceReportView` + `SnapshotBar` +
+   `TutorTranscriptView`, and the parent-facing `/parent/compliance` +
+   `/print/compliance/[studentId]` + `/print/transcript/[studentId]`. The blocker:
+   `lib/compliance/report.ts` / `computeOverall` produce the course-status reasons
+   ("Pod is on node 2 but this student has no checkpoint attempts on record") and
+   the overall headline **as English strings**. Either thread a `Translator` into
+   `lib/compliance/*` (touches its unit tests — assert on `level`/`counts` instead
+   of `headline`), or restate at each view layer the way `overallHeadline()` in
+   `app/parent/page.tsx` already does. Prefer the view-layer restatement.
+2. **Remaining admin sub-pages** (not on the demo path but part of "every screen"):
+   pods, volunteers, ai-spend, seerah, skill-tree, authoring, question-bank, audit,
+   analytics, inbox, barakah — plus their components (`PodCard`, `VolunteerManager`,
+   `BudgetForm`, `SeerahContributions`, `SkillTreeEditor`, `CourseAuthoringEditor`,
+   `QuestionBank`, `SupportInbox`, `BarakahCheckIn`).
+3. **`/help`, legal pages** (`/terms`, `/privacy`, `/acceptable-use`), and the
+   **consent + privacy flows** (`/parent/consent`, `/parent/privacy` + its export).
+4. **Auth server-action error strings** (server-side redirect messages in
+   `app/login/actions.ts`, `app/signup/actions.ts`).
+5. **A `default_locale` toggle in admin masjid settings** (there is no masjid
+   settings page yet — smallest scope is a control on `/admin` or a new
+   `/admin/settings`).
+6. **Generated content in FR** — the big one: thread a `locale` arg through
+   `generateLesson` / `generateCheckpoint` / `generateAssessment` /
+   `generateTermExam` (`lib/ai/*`), `generatePodBriefing` (`lib/ai/continuity.ts`),
+   `askTutor` (`lib/ai/tutor.ts`), `getOrCreateRemediation`. Store the locale on
+   the persisted content and key content by (node, locale). `getPodFocus`
+   (`lib/recommendations.ts`) is deterministic English text and needs the same.
+7. **Native Quebec-French review** of every string (see Notes below) — the current
+   FR is a first pass by the model.
+
+**How to translate a page** (established pattern):
+- Server component: `const { t, intlLocale } = await getT(user);` then `t("ns.key")`,
+  and pass `intlLocale` to any `toLocaleDateString` / currency formatting.
+- Client component: `const t = useT();` (+ `useIntlLocale()` if it formats dates).
+- Pass `t` down as a `Translator` prop to shared render-only components
+  (`BriefingView`, `CourseCard`, `WaqfFlowDiagram` all do this now).
+- Add keys to **both** `lib/i18n/messages/en.ts` and `fr.ts` in lockstep;
+  `npm run check:i18n` fails on any mismatch. Interpolation is `{param}`.
+- Reuse `nav.*` keys for anything that duplicates a sidebar label.
+- Verify: `npm run check:i18n && npx tsc --noEmit && npm run lint && npm run build`,
+  then run `npm run dev` and eyeball the page with the FR toggle (watch for
+  clipped SVG text and unresolved `{param}` literals). Chrome may auto-translate
+  the FR page back to English on screen — that is not a bug; check the first
+  render before the translate banner fires, or disable page translation.
 
 ## Progress
 
