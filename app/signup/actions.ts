@@ -14,16 +14,16 @@ export async function signUpAction(formData: FormData): Promise<void> {
   const role = String(formData.get("role") ?? "");
 
   const back = (msg: string) => redirect("/signup?error=" + encodeURIComponent(msg));
-  if (!name || !email || !password) back("Fill in your name, email and a password.");
-  if (password.length < 8) back("Password must be at least 8 characters.");
-  if (!isRole(role)) back("Choose a role.");
+  if (!name || !email || !password) back("fillNameEmailPassword");
+  if (password.length < 8) back("passwordMin");
+  if (!isRole(role)) back("chooseRole");
 
   // Multi-masjid (T63): a bare public signup only makes sense for the single demo
   // tenant. A real deployment routes a masjid through /for-masjids (provisioned
   // by a platform admin) and its families through a per-masjid invite.
   if (!env.demoMode) {
     if (role === "admin") redirect("/for-masjids");
-    back("Ask your masjid for an invite link to join Suffa.");
+    back("inviteOnly");
   }
 
   const anon = await getServerClient();
@@ -32,7 +32,7 @@ export async function signUpAction(formData: FormData): Promise<void> {
     password,
     options: { data: { name, role } },
   });
-  if (signUpErr || !signUp.user) back(signUpErr?.message ?? "Could not create the account.");
+  if (signUpErr || !signUp.user) back(signUpErr?.message ?? "createFailed");
 
   const authId = signUp!.user!.id;
   const svc = getServiceClient();
@@ -51,11 +51,11 @@ export async function signUpAction(formData: FormData): Promise<void> {
   if (rowErr) {
     // Roll back the auth user so a retry is clean.
     await svc.auth.admin.deleteUser(authId).catch(() => {});
-    back(rowErr.message.includes("duplicate") ? "That email is already registered." : rowErr.message);
+    back(rowErr.message.includes("duplicate") ? "emailTaken" : rowErr.message);
   }
 
   const { error: signInErr } = await anon.auth.signInWithPassword({ email, password });
-  if (signInErr) redirect("/login?error=" + encodeURIComponent("Account created - please sign in."));
+  if (signInErr) redirect("/login?error=accountCreatedSignIn");
 
   redirect(`/${role as Role}`);
 }

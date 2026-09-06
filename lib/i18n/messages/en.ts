@@ -45,6 +45,7 @@ export const en = {
     authoring: "Course authoring",
     questionBank: "Question bank",
     audit: "Audit trail",
+    settings: "Settings",
     analytics: "Learning analytics",
     helpRequests: "Help requests",
     podBoard: "Pod board",
@@ -274,6 +275,19 @@ export const en = {
     createAccountCta: "Create account",
     agreeIntro: "By creating an account you agree to the",
     agreeAnd: "and",
+    err: {
+      enterEmailPassword: "Enter your email and password.",
+      signInFailed: "Sign in failed.",
+      notLinked: "This account is not linked to a Suffa profile yet.",
+      unknownRole: "Unknown role.",
+      fillNameEmailPassword: "Fill in your name, email and a password.",
+      passwordMin: "Password must be at least 8 characters.",
+      chooseRole: "Choose a role.",
+      inviteOnly: "Ask your masjid for an invite link to join Suffa.",
+      createFailed: "Could not create the account.",
+      emailTaken: "That email is already registered.",
+      accountCreatedSignIn: "Account created — please sign in.",
+    },
   },
 
   footer: {
@@ -445,6 +459,19 @@ export const en = {
       assignGenerate: "Assign + generate briefing",
       briefingExists: "A briefing already exists for this pod.",
       seeOnContinuity: "See it on the Continuity Fingerprint view",
+    },
+    settings: {
+      kicker: "Settings",
+      title: "Masjid settings",
+      lede: "Defaults for everyone in this masjid.",
+      back: "Overview",
+      defaultLocaleTitle: "Default language",
+      defaultLocaleLede:
+        "New members, and every signed-out page, start in this language. Anyone can still switch their own view with the EN / FR toggle.",
+      defaultLocaleSaved: "Default language saved.",
+      save: "Save",
+      optionEn: "English",
+      optionFr: "Français (Québec)",
     },
   },
 

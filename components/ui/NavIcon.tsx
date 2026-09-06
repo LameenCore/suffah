@@ -15,7 +15,8 @@ type Name =
   | "shield"
   | "check"
   | "chart"
-  | "pencil";
+  | "pencil"
+  | "gear";
 
 const PATHS: Record<Name, React.ReactNode> = {
   home: <path d="M3 10.5 12 3l9 7.5M5 9.5V21h14V9.5" />,
@@ -54,6 +55,12 @@ const PATHS: Record<Name, React.ReactNode> = {
   check: <path d="M5 13l4 4L19 7" />,
   chart: <path d="M4 20V4M4 20h16M8 20v-6M13 20V9M18 20v-9" />,
   pencil: <path d="M4 20h4L19 9l-4-4L4 16zM14 6l4 4" />,
+  gear: (
+    <>
+      <circle cx="12" cy="12" r="3" />
+      <path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1" />
+    </>
+  ),
 };
 
 export function NavIcon({

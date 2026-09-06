@@ -14,12 +14,12 @@ export async function signInAction(formData: FormData): Promise<void> {
   const email = String(formData.get("email") ?? "").trim();
   const password = String(formData.get("password") ?? "");
   const next = String(formData.get("next") ?? "");
-  if (!email || !password) redirect("/login?error=Enter your email and password.");
+  if (!email || !password) redirect("/login?error=enterEmailPassword");
 
   const supabase = await getServerClient();
   const { data, error } = await supabase.auth.signInWithPassword({ email, password });
   if (error || !data.user) {
-    redirect("/login?error=" + encodeURIComponent(error?.message ?? "Sign in failed."));
+    redirect("/login?error=" + encodeURIComponent(error?.message ?? "signInFailed"));
   }
 
   const { data: row } = await supabase
@@ -30,7 +30,7 @@ export async function signInAction(formData: FormData): Promise<void> {
   const role = isRole(row?.role as string) ? (row!.role as Role) : null;
   if (!role) {
     await supabase.auth.signOut();
-    redirect("/login?error=" + encodeURIComponent("This account is not linked to a Suffa profile yet."));
+    redirect("/login?error=notLinked");
   }
 
   redirect(next && next.startsWith("/") ? next : dashboardFor(role));
@@ -39,7 +39,7 @@ export async function signInAction(formData: FormData): Promise<void> {
 /** Judge shortcut: drop the dev-role cookie and enter that dashboard. */
 export async function demoAsAction(formData: FormData): Promise<void> {
   const role = String(formData.get("role") ?? "");
-  if (!isRole(role)) redirect("/login?error=Unknown role.");
+  if (!isRole(role)) redirect("/login?error=unknownRole");
   (await cookies()).set(DEV_ROLE_COOKIE, role, {
     httpOnly: true,
     sameSite: "lax",

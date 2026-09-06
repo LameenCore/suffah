@@ -6,6 +6,7 @@ import { Star8 } from "@/components/ui/Motif";
 import { Mascot } from "@/components/ui/Mascot";
 import { LocaleSwitch } from "@/components/LocaleSwitch";
 import { getT } from "@/lib/i18n";
+import { resolveAuthError } from "@/lib/i18n/auth-text";
 
 export default async function LoginPage({ searchParams }: PageProps<"/login">) {
   const user = await getCurrentUser();
@@ -13,7 +14,8 @@ export default async function LoginPage({ searchParams }: PageProps<"/login">) {
 
   const { t } = await getT();
   const sp = await searchParams;
-  const error = typeof sp.error === "string" ? sp.error : null;
+  const error =
+    typeof sp.error === "string" ? resolveAuthError(t, sp.error) : null;
   const next = typeof sp.next === "string" ? sp.next : "";
 
   const roleLabel: Record<"admin" | "parent" | "student", string> = {

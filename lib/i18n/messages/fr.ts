@@ -43,6 +43,7 @@ export const fr: Messages = {
     authoring: "Rédaction des cours",
     questionBank: "Banque de questions",
     audit: "Journal d'audit",
+    settings: "Paramètres",
     analytics: "Analytique de l'apprentissage",
     helpRequests: "Demandes d'aide",
     podBoard: "Tableau du groupe",
@@ -272,6 +273,19 @@ export const fr: Messages = {
     createAccountCta: "Créer le compte",
     agreeIntro: "En créant un compte, vous acceptez les",
     agreeAnd: "et la",
+    err: {
+      enterEmailPassword: "Saisissez votre courriel et votre mot de passe.",
+      signInFailed: "Échec de la connexion.",
+      notLinked: "Ce compte n'est pas encore relié à un profil Suffa.",
+      unknownRole: "Rôle inconnu.",
+      fillNameEmailPassword: "Remplissez votre nom, votre courriel et un mot de passe.",
+      passwordMin: "Le mot de passe doit comporter au moins 8 caractères.",
+      chooseRole: "Choisissez un rôle.",
+      inviteOnly: "Demandez à votre mosquée un lien d'invitation pour rejoindre Suffa.",
+      createFailed: "Impossible de créer le compte.",
+      emailTaken: "Ce courriel est déjà enregistré.",
+      accountCreatedSignIn: "Compte créé — veuillez vous connecter.",
+    },
   },
 
   footer: {
@@ -443,6 +457,19 @@ export const fr: Messages = {
       assignGenerate: "Assigner + générer le compte rendu",
       briefingExists: "Un compte rendu existe déjà pour ce groupe.",
       seeOnContinuity: "Le voir dans la vue Empreinte de continuité",
+    },
+    settings: {
+      kicker: "Paramètres",
+      title: "Paramètres de la mosquée",
+      lede: "Réglages par défaut pour tout le monde dans cette mosquée.",
+      back: "Vue d'ensemble",
+      defaultLocaleTitle: "Langue par défaut",
+      defaultLocaleLede:
+        "Les nouveaux membres, et toutes les pages sans session ouverte, démarrent dans cette langue. Chacun peut toujours changer sa propre vue avec le sélecteur EN / FR.",
+      defaultLocaleSaved: "Langue par défaut enregistrée.",
+      save: "Enregistrer",
+      optionEn: "Anglais",
+      optionFr: "Français (Québec)",
     },
   },
 

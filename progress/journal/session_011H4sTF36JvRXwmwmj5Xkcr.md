@@ -667,3 +667,14 @@ Commit: 2b74dc8
 - `app/parent/page.tsx` dropped its local `overallHeadline` + the now-dead
   `parent.overall*` keys — uses the shared helper. Removed unused `LEVEL_LABEL`.
 - Verified: check:i18n (605), tsc, next build, 68 tests, eslint — all green.
+
+## T59 — auth action errors + masjid default-locale toggle
+
+- Auth server actions now redirect with a short error CODE, not an English
+  sentence; `lib/i18n/auth-text.ts` `resolveAuthError(t, raw)` maps known codes
+  to `auth.err.*`, passes anything else (raw Supabase message) through. Wired in
+  `/login` + `/signup` pages.
+- New `/admin/settings` page + nav entry (NavIcon `gear` added): a radio control
+  that writes `masjids.default_locale` (audited `masjid.default_locale_changed`,
+  revalidates the root layout). `admin.settings.*` keys.
+- check:i18n 627, tsc, next build, eslint green.
