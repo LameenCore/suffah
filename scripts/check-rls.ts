@@ -91,12 +91,16 @@ async function main() {
   const M2 = "00000000-0000-0000-0000-0000000000f2";
   await svc.from("masjids").delete().eq("id", M2); // clean slate
   const mkMasjid = await svc.from("masjids").insert({ id: M2, name: "RLS Test Masjid" });
-  const mkUser = await svc.from("users").insert({
-    masjid_id: M2,
-    role: "admin",
-    name: "RLS Test Admin",
-    email: `rls-test-${Date.now()}@example.invalid`,
-  });
+  const mkUser = await svc
+    .from("users")
+    .insert({
+      masjid_id: M2,
+      role: "student",
+      name: "RLS Test Student",
+      email: `rls-test-${Date.now()}@example.invalid`,
+    })
+    .select("id")
+    .single();
   if (mkMasjid.error || mkUser.error) {
     check("seed throwaway second masjid", false, mkMasjid.error?.message ?? mkUser.error?.message);
   } else {
@@ -115,6 +119,41 @@ async function main() {
       !afterUsers.error && afterUsers.data!.every((u) => u.masjid_id === DEMO_MASJID_ID),
       `foreign rows=${afterUsers.data?.filter((u) => u.masjid_id === M2).length}`,
     );
+
+    // --- WRITE policies (T79) ---
+    const M2StudentId = mkUser.data!.id as string;
+    const { data: anyNode } = await svc
+      .from("pathway_nodes")
+      .select("id")
+      .limit(1)
+      .maybeSingle();
+
+    // 1) cross-tenant write: parent inserts a result for a student in M2 -> refused
+    const crossWrite = await authed.from("checkpoint_results").insert({
+      student_user_id: M2StudentId,
+      pathway_node_id: anyNode?.id ?? "00000000-0000-0000-0000-0000000000e0",
+      passed: true,
+    });
+    check(
+      "parent CANNOT write a checkpoint_result for a student in another masjid",
+      crossWrite.error != null,
+      crossWrite.error ? `refused: ${crossWrite.error.message}` : "INSERT SUCCEEDED — LEAK",
+    );
+
+    // 2) privileged in-tenant write by a non-admin: parent inserts a ledger row -> refused
+    const ledgerWrite = await authed.from("waqf_ledger").insert({
+      masjid_id: DEMO_MASJID_ID,
+      entry_type: "sadaqah_received",
+      amount: 1,
+      note: "rls-test",
+    });
+    check(
+      "parent (non-admin) CANNOT write waqf_ledger in their own masjid",
+      ledgerWrite.error != null,
+      ledgerWrite.error ? `refused: ${ledgerWrite.error.message}` : "INSERT SUCCEEDED — LEAK",
+    );
+    // belt-and-braces: make sure nothing landed
+    await svc.from("waqf_ledger").delete().eq("note", "rls-test").eq("masjid_id", DEMO_MASJID_ID);
   }
 
   // cleanup (cascade removes the M2 user)
@@ -123,7 +162,7 @@ async function main() {
 
   console.log(
     failures === 0
-      ? "\nRLS OK — cross-tenant reads are refused at the database.\n"
+      ? "\nRLS OK — cross-tenant reads AND writes are refused at the database.\n"
       : `\n${failures} RLS check(s) FAILED.\n`,
   );
   process.exit(failures === 0 ? 0 : 1);

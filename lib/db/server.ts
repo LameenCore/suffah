@@ -7,6 +7,11 @@
 import { cookies } from "next/headers";
 import { createServerClient } from "@supabase/ssr";
 import { env, isSupabaseConfigured } from "@/lib/env";
+import { getServiceClient } from "@/lib/db";
+
+// Mirrors lib/auth's DEV_ROLE_COOKIE. Redefined here (not imported) because
+// lib/auth imports this module — importing back would cycle.
+const DEV_ROLE_COOKIE = "suffa-dev-role";
 
 export async function getServerClient() {
   if (!isSupabaseConfigured) {
@@ -31,4 +36,27 @@ export async function getServerClient() {
       },
     },
   });
+}
+
+/**
+ * The client to use for **reads on behalf of a signed-in user** (T79).
+ *
+ * - Real Supabase session  -> the RLS-enforced SSR client. Postgres row-level
+ *   security (migration 0016) is the live tenant boundary; the `masjidId`
+ *   argument every query helper takes is now a redundant guard, not the only one.
+ * - Dev-role cookie / `NEXT_PUBLIC_SUFFA_DEV_ROLE` (the "try the demo" path) ->
+ *   the service-role client. There is no real `auth.uid()` in that mode, so the
+ *   RLS client would see zero rows and blank every dashboard. Service-role is
+ *   safe here because the app-code `masjidId` filter still scopes the query.
+ *
+ * Only call this from a request context (RSC / route handler / server action) —
+ * it reads request cookies. Genuinely cross-tenant server work (seed scripts,
+ * continuity briefing generation, spend rollups) keeps calling `getServiceClient`.
+ */
+export async function getReadClient() {
+  const cookieStore = await cookies();
+  const devMode =
+    Boolean(cookieStore.get(DEV_ROLE_COOKIE)?.value) || Boolean(env.devRole);
+  if (devMode) return getServiceClient();
+  return getServerClient();
 }

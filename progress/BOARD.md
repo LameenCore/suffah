@@ -108,7 +108,8 @@ then T59 → T60, then Phase 11 depth; T63 is the multi-masjid scale unlock.
 
 | id  | phase | status | owner | title |
 |-----|-------|--------|-------|-------|
-| T79 | 9 | todo | — | Move reads to the authed client + RLS write policies (from T31) |
+| T79 | 9 | done | — | RLS write policies (0017) + parent/analytics reads on the authed client; rest of lib/db → T80 |
+| T80 | 9 | todo | — | Finish moving user-facing lib/db reads onto getReadClient() (continues T79) |
 
 ## Legend
 todo = free to claim · doing = owned now · blocked = see task's `blocker:` · done = see task's `outcome:`

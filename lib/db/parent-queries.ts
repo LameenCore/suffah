@@ -1,8 +1,14 @@
 // Masjid-scoped reads for the parent dashboard (T10). Read-only: parents monitor,
 // they don't manage. Every function is scoped to the parent's masjid and to the
 // children actually linked to that parent (parent_children, migration 0005).
+//
+// T79: these run through getReadClient() — the RLS-enforced authed client for a
+// real session, service-role for the dev-role demo path. The `masjidId` argument
+// each helper takes is now a redundant guard on top of the DB policy, not the
+// sole boundary. (RLS scopes by masjid; the parent_children join below is what
+// still narrows a parent to their *own* children within that masjid.)
 
-import { getServiceClient } from "@/lib/db";
+import { getReadClient } from "@/lib/db/server";
 import type { CourseName } from "@/lib/types";
 
 export interface ChildRef {
@@ -52,7 +58,8 @@ export async function getChildrenForParent(
   parentUserId: string,
   masjidId: string,
 ): Promise<ChildRef[]> {
-  const { data, error } = await getServiceClient()
+  const db = await getReadClient();
+  const { data, error } = await db
     .from("parent_children")
     .select("student:users!parent_children_student_user_id_fkey ( id, name, masjid_id, role )")
     .eq("parent_user_id", parentUserId);
@@ -86,7 +93,7 @@ export async function getChildReports(
   masjidId: string,
 ): Promise<ChildReport[]> {
   if (children.length === 0) return [];
-  const db = getServiceClient();
+  const db = await getReadClient();
   const studentIds = children.map((c) => c.id);
 
   const [courseRes, memberRes, cpRes, uaRes, teRes] = await Promise.all([

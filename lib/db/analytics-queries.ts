@@ -2,9 +2,13 @@
 // PII — every number here is a count or a rate over the masjid's own rows. Built
 // on getChildReports (fixed query count) + the compliance status engine, so the
 // "at-risk" definition is exactly the one families already see.
+//
+// T79: the direct reads here go through getReadClient() (RLS-enforced for a real
+// admin session; service-role for the dev-role demo). listStudents/getMonthSpend
+// stay on service-role — one's a plain roster read, the other a spend rollup.
 
 import { listStudents } from "@/lib/db/admin-queries";
-import { getServiceClient } from "@/lib/db";
+import { getReadClient } from "@/lib/db/server";
 import { getChildReports, type ChildReport } from "@/lib/db/parent-queries";
 import { assembleFromChildReport } from "@/lib/compliance/report";
 import { getMonthSpend } from "@/lib/ai/budget";
@@ -84,7 +88,7 @@ export async function getLearningAnalytics(
   masjidId: string,
   termLabel: string = DEMO_TERM_LABEL,
 ): Promise<LearningAnalytics> {
-  const db = getServiceClient();
+  const db = await getReadClient();
   const roster = await listStudents(masjidId);
   const children = roster.map((s) => ({ id: s.id, name: s.name }));
   const reports = children.length ? await getChildReports(children, masjidId) : [];
@@ -274,7 +278,7 @@ export async function getMissionHealth(
   masjidId: string,
   termLabel: string = DEMO_TERM_LABEL,
 ): Promise<MissionHealth> {
-  const db = getServiceClient();
+  const db = await getReadClient();
   const analytics = await getLearningAnalytics(masjidId, termLabel);
 
   const roster = await listStudents(masjidId);
