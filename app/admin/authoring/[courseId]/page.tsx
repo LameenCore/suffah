@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { requireRole } from "@/lib/auth";
+import { getT } from "@/lib/i18n";
 import { getAuthoringCourse } from "@/lib/db/authoring-queries";
 import { getPathwayNode } from "@/lib/db/queries";
 import { PageHeader } from "@/components/ui/PageHeader";
@@ -11,6 +12,7 @@ export default async function AuthoringCoursePage({
 }: PageProps<"/admin/authoring/[courseId]">) {
   const { courseId } = await params;
   const user = await requireRole("admin");
+  const { t } = await getT(user);
 
   const course = await getAuthoringCourse(user.masjidId, courseId).catch(() => null);
   if (!course) notFound();
@@ -29,17 +31,15 @@ export default async function AuthoringCoursePage({
   return (
     <div className="space-y-6">
       <PageHeader
-        kicker={`Course authoring · ${course.gradeBand}`}
+        kicker={t("admin.authoring.courseKicker", { grade: course.gradeBand })}
         title={course.name}
-        lede="Units group nodes for unit assessments. Reorder or rename nodes freely; a node a pod is currently on (or that has student results) cannot be deleted. Regenerating content uses the same continuity-guarded generator the playground does."
-        back={{ href: "/admin/authoring", label: "All courses" }}
+        lede={t("admin.authoring.courseLede")}
+        back={{ href: "/admin/authoring", label: t("admin.authoring.courseBack") }}
       />
 
       {course.name === "Math" ? (
         <Card tone="mustard" className="p-4 text-xs text-ink-2">
-          Math maps to the Quebec Secondary 1 mathematics program. Verify scope,
-          sequence and notation against the current Progression of Learning before
-          relying on this for a compliance portfolio.
+          {t("admin.authoring.mathNote")}
         </Card>
       ) : null}
 

@@ -18,6 +18,8 @@ import {
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
+import { useT } from "@/lib/i18n/client";
+import type { Translator } from "@/lib/i18n";
 
 type NodeContent = Record<string, { lesson: unknown; checkpoint: unknown }>;
 
@@ -31,6 +33,7 @@ export function CourseAuthoringEditor({
   course: AuthoringCourse;
   content: NodeContent;
 }) {
+  const t = useT();
   const [pending, start] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
@@ -40,13 +43,15 @@ export function CourseAuthoringEditor({
     setNotice(null);
     start(async () => {
       const res = await fn();
-      if (!res.ok) setError(res.error ?? "action failed");
+      if (!res.ok) setError(res.error ?? t("admin.authoring.actionFailed"));
       else if (okMsg) setNotice(okMsg);
     });
   }
 
   const unitTitle = (id: string | null) =>
-    id ? (course.units.find((u) => u.id === id)?.title ?? "unknown unit") : "no unit";
+    id
+      ? course.units.find((u) => u.id === id)?.title ?? t("admin.authoring.unknownUnit")
+      : t("admin.authoring.noUnit");
 
   return (
     <div className="space-y-5">
@@ -54,30 +59,38 @@ export function CourseAuthoringEditor({
       {notice ? <p className="text-sm text-success">{notice}</p> : null}
 
       <UnitPanel
+        t={t}
         course={course}
         disabled={pending}
-        onAdd={(title) => run(() => addUnitAction(course.id, title), "Unit added.")}
+        onAdd={(title) =>
+          run(() => addUnitAction(course.id, title), t("admin.authoring.unitAdded"))
+        }
       />
 
       <AddNodePanel
+        t={t}
         course={course}
         disabled={pending}
         onAdd={(title, unitId) =>
-          run(() => createNodeAction(course.id, title, unitId), "Node added.")
+          run(
+            () => createNodeAction(course.id, title, unitId),
+            t("admin.authoring.nodeAdded"),
+          )
         }
       />
 
       <Card as="section" className="p-5">
         <h2 className="font-display text-lg font-semibold text-ink">
-          Pathway nodes ({course.nodes.length})
+          {t("admin.authoring.pathwayNodesHeading", { n: course.nodes.length })}
         </h2>
         {course.nodes.length === 0 ? (
-          <p className="mt-3 text-sm text-ink-4">No nodes yet. Add the first one above.</p>
+          <p className="mt-3 text-sm text-ink-4">{t("admin.authoring.noNodesYet")}</p>
         ) : (
           <ul className="mt-3 divide-y divide-border">
             {course.nodes.map((node, i) => (
               <NodeRow
                 key={node.id}
+                t={t}
                 node={node}
                 index={i}
                 total={course.nodes.length}
@@ -96,10 +109,12 @@ export function CourseAuthoringEditor({
 }
 
 function UnitPanel({
+  t,
   course,
   disabled,
   onAdd,
 }: {
+  t: Translator;
   course: AuthoringCourse;
   disabled: boolean;
   onAdd: (title: string) => void;
@@ -108,7 +123,7 @@ function UnitPanel({
   return (
     <Card as="section" className="p-5">
       <h2 className="font-display text-lg font-semibold text-ink">
-        Units ({course.units.length})
+        {t("admin.authoring.unitsHeading", { n: course.units.length })}
       </h2>
       <ul className="mt-2 flex flex-wrap gap-1.5">
         {course.units.map((u) => (
@@ -117,17 +132,17 @@ function UnitPanel({
           </Badge>
         ))}
         {course.units.length === 0 ? (
-          <span className="text-xs text-ink-4">none yet</span>
+          <span className="text-xs text-ink-4">{t("admin.authoring.noneYet")}</span>
         ) : null}
       </ul>
       <div className="mt-3 flex flex-wrap items-center gap-2">
         <input
           className={`${inputCls} min-w-[16rem] flex-1`}
-          placeholder="New unit title"
+          placeholder={t("admin.authoring.newUnitTitle")}
           value={title}
           disabled={disabled}
           onChange={(e) => setTitle(e.target.value)}
-          aria-label="new unit title"
+          aria-label={t("admin.authoring.newUnitAria")}
         />
         <Button
           size="sm"
@@ -138,7 +153,7 @@ function UnitPanel({
             setTitle("");
           }}
         >
-          Add unit
+          {t("admin.authoring.addUnit")}
         </Button>
       </div>
     </Card>
@@ -146,10 +161,12 @@ function UnitPanel({
 }
 
 function AddNodePanel({
+  t,
   course,
   disabled,
   onAdd,
 }: {
+  t: Translator;
   course: AuthoringCourse;
   disabled: boolean;
   onAdd: (title: string, unitId: string | null) => void;
@@ -158,28 +175,27 @@ function AddNodePanel({
   const [unitId, setUnitId] = useState("");
   return (
     <Card as="section" className="p-5">
-      <h2 className="font-display text-lg font-semibold text-ink">Add a node</h2>
-      <p className="mt-1 text-xs text-ink-4">
-        New nodes are added at the end of the pathway. Generate the lesson and
-        checkpoint below once it exists.
-      </p>
+      <h2 className="font-display text-lg font-semibold text-ink">
+        {t("admin.authoring.addNodeHeading")}
+      </h2>
+      <p className="mt-1 text-xs text-ink-4">{t("admin.authoring.addNodeLede")}</p>
       <div className="mt-3 flex flex-wrap items-center gap-2">
         <input
           className={`${inputCls} min-w-[16rem] flex-1`}
-          placeholder="Node title, e.g. “Multiplying integers”"
+          placeholder={t("admin.authoring.nodeTitlePlaceholder")}
           value={title}
           disabled={disabled}
           onChange={(e) => setTitle(e.target.value)}
-          aria-label="new node title"
+          aria-label={t("admin.authoring.newNodeAria")}
         />
         <select
           className={inputCls}
           value={unitId}
           disabled={disabled}
           onChange={(e) => setUnitId(e.target.value)}
-          aria-label="unit for the new node"
+          aria-label={t("admin.authoring.unitForNewNodeAria")}
         >
-          <option value="">no unit</option>
+          <option value="">{t("admin.authoring.noUnit")}</option>
           {course.units.map((u) => (
             <option key={u.id} value={u.id}>
               {u.title}
@@ -194,7 +210,7 @@ function AddNodePanel({
             setTitle("");
           }}
         >
-          Add node
+          {t("admin.authoring.addNode")}
         </Button>
       </div>
     </Card>
@@ -202,6 +218,7 @@ function AddNodePanel({
 }
 
 function NodeRow({
+  t,
   node,
   index,
   total,
@@ -211,6 +228,7 @@ function NodeRow({
   disabled,
   run,
 }: {
+  t: Translator;
   node: AuthoringNode;
   index: number;
   total: number;
@@ -225,9 +243,9 @@ function NodeRow({
 
   const deleteBlockedReason =
     node.podsOnNode > 0
-      ? `${node.podsOnNode} pod(s) are on this node`
+      ? t("admin.authoring.podsOnNode", { n: node.podsOnNode })
       : node.hasStudentActivity
-        ? "students have results/progress here"
+        ? t("admin.authoring.studentActivityHere")
         : null;
 
   return (
@@ -239,16 +257,21 @@ function NodeRow({
           value={title}
           disabled={disabled}
           onChange={(e) => setTitle(e.target.value)}
-          aria-label={`title for node ${node.sequenceOrder}`}
+          aria-label={t("admin.authoring.titleForNodeAria", { n: node.sequenceOrder })}
         />
         {title.trim() !== node.title && title.trim() ? (
           <Button
             size="sm"
             variant="ghost"
             disabled={disabled}
-            onClick={() => run(() => renameNodeAction(course.id, node.id, title.trim()), "Renamed.")}
+            onClick={() =>
+              run(
+                () => renameNodeAction(course.id, node.id, title.trim()),
+                t("admin.authoring.renamed"),
+              )
+            }
           >
-            Save title
+            {t("admin.authoring.saveTitle")}
           </Button>
         ) : null}
 
@@ -257,8 +280,13 @@ function NodeRow({
             size="sm"
             variant="ghost"
             disabled={disabled || index === 0}
-            onClick={() => run(() => moveNodeAction(course.id, node.id, "up"), "Reordered.")}
-            aria-label={`move node ${node.sequenceOrder} up`}
+            onClick={() =>
+              run(
+                () => moveNodeAction(course.id, node.id, "up"),
+                t("admin.authoring.reordered"),
+              )
+            }
+            aria-label={t("admin.authoring.moveUpAria", { n: node.sequenceOrder })}
           >
             ↑
           </Button>
@@ -266,8 +294,13 @@ function NodeRow({
             size="sm"
             variant="ghost"
             disabled={disabled || index === total - 1}
-            onClick={() => run(() => moveNodeAction(course.id, node.id, "down"), "Reordered.")}
-            aria-label={`move node ${node.sequenceOrder} down`}
+            onClick={() =>
+              run(
+                () => moveNodeAction(course.id, node.id, "down"),
+                t("admin.authoring.reordered"),
+              )
+            }
+            aria-label={t("admin.authoring.moveDownAria", { n: node.sequenceOrder })}
           >
             ↓
           </Button>
@@ -276,7 +309,7 @@ function NodeRow({
 
       <div className="mt-2 flex flex-wrap items-center gap-2 pl-8">
         <label className="text-xs text-ink-4">
-          Unit:{" "}
+          {t("admin.authoring.unitLabel")}
           <select
             className={`${inputCls} py-1 text-xs`}
             value={node.unitId ?? ""}
@@ -284,12 +317,12 @@ function NodeRow({
             onChange={(e) =>
               run(
                 () => setNodeUnitAction(course.id, node.id, e.target.value || null),
-                "Unit updated.",
+                t("admin.authoring.unitUpdated"),
               )
             }
-            aria-label={`unit for node ${node.sequenceOrder}`}
+            aria-label={t("admin.authoring.unitForNodeAria", { n: node.sequenceOrder })}
           >
-            <option value="">no unit</option>
+            <option value="">{t("admin.authoring.noUnit")}</option>
             {course.units.map((u) => (
               <option key={u.id} value={u.id}>
                 {u.title}
@@ -298,22 +331,28 @@ function NodeRow({
           </select>
         </label>
         <Badge tone={node.hasLesson ? "success" : "mustard"}>
-          {node.hasLesson ? "lesson ✓" : "no lesson"}
+          {node.hasLesson
+            ? t("admin.authoring.lessonYes")
+            : t("admin.authoring.lessonNo")}
         </Badge>
         <Badge tone={node.hasCheckpoint ? "success" : "mustard"}>
-          {node.hasCheckpoint ? "checkpoint ✓" : "no checkpoint"}
+          {node.hasCheckpoint
+            ? t("admin.authoring.checkpointYes")
+            : t("admin.authoring.checkpointNo")}
         </Badge>
         {node.podsOnNode > 0 ? (
-          <Badge tone="teal">{node.podsOnNode} pod(s) here</Badge>
+          <Badge tone="teal">
+            {t("admin.authoring.podsHere", { n: node.podsOnNode })}
+          </Badge>
         ) : null}
 
         <Button size="sm" variant="ghost" disabled={disabled} onClick={() => setOpen((v) => !v)}>
-          {open ? "Hide content" : "Edit content"}
+          {open ? t("admin.authoring.hideContent") : t("admin.authoring.editContent")}
         </Button>
 
         {deleteBlockedReason ? (
           <span className="text-xs text-ink-4" title={deleteBlockedReason}>
-            🔒 can&apos;t delete — {deleteBlockedReason}
+            {t("admin.authoring.cantDelete", { reason: deleteBlockedReason })}
           </span>
         ) : (
           <Button
@@ -323,48 +362,63 @@ function NodeRow({
             onClick={() => {
               if (
                 window.confirm(
-                  `Delete “${node.title}”? Remaining nodes are renumbered. This cannot be undone.`,
+                  t("admin.authoring.deleteConfirm", { title: node.title }),
                 )
               ) {
-                run(() => deleteNodeAction(course.id, node.id), "Node deleted.");
+                run(
+                  () => deleteNodeAction(course.id, node.id),
+                  t("admin.authoring.nodeDeleted"),
+                );
               }
             }}
           >
-            Delete
+            {t("admin.authoring.delete")}
           </Button>
         )}
       </div>
-      <p className="mt-1 pl-8 text-xs text-ink-4">In {unitTitle}</p>
+      <p className="mt-1 pl-8 text-xs text-ink-4">
+        {t("admin.authoring.inUnit", { unit: unitTitle })}
+      </p>
 
       {open ? (
         <div className="mt-3 space-y-4 pl-8">
           <ContentEditor
+            t={t}
             kind="lesson"
             value={content?.lesson ?? null}
             disabled={disabled}
             onRegenerate={() =>
               run(
                 () => regenerateLessonAction(course.id, node.id),
-                "Lesson regenerated (force).",
+                t("admin.authoring.lessonRegenerated"),
               )
             }
             onSave={(json) =>
-              run(() => saveLessonJsonAction(course.id, node.id, json), "Lesson saved.")
+              run(
+                () => saveLessonJsonAction(course.id, node.id, json),
+                t("admin.authoring.lessonSaved"),
+              )
             }
           />
           <ContentEditor
+            t={t}
             kind="checkpoint"
             value={content?.checkpoint ?? null}
             disabled={disabled || !node.hasLesson}
-            disabledHint={!node.hasLesson ? "Generate the lesson first." : undefined}
+            disabledHint={
+              !node.hasLesson ? t("admin.authoring.generateLessonFirst") : undefined
+            }
             onRegenerate={() =>
               run(
                 () => regenerateCheckpointAction(course.id, node.id),
-                "Checkpoint regenerated (force).",
+                t("admin.authoring.checkpointRegenerated"),
               )
             }
             onSave={(json) =>
-              run(() => saveCheckpointJsonAction(course.id, node.id, json), "Checkpoint saved.")
+              run(
+                () => saveCheckpointJsonAction(course.id, node.id, json),
+                t("admin.authoring.checkpointSaved"),
+              )
             }
           />
         </div>
@@ -374,6 +428,7 @@ function NodeRow({
 }
 
 function ContentEditor({
+  t,
   kind,
   value,
   disabled,
@@ -381,6 +436,7 @@ function ContentEditor({
   onRegenerate,
   onSave,
 }: {
+  t: Translator;
   kind: "lesson" | "checkpoint";
   value: unknown;
   disabled: boolean;
@@ -392,10 +448,27 @@ function ContentEditor({
   const [draft, setDraft] = useState(initial);
   const [editing, setEditing] = useState(false);
 
+  const heading =
+    kind === "lesson"
+      ? t("admin.authoring.lessonContentHeading")
+      : t("admin.authoring.checkpointContentHeading");
+  const jsonAria =
+    kind === "lesson"
+      ? t("admin.authoring.lessonJsonAria")
+      : t("admin.authoring.checkpointJsonAria");
+  const validatedNote =
+    kind === "lesson"
+      ? t("admin.authoring.lessonValidatedNote")
+      : t("admin.authoring.checkpointValidatedNote");
+  const validateSave =
+    kind === "lesson"
+      ? t("admin.authoring.validateSaveLesson")
+      : t("admin.authoring.validateSaveCheckpoint");
+
   return (
     <div className="rounded-[var(--radius)] border border-border bg-surface-2 p-3">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <h3 className="text-sm font-semibold capitalize text-ink">{kind} content</h3>
+        <h3 className="text-sm font-semibold text-ink">{heading}</h3>
         <div className="flex items-center gap-1.5">
           <Button
             size="sm"
@@ -406,10 +479,14 @@ function ContentEditor({
               setEditing((v) => !v);
             }}
           >
-            {editing ? "Cancel" : value ? "Hand-edit JSON" : "Add JSON"}
+            {editing
+              ? t("admin.authoring.cancel")
+              : value
+                ? t("admin.authoring.handEditJson")
+                : t("admin.authoring.addJson")}
           </Button>
           <Button size="sm" variant="ghost" disabled={disabled} onClick={onRegenerate}>
-            {value ? "Regenerate" : "Generate"}
+            {value ? t("admin.authoring.regenerate") : t("admin.authoring.generate")}
           </Button>
         </div>
       </div>
@@ -423,12 +500,9 @@ function ContentEditor({
             disabled={disabled}
             onChange={(e) => setDraft(e.target.value)}
             spellCheck={false}
-            aria-label={`${kind} JSON`}
+            aria-label={jsonAria}
           />
-          <p className="text-xs text-ink-4">
-            Validated against the {kind} schema before it is saved. Saving stamps a
-            fresh version marker; the node id is unchanged so pods stay in place.
-          </p>
+          <p className="text-xs text-ink-4">{validatedNote}</p>
           <Button
             size="sm"
             disabled={disabled || !draft.trim()}
@@ -437,7 +511,7 @@ function ContentEditor({
               setEditing(false);
             }}
           >
-            Validate & save {kind}
+            {validateSave}
           </Button>
         </div>
       ) : value ? (
@@ -445,7 +519,7 @@ function ContentEditor({
           {initial}
         </pre>
       ) : (
-        <p className="mt-2 text-xs text-ink-4">Not generated yet.</p>
+        <p className="mt-2 text-xs text-ink-4">{t("admin.authoring.notGeneratedYet")}</p>
       )}
     </div>
   );
