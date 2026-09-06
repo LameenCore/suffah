@@ -21,7 +21,7 @@ outcome: >
   **The writes axis (move user-action .insert/.update/.delete off service-role) is
   split to T83** — it needs a per-route logged-in browser pass that this session's
   flaky screenshot tooling can't do reliably.
-commits: PLACEHOLDER82
+commits: 7a92492
 depends_on: [T80]
 source: split from T80 (its out-of-scope files + the writes axis)
 ---

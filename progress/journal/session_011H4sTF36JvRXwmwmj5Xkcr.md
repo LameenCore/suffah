@@ -604,4 +604,4 @@ Commit: 4b94c11
   children ONLY" → 16/16 pass.
 - Writes axis split to T83 (needs a browser click-through).
 - build + 68 tests + check:integrity + dashboards/exam/authoring 200.
-Commit: PLACEHOLDER82
+Commit: 7a92492
