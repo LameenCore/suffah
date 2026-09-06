@@ -40,6 +40,8 @@ export const en = {
     audit: "Audit trail",
     analytics: "Learning analytics",
     helpRequests: "Help requests",
+    podBoard: "Pod board",
+    boardModeration: "Board moderation",
   },
 
   roleLabel: {
@@ -584,6 +586,47 @@ export const en = {
     backHome: "Back to home",
     disclaimer:
       "This is a pilot. Provisioning is manual and reviewed by a person. No payment is taken here.",
+  },
+
+  board: {
+    kicker: "Pod board",
+    title: "Questions & peer help",
+    lede: "Ask your pod a question — classmates and your volunteer can answer. Only your pod sees this, and a volunteer or admin is always here.",
+    ledeVolunteer: "The async space for your pod. You can answer questions and start threads; you see every post, including ones held for review.",
+    noPod: "You're not in a pod yet.",
+    empty: "No questions yet. Be the first to ask.",
+    askLabel: "Ask a question",
+    askSubmit: "Post question",
+    adultNote: "A volunteer or admin can see every post on this board.",
+    replies: "{n} replies",
+    replyPlaceholder: "Write a reply…",
+    replySubmit: "Reply",
+    report: "report",
+    reportPrompt: "What's wrong with this post? (optional)",
+    reportedNotice: "Reported. A volunteer or admin will look at it.",
+    heldNotice: "Your post is waiting for a volunteer or admin to review it before it shows up.",
+    heldTag: "held for review",
+    hasHeldTag: "has a post held",
+    podScope: "This board is only for {pod}.",
+  },
+
+  moderation: {
+    kicker: "Safety",
+    title: "Board moderation",
+    lede: "Posts held before publishing — auto-flagged for language or personal info, or reported by a member. Release the ones that are fine; hide the ones that aren't.",
+    empty: "Nothing waiting. The board is clear.",
+    safetyNote:
+      "Students can only post to their own pod, there are no private messages, and a volunteer or admin is in every thread. Flagged posts are held until an adult reviews them. Retention and takedown policy: docs/moderation/policy.md.",
+    release: "Release",
+    hide: "Hide",
+    reports: "{n} reports",
+    isReply: "reply",
+    reason: {
+      profanity: "language",
+      pii: "personal info",
+      reported: "reported",
+      manual: "flagged",
+    },
   },
 };
 

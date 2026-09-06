@@ -39,6 +39,7 @@ export default async function StudentLayout({ children }: LayoutProps<"/student"
       icon: <NavIcon name="book" />,
     })),
     { href: "/student/review", label: t("nav.review"), icon: <NavIcon name="spark" /> },
+    { href: "/student/board", label: t("nav.podBoard"), icon: <NavIcon name="inbox" /> },
   ];
 
   return (

@@ -555,3 +555,22 @@ Commit: ca5e82e
   data via the non-request fallback. Full per-route browser click-through as a
   logged-in user is the residual (no browser extension) → noted in T82.
 Commit: 9db3c85
+
+## T47 + T41 — pod board + moderation (done together)
+
+- migration 0023_pod_board: pod_board_posts (thread_id self-ref, RLS masjid-read)
+  + pod_board_reports.
+- lib/moderation.ts: screenPost() — profanity list + email/phone/url/address
+  regexes → held; maskPii() for the author's view.
+- lib/db/board-queries.ts: listPodThreads / getThread / createPost (screens +
+  barakah "helps others" hook, 1/day) / reportPost (holds a visible post) /
+  moderatePost (release|hide, audited) / listModerationQueue / countModerationQueue.
+- components/board/PodBoard.tsx (shared client), components/admin/ModerationQueue.tsx.
+- /student/board (nav item), /volunteer/board (nav item, all covered pods),
+  /admin/board (nav item + held-count badge). i18n board.* + moderation.* EN/FR
+  (520 keys in sync).
+- docs/moderation/policy.md — safety-by-design, retention table, takedown.
+- Verified live: post → peer reply → cooperation barakah note; profanity+PII →
+  held + masked + queue; report → held; admin release/hide. 3 routes 200, no
+  console errors. eslint + build + 68 tests + check:i18n green.
+Commit: PLACEHOLDERT47 / PLACEHOLDERT41

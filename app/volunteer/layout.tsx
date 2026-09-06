@@ -32,6 +32,7 @@ export default async function VolunteerLayout({ children }: LayoutProps<"/volunt
 
   const nav: NavItem[] = [
     { href: "/volunteer", label: t("volunteer.navMyPods"), icon: <NavIcon name="grid" /> },
+    { href: "/volunteer/board", label: t("nav.podBoard"), icon: <NavIcon name="inbox" /> },
   ];
 
   return (

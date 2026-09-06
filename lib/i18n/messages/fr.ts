@@ -38,6 +38,8 @@ export const fr: Messages = {
     audit: "Journal d'audit",
     analytics: "Analytique de l'apprentissage",
     helpRequests: "Demandes d'aide",
+    podBoard: "Tableau du groupe",
+    boardModeration: "Modération du tableau",
   },
 
   roleLabel: {
@@ -579,5 +581,46 @@ export const fr: Messages = {
     backHome: "Retour à l'accueil",
     disclaimer:
       "Ceci est un projet pilote. La création est manuelle et examinée par une personne. Aucun paiement n'est perçu ici.",
+  },
+
+  board: {
+    kicker: "Tableau du groupe",
+    title: "Questions et entraide",
+    lede: "Pose une question à ton groupe — tes camarades et ton bénévole peuvent répondre. Seul ton groupe le voit, et un bénévole ou un admin est toujours présent.",
+    ledeVolunteer: "L'espace asynchrone de votre groupe. Vous pouvez répondre aux questions et lancer des fils; vous voyez chaque message, y compris ceux retenus pour révision.",
+    noPod: "Tu n'es pas encore dans un groupe.",
+    empty: "Aucune question pour l'instant. Sois le premier à demander.",
+    askLabel: "Poser une question",
+    askSubmit: "Publier la question",
+    adultNote: "Un bénévole ou un admin voit chaque message de ce tableau.",
+    replies: "{n} réponses",
+    replyPlaceholder: "Écris une réponse…",
+    replySubmit: "Répondre",
+    report: "signaler",
+    reportPrompt: "Qu'est-ce qui ne va pas avec ce message ? (facultatif)",
+    reportedNotice: "Signalé. Un bénévole ou un admin va l'examiner.",
+    heldNotice: "Ton message attend qu'un bénévole ou un admin le révise avant qu'il apparaisse.",
+    heldTag: "retenu pour révision",
+    hasHeldTag: "un message retenu",
+    podScope: "Ce tableau est réservé à {pod}.",
+  },
+
+  moderation: {
+    kicker: "Sécurité",
+    title: "Modération du tableau",
+    lede: "Messages retenus avant publication — signalés automatiquement pour le langage ou des renseignements personnels, ou signalés par un membre. Libérez ceux qui vont bien; masquez les autres.",
+    empty: "Rien en attente. Le tableau est net.",
+    safetyNote:
+      "Les élèves ne peuvent publier que dans leur propre groupe, il n'y a pas de messages privés, et un bénévole ou un admin est dans chaque fil. Les messages signalés sont retenus jusqu'à la révision par un adulte. Politique de conservation et de retrait : docs/moderation/policy.md.",
+    release: "Libérer",
+    hide: "Masquer",
+    reports: "{n} signalements",
+    isReply: "réponse",
+    reason: {
+      profanity: "langage",
+      pii: "renseignements personnels",
+      reported: "signalé",
+      manual: "signalé",
+    },
   },
 };

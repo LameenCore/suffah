@@ -1,7 +1,7 @@
 # BOARD — Suffa progress snapshot
 
 **Derived from `progress/tasks/`. Not authoritative. Regenerate after any claim/finish.**
-Last regenerated: 2026-09-06 (T80 done; E2E audit — 2 bugs fixed; 69/82 done)
+Last regenerated: 2026-09-06 (T41 + T47 done — pod board + moderation)
 
 ## Open tasks
 
@@ -9,7 +9,6 @@ Last regenerated: 2026-09-06 (T80 done; E2E audit — 2 bugs fixed; 69/82 done)
 
 | id  | phase | title | notes |
 |-----|-------|-------|-------|
-| T47 | 11 | Pod discussion / Q&A board | dep T32 done; adds UGC → T41 moderation follows |
 | T60 | 13 | Accessibility pass to WCAG 2.2 AA | dep T25 done; large; agent attempt died on the session rate limit — retry |
 | T81 | 13 | Per-masjid curriculum — adopt shared or fork/author | dep T50 + T63 done |
 | T82 | 9  | RLS: newer read files + move user-action writes off service-role | dep T80 done |
@@ -19,7 +18,6 @@ Last regenerated: 2026-09-06 (T80 done; E2E audit — 2 bugs fixed; 69/82 done)
 
 | id  | notes |
 |-----|-------|
-| T41 | blocked on T47 (UGC moderation) |
 | T66 | blocked on T60 (cognitive "simple mode") |
 | T27 T28 T53 T58 T76 T78 | Vercel deploy / demo recording / Sentry / email service / rehearsal / mock Q&A — infra + delivery, need the user/team |
 
@@ -80,13 +78,13 @@ Get a clean demo state: `npm run demo:setup` (full, hits the API) or `npm run de
 | T38 | 10 | done | — | Terms of Service / Privacy Policy / AUP |
 | T39 | 10 | done | — | Canadian data residency + data map |
 | T40 | 10 | done | — | Quebec home-instruction regulation: real citations |
-| T41 | 10 | todo | — | Content moderation + child safety for UGC |
+| T41 | 10 | done | — | Content moderation + child safety for UGC |
 | T42 | 11 | done | — | Adaptive path: remediation branch + skip-ahead |
 | T43 | 11 | done | — | Prerequisite / skill-tree mapping |
 | T44 | 11 | done | — | Spaced-repetition review deck |
 | T45 | 11 | done | — | AI lesson tutor (grounded Q&A) |
 | T46 | 11 | done | — | Next-step recommendations |
-| T47 | 11 | todo | — | Pod discussion / Q&A board |
+| T47 | 11 | done | — | Pod discussion / Q&A board |
 | T48 | 11 | done | session_01KZau4 | Enrichment-session attendance tracking |
 | T49 | 11 | done | — | Term-completion record / transcript export |
 | T50 | 11 | done | — | Admin course-authoring UI |

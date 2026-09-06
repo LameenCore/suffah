@@ -3,6 +3,7 @@ import { DashboardChrome } from "@/components/DashboardChrome";
 import { NavIcon } from "@/components/ui/NavIcon";
 import type { NavItem } from "@/components/Sidebar";
 import { countOpenSupport } from "@/lib/db/support-queries";
+import { countModerationQueue } from "@/lib/db/board-queries";
 import { getT } from "@/lib/i18n";
 
 export default async function AdminLayout({ children }: LayoutProps<"/admin">) {
@@ -10,8 +11,12 @@ export default async function AdminLayout({ children }: LayoutProps<"/admin">) {
   const { locale, t } = await getT(user);
 
   let openSupport = 0;
+  let heldPosts = 0;
   try {
-    openSupport = await countOpenSupport(user.masjidId);
+    [openSupport, heldPosts] = await Promise.all([
+      countOpenSupport(user.masjidId),
+      countModerationQueue(user.masjidId).catch(() => 0),
+    ]);
   } catch {
     openSupport = 0;
   }
@@ -31,6 +36,12 @@ export default async function AdminLayout({ children }: LayoutProps<"/admin">) {
     { href: "/admin/authoring", label: t("nav.authoring"), icon: <NavIcon name="pencil" /> },
     { href: "/admin/question-bank", label: t("nav.questionBank"), icon: <NavIcon name="clipboard" /> },
     { href: "/admin/audit", label: t("nav.audit"), icon: <NavIcon name="shield" /> },
+    {
+      href: "/admin/board",
+      label: t("nav.boardModeration"),
+      icon: <NavIcon name="check" />,
+      badge: heldPosts || undefined,
+    },
     {
       href: "/admin/inbox",
       label: t("nav.helpRequests"),
