@@ -554,4 +554,4 @@ Commit: ca5e82e
   check:integrity, check:i18n; dev-role dashboards all 200; migrated helpers return
   data via the non-request fallback. Full per-route browser click-through as a
   logged-in user is the residual (no browser extension) → noted in T82.
-Commit: PLACEHOLDER80
+Commit: 9db3c85

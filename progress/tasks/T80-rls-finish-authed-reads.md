@@ -22,7 +22,7 @@ outcome: >
   check:integrity, check:i18n all green; every dashboard 200 on the dev-role path;
   migrated helpers return data via the non-request fallback; check-rls already
   proves the authed SSR client (real Supabase sign-in) reads only its own masjid.
-commits: PLACEHOLDER80
+commits: 9db3c85
 depends_on: [T79]
 source: split from T79 (its 1st "done when" bullet — done as proof-of-pattern only)
 ---
