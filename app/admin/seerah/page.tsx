@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { requireRole } from "@/lib/auth";
+import { getT } from "@/lib/i18n";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Card } from "@/components/ui/Card";
 import { getPathwayNode } from "@/lib/db/queries";
@@ -16,6 +17,7 @@ export default async function AdminSeerahPage({
   searchParams,
 }: PageProps<"/admin/seerah">) {
   const user = await requireRole("admin");
+  const { t } = await getT(user);
   const sp = await searchParams;
   const wanted = typeof sp.node === "string" ? sp.node : undefined;
 
@@ -51,19 +53,22 @@ export default async function AdminSeerahPage({
   return (
     <div className="space-y-6">
       <PageHeader
-        kicker="Seerah studio"
-        title="The community's own voice in the lesson"
-        lede="Seerah has no external curriculum vendor. The masjid's scholars and elders annotate the lesson draft; their notes fold into the next version."
-        back={{ href: "/admin", label: "Overview" }}
+        kicker={t("admin.seerah.kicker")}
+        title={t("admin.seerah.title")}
+        lede={t("admin.seerah.lede")}
+        back={{ href: "/admin", label: t("admin.common.back") }}
       />
 
       {loadError ? (
         <Card tone="warning" className="p-4 text-sm text-ink-2">
-          Unavailable: {loadError}. Run <code>npm run seed</code> and{" "}
-          <code>npm run gen:lessons</code>.
+          {t("admin.seerah.unavailable", {
+            detail: loadError,
+            cmd1: "npm run seed",
+            cmd2: "npm run gen:lessons",
+          })}
         </Card>
       ) : nodes.length === 0 ? (
-        <Card className="p-6 text-sm text-ink-3">No Seerah lesson nodes found.</Card>
+        <Card className="p-6 text-sm text-ink-3">{t("admin.seerah.noNodes")}</Card>
       ) : (
         <div className="grid gap-6 lg:grid-cols-[220px_1fr]">
           <nav className="space-y-1">
@@ -88,7 +93,9 @@ export default async function AdminSeerahPage({
                   )}
                 </div>
                 <div className="mt-0.5 text-[11px] text-ink-4">
-                  {n.hasLesson ? `lesson v${n.version}` : "no lesson yet"}
+                  {n.hasLesson
+                    ? t("admin.seerah.lessonVersion", { v: n.version })
+                    : t("admin.seerah.noLessonYet")}
                 </div>
               </Link>
             ))}
@@ -98,7 +105,7 @@ export default async function AdminSeerahPage({
             {selected && lesson ? (
               <>
                 <section className="rounded-xl border border-border bg-surface p-4  ">
-                  <h2 className="font-medium">Current draft</h2>
+                  <h2 className="font-medium">{t("admin.seerah.currentDraft")}</h2>
                   <p className="mt-1 text-sm text-ink-2 ">
                     {lesson.summary}
                   </p>
@@ -121,8 +128,9 @@ export default async function AdminSeerahPage({
               </>
             ) : selected ? (
               <p className="rounded-xl border border-border p-6 text-sm text-ink-3 ">
-                This node has no generated lesson yet. Run{" "}
-                <code>npm run gen:lessons</code> first.
+                {t("admin.seerah.noGeneratedLessonBefore")}
+                <code>npm run gen:lessons</code>
+                {t("admin.seerah.noGeneratedLessonAfter")}
               </p>
             ) : null}
           </div>
