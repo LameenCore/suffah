@@ -12,11 +12,13 @@ import {
 } from "@/app/admin/volunteers/actions";
 import type { VolunteerRow } from "@/lib/db/volunteer-queries";
 import type { VolunteerStatus } from "@/lib/types";
+import { useT, useIntlLocale } from "@/lib/i18n/client";
+import type { MessageKey, Translator } from "@/lib/i18n";
 
-const STATUS_LABEL: Record<VolunteerStatus, string> = {
-  active: "Active",
-  inactive: "Inactive",
-  pending_vetting: "Pending vetting",
+const STATUS_KEY: Record<VolunteerStatus, MessageKey> = {
+  active: "admin.volunteers.statusActive",
+  inactive: "admin.volunteers.statusInactive",
+  pending_vetting: "admin.volunteers.statusPending",
 };
 
 const STATUS_STYLE: Record<VolunteerStatus, string> = {
@@ -25,26 +27,34 @@ const STATUS_STYLE: Record<VolunteerStatus, string> = {
   pending_vetting: "bg-warning-soft text-ink-2  ",
 };
 
-const fmtDate = (iso: string) =>
-  new Date(iso).toLocaleDateString("en-CA", { year: "numeric", month: "short", day: "numeric" });
+const fmtDate = (iso: string, intlLocale: string) =>
+  new Date(iso).toLocaleDateString(intlLocale, {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
 
-const tenure = (fromIso: string, toIso: string) => {
+const tenure = (fromIso: string, toIso: string, t: Translator) => {
   const days = Math.round(
     (new Date(toIso).getTime() - new Date(fromIso).getTime()) / 86_400_000,
   );
-  if (days < 31) return `${days} days`;
+  if (days < 31) return t("admin.volunteers.daysAgo", { n: days });
   const months = Math.round(days / 30);
-  return `${months} month${months === 1 ? "" : "s"}`;
+  return t(
+    months === 1 ? "admin.volunteers.monthsOne" : "admin.volunteers.monthsMany",
+    { n: months },
+  );
 };
 
 function useAction() {
+  const t = useT();
   const [pending, start] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const dispatch = (fn: () => Promise<ActionResult>, onOk?: () => void) => {
     setError(null);
     start(async () => {
       const res = await fn();
-      if (!res.ok) setError(res.error ?? "action failed");
+      if (!res.ok) setError(res.error ?? t("admin.volunteers.actionFailed"));
       else onOk?.();
     });
   };
@@ -52,6 +62,7 @@ function useAction() {
 }
 
 function OnboardForm() {
+  const t = useT();
   const formRef = useRef<HTMLFormElement>(null);
   const { pending, error, dispatch } = useAction();
 
@@ -65,31 +76,32 @@ function OnboardForm() {
       }}
       className="rounded-xl border border-border bg-surface p-4  "
     >
-      <h2 className="font-medium">Onboard a volunteer</h2>
+      <h2 className="font-medium">{t("admin.volunteers.onboardTitle")}</h2>
       <p className="mt-1 text-xs text-ink-3 ">
-        New volunteers start as <em>pending vetting</em>. Vetting is simulated for the
-        demo - no real background check.
+        {t("admin.volunteers.onboardLedeBefore")}
+        <em>{t("admin.volunteers.onboardLedePending")}</em>
+        {t("admin.volunteers.onboardLedeAfter")}
       </p>
       <div className="mt-3 space-y-3">
         <div>
           <label className="block text-xs font-medium text-ink-3 ">
-            <span className="block">Name</span>
+            <span className="block">{t("admin.volunteers.fieldName")}</span>
             <input
               name="name"
               required
               className="mt-1 w-full rounded-md border border-border bg-surface px-2 py-1.5 text-sm  "
-              placeholder="Br. / Sr. …"
+              placeholder={t("admin.volunteers.namePlaceholder")}
             />
           </label>
         </div>
         <div>
           <label className="block text-xs font-medium text-ink-3 ">
-            <span className="block">Certification / background note</span>
+            <span className="block">{t("admin.volunteers.fieldCert")}</span>
             <textarea
               name="certificationNote"
               rows={2}
               className="mt-1 w-full rounded-md border border-border bg-surface px-2 py-1.5 text-sm  "
-              placeholder="e.g. CEGEP math tutor; reference check on file (mock)."
+              placeholder={t("admin.volunteers.certPlaceholder")}
             />
           </label>
         </div>
@@ -98,7 +110,7 @@ function OnboardForm() {
           disabled={pending}
           className="rounded-md bg-teal px-3 py-1.5 text-sm font-medium text-white hover:bg-teal-strong disabled:opacity-50"
         >
-          {pending ? "Adding…" : "Add volunteer"}
+          {pending ? t("admin.volunteers.adding") : t("admin.volunteers.addVolunteer")}
         </button>
         {error && <p className="text-xs text-danger">{error}</p>}
       </div>
@@ -107,6 +119,8 @@ function OnboardForm() {
 }
 
 function ActiveRow({ v }: { v: VolunteerRow }) {
+  const t = useT();
+  const intlLocale = useIntlLocale();
   const { pending, error, dispatch } = useAction();
   const otherStatuses = (["active", "pending_vetting", "inactive"] as VolunteerStatus[]).filter(
     (s) => s !== v.status,
@@ -120,11 +134,11 @@ function ActiveRow({ v }: { v: VolunteerRow }) {
           <span
             className={`ml-2 rounded px-1.5 py-0.5 text-[11px] font-medium ${STATUS_STYLE[v.status]}`}
           >
-            {STATUS_LABEL[v.status]}
+            {t(STATUS_KEY[v.status])}
           </span>
           {v.pods.length > 0 && (
             <span className="ml-2 text-xs text-ink-4">
-              covering {v.pods.join(", ")}
+              {t("admin.volunteers.covering", { pods: v.pods.join(", ") })}
             </span>
           )}
         </div>
@@ -137,7 +151,7 @@ function ActiveRow({ v }: { v: VolunteerRow }) {
               onClick={() => dispatch(() => setVolunteerStatusAction(v.id, s))}
               className="rounded border border-border px-2 py-1 text-xs hover:bg-surface-2 disabled:opacity-50  "
             >
-              → {STATUS_LABEL[s]}
+              → {t(STATUS_KEY[s])}
             </button>
           ))}
           <button
@@ -146,14 +160,16 @@ function ActiveRow({ v }: { v: VolunteerRow }) {
             onClick={() => dispatch(() => recordDepartureAction(v.id))}
             className="rounded border border-danger/40 px-2 py-1 text-xs text-danger hover:bg-danger-soft disabled:opacity-50   "
           >
-            Record departure
+            {t("admin.volunteers.recordDeparture")}
           </button>
         </div>
       </div>
       {v.certificationNote && (
         <p className="mt-1 text-xs text-ink-3 ">{v.certificationNote}</p>
       )}
-      <p className="mt-0.5 text-xs text-ink-4">joined {fmtDate(v.joinedAt)}</p>
+      <p className="mt-0.5 text-xs text-ink-4">
+        {t("admin.volunteers.joined", { date: fmtDate(v.joinedAt, intlLocale) })}
+      </p>
       <LoginLink v={v} />
       {error && <p className="mt-1 text-xs text-danger">{error}</p>}
     </li>
@@ -162,13 +178,16 @@ function ActiveRow({ v }: { v: VolunteerRow }) {
 
 /** Link a volunteer record to a signed-up volunteer login (T32). */
 function LoginLink({ v }: { v: VolunteerRow }) {
+  const t = useT();
   const { pending, error, dispatch } = useAction();
   const [email, setEmail] = useState("");
 
   if (v.userId) {
     return (
       <p className="mt-1 flex flex-wrap items-center gap-2 text-xs text-ink-3">
-        <span className="rounded bg-teal-soft px-1.5 py-0.5 text-teal-strong">login linked</span>
+        <span className="rounded bg-teal-soft px-1.5 py-0.5 text-teal-strong">
+          {t("admin.volunteers.loginLinked")}
+        </span>
         <span className="text-ink-4">{v.userEmail}</span>
         <button
           type="button"
@@ -176,7 +195,7 @@ function LoginLink({ v }: { v: VolunteerRow }) {
           onClick={() => dispatch(() => unlinkVolunteerLoginAction(v.id))}
           className="rounded border border-border px-1.5 py-0.5 hover:bg-surface-2 disabled:opacity-50"
         >
-          unlink
+          {t("admin.volunteers.unlink")}
         </button>
         {error && <span className="text-danger">{error}</span>}
       </p>
@@ -191,12 +210,12 @@ function LoginLink({ v }: { v: VolunteerRow }) {
         dispatch(() => linkVolunteerLoginAction(v.id, email), () => setEmail(""));
       }}
     >
-      <span className="text-ink-4">No login yet.</span>
+      <span className="text-ink-4">{t("admin.volunteers.noLoginYet")}</span>
       <input
         type="email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-        placeholder="their signed-up email"
+        placeholder={t("admin.volunteers.theirEmail")}
         className="min-w-[12rem] rounded border border-border bg-surface px-2 py-1"
       />
       <button
@@ -204,7 +223,7 @@ function LoginLink({ v }: { v: VolunteerRow }) {
         disabled={pending || !email.trim()}
         className="rounded border border-border px-2 py-1 hover:bg-surface-2 disabled:opacity-50"
       >
-        Link login
+        {t("admin.volunteers.linkLogin")}
       </button>
       {error && <span className="text-danger">{error}</span>}
     </form>
@@ -212,14 +231,17 @@ function LoginLink({ v }: { v: VolunteerRow }) {
 }
 
 function ChurnedRow({ v }: { v: VolunteerRow }) {
+  const t = useT();
+  const intlLocale = useIntlLocale();
   const { pending, error, dispatch } = useAction();
   return (
     <li className="flex flex-wrap items-center justify-between gap-2 py-2 text-sm">
       <div>
         <span className="font-medium">{v.name}</span>
         <span className="ml-2 text-xs text-ink-4">
-          {fmtDate(v.joinedAt)} – {v.leftAt ? fmtDate(v.leftAt) : "-"}
-          {v.leftAt ? ` · ${tenure(v.joinedAt, v.leftAt)}` : ""}
+          {fmtDate(v.joinedAt, intlLocale)} –{" "}
+          {v.leftAt ? fmtDate(v.leftAt, intlLocale) : "-"}
+          {v.leftAt ? ` · ${tenure(v.joinedAt, v.leftAt, t)}` : ""}
         </span>
       </div>
       <div className="flex items-center gap-2">
@@ -230,7 +252,7 @@ function ChurnedRow({ v }: { v: VolunteerRow }) {
           onClick={() => dispatch(() => reinstateVolunteerAction(v.id))}
           className="rounded border border-border px-2 py-1 text-xs hover:bg-surface-2 disabled:opacity-50  "
         >
-          Reinstate
+          {t("admin.volunteers.reinstate")}
         </button>
       </div>
     </li>
@@ -244,14 +266,15 @@ export function VolunteerManager({
   active: VolunteerRow[];
   churned: VolunteerRow[];
 }) {
+  const t = useT();
   return (
     <div className="space-y-6">
       <OnboardForm />
 
       <section className="rounded-xl border border-border bg-surface p-4  ">
-        <h2 className="font-medium">Current volunteers</h2>
+        <h2 className="font-medium">{t("admin.volunteers.currentTitle")}</h2>
         {active.length === 0 ? (
-          <p className="mt-2 text-sm text-ink-4">No active volunteers.</p>
+          <p className="mt-2 text-sm text-ink-4">{t("admin.volunteers.noActive")}</p>
         ) : (
           <ul className="mt-1 divide-y divide-black/5 dark:divide-white/10">
             {active.map((v) => (
@@ -263,17 +286,19 @@ export function VolunteerManager({
 
       <section className="rounded-xl border border-border bg-surface p-4  ">
         <div className="flex items-center justify-between">
-          <h2 className="font-medium">Churn log</h2>
+          <h2 className="font-medium">{t("admin.volunteers.churnTitle")}</h2>
           <span className="text-xs text-ink-3 ">
-            {churned.length} departure{churned.length === 1 ? "" : "s"}
+            {t(
+              churned.length === 1
+                ? "admin.volunteers.departuresOne"
+                : "admin.volunteers.departuresMany",
+              { n: churned.length },
+            )}
           </span>
         </div>
-        <p className="mt-1 text-xs text-ink-3 ">
-          When a volunteer leaves, their pods are detached but keep their place in the
-          curriculum - a replacement picks up from the same node.
-        </p>
+        <p className="mt-1 text-xs text-ink-3 ">{t("admin.volunteers.churnLede")}</p>
         {churned.length === 0 ? (
-          <p className="mt-2 text-sm text-ink-4">No departures recorded.</p>
+          <p className="mt-2 text-sm text-ink-4">{t("admin.volunteers.noDepartures")}</p>
         ) : (
           <ul className="mt-1 divide-y divide-black/5 dark:divide-white/10">
             {churned.map((v) => (

@@ -10,8 +10,11 @@ import {
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
+import { useT } from "@/lib/i18n/client";
+import type { Translator } from "@/lib/i18n";
 
 export function SkillTreeEditor({ nodes }: { nodes: GraphNode[] }) {
+  const t = useT();
   const [pending, start] = useTransition();
   const [error, setError] = useState<string | null>(null);
 
@@ -31,7 +34,7 @@ export function SkillTreeEditor({ nodes }: { nodes: GraphNode[] }) {
     setError(null);
     start(async () => {
       const res = await fn();
-      if (!res.ok) setError(res.error ?? "action failed");
+      if (!res.ok) setError(res.error ?? t("admin.skillTree.actionFailed"));
     });
   }
 
@@ -50,6 +53,7 @@ export function SkillTreeEditor({ nodes }: { nodes: GraphNode[] }) {
                     {node.sequenceOrder}. {node.title}
                   </span>
                   <ConceptTag
+                    t={t}
                     nodeId={node.id}
                     value={node.conceptTag}
                     disabled={pending}
@@ -58,9 +62,11 @@ export function SkillTreeEditor({ nodes }: { nodes: GraphNode[] }) {
                 </div>
 
                 <div className="mt-2 flex flex-wrap items-center gap-1.5">
-                  <span className="text-xs text-ink-4">Requires:</span>
+                  <span className="text-xs text-ink-4">{t("admin.skillTree.requires")}</span>
                   {node.prereqs.length === 0 ? (
-                    <span className="text-xs text-ink-4">nothing</span>
+                    <span className="text-xs text-ink-4">
+                      {t("admin.skillTree.requiresNothing")}
+                    </span>
                   ) : (
                     node.prereqs.map((pid) => {
                       const p = byId.get(pid);
@@ -71,7 +77,7 @@ export function SkillTreeEditor({ nodes }: { nodes: GraphNode[] }) {
                           disabled={pending}
                           onClick={() => run(() => removePrereqAction(node.id, pid))}
                           className="inline-flex items-center gap-1 rounded-full bg-terracotta-soft px-2 py-0.5 text-xs text-terracotta-strong hover:brightness-95"
-                          title="Remove"
+                          title={t("admin.skillTree.remove")}
                         >
                           {p ? `${p.courseName} · ${p.title}` : pid}
                           <span aria-hidden>×</span>
@@ -82,6 +88,7 @@ export function SkillTreeEditor({ nodes }: { nodes: GraphNode[] }) {
                 </div>
 
                 <AddPrereq
+                  t={t}
                   node={node}
                   all={nodes}
                   disabled={pending}
@@ -97,11 +104,13 @@ export function SkillTreeEditor({ nodes }: { nodes: GraphNode[] }) {
 }
 
 function ConceptTag({
+  t,
   nodeId,
   value,
   disabled,
   onSave,
 }: {
+  t: Translator;
   nodeId: string;
   value: string | null;
   disabled: boolean;
@@ -113,14 +122,14 @@ function ConceptTag({
       <input
         value={draft}
         onChange={(e) => setDraft(e.target.value)}
-        placeholder="concept tag"
+        placeholder={t("admin.skillTree.conceptTagPlaceholder")}
         disabled={disabled}
         className="w-40 rounded-[var(--radius)] border border-border bg-surface px-2 py-1 text-xs"
-        aria-label={`concept tag for node ${nodeId}`}
+        aria-label={t("admin.skillTree.conceptTagAria", { id: nodeId })}
       />
       {draft !== (value ?? "") ? (
         <Button size="sm" variant="ghost" disabled={disabled} onClick={() => onSave(draft)}>
-          Save
+          {t("admin.skillTree.save")}
         </Button>
       ) : value ? (
         <Badge tone="teal">{value}</Badge>
@@ -130,11 +139,13 @@ function ConceptTag({
 }
 
 function AddPrereq({
+  t,
   node,
   all,
   disabled,
   onAdd,
 }: {
+  t: Translator;
   node: GraphNode;
   all: GraphNode[];
   disabled: boolean;
@@ -150,7 +161,7 @@ function AddPrereq({
         disabled={disabled}
         className="rounded-[var(--radius)] border border-border bg-surface px-2 py-1 text-xs text-ink"
       >
-        <option value="">add a prerequisite…</option>
+        <option value="">{t("admin.skillTree.addPrereqPlaceholder")}</option>
         {options.map((n) => (
           <option key={n.id} value={n.id}>
             {n.courseName} · {n.sequenceOrder}. {n.title}
@@ -166,7 +177,7 @@ function AddPrereq({
           setSel("");
         }}
       >
-        Add
+        {t("admin.skillTree.add")}
       </Button>
     </div>
   );

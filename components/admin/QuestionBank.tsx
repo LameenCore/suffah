@@ -7,14 +7,16 @@ import { setQuestionDisabledAction } from "@/app/admin/question-bank/actions";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
+import { useT } from "@/lib/i18n/client";
+import type { MessageKey } from "@/lib/i18n";
 
-const FLAG_LABEL: Record<ItemFlag, string> = {
+const FLAG_KEY: Record<ItemFlag, MessageKey | ""> = {
   ok: "",
-  insufficient_data: "not enough attempts",
-  too_hard: "very hard - check the key",
-  too_easy: "everyone gets this",
-  negative_discrimination: "miskeyed? strong students miss it",
-  weak_discrimination: "weak - doesn't separate students",
+  insufficient_data: "admin.questionBank.flagInsufficientData",
+  too_hard: "admin.questionBank.flagTooHard",
+  too_easy: "admin.questionBank.flagTooEasy",
+  negative_discrimination: "admin.questionBank.flagNegativeDiscrimination",
+  weak_discrimination: "admin.questionBank.flagWeakDiscrimination",
 };
 const FLAG_TONE: Partial<Record<ItemFlag, "warning" | "danger" | "mustard">> = {
   too_hard: "warning",
@@ -24,6 +26,7 @@ const FLAG_TONE: Partial<Record<ItemFlag, "warning" | "danger" | "mustard">> = {
 };
 
 export function QuestionBank({ courses }: { courses: QuestionBankCourse[] }) {
+  const t = useT();
   const [pending, start] = useTransition();
   const [error, setError] = useState<string | null>(null);
 
@@ -36,7 +39,7 @@ export function QuestionBank({ courses }: { courses: QuestionBankCourse[] }) {
     setError(null);
     start(async () => {
       const res = await setQuestionDisabledAction(kind, sourceId, questionId, disabled, "");
-      if (!res.ok) setError(res.error ?? "failed");
+      if (!res.ok) setError(res.error ?? t("admin.questionBank.failed"));
     });
   }
 
@@ -50,11 +53,11 @@ export function QuestionBank({ courses }: { courses: QuestionBankCourse[] }) {
             <table className="w-full min-w-[42rem] border-collapse text-sm">
               <thead>
                 <tr className="border-b border-border-strong text-left text-xs uppercase tracking-wide text-ink-4">
-                  <th className="py-2 pr-3">Question</th>
-                  <th className="py-2 pr-3">p-value</th>
-                  <th className="py-2 pr-3">discrimination</th>
-                  <th className="py-2 pr-3">flag</th>
-                  <th className="py-2">state</th>
+                  <th className="py-2 pr-3">{t("admin.questionBank.colQuestion")}</th>
+                  <th className="py-2 pr-3">{t("admin.questionBank.colPValue")}</th>
+                  <th className="py-2 pr-3">{t("admin.questionBank.colDiscrimination")}</th>
+                  <th className="py-2 pr-3">{t("admin.questionBank.colFlag")}</th>
+                  <th className="py-2">{t("admin.questionBank.colState")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -66,7 +69,8 @@ export function QuestionBank({ courses }: { courses: QuestionBankCourse[] }) {
                     <td className="py-2 pr-3">
                       <p className="text-ink">{q.prompt}</p>
                       <p className="mt-0.5 text-xs text-ink-4">
-                        {q.sourceTitle} · {q.type} · answer: {q.answer}
+                        {q.sourceTitle} · {q.type} ·{" "}
+                        {t("admin.questionBank.answerLabel", { answer: q.answer })}
                       </p>
                     </td>
                     <td className="py-2 pr-3 tabular-nums">
@@ -81,7 +85,7 @@ export function QuestionBank({ courses }: { courses: QuestionBankCourse[] }) {
                     <td className="py-2 pr-3">
                       {q.stats && q.stats.flag !== "ok" ? (
                         <Badge tone={FLAG_TONE[q.stats.flag] ?? "mustard"}>
-                          {FLAG_LABEL[q.stats.flag]}
+                          {t(FLAG_KEY[q.stats.flag] as MessageKey)}
                         </Badge>
                       ) : (
                         <span className="text-xs text-ink-4">-</span>
@@ -96,7 +100,9 @@ export function QuestionBank({ courses }: { courses: QuestionBankCourse[] }) {
                           toggle("checkpoint", q.sourceId, q.questionId, !q.disabled)
                         }
                       >
-                        {q.disabled ? "Enable" : "Disable"}
+                        {q.disabled
+                          ? t("admin.questionBank.enable")
+                          : t("admin.questionBank.disable")}
                       </Button>
                     </td>
                   </tr>
