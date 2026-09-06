@@ -2,9 +2,9 @@
 id: T47
 title: Pod discussion / Q&A board
 phase: 11
-status: todo
-owner: —
-claimed: —
+status: doing
+owner: https://claude.ai/code/session_011H4sTF36JvRXwmwmj5Xkcr
+claimed: 2026-09-06T01:00:00Z
 updated: 2026-09-05
 depends_on: [T32]
 source: post-hackathon roadmap (EdTech-checklist analysis)
