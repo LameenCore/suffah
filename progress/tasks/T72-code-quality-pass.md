@@ -2,10 +2,10 @@
 id: T72
 title: Cohesion / coupling / readability pass
 phase: 14
-status: todo
-owner: —
-claimed: —
-updated: 2026-09-05
+status: doing
+owner: https://claude.ai/code/session_01KZau462fdpkrsdLZNLrD9T
+claimed: 2026-09-06T22:20:00Z
+updated: 2026-09-06
 depends_on: []
 rubric: Technical 30% (sw)
 source: MuslimHacks judging rubric (Business 40% / Technical 30% / Delivery 30%)
