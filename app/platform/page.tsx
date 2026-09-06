@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { requirePlatformAdmin } from "@/lib/platform/auth";
 import { getPlatformOverview } from "@/lib/platform/queries";
+import { countPendingApplications } from "@/lib/platform/applications";
 import { getT } from "@/lib/i18n";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Card } from "@/components/ui/Card";
@@ -19,8 +20,12 @@ export default async function PlatformHome() {
 
   let rows: Awaited<ReturnType<typeof getPlatformOverview>> = [];
   let loadError: string | null = null;
+  let pendingApps = 0;
   try {
-    rows = await getPlatformOverview();
+    [rows, pendingApps] = await Promise.all([
+      getPlatformOverview(),
+      countPendingApplications().catch(() => 0),
+    ]);
   } catch (err) {
     loadError = err instanceof Error ? err.message : "could not load masjids";
   }
@@ -35,9 +40,14 @@ export default async function PlatformHome() {
         title={t("platform.title")}
         lede={t("platform.lede")}
         actions={
-          <ButtonLink href="/platform/new" variant="primary" size="sm">
-            {t("platform.provisionCta")}
-          </ButtonLink>
+          <div className="flex flex-wrap items-center gap-2">
+            <ButtonLink href="/platform/applications" variant="ghost" size="sm">
+              Applications{pendingApps > 0 ? ` (${pendingApps})` : ""}
+            </ButtonLink>
+            <ButtonLink href="/platform/new" variant="primary" size="sm">
+              {t("platform.provisionCta")}
+            </ButtonLink>
+          </div>
         }
       />
 

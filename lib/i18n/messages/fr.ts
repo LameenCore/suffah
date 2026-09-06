@@ -317,4 +317,30 @@ export const fr: Messages = {
     queuedBody: "Vous avez répondu à ce point de contrôle hors ligne. Il sera soumis et corrigé automatiquement dès votre retour en ligne.",
     queueFailed: "Impossible d'enregistrer vos réponses hors ligne.",
   },
+
+  forMasjids: {
+    kicker: "Pour les mosquées",
+    title: "Déployez Suffa dans votre mosquée",
+    lede:
+      "Toute mosquée peut utiliser Suffa — vos propres groupes, bénévoles, programme et dossiers de conformité, soutenus par le waqf de votre communauté. Faites une demande ci-dessous et l'équipe de la plateforme crée votre espace.",
+    point1:
+      "Vous obtenez votre propre tableau de bord d'administration : les groupes (plafonnés à quatre élèves), l'intégration des bénévoles et un dossier de conformité exportable par famille.",
+    point2:
+      "Votre communauté organise une seule campagne de dotation fondatrice — comme les mosquées le font déjà pour les bâtiments — et les groupes fonctionnent indéfiniment. Sans dépendre des frais de scolarité.",
+    point3:
+      "Partez du programme commun de 1re secondaire (mathématiques, Sîra, littératie de l'IA) et adaptez-le — surtout la Sîra — à votre communauté.",
+    formTitle: "Faire une demande pour utiliser Suffa",
+    fieldMasjid: "Nom de la mosquée",
+    fieldContact: "Votre nom",
+    fieldEmail: "Courriel de contact",
+    fieldCity: "Ville (facultatif)",
+    fieldNote: "Autre chose à nous signaler ? (facultatif)",
+    submit: "Envoyer la demande",
+    thanksTitle: "Demande reçue",
+    thanksBody:
+      "L'équipe de la plateforme l'examinera et vous contactera à l'adresse fournie. Si elle est approuvée, vous recevrez les identifiants du compte administrateur de votre mosquée.",
+    backHome: "Retour à l'accueil",
+    disclaimer:
+      "Ceci est un projet pilote. La création est manuelle et examinée par une personne. Aucun paiement n'est perçu ici.",
+  },
 };

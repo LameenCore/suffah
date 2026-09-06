@@ -1,7 +1,7 @@
 # BOARD — Suffa progress snapshot
 
 **Derived from `progress/tasks/`. Not authoritative. Regenerate after any claim/finish.**
-Last regenerated: 2026-09-05 (T43 T46 T50 done; T59 doing)
+Last regenerated: 2026-09-06 (T50 + T63 done; T59 doing)
 
 | id  | phase | status | owner | title |
 |-----|-------|--------|-------|-------|
@@ -77,7 +77,7 @@ Get a clean demo state: `npm run demo:setup` (full, hits the API) or `npm run de
 | T60 | 13 | todo | — | Accessibility pass to WCAG 2.2 AA |
 | T61 | 13 | done | — | PWA + offline: download a unit, work offline, sync |
 | T62 | 13 | done | — | Mobile / responsive audit |
-| T63 | 13 | todo | — | Multi-masjid onboarding + per-masjid content library |
+| T63 | 13 | done | — | Multi-masjid onboarding + per-masjid content library (curriculum-fork → T81) |
 | T64 | 13 | done | — | Learning analytics dashboard |
 | T65 | 13 | done | — | Define + instrument the core metrics |
 | T66 | 13 | todo | — | Cognitive-accessibility "simple mode" for the playground |
@@ -110,6 +110,7 @@ then T59 → T60, then Phase 11 depth; T63 is the multi-masjid scale unlock.
 |-----|-------|--------|-------|-------|
 | T79 | 9 | done | — | RLS write policies (0017) + parent/analytics reads on the authed client; rest of lib/db → T80 |
 | T80 | 9 | todo | — | Finish moving user-facing lib/db reads onto getReadClient() (continues T79) |
+| T81 | 13 | todo | — | Per-masjid curriculum: adopt shared or fork/author own (from T63; needs T50) |
 
 ## Legend
 todo = free to claim · doing = owned now · blocked = see task's `blocker:` · done = see task's `outcome:`

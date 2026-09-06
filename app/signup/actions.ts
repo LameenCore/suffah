@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { getServerClient } from "@/lib/db/server";
 import { getServiceClient } from "@/lib/db";
 import { DEMO_MASJID_ID, isRole } from "@/lib/auth";
+import { env } from "@/lib/env";
 import type { Role } from "@/lib/types";
 
 export async function signUpAction(formData: FormData): Promise<void> {
@@ -16,6 +17,14 @@ export async function signUpAction(formData: FormData): Promise<void> {
   if (!name || !email || !password) back("Fill in your name, email and a password.");
   if (password.length < 8) back("Password must be at least 8 characters.");
   if (!isRole(role)) back("Choose a role.");
+
+  // Multi-masjid (T63): a bare public signup only makes sense for the single demo
+  // tenant. A real deployment routes a masjid through /for-masjids (provisioned
+  // by a platform admin) and its families through a per-masjid invite.
+  if (!env.demoMode) {
+    if (role === "admin") redirect("/for-masjids");
+    back("Ask your masjid for an invite link to join Suffa.");
+  }
 
   const anon = await getServerClient();
   const { data: signUp, error: signUpErr } = await anon.auth.signUp({

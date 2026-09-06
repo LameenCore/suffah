@@ -150,6 +150,12 @@ export default async function Landing() {
               <p className="mt-2 text-sm text-ink-2">
                 {t("landing.forMasjidsBody", { email: CONTACT_EMAIL })}
               </p>
+              <Link
+                href="/for-masjids"
+                className="mt-2 inline-block text-sm font-medium text-teal hover:text-teal-strong"
+              >
+                {t("forMasjids.formTitle")} &rarr;
+              </Link>
             </div>
           </div>
         </section>

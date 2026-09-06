@@ -322,6 +322,32 @@ export const en = {
     queuedBody: "You answered this checkpoint offline. It will be submitted and graded automatically when you're back online.",
     queueFailed: "Could not save your answers offline.",
   },
+
+  forMasjids: {
+    kicker: "For masjids",
+    title: "Run Suffa at your masjid",
+    lede:
+      "Any masjid can run Suffa — your own pods, volunteers, curriculum and compliance records, sustained by your community's waqf. Apply below and the platform team provisions your tenant.",
+    point1:
+      "You get your own admin dashboard: pods (capped at four students), volunteer onboarding, and an exportable compliance record per family.",
+    point2:
+      "Your community raises one founding endowment drive — the same thing masjids already do for buildings — and the pods run indefinitely. Not tuition-dependent.",
+    point3:
+      "Start from the shared Secondary 1 curriculum (Math, Seerah, AI Literacy) and adapt it — especially Seerah — for your community.",
+    formTitle: "Apply to run Suffa",
+    fieldMasjid: "Masjid name",
+    fieldContact: "Your name",
+    fieldEmail: "Contact email",
+    fieldCity: "City (optional)",
+    fieldNote: "Anything we should know? (optional)",
+    submit: "Send application",
+    thanksTitle: "Application received",
+    thanksBody:
+      "The platform team will review it and get in touch at the email you gave. If approved, you'll receive sign-in details for your masjid's admin account.",
+    backHome: "Back to home",
+    disclaimer:
+      "This is a pilot. Provisioning is manual and reviewed by a person. No payment is taken here.",
+  },
 };
 
 export type Messages = typeof en;

@@ -519,3 +519,23 @@ Commit: d555124
   BOARD in the worktree is the pre-T43/T46 version — parent should re-apply the
   T79 done + T80 row onto the current BOARD, not overwrite.
 Commit: (fork branch — parent to cherry-pick/merge)
+
+## T63 — multi-masjid onboarding
+
+- migration 0021_masjid_applications (RLS on, no policy — service-role only).
+- lib/platform/applications.ts: submitMasjidApplication (validated, soft dedupe
+  per pending email), listMasjidApplications, countPendingApplications,
+  approveApplication (→ provisionMasjid from T33, temp password, audit
+  platform.masjid_provisioned), rejectApplication.
+- app/for-masjids/{page,actions}.ts — public application form, i18n forMasjids.*
+  (en+fr, ~22 keys). Landing "For masjids" links to it.
+- app/platform/applications/{page,actions,ApplicationCard}.tsx — pending + reviewed
+  lists; approve provisions inline and shows one-time creds; reject records it.
+  Pending count on /platform header.
+- app/signup/actions.ts: non-demo signup now guarded — admins → /for-masjids,
+  families → "ask your masjid for an invite". DEMO_MASJID_ID audit in the task
+  file: signup was the only app-code offender; rest is seed/demo tooling.
+- Bullet 2 (adopt/fork curriculum) split to new task T81 (depends on T50).
+- Verified live: submit → dedupe → approve → masjid+admin+3 courses (fr) → app
+  closed → cleanup. eslint + build + 62 tests + check:i18n (208 keys) green.
+Commit: PLACEHOLDER63
