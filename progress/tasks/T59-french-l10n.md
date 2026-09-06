@@ -111,6 +111,20 @@ takes `intlLocale` from `getT`; level labels via `admin.levelOnTrack/Watch/Gap`.
 overview (the dashboard landing screen) is now FR; the other 15 admin sub-pages
 + their components are the remaining admin scope.
 
+### 2026-09-06 (c) — continuity + handoff-demo (the moat screens) FR (session 01KZau4)
+`app/admin/continuity/page.tsx` + `ContinuityPod.tsx` + `app/admin/handoff-demo/
+page.tsx` + `HandoffDemo.tsx` + `BriefingView.tsx` fully localised. New
+`admin.continuity.*` (37) and `admin.handoff.*` (30) key blocks → 432 total.
+`BriefingView` now takes a required `t: Translator` prop (frame labels + the
+per-course status words `moving well`/`stuck`/… via a STATUS_KEY map); its 3
+callers (ContinuityPod, HandoffDemo, VolunteerPod — all client, all had `t`
+already or got `useT()`) pass it through. Verified live in FR: both pages render,
+{name}/{pod} interpolation in the step-1 body resolves, no console errors.
+The AI briefing *content* and the deterministic `getPodFocus` text stay English
+(the generated-content bullet). Remaining admin: pods, volunteers, compliance,
+ledger, ai-spend, seerah, skill-tree, authoring, question-bank, audit, analytics,
+inbox, barakah + components.
+
 ## Notes (owner appends)
 - The FR strings are a first pass by the model - a native Quebec French reviewer
   should sweep them (esp. the landing marketing copy and regulatory phrasing)

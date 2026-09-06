@@ -440,3 +440,14 @@ recommendations, ledger, audit, tutor, privacy, volunteer, attendance. Added a
 admin stat-card markup the task flagged is already a shared <StatCard>. No
 behaviour change; build/lint/tsc/68 tests/check:i18n/check:integrity green.
 Commit <t72>.
+
+## 2026-09-06 — T59 admin overview + continuity + handoff-demo FR
+- admin overview page (app/admin/page.tsx): +37 admin.* keys, money() via
+  intlLocale, Manage grid reuses nav.* keys. Commit <2306eba>.
+- continuity + handoff-demo (the two moat screens): app/admin/continuity/page +
+  ContinuityPod + app/admin/handoff-demo/page + HandoffDemo + BriefingView all
+  localised. +67 keys (admin.continuity.* / admin.handoff.*) -> 432 total.
+  BriefingView gained a required t: Translator prop; 3 callers pass it. Verified
+  live in FR (interpolation resolves, no console errors). AI briefing content +
+  getPodFocus text stay EN. build/lint/tsc/68 tests/check:i18n green.
+  Dev servers killed after verify. Commit <t59-c>.

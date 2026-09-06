@@ -112,6 +112,7 @@ export function VolunteerPod({
         <BriefingView
           briefing={pod.briefing.content}
           meta={{ source: pod.briefing.source, generatedAt: pod.briefing.generatedAt }}
+          t={t}
         />
       ) : (
         <p className="text-xs text-ink-3">{t("volunteer.noBriefing")}</p>

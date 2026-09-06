@@ -4,6 +4,7 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { BriefingView } from "@/components/admin/BriefingView";
 import { Button } from "@/components/ui/Button";
+import { useT } from "@/lib/i18n/client";
 import {
   generateBriefingAction,
   addSessionNoteAction,
@@ -21,6 +22,7 @@ export interface ContinuityPodData {
 }
 
 export function ContinuityPod({ pod }: { pod: ContinuityPodData }) {
+  const t = useT();
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [briefing, setBriefing] = useState(pod.briefing);
@@ -35,7 +37,7 @@ export function ContinuityPod({ pod }: { pod: ContinuityPodData }) {
         const r = await generateBriefingAction(pod.id);
         setBriefing({ content: r.briefing, source: r.source, generatedAt: r.generatedAt });
       } catch (e) {
-        setError(e instanceof Error ? e.message : "could not generate briefing");
+        setError(e instanceof Error ? e.message : t("admin.continuity.generateError"));
       }
     });
   }
@@ -50,7 +52,7 @@ export function ContinuityPod({ pod }: { pod: ContinuityPodData }) {
         setNote("");
         router.refresh();
       } catch (e) {
-        setError(e instanceof Error ? e.message : "could not save note");
+        setError(e instanceof Error ? e.message : t("admin.continuity.noteError"));
       }
     });
   }
@@ -61,15 +63,17 @@ export function ContinuityPod({ pod }: { pod: ContinuityPodData }) {
         <div>
           <h2 className="font-display text-lg font-semibold text-ink">{pod.name}</h2>
           <p className="text-xs text-ink-4">
-            Volunteer: {pod.volunteerName ?? "unassigned"}
+            {t("admin.continuity.volunteerLabel", {
+              name: pod.volunteerName ?? t("admin.continuity.unassigned"),
+            })}
           </p>
         </div>
         <Button size="sm" disabled={pending} onClick={generate}>
           {pending
-            ? "Generating..."
+            ? t("admin.continuity.generating")
             : briefing
-              ? "Regenerate briefing"
-              : "Generate handoff briefing"}
+              ? t("admin.continuity.regenerate")
+              : t("admin.continuity.generate")}
         </Button>
       </div>
 
@@ -79,22 +83,20 @@ export function ContinuityPod({ pod }: { pod: ContinuityPodData }) {
         <BriefingView
           briefing={briefing.content}
           meta={{ source: briefing.source, generatedAt: briefing.generatedAt }}
+          t={t}
         />
       ) : (
-        <p className="text-xs text-ink-3">
-          No briefing yet. Generate one to see how this pod has been learning - where it got
-          stuck, which students needed extra attempts, what the notes say.
-        </p>
+        <p className="text-xs text-ink-3">{t("admin.continuity.noBriefing")}</p>
       )}
 
       <details className="text-sm">
         <summary className="cursor-pointer select-none text-xs font-semibold uppercase tracking-wide text-ink-3">
-          Session notes ({pod.notes.length})
+          {t("admin.continuity.sessionNotes", { n: pod.notes.length })}
         </summary>
         <div className="mt-2 space-y-2">
           <ul className="space-y-1">
             {pod.notes.length === 0 ? (
-              <li className="text-xs text-ink-4">No notes yet.</li>
+              <li className="text-xs text-ink-4">{t("admin.continuity.noNotes")}</li>
             ) : (
               pod.notes.map((n) => (
                 <li key={n.id} className="text-xs text-ink-2 ">
@@ -105,7 +107,9 @@ export function ContinuityPod({ pod }: { pod: ContinuityPodData }) {
                         : "font-medium text-ink-2 "
                     }
                   >
-                    {n.authorKind === "system" ? "system" : n.authorName ?? "volunteer"}
+                    {n.authorKind === "system"
+                      ? t("admin.continuity.systemAuthor")
+                      : n.authorName ?? t("admin.continuity.volunteerAuthor")}
                     {n.courseName ? ` · ${n.courseName}` : ""}
                   </span>{" "}
                   - {n.note}
@@ -119,7 +123,7 @@ export function ContinuityPod({ pod }: { pod: ContinuityPodData }) {
               onChange={(e) => setNoteCourse(e.target.value)}
               className="rounded-md border border-border bg-surface px-2 py-1 text-xs  "
             >
-              <option value="">(no course)</option>
+              <option value="">{t("admin.continuity.noCourse")}</option>
               {pod.courses.map((c) => (
                 <option key={c.id} value={c.id}>
                   {c.name}
@@ -130,11 +134,11 @@ export function ContinuityPod({ pod }: { pod: ContinuityPodData }) {
               type="text"
               value={note}
               onChange={(e) => setNote(e.target.value)}
-              placeholder="After today's session..."
+              placeholder={t("admin.continuity.notePlaceholder")}
               className="min-w-[12rem] flex-1 rounded-[var(--radius)] border border-border bg-surface px-3 py-1.5 text-xs text-ink outline-none focus:border-teal"
             />
             <Button size="sm" variant="ghost" disabled={pending || !note.trim()} onClick={submitNote}>
-              Add note
+              {t("admin.continuity.addNote")}
             </Button>
           </div>
         </div>

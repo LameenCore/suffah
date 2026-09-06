@@ -1,4 +1,5 @@
 import { requireRole } from "@/lib/auth";
+import { getT } from "@/lib/i18n";
 import { RegulationNote } from "@/components/RegulationNote";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Card } from "@/components/ui/Card";
@@ -7,36 +8,34 @@ import { getHandoffDemoState, type HandoffDemoState } from "@/lib/db/continuity-
 
 export default async function HandoffDemoPage() {
   const user = await requireRole("admin");
+  const { t } = await getT(user);
 
   let state: HandoffDemoState | null = null;
   let loadError: string | null = null;
   try {
     state = await getHandoffDemoState(user.masjidId);
   } catch (err) {
-    loadError = err instanceof Error ? err.message : "could not load demo state";
+    loadError = err instanceof Error ? err.message : "unknown error";
   }
 
   return (
     <div className="space-y-6">
       <PageHeader
-        kicker="Live handoff simulation"
-        title="Churn, performed - not described"
-        lede="A repeatable on-stage sequence: a volunteer drops out mid-session, the pod keeps learning through the playground, and the replacement picks up with a generated handoff briefing."
-        back={{ href: "/admin/continuity", label: "Continuity Fingerprint" }}
+        kicker={t("admin.handoff.kicker")}
+        title={t("admin.handoff.title")}
+        lede={t("admin.handoff.lede")}
+        back={{ href: "/admin/continuity", label: t("nav.continuity") }}
       />
 
       {loadError ? (
         <Card tone="warning" className="p-4 text-sm text-ink-2">
-          {loadError}. Run <code>npm run seed</code> and <code>npm run seed:continuity</code>.
+          {loadError}. <code>npm run seed</code> · <code>npm run seed:continuity</code>
         </Card>
       ) : state ? (
         <HandoffDemo state={state} />
       ) : null}
 
-      <RegulationNote>
-        A demonstration flow over real data. The handoff briefing is a support tool for the
-        incoming volunteer, not a formal student record.
-      </RegulationNote>
+      <RegulationNote>{t("admin.handoff.regulationNote")}</RegulationNote>
     </div>
   );
 }

@@ -1,4 +1,5 @@
 import { requireRole } from "@/lib/auth";
+import { getT } from "@/lib/i18n";
 import { RegulationNote } from "@/components/RegulationNote";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Card } from "@/components/ui/Card";
@@ -34,6 +35,7 @@ async function volunteerName(podId: string): Promise<string | null> {
 
 export default async function AdminContinuityPage() {
   const user = await requireRole("admin");
+  const { t } = await getT(user);
 
   let pods: ContinuityPodData[] = [];
   let focusByPod: Record<string, PodFocusItem[]> = {};
@@ -69,39 +71,39 @@ export default async function AdminContinuityPage() {
       ),
     );
   } catch (err) {
-    loadError = err instanceof Error ? err.message : "could not load continuity data";
+    loadError = err instanceof Error ? err.message : "unknown error";
   }
 
   return (
     <div className="space-y-6">
       <PageHeader
-        kicker="Continuity Fingerprint"
-        title="How each pod is learning"
-        lede={
-          "When a volunteer leaves, the next one gets more than “Node 4 of Unit 2”. This briefing captures how a pod has been learning - assembled from its progress, checkpoint history, and session notes - so churn becomes a knowledge handoff, not a data-loss event."
-        }
-        back={{ href: "/admin", label: "Overview" }}
+        kicker={t("nav.continuity")}
+        title={t("admin.continuity.title")}
+        lede={t("admin.continuity.lede")}
+        back={{ href: "/admin", label: t("nav.overview") }}
         actions={
           <ButtonLink href="/admin/handoff-demo" variant="soft" size="sm">
-            Live handoff simulation
+            {t("admin.continuity.liveHandoff")}
           </ButtonLink>
         }
       />
 
       {loadError ? (
         <Card tone="warning" className="p-4 text-sm text-ink-2">
-          Continuity data is unavailable: {loadError}. Run <code>npm run migrate</code> and{" "}
-          <code>npm run seed</code>.
+          {t("admin.continuity.unavailable", { error: loadError })}{" "}
+          <code>npm run migrate</code> · <code>npm run seed</code>
         </Card>
       ) : pods.length === 0 ? (
-        <Card className="p-6 text-sm text-ink-3">No pods yet.</Card>
+        <Card className="p-6 text-sm text-ink-3">{t("admin.continuity.noPods")}</Card>
       ) : (
         <div className="space-y-4">
           {pods.map((pod) => (
             <div key={pod.id} className="space-y-2">
               {focusByPod[pod.id]?.length ? (
                 <Card tone="teal" className="p-4">
-                  <p className="text-sm font-medium text-ink">Focus this session - {pod.name}</p>
+                  <p className="text-sm font-medium text-ink">
+                    {t("admin.continuity.focusThisSession", { pod: pod.name })}
+                  </p>
                   <ul className="mt-1 space-y-1 text-sm text-ink-2">
                     {focusByPod[pod.id].map((f, i) => (
                       <li key={i}>
@@ -111,7 +113,7 @@ export default async function AdminContinuityPage() {
                     ))}
                   </ul>
                   <p className="mt-1.5 text-xs text-ink-4">
-                    Deterministic - from checkpoint history + the skill tree, not a model.
+                    {t("admin.continuity.focusDeterministic")}
                   </p>
                 </Card>
               ) : null}
@@ -121,10 +123,7 @@ export default async function AdminContinuityPage() {
         </div>
       )}
 
-      <RegulationNote>
-        A handoff briefing is a support tool for the incoming volunteer, not a formal
-        student record. It is generated from in-platform activity and may be incomplete.
-      </RegulationNote>
+      <RegulationNote>{t("admin.continuity.regulationNote")}</RegulationNote>
     </div>
   );
 }

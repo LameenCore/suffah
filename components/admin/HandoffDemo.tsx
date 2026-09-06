@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { BriefingView } from "@/components/admin/BriefingView";
 import { Button } from "@/components/ui/Button";
+import { useT } from "@/lib/i18n/client";
 import {
   takeVolunteerOfflineAction,
   assignReplacementAction,
@@ -54,6 +55,7 @@ function Step({
 }
 
 export function HandoffDemo({ state }: { state: HandoffDemoState }) {
+  const t = useT();
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
@@ -67,7 +69,8 @@ export function HandoffDemo({ state }: { state: HandoffDemoState }) {
   if (!state.pod) {
     return (
       <p className="rounded-xl border border-warning/40 bg-warning-soft p-4 text-sm text-ink-2   ">
-        Demo pod not found. Run <code>npm run seed</code> then <code>npm run seed:continuity</code>.
+        {t("admin.handoff.podNotFound")} <code>npm run seed</code> ·{" "}
+        <code>npm run seed:continuity</code>
       </p>
     );
   }
@@ -83,7 +86,7 @@ export function HandoffDemo({ state }: { state: HandoffDemoState }) {
       try {
         await fn();
       } catch (e) {
-        setError(e instanceof Error ? e.message : "action failed");
+        setError(e instanceof Error ? e.message : t("admin.handoff.actionFailed"));
       }
     });
   }
@@ -95,10 +98,11 @@ export function HandoffDemo({ state }: { state: HandoffDemoState }) {
           <span className="font-medium text-ink">{state.pod.name}</span> &middot;{" "}
           {state.currentVolunteer ? (
             <>
-              volunteer <span className="font-medium text-ink">{state.currentVolunteer.name}</span>
+              {t("admin.handoff.volunteerPrefix")}{" "}
+              <span className="font-medium text-ink">{state.currentVolunteer.name}</span>
             </>
           ) : (
-            <span className="font-medium text-danger">no volunteer</span>
+            <span className="font-medium text-danger">{t("admin.handoff.noVolunteer")}</span>
           )}
         </span>
         <Button
@@ -114,24 +118,23 @@ export function HandoffDemo({ state }: { state: HandoffDemoState }) {
             })
           }
         >
-          Reset demo
+          {t("admin.handoff.reset")}
         </Button>
       </div>
 
       {error ? <p className="text-xs text-danger">{error}</p> : null}
 
-      <Step n={1} title="A live session is running" active={online} done={offline}>
+      <Step n={1} title={t("admin.handoff.step1Title")} active={online} done={offline}>
         <p className="text-sm text-ink-2 ">
-          {state.currentVolunteer?.name ?? "The volunteer"} is leading{" "}
-          {state.pod.name}&apos;s enrichment session. The playground is delivering
-          the actual curriculum underneath.
+          {t("admin.handoff.step1Body", {
+            name: state.currentVolunteer?.name ?? t("admin.handoff.theVolunteer"),
+            pod: state.pod.name,
+          })}
         </p>
       </Step>
 
-      <Step n={2} title="The volunteer goes offline" active={online} done={offline}>
-        <p className="text-sm text-ink-2 ">
-          High volunteer churn is the core operational pain. Simulate it:
-        </p>
+      <Step n={2} title={t("admin.handoff.step2Title")} active={online} done={offline}>
+        <p className="text-sm text-ink-2 ">{t("admin.handoff.step2Body")}</p>
         <div className="mt-2 flex flex-wrap items-center gap-3">
           <Button
             variant="danger"
@@ -139,29 +142,25 @@ export function HandoffDemo({ state }: { state: HandoffDemoState }) {
             disabled={pending || offline}
             onClick={() => run(async () => { await takeVolunteerOfflineAction(); router.refresh(); })}
           >
-            {offline ? "Volunteer is offline" : "Take volunteer offline"}
+            {offline ? t("admin.handoff.isOffline") : t("admin.handoff.takeOffline")}
           </Button>
           <span className={`text-xs ${state.playgroundOnline ? "text-success" : "text-ink-4"}`}>
-            &bull; Student playground:{" "}
-            {state.playgroundOnline ? "online - the pod keeps learning" : "no lesson ready"}{" "}
+            &bull; {t("admin.handoff.playgroundLabel")}{" "}
+            {state.playgroundOnline
+              ? t("admin.handoff.playgroundOnline")
+              : t("admin.handoff.playgroundNoLesson")}{" "}
             <Link href="/student" target="_blank" className="underline underline-offset-2">
-              open it
+              {t("admin.handoff.openIt")}
             </Link>
           </span>
         </div>
         {offline ? (
-          <p className="mt-2 text-xs text-ink-3 ">
-            The pod&apos;s <code>pod_progress</code> is untouched - nothing was lost, and the
-            students never stopped.
-          </p>
+          <p className="mt-2 text-xs text-ink-3 ">{t("admin.handoff.step2Note")}</p>
         ) : null}
       </Step>
 
-      <Step n={3} title="A new volunteer picks up - with a briefing" active={offline} done={reassigned}>
-        <p className="text-sm text-ink-2 ">
-          The incoming volunteer doesn&apos;t start cold. Assign them and the Continuity
-          Fingerprint generates a handoff briefing from the pod&apos;s real history.
-        </p>
+      <Step n={3} title={t("admin.handoff.step3Title")} active={offline} done={reassigned}>
+        <p className="text-sm text-ink-2 ">{t("admin.handoff.step3Body")}</p>
         <div className="mt-2 flex flex-wrap items-center gap-2">
           <select
             value={pick}
@@ -169,7 +168,7 @@ export function HandoffDemo({ state }: { state: HandoffDemoState }) {
             disabled={pending || online}
             className="rounded-[var(--radius)] border border-border bg-surface px-3 py-2 text-sm text-ink outline-none focus:border-teal disabled:opacity-55"
           >
-            <option value="">Choose a volunteer...</option>
+            <option value="">{t("admin.handoff.chooseVolunteer")}</option>
             {state.candidates.map((v) => (
               <option key={v.id} value={v.id}>
                 {v.name}
@@ -188,7 +187,7 @@ export function HandoffDemo({ state }: { state: HandoffDemoState }) {
               })
             }
           >
-            {pending ? "Handing off..." : "Assign + generate briefing"}
+            {pending ? t("admin.handoff.handingOff") : t("admin.handoff.assignGenerate")}
           </Button>
         </div>
 
@@ -197,13 +196,14 @@ export function HandoffDemo({ state }: { state: HandoffDemoState }) {
             <BriefingView
               briefing={freshBriefing.briefing}
               meta={{ source: freshBriefing.source, generatedAt: freshBriefing.generatedAt }}
+              t={t}
             />
           </div>
         ) : state.latestBriefingAt && online ? (
           <p className="mt-2 text-xs text-ink-3 ">
-            A briefing already exists for this pod.{" "}
+            {t("admin.handoff.briefingExists")}{" "}
             <Link href="/admin/continuity" className="underline underline-offset-2">
-              See it on the Continuity Fingerprint view
+              {t("admin.handoff.seeOnContinuity")}
             </Link>
             .
           </p>
