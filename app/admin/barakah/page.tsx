@@ -1,4 +1,5 @@
 import { requireRole } from "@/lib/auth";
+import { getT } from "@/lib/i18n";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Card } from "@/components/ui/Card";
 import { BarakahCheckIn, type PodOption } from "@/components/admin/BarakahCheckIn";
@@ -7,6 +8,7 @@ import { listBarakahNotes, type BarakahEntry } from "@/lib/db/barakah-queries";
 
 export default async function AdminBarakahPage() {
   const user = await requireRole("admin");
+  const { t } = await getT(user);
 
   let pods: PodOption[] = [];
   let notes: BarakahEntry[] = [];
@@ -30,20 +32,18 @@ export default async function AdminBarakahPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        kicker="Barakah notes"
-        title="What the circle values, beyond marks"
-        lede="Consistency, helping one another, reflection, and adab in the circle. Observations, never points or rankings."
-        back={{ href: "/admin", label: "Overview" }}
+        kicker={t("admin.barakah.kicker")}
+        title={t("admin.barakah.title")}
+        lede={t("admin.barakah.lede")}
+        back={{ href: "/admin", label: t("admin.common.back") }}
       />
 
       {loadError ? (
         <Card tone="warning" className="p-4 text-sm text-ink-2">
-          Barakah notes are unavailable: {loadError}. Run <code>npm run seed</code>.
+          {t("admin.barakah.unavailable", { detail: loadError, cmd: "npm run seed" })}
         </Card>
       ) : pods.length === 0 ? (
-        <Card className="p-6 text-sm text-ink-3">
-          No pods yet - create a pod before recording notes.
-        </Card>
+        <Card className="p-6 text-sm text-ink-3">{t("admin.barakah.noPods")}</Card>
       ) : (
         <BarakahCheckIn pods={pods} recentNotes={notes} />
       )}

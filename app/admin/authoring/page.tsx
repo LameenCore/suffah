@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { requireRole } from "@/lib/auth";
+import { getT } from "@/lib/i18n";
 import { listAuthoringCourses, type AuthoringCourse } from "@/lib/db/authoring-queries";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Card } from "@/components/ui/Card";
@@ -14,6 +15,7 @@ function courseStats(c: AuthoringCourse) {
 
 export default async function AuthoringIndexPage() {
   const user = await requireRole("admin");
+  const { t } = await getT(user);
 
   let courses: AuthoringCourse[] = [];
   let loadError: string | null = null;
@@ -26,25 +28,27 @@ export default async function AuthoringIndexPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        kicker="Course authoring"
-        title="Courses, units & pathway nodes"
-        lede="Add or fix a course's units and lesson nodes without a seed script. Editing lesson or checkpoint content is safe for a pod mid-way through - the node keeps its id and the pod's position is untouched."
-        back={{ href: "/admin", label: "Overview" }}
+        kicker={t("admin.authoring.kicker")}
+        title={t("admin.authoring.title")}
+        lede={t("admin.authoring.lede")}
+        back={{ href: "/admin", label: t("admin.common.back") }}
       />
 
       <Card tone="mustard" className="p-4 text-xs text-ink-2">
-        Curriculum scope and evaluation formats are a compliance matter. Verify any
-        Math node against the current Quebec Secondary 1 Progression of Learning
-        before relying on it for a home-instruction portfolio.
+        {t("admin.authoring.complianceNote")}
       </Card>
 
       {loadError ? (
         <Card tone="warning" className="p-4 text-sm text-ink-2">
-          {loadError}. Run <code>npm run migrate</code> and <code>npm run seed</code>.
+          {t("admin.authoring.unavailable", {
+            detail: loadError,
+            cmd1: "npm run migrate",
+            cmd2: "npm run seed",
+          })}
         </Card>
       ) : courses.length === 0 ? (
         <Card className="space-y-3 p-6 text-sm text-ink-3">
-          <p>No courses yet. Start from the shared curriculum:</p>
+          <p>{t("admin.authoring.emptyIntro")}</p>
           <AdoptCurriculumButton />
         </Card>
       ) : (
@@ -58,20 +62,31 @@ export default async function AuthoringIndexPage() {
                   <p className="text-xs text-ink-4">{c.gradeBand}</p>
                 </div>
                 <div className="flex flex-wrap gap-1.5">
-                  <Badge tone="teal">{c.units.length} unit{c.units.length === 1 ? "" : "s"}</Badge>
-                  <Badge tone="teal">{c.nodes.length} node{c.nodes.length === 1 ? "" : "s"}</Badge>
+                  <Badge tone="teal">
+                    {t(c.units.length === 1 ? "admin.authoring.unitOne" : "admin.authoring.unitMany", {
+                      n: c.units.length,
+                    })}
+                  </Badge>
+                  <Badge tone="teal">
+                    {t(c.nodes.length === 1 ? "admin.authoring.nodeOne" : "admin.authoring.nodeMany", {
+                      n: c.nodes.length,
+                    })}
+                  </Badge>
                   <Badge tone={lessons === c.nodes.length ? "success" : "mustard"}>
-                    {lessons}/{c.nodes.length} lessons
+                    {t("admin.authoring.lessonsBadge", { done: lessons, total: c.nodes.length })}
                   </Badge>
                   <Badge tone={checkpoints === c.nodes.length ? "success" : "mustard"}>
-                    {checkpoints}/{c.nodes.length} checkpoints
+                    {t("admin.authoring.checkpointsBadge", {
+                      done: checkpoints,
+                      total: c.nodes.length,
+                    })}
                   </Badge>
                 </div>
                 <Link
                   href={`/admin/authoring/${c.id}`}
                   className="mt-auto inline-flex w-fit items-center gap-1 rounded-full bg-teal px-4 py-2 text-xs font-medium text-white hover:bg-teal-strong"
                 >
-                  Edit course
+                  {t("admin.authoring.editCourse")}
                 </Link>
               </Card>
             );
