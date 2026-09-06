@@ -20,7 +20,7 @@ outcome: >
   Platform overview + provisioning exclude kind='reference'. Verified live:
   adopt copies 3/9 with content, second adopt is a no-op, reference hidden from
   the platform list.
-commits: PLACEHOLDER81
+commits: 4b94c11
 depends_on: [T50, T63]
 source: split from T63 (its 2nd "done when" bullet)
 ---

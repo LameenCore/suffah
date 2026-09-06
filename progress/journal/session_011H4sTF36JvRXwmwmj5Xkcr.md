@@ -590,4 +590,4 @@ Commit: a0e5720 / a0e5720
 - getPlatformOverview excludes kind='reference'.
 - Verified live: adopt 3/9 with content; 2nd adopt no-op; reference hidden from
   /platform. eslint + build + 68 tests + check:integrity green.
-Commit: PLACEHOLDER81
+Commit: 4b94c11
