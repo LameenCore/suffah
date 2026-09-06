@@ -21,7 +21,7 @@ outcome: >
   6 screens) is green and wired into CI; jsx-a11y eslint rules promoted to errors.
   The NVDA/VoiceOver pass, full keyboard walk, and non-token contrast checks are
   documented as remaining manual pre-launch work in docs/review/2026-09-06-a11y.md.
-commits: PLACEHOLDER60
+commits: fbe2d7b
 depends_on: [T25]
 source: post-hackathon roadmap (EdTech-checklist analysis)
 ---

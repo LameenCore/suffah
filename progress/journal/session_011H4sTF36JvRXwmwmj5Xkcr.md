@@ -621,4 +621,4 @@ Commit: 7a92492
   npm run check:a11y + CI step. jsx-a11y eslint rules -> error.
 - docs/review/2026-09-06-a11y.md — fixes + the manual SR/keyboard pass still owed.
 - Verified: eslint clean, build, 68 tests, check:a11y green, check:integrity.
-Commit: PLACEHOLDER60
+Commit: fbe2d7b
