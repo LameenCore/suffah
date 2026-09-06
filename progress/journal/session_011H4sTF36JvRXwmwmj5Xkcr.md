@@ -678,3 +678,21 @@ Commit: 2b74dc8
   that writes `masjids.default_locale` (audited `masjid.default_locale_changed`,
   revalidates the root layout). `admin.settings.*` keys.
 - check:i18n 627, tsc, next build, eslint green.
+
+## T59 — /help, legal pages, consent + privacy flows
+
+- `/help` + `HelpForm`: localised; page wraps content in `<I18nProvider>` (it
+  renders outside the dashboard route groups). `help.*` keys incl. category
+  labels.
+- `/parent/consent` + `/parent/privacy`: localised via keys. Consent purpose
+  labels/details keyed by `CONSENT_PURPOSES` key -> `consent.purpose.*`
+  (record stores only the keys, so localised display is safe).
+- `LegalDoc` -> async, shell chrome localised (`legal.*`).
+- `/terms`, `/privacy`, `/acceptable-use`: locale-switch to an En or Fr JSX
+  block in the same file — the right shape for legal prose (contiguous,
+  reviewable). `getT()` makes these routes dynamic (was static).
+- Verified live in FR (next start): terms/privacy/help + admin settings/
+  compliance + parent consent/privacy/compliance all render French.
+- check:i18n 707, tsc, build, 68 tests, eslint green.
+- NOTE: the FR legal text is a model first pass — flag for native
+  Quebec-French / legal review (T59 item 7).

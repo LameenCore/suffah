@@ -4,15 +4,17 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { submitSupportAction } from "@/app/help/actions";
 import { Button } from "@/components/ui/Button";
+import { useT } from "@/lib/i18n/client";
 
 const CATS = [
-  { value: "question", label: "Question" },
-  { value: "bug", label: "Something's broken" },
-  { value: "idea", label: "Idea / feedback" },
-];
+  { value: "question", key: "help.catQuestion" },
+  { value: "bug", key: "help.catBug" },
+  { value: "idea", key: "help.catIdea" },
+] as const;
 
 export function HelpForm() {
   const router = useRouter();
+  const t = useT();
   const [pending, start] = useTransition();
   const [category, setCategory] = useState("question");
   const [subject, setSubject] = useState("");
@@ -31,7 +33,7 @@ export function HelpForm() {
         router.refresh();
         setTimeout(() => setDone(false), 5000);
       } catch (e) {
-        setError(e instanceof Error ? e.message : "could not send");
+        setError(e instanceof Error ? e.message : t("help.formError"));
       }
     });
   }
@@ -50,7 +52,7 @@ export function HelpForm() {
                 : "border-border text-ink-3 hover:border-border-strong"
             }`}
           >
-            {c.label}
+            {t(c.key)}
           </button>
         ))}
       </div>
@@ -59,14 +61,14 @@ export function HelpForm() {
         type="text"
         value={subject}
         onChange={(e) => setSubject(e.target.value)}
-        placeholder="Subject"
+        placeholder={t("help.formSubject")}
         maxLength={160}
         className="w-full rounded-[var(--radius)] border border-border bg-surface px-3 py-2 text-sm text-ink outline-none focus:border-terracotta"
       />
       <textarea
         value={body}
         onChange={(e) => setBody(e.target.value)}
-        placeholder="Tell the masjid admin what's going on..."
+        placeholder={t("help.formBody")}
         rows={5}
         className="w-full resize-y rounded-[var(--radius)] border border-border bg-surface px-3 py-2 text-sm text-ink outline-none focus:border-terracotta"
       />
@@ -77,9 +79,9 @@ export function HelpForm() {
           disabled={pending || !subject.trim() || !body.trim()}
           onClick={submit}
         >
-          {pending ? "Sending..." : "Send to the masjid"}
+          {pending ? t("help.formSending") : t("help.formSend")}
         </Button>
-        {done ? <span className="text-sm text-success">Sent. The admin has been notified.</span> : null}
+        {done ? <span className="text-sm text-success">{t("help.formSent")}</span> : null}
         {error ? <span className="text-sm text-danger">{error}</span> : null}
       </div>
     </div>

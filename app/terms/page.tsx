@@ -1,10 +1,20 @@
 import { LegalDoc } from "@/components/LegalDoc";
+import { getT } from "@/lib/i18n";
 
 export const metadata = { title: "Terms of Service" };
 
-export default function TermsPage() {
+export default async function TermsPage() {
+  const { locale, t } = await getT();
   return (
-    <LegalDoc title="Terms of Service" updated="September 2026">
+    <LegalDoc title={t("legal.termsTitle")}>
+      {locale === "fr" ? <TermsFr /> : <TermsEn />}
+    </LegalDoc>
+  );
+}
+
+function TermsEn() {
+  return (
+    <>
       <p>
         Suffa is a platform that helps Quebec Muslim families run community homeschool
         pods: the software delivers curriculum and assessment, community volunteers run
@@ -79,6 +89,95 @@ export default function TermsPage() {
       <h2>Contact</h2>
       <p>Questions about these terms: your masjid administrator, or the operator&apos;s
         privacy contact listed in the <a href="/privacy">Privacy Policy</a>.</p>
-    </LegalDoc>
+    </>
+  );
+}
+
+function TermsFr() {
+  return (
+    <>
+      <p>
+        Suffa est une plateforme qui aide les familles musulmanes du Québec à faire
+        fonctionner des groupes d&apos;enseignement à la maison communautaires : le
+        logiciel offre le programme et l&apos;évaluation, des bénévoles de la communauté
+        animent l&apos;enrichissement en personne, et la mosquée administre les groupes et
+        les dossiers de conformité. Elle est exploitée par une mosquée ou un organisme
+        communautaire (« l&apos;exploitant »), et non par une entreprise à but lucratif.
+      </p>
+
+      <h2>Qui peut utiliser Suffa</h2>
+      <ul>
+        <li>Un <strong>parent ou tuteur légal</strong> peut créer un compte et y rattacher
+          un enfant. Un compte enfant n&apos;est activé qu&apos;une fois le consentement du
+          tuteur au dossier (voir la <a href="/privacy">politique de confidentialité</a>).</li>
+        <li>Un <strong>élève</strong> utilise le parcours d&apos;apprentissage sous le
+          compte et le consentement de son tuteur.</li>
+        <li>Un <strong>bénévole</strong> et un <strong>administrateur de mosquée</strong>
+          sont ajoutés par l&apos;exploitant.</li>
+        <li>Vous devez fournir des renseignements exacts et garder votre mot de passe
+          confidentiel.</li>
+      </ul>
+
+      <h2>Ce que Suffa est et n&apos;est pas</h2>
+      <ul>
+        <li>Suffa organise les preuves de l&apos;apprentissage d&apos;un enfant.
+          <strong> Elle ne dépose rien auprès du ministère de l&apos;Éducation en votre
+          nom</strong> et ne remplace pas les obligations légales du parent en matière
+          d&apos;enseignement à la maison, y compris les épreuves ministérielles. Le parent
+          demeure responsable de chaque dépôt. (à valider avec un conseiller juridique)</li>
+        <li>Le statut de conformité affiché dans l&apos;application est un outil interne
+          d&apos;alerte précoce. Ses seuils sont donnés à titre indicatif et doivent être
+          confirmés auprès de la réglementation québécoise en vigueur avant qu&apos;on
+          s&apos;y fie. (à valider avec un conseiller juridique)</li>
+        <li>Les leçons et les évaluations sont générées par IA et, pour la Sīra, révisées
+          par les savants de la mosquée. Elles peuvent contenir des erreurs ;
+          l&apos;exploitant et les bénévoles sont censés les réviser.</li>
+      </ul>
+
+      <h2>Utilisation acceptable</h2>
+      <p>
+        Vous acceptez la <a href="/acceptable-use">politique d&apos;utilisation
+        acceptable</a>. En bref : utilisez Suffa pour sa finalité, n&apos;essayez pas
+        d&apos;accéder aux données d&apos;autres familles, ne téléversez pas de contenu
+        illégal ou nuisible, et ne détournez pas les fonctions d&apos;IA.
+      </p>
+
+      <h2>Frais</h2>
+      <p>
+        Lorsque l&apos;exploitant demande des frais familiaux forfaitaires, ceux-ci sont
+        divulgués avant l&apos;inscription. Le service est soutenu par un fonds de dotation
+        communautaire (waqf) et des dons ; il n&apos;y a pas de frais par leçon ni par
+        place. Des bourses couvrent les frais des familles qui ne peuvent les payer.
+      </p>
+
+      <h2>Disponibilité, modifications, résiliation</h2>
+      <ul>
+        <li>Suffa est fourni « tel quel » pendant le projet pilote. L&apos;exploitant peut
+          modifier ou suspendre des fonctions.</li>
+        <li>Vous pouvez cesser d&apos;utiliser Suffa à tout moment et demander la
+          suppression de vos données (voir la politique de confidentialité).
+          L&apos;exploitant peut suspendre un compte qui enfreint ces conditions ou la
+          politique d&apos;utilisation acceptable.</li>
+        <li>Les modifications importantes de ces conditions seront signalées dans
+          l&apos;application ; toute utilisation continue après la date d&apos;entrée en
+          vigueur vaut acceptation.</li>
+      </ul>
+
+      <h2>Responsabilité</h2>
+      <p>
+        Dans la mesure permise par le droit québécois, l&apos;exploitant n&apos;est pas
+        responsable des pertes indirectes ou consécutives découlant de l&apos;utilisation
+        du service pilote. Rien ici ne limite une responsabilité qui ne peut être limitée
+        par la loi. (à valider avec un conseiller juridique)</p>
+
+      <h2>Droit applicable</h2>
+      <p>Ces conditions sont régies par les lois du Québec et du Canada. (à valider avec un
+        conseiller juridique)</p>
+
+      <h2>Contact</h2>
+      <p>Questions au sujet de ces conditions : l&apos;administrateur de votre mosquée, ou
+        la personne-ressource en matière de confidentialité de l&apos;exploitant indiquée
+        dans la <a href="/privacy">politique de confidentialité</a>.</p>
+    </>
   );
 }

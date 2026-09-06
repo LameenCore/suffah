@@ -656,6 +656,111 @@ export const fr: Messages = {
     toggle: "Vue simplifiée",
     toggleHint: "activer/désactiver",
   },
+  legal: {
+    lastUpdated: "Dernière mise à jour : {date}",
+    updatedValue: "septembre 2026",
+    notAdviceStrong: "Ceci ne constitue pas un avis juridique.",
+    notAdviceBody:
+      "Suffa est au stade pilote. Ces conditions sont une ébauche en langage clair, à faire réviser par un avocat du Québec avant qu'une famille ne se fie au service. Lorsqu'une section indique « à valider avec un conseiller juridique », elle n'est pas encore arrêtée.",
+    footerTerms: "Conditions",
+    footerPrivacy: "Confidentialité",
+    footerAcceptableUse: "Utilisation acceptable",
+    footerBackToSignIn: "Retour à la connexion",
+    termsTitle: "Conditions d'utilisation",
+    privacyTitle: "Politique de confidentialité",
+    acceptableUseTitle: "Politique d'utilisation acceptable",
+  },
+  parentPrivacy: {
+    kicker: "Vos données",
+    title: "Ce que Suffa détient, et vos droits à cet égard",
+    lede: "En vertu de la Loi 25 du Québec, vous pouvez consulter tout ce que nous détenons sur votre famille, nous demander de le corriger et nous demander de le supprimer.",
+    back: "Cette semaine",
+    downloadTitle: "Télécharger vos données",
+    downloadBody:
+      "Une copie lisible par machine de votre compte et de celui de chaque enfant rattaché, de l'appartenance au groupe, de la progression des leçons, des résultats aux points de contrôle / évaluations / examens, des dossiers de conformité, des notes communautaires et des enregistrements de consentement.",
+    downloadCta: "Télécharger l'export JSON",
+    downloadNote:
+      "Les notes de séance à l'échelle du groupe qui ne concernent pas spécifiquement votre enfant sont disponibles sur demande auprès de l'admin de votre mosquée.",
+    correctTitle: "Corriger un élément",
+    correctBodyBefore:
+      "Si un nom, un courriel ou un résultat est erroné, écrivez à l'admin de votre mosquée au moyen de ",
+    correctBodyLink: "l'option d'aide",
+    correctBodyAfter: " et il le corrigera.",
+    deleteTitle: "Demander la suppression",
+    deleteBody:
+      "Ceci envoie une demande au responsable de la protection des renseignements personnels de la mosquée. Il confirmera votre identité, supprimera les données de votre famille et vous indiquera ce que la loi l'oblige, le cas échéant, à conserver. Rien n'est supprimé immédiatement.",
+    deleteReason: "Motif (facultatif)",
+    deleteSend: "Envoyer la demande de suppression",
+    yourRequests: "Vos demandes",
+    seeAlsoBefore: "Consultez la ",
+    seeAlsoLink: "politique de confidentialité",
+    seeAlsoAfter:
+      " pour savoir ce que nous recueillons, qui le traite et combien de temps nous le conservons.",
+  },
+  help: {
+    backToDashboard: "Retour au tableau de bord",
+    kicker: "Obtenir de l'aide",
+    title: "Poser une question ou signaler un bogue",
+    lede: "Votre message est transmis directement à l'admin de la mosquée, qui le voit dans sa boîte de réception. Sa réponse apparaîtra ici une fois qu'il l'aura consulté.",
+    recentMessages: "Vos messages récents",
+    statusOpen: "Ouvert",
+    statusResolved: "Résolu",
+    masjidReply: "Réponse de la mosquée :",
+    catQuestion: "Question",
+    catBug: "Quelque chose ne fonctionne pas",
+    catIdea: "Idée / commentaire",
+    catDataErasure: "Suppression des données",
+    formSubject: "Objet",
+    formBody: "Expliquez à l'admin de la mosquée ce qui se passe…",
+    formSend: "Envoyer à la mosquée",
+    formSending: "Envoi…",
+    formSent: "Envoyé. L'admin a été avisé.",
+    formError: "l'envoi a échoué",
+  },
+  consent: {
+    kicker: "Consentement",
+    title: "Consentement pour chaque enfant",
+    lede: "Le parcours d'un enfant reste verrouillé tant que vous, en tant que parent ou tuteur légal, n'avez pas consenti à la manière dont Suffa enseigne et consigne son apprentissage. Vous pouvez retirer votre consentement plus tard.",
+    back: "Cette semaine",
+    versionNote:
+      "Le consentement est consigné avec une version ({version}). Si nous modifions substantiellement nos pratiques, nous vous le redemanderons. Vérifiez les formats d'évaluation et les seuils d'exemption auprès de la mosquée et de la réglementation québécoise en vigueur.",
+    loadError: "{detail}.",
+    noChildren: "Aucun enfant n'est rattaché à ce compte pour l'instant.",
+    onFile: "Consentement au dossier",
+    locked: "Parcours verrouillé — consentement requis",
+    simpleView: "Vue simplifiée",
+    simpleViewHint:
+      "— texte plus grand, une seule chose à la fois, sans minuterie. Mêmes leçons.",
+    turnOff: "Désactiver",
+    turnOn: "Activer",
+    consentingTo: "Vous consentez à ce qui suit :",
+    recordedWithdraw:
+      "Consigné le {date}. Retirer le consentement verrouille le parcours et interrompt les nouvelles leçons générées par IA pour cet enfant ; les dossiers existants sont conservés à moins que vous ne demandiez aussi leur suppression.",
+    withdraw: "Retirer le consentement",
+    agree:
+      "Je suis le parent ou le tuteur légal de {name} et je consens à tout ce qui précède.",
+    give: "Donner le consentement",
+    seeAlsoBefore: "Consultez la ",
+    seeAlsoBetween: " et ",
+    seeAlsoAfter: ".",
+    privacyPolicy: "politique de confidentialité",
+    yourData: "Vos données",
+    purpose: {
+      curriculumLabel: "Offrir le programme et consigner la progression de mon enfant",
+      curriculumDetail:
+        "Leçons, points de contrôle, évaluations d'unité et examens de fin de trimestre, ainsi que les résultats de chacun.",
+      aiInstructionLabel: "Utiliser l'IA pour générer les leçons et les évaluations",
+      aiInstructionDetail:
+        "Le contenu des cours est généré par un modèle tiers (Anthropic). La plupart des requêtes ne transmettent que du texte de cours ; le briefing de transfert au bénévole contient le prénom de mon enfant et des indicateurs de progression. La correction est faite par une logique de programme fixe, pas par le modèle.",
+      complianceRecordLabel:
+        "Utiliser les résultats pour constituer un dossier de progression pour l'enseignement à la maison",
+      complianceRecordDetail:
+        "Suffa organise les preuves ; je demeure responsable de leur dépôt auprès du ministère de l'Éducation.",
+      retentionLabel: "Conserver ces données pendant la période de conservation indiquée",
+      retentionDetail:
+        "Les données de compte et d'apprentissage sont conservées pendant l'inscription et pour une période limitée par la suite ; les notes de séance en texte libre sont conservées moins longtemps. Consultez la politique de confidentialité.",
+    },
+  },
   compliance: {
     kicker: "Conformité",
     title: "Dossier de progression et d'évaluation",
