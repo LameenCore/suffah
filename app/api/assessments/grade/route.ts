@@ -6,6 +6,7 @@
 import { getCurrentUser } from "@/lib/auth";
 import { getUnitCheckpointProgress } from "@/lib/db/queries";
 import { gradeUnitAssessment } from "@/lib/ai/assessment";
+import { getLocale } from "@/lib/i18n";
 
 export async function POST(request: Request) {
   const user = await getCurrentUser();
@@ -38,7 +39,7 @@ export async function POST(request: Request) {
         { status: 409 },
       );
     }
-    const grade = await gradeUnitAssessment(unitId, user.id, user.masjidId, normalized);
+    const grade = await gradeUnitAssessment(unitId, user.id, user.masjidId, normalized, await getLocale(user));
     return Response.json(grade);
   } catch (err) {
     if (err instanceof Error && err.name === "UnitNotFoundError") {

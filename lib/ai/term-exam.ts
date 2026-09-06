@@ -23,6 +23,7 @@ import {
   getLatestTermExamResult,
 } from "@/lib/db/exam-queries";
 import { PASS_THRESHOLD } from "@/lib/types";
+import type { Locale } from "@/lib/i18n/config";
 
 const DEFAULT_DURATION_SECONDS = 20 * 60;
 
@@ -78,8 +79,14 @@ export async function generateTermExam(
   courseId: string,
   termLabel: string,
   masjidId: string,
-  opts: { force?: boolean; durationSeconds?: number; actorUserId?: string | null } = {},
+  opts: {
+    force?: boolean;
+    durationSeconds?: number;
+    actorUserId?: string | null;
+    locale?: Locale;
+  } = {},
 ): Promise<GenerateTermExamResult> {
+  const locale: Locale = opts.locale ?? "en";
   const course = await getCourseForMasjid(courseId, masjidId);
   if (!course) {
     const err = new Error(`course ${courseId} not found in masjid ${masjidId}`);
@@ -88,11 +95,13 @@ export async function generateTermExam(
   }
 
   if (!opts.force) {
-    const existing = await getTermExam(courseId, termLabel, masjidId);
+    const existing = await getTermExam(courseId, termLabel, masjidId, locale);
     if (existing) return { content: existing.content, source: "existing" };
   }
 
-  const nodes = (await getCourseNodes(courseId, masjidId)).filter((n) => n.lesson_content);
+  const nodes = (await getCourseNodes(courseId, masjidId, locale)).filter(
+    (n) => n.lesson_content,
+  );
   if (nodes.length === 0) {
     throw new Error("cannot generate a term exam before any lesson in the course exists");
   }
@@ -107,6 +116,7 @@ export async function generateTermExam(
     `${course.name} - ${termLabel}`,
     nodes,
     "term",
+    locale,
   );
 
   // messages.parse() throws if the model output doesn't validate. That happens
@@ -171,7 +181,7 @@ export async function generateTermExam(
     coversTitles: nodes.map((n) => n.title),
   };
 
-  await saveTermExamContent(courseId, termLabel, masjidId, content, LESSON_MODEL);
+  await saveTermExamContent(courseId, termLabel, masjidId, content, LESSON_MODEL, locale);
   return { content, source: "model" };
 }
 
@@ -196,8 +206,9 @@ export async function gradeTermExam(
   studentUserId: string,
   masjidId: string,
   answers: Record<string, string>,
+  locale: Locale = "en",
 ): Promise<TermExamGrade> {
-  const exam = await getTermExam(courseId, termLabel, masjidId);
+  const exam = await getTermExam(courseId, termLabel, masjidId, locale);
   if (!exam) {
     const err = new Error("term exam has not been generated for this course/term");
     err.name = "TermExamMissingError";

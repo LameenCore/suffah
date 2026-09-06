@@ -6,6 +6,7 @@
 import { getCurrentUser } from "@/lib/auth";
 import { enforceAiRateLimit } from "@/lib/ratelimit";
 import { generateCheckpointForNode } from "@/lib/ai/checkpoint";
+import { isLocale } from "@/lib/i18n/config";
 
 export async function POST(request: Request) {
   const user = await getCurrentUser();
@@ -23,7 +24,11 @@ export async function POST(request: Request) {
   } catch {
     return Response.json({ error: "invalid JSON body" }, { status: 400 });
   }
-  const { nodeId, force } = (body ?? {}) as { nodeId?: unknown; force?: unknown };
+  const { nodeId, force, locale } = (body ?? {}) as {
+    nodeId?: unknown;
+    force?: unknown;
+    locale?: unknown;
+  };
   if (typeof nodeId !== "string" || nodeId.length === 0) {
     return Response.json({ error: "nodeId is required" }, { status: 400 });
   }
@@ -32,6 +37,7 @@ export async function POST(request: Request) {
     const result = await generateCheckpointForNode(nodeId, user.masjidId, {
       force: force === true && user.role === "admin",
       actorUserId: user.id,
+      locale: isLocale(locale) ? locale : "en",
     });
     return Response.json({
       nodeId: result.node.id,

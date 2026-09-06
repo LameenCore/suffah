@@ -6,6 +6,7 @@ import { getServiceClient } from "@/lib/db";
 import { getReadClient, getWriteClient } from "@/lib/db/server";
 import { unwrapRelation } from "@/lib/db/rel";
 import type { CourseName } from "@/lib/types";
+import type { Locale } from "@/lib/i18n/config";
 import type { LessonContent } from "@/lib/ai/lesson";
 import type { CheckpointContent } from "@/lib/ai/checkpoint";
 import type { AssessmentContent } from "@/lib/ai/assessment";
@@ -31,18 +32,29 @@ export interface PathwayNode {
 /** pathway_nodes -> courses join, then an explicit masjid_id check. */
 const NODE_SELECT =
   "id, course_id, unit_id, sequence_order, title, lesson_content, checkpoint_content, " +
+  "lesson_content_fr, checkpoint_content_fr, " +
   "course:courses!inner ( id, name, grade_band, masjid_id )";
 
-function shapeNode(row: Record<string, unknown>): PathwayNode {
+/**
+ * `lesson_content` / `checkpoint_content` on the returned node are the copy for
+ * `locale`: the `*_fr` column when locale is "fr" AND that copy exists, otherwise
+ * the English column (T59 item 6). Callers that don't care about locale get
+ * English unchanged.
+ */
+function shapeNode(row: Record<string, unknown>, locale: Locale = "en"): PathwayNode {
   const course = unwrapRelation(row.course);
+  const lessonEn = (row.lesson_content as LessonContent | null) ?? null;
+  const lessonFr = (row.lesson_content_fr as LessonContent | null) ?? null;
+  const cpEn = (row.checkpoint_content as CheckpointContent | null) ?? null;
+  const cpFr = (row.checkpoint_content_fr as CheckpointContent | null) ?? null;
   return {
     id: row.id as string,
     course_id: row.course_id as string,
     unit_id: (row.unit_id as string | null) ?? null,
     sequence_order: row.sequence_order as number,
     title: row.title as string,
-    lesson_content: (row.lesson_content as LessonContent | null) ?? null,
-    checkpoint_content: (row.checkpoint_content as CheckpointContent | null) ?? null,
+    lesson_content: locale === "fr" && lessonFr ? lessonFr : lessonEn,
+    checkpoint_content: locale === "fr" && cpFr ? cpFr : cpEn,
     course: course as CourseRef,
   };
 }
@@ -51,6 +63,7 @@ function shapeNode(row: Record<string, unknown>): PathwayNode {
 export async function getPathwayNode(
   nodeId: string,
   masjidId: string,
+  locale: Locale = "en",
 ): Promise<PathwayNode | null> {
   const { data, error } = await (await getReadClient())
     .from("pathway_nodes")
@@ -61,13 +74,16 @@ export async function getPathwayNode(
   if (error) throw new Error(`getPathwayNode: ${error.message}`);
   if (!data) return null;
 
-  const node = shapeNode(data as unknown as Record<string, unknown>);
+  const node = shapeNode(data as unknown as Record<string, unknown>, locale);
   if (node.course.masjid_id !== masjidId) return null;
   return node;
 }
 
 /** The first node (sequence_order = 1) of every course in the masjid. */
-export async function getFirstNodePerCourse(masjidId: string): Promise<PathwayNode[]> {
+export async function getFirstNodePerCourse(
+  masjidId: string,
+  locale: Locale = "en",
+): Promise<PathwayNode[]> {
   const { data, error } = await (await getReadClient())
     .from("pathway_nodes")
     .select(NODE_SELECT)
@@ -76,12 +92,15 @@ export async function getFirstNodePerCourse(masjidId: string): Promise<PathwayNo
 
   if (error) throw new Error(`getFirstNodePerCourse: ${error.message}`);
   return (data ?? [])
-    .map((row) => shapeNode(row as unknown as Record<string, unknown>))
+    .map((row) => shapeNode(row as unknown as Record<string, unknown>, locale))
     .filter((n) => n.course.masjid_id === masjidId);
 }
 
 /** Every pathway node in the masjid, ordered by course then sequence. */
-export async function getAllPathwayNodes(masjidId: string): Promise<PathwayNode[]> {
+export async function getAllPathwayNodes(
+  masjidId: string,
+  locale: Locale = "en",
+): Promise<PathwayNode[]> {
   const { data, error } = await (await getReadClient())
     .from("pathway_nodes")
     .select(NODE_SELECT)
@@ -89,7 +108,7 @@ export async function getAllPathwayNodes(masjidId: string): Promise<PathwayNode[
 
   if (error) throw new Error(`getAllPathwayNodes: ${error.message}`);
   return (data ?? [])
-    .map((row) => shapeNode(row as unknown as Record<string, unknown>))
+    .map((row) => shapeNode(row as unknown as Record<string, unknown>, locale))
     .filter((n) => n.course.masjid_id === masjidId)
     .sort((a, b) =>
       a.course.name === b.course.name
@@ -106,19 +125,21 @@ export async function saveLessonContent(
   nodeId: string,
   masjidId: string,
   content: LessonContent,
+  locale: Locale = "en",
 ): Promise<PathwayNode> {
   // Guard tenancy before writing.
   const existing = await getPathwayNode(nodeId, masjidId);
   if (!existing) throw new Error(`saveLessonContent: node ${nodeId} not in masjid ${masjidId}`);
 
+  const column = locale === "fr" ? "lesson_content_fr" : "lesson_content";
   const { error } = await getServiceClient()
     .from("pathway_nodes")
-    .update({ lesson_content: content })
+    .update({ [column]: content })
     .eq("id", nodeId);
 
   if (error) throw new Error(`saveLessonContent: ${error.message}`);
 
-  const updated = await getPathwayNode(nodeId, masjidId);
+  const updated = await getPathwayNode(nodeId, masjidId, locale);
   if (!updated) throw new Error("saveLessonContent: node vanished after update");
   return updated;
 }
@@ -176,6 +197,7 @@ export async function getPodForStudent(
 export async function getPlayground(
   studentUserId: string,
   masjidId: string,
+  locale: Locale = "en",
 ): Promise<Playground> {
   const db = (await getReadClient());
   const pod = await getPodForStudent(studentUserId, masjidId);
@@ -221,7 +243,7 @@ export async function getPlayground(
     if (countErr) throw new Error(`getPlayground: ${countErr.message}`);
 
     const currentNode = currentNodeId
-      ? await getPathwayNode(currentNodeId, masjidId)
+      ? await getPathwayNode(currentNodeId, masjidId, locale)
       : null;
 
     courses.push({
@@ -271,6 +293,7 @@ export interface StudentTracks {
 export async function getStudentTracks(
   studentUserId: string,
   masjidId: string,
+  locale: Locale = "en",
 ): Promise<StudentTracks> {
   const db = (await getReadClient());
   const pod = await getPodForStudent(studentUserId, masjidId);
@@ -334,7 +357,9 @@ export async function getStudentTracks(
       };
     });
 
-    const currentNode = currentNodeId ? await getPathwayNode(currentNodeId, masjidId) : null;
+    const currentNode = currentNodeId
+      ? await getPathwayNode(currentNodeId, masjidId, locale)
+      : null;
 
     tracks.push({
       course,
@@ -398,17 +423,19 @@ export async function saveCheckpointContent(
   nodeId: string,
   masjidId: string,
   content: CheckpointContent,
+  locale: Locale = "en",
 ): Promise<PathwayNode> {
   const existing = await getPathwayNode(nodeId, masjidId);
   if (!existing) throw new Error(`saveCheckpointContent: node ${nodeId} not in masjid ${masjidId}`);
 
+  const column = locale === "fr" ? "checkpoint_content_fr" : "checkpoint_content";
   const { error } = await getServiceClient()
     .from("pathway_nodes")
-    .update({ checkpoint_content: content })
+    .update({ [column]: content })
     .eq("id", nodeId);
   if (error) throw new Error(`saveCheckpointContent: ${error.message}`);
 
-  const updated = await getPathwayNode(nodeId, masjidId);
+  const updated = await getPathwayNode(nodeId, masjidId, locale);
   if (!updated) throw new Error("saveCheckpointContent: node vanished after update");
   return updated;
 }
@@ -470,6 +497,7 @@ export async function getNextNode(
   courseId: string,
   currentSequenceOrder: number,
   masjidId: string,
+  locale: Locale = "en",
 ): Promise<PathwayNode | null> {
   const { data, error } = await (await getReadClient())
     .from("pathway_nodes")
@@ -479,7 +507,7 @@ export async function getNextNode(
     .maybeSingle();
   if (error) throw new Error(`getNextNode: ${error.message}`);
   if (!data) return null;
-  const node = shapeNode(data as unknown as Record<string, unknown>);
+  const node = shapeNode(data as unknown as Record<string, unknown>, locale);
   return node.course.masjid_id === masjidId ? node : null;
 }
 
@@ -528,23 +556,29 @@ export interface UnitRef {
 }
 
 const UNIT_SELECT =
-  "id, course_id, title, sequence_order, assessment_content, " +
+  "id, course_id, title, sequence_order, assessment_content, assessment_content_fr, " +
   "course:courses!inner ( id, name, grade_band, masjid_id )";
 
-function shapeUnit(row: Record<string, unknown>): UnitRef {
+function shapeUnit(row: Record<string, unknown>, locale: Locale = "en"): UnitRef {
   const course = unwrapRelation(row.course);
+  const en = (row.assessment_content as AssessmentContent | null) ?? null;
+  const fr = (row.assessment_content_fr as AssessmentContent | null) ?? null;
   return {
     id: row.id as string,
     course_id: row.course_id as string,
     title: row.title as string,
     sequence_order: row.sequence_order as number,
-    assessment_content: (row.assessment_content as AssessmentContent | null) ?? null,
+    assessment_content: locale === "fr" && fr ? fr : en,
     course: course as CourseRef,
   };
 }
 
 /** One unit, only if its course belongs to `masjidId`. */
-export async function getUnit(unitId: string, masjidId: string): Promise<UnitRef | null> {
+export async function getUnit(
+  unitId: string,
+  masjidId: string,
+  locale: Locale = "en",
+): Promise<UnitRef | null> {
   const { data, error } = await (await getReadClient())
     .from("units")
     .select(UNIT_SELECT)
@@ -552,12 +586,16 @@ export async function getUnit(unitId: string, masjidId: string): Promise<UnitRef
     .maybeSingle();
   if (error) throw new Error(`getUnit: ${error.message}`);
   if (!data) return null;
-  const unit = shapeUnit(data as unknown as Record<string, unknown>);
+  const unit = shapeUnit(data as unknown as Record<string, unknown>, locale);
   return unit.course.masjid_id === masjidId ? unit : null;
 }
 
 /** All pathway nodes in a unit, ordered by sequence. */
-export async function getUnitNodes(unitId: string, masjidId: string): Promise<PathwayNode[]> {
+export async function getUnitNodes(
+  unitId: string,
+  masjidId: string,
+  locale: Locale = "en",
+): Promise<PathwayNode[]> {
   const { data, error } = await (await getReadClient())
     .from("pathway_nodes")
     .select(NODE_SELECT)
@@ -565,7 +603,7 @@ export async function getUnitNodes(unitId: string, masjidId: string): Promise<Pa
     .order("sequence_order", { ascending: true });
   if (error) throw new Error(`getUnitNodes: ${error.message}`);
   return (data ?? [])
-    .map((row) => shapeNode(row as unknown as Record<string, unknown>))
+    .map((row) => shapeNode(row as unknown as Record<string, unknown>, locale))
     .filter((n) => n.course.masjid_id === masjidId);
 }
 
@@ -573,17 +611,19 @@ export async function saveUnitAssessmentContent(
   unitId: string,
   masjidId: string,
   content: AssessmentContent,
+  locale: Locale = "en",
 ): Promise<UnitRef> {
   const existing = await getUnit(unitId, masjidId);
   if (!existing) throw new Error(`saveUnitAssessmentContent: unit ${unitId} not in masjid ${masjidId}`);
 
+  const column = locale === "fr" ? "assessment_content_fr" : "assessment_content";
   const { error } = await getServiceClient()
     .from("units")
-    .update({ assessment_content: content })
+    .update({ [column]: content })
     .eq("id", unitId);
   if (error) throw new Error(`saveUnitAssessmentContent: ${error.message}`);
 
-  const updated = await getUnit(unitId, masjidId);
+  const updated = await getUnit(unitId, masjidId, locale);
   if (!updated) throw new Error("saveUnitAssessmentContent: unit vanished after update");
   return updated;
 }

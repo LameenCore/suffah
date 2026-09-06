@@ -27,7 +27,7 @@ export default async function StudentLayout({ children }: LayoutProps<"/student"
 
   let courses: { id: string; name: string }[] = [];
   try {
-    const { tracks } = await getStudentTracks(user.id, user.masjidId);
+    const { tracks } = await getStudentTracks(user.id, user.masjidId, locale);
     courses = tracks.map((t) => ({ id: t.course.id, name: t.course.name }));
   } catch {
     // sidebar still works with just "My courses"

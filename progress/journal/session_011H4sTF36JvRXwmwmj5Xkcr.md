@@ -711,3 +711,43 @@ only item 6 (generated content in FR — AI generators + locale-keyed persistenc
 own migration, real code) and item 7 (native Quebec-French review, doc-only)
 remain. Wrote docs/review/2026-09-06-french-l10n-native-review.md for item 7.
 T59 stays `doing` (item 6 is code, not yet started).
+
+## T59 — item 6: generated content in FR
+
+Migration 0027: `*_content_fr` sibling JSONB columns on pathway_nodes (lesson +
+checkpoint), units (assessment), term_exams (exam); `pod_briefings.locale`.
+English stays in the original column (demo default, zero risk); FR lands in
+`*_fr`; a `locale`-aware reader falls back to EN when the FR copy is absent.
+
+Threaded `locale` (default "en" everywhere → EN path byte-identical):
+- Readers: `getPathwayNode` / `getFirstNodePerCourse` / `getAllPathwayNodes` /
+  `getNextNode` / `getUnit` / `getUnitNodes` / `getCourseNodes` / `getPlayground`
+  / `getStudentTracks` / `getTermExam` — `shapeNode`/`shapeUnit` swap in the FR
+  column when locale=fr and it exists.
+- Writers: `saveLessonContent` / `saveCheckpointContent` /
+  `saveUnitAssessmentContent` / `saveTermExamContent` (FR = column update on the
+  EN-owned key) / `saveLessonJson` / `saveCheckpointJson` — column by locale.
+- Generators: `generateLessonForNode` / `generateCheckpointForNode` /
+  `generateUnitAssessment` / `generateTermExam` take `opts.locale`;
+  `localeInstruction(locale)` (exported from lib/ai/lesson) appends "write in
+  Quebec French" to the system prompt. Graders (`gradeCheckpoint` /
+  `gradeUnitAssessment` / `gradeTermExam`) read the same locale so a FR attempt
+  is scored against the FR questions.
+- `askTutor` gets a `locale` arg — replies + OFF_TOPIC/ESCALATE canned messages
+  in FR.
+- Call sites: student actions + pages + the offline-unit route resolve
+  `getLocale(user)`; the 8 `/api/*/generate|grade` routes accept a `locale`
+  field (so `gen:*` scripts can pass `{ locale: "fr" }`); admin authoring
+  regenerate/hand-edit actions use the admin's active locale.
+
+Fallbacks (fallback-lessons / -checkpoints / -assessments) stay English — a
+degraded path, noted.
+
+STILL NOT threaded (item 6 remainder): `generatePodBriefing`
+(lib/ai/continuity.ts), `getOrCreateRemediation` (lib/ai/remediation.ts),
+`getPodFocus` (lib/recommendations.ts — deterministic English text, needs keyed
+FR strings). Also: no `--locale` flag on the `gen:*` scripts yet, and no EN/FR
+toggle in the authoring editor UI (it follows the admin's locale).
+
+Full audit GREEN: tsc, 68 tests, check:i18n (1087), check:integrity, eslint .,
+next build, check:rls (18/18), check:a11y (no serious/critical).

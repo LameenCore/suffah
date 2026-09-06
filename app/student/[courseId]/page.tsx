@@ -20,8 +20,8 @@ export default async function CourseLessonPage({
 }: PageProps<"/student/[courseId]">) {
   const { courseId } = await params;
   const user = await requireRole("student");
-  const { t } = await getT(user);
-  const { courses } = await getPlayground(user.id, user.masjidId);
+  const { locale, t } = await getT(user);
+  const { courses } = await getPlayground(user.id, user.masjidId, locale);
 
   const entry = courses.find((c) => c.course.id === courseId);
   if (!entry) notFound();

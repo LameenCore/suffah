@@ -21,6 +21,7 @@ import { getServiceClient } from "@/lib/db";
 import { getReadClient } from "@/lib/db/server";
 import { unwrapRelation as rel } from "@/lib/db/rel";
 import type { CourseName } from "@/lib/types";
+import type { Locale } from "@/lib/i18n/config";
 import { LessonBodySchema, type LessonContent } from "@/lib/ai/lesson";
 import { CheckpointBodySchema, type CheckpointContent } from "@/lib/ai/checkpoint";
 
@@ -453,6 +454,7 @@ export async function saveLessonJson(
   masjidId: string,
   nodeId: string,
   rawJson: string,
+  locale: Locale = "en",
 ): Promise<void> {
   await assertNodeInMasjid(nodeId, masjidId);
   const parsed = LessonEditSchema.safeParse(parseJson(rawJson));
@@ -465,9 +467,10 @@ export async function saveLessonJson(
     generatedBy: "hand-edited",
     generatedAt: new Date().toISOString(),
   };
+  const column = locale === "fr" ? "lesson_content_fr" : "lesson_content";
   const { error } = await getServiceClient()
     .from("pathway_nodes")
-    .update({ lesson_content: content })
+    .update({ [column]: content })
     .eq("id", nodeId);
   if (error) throw new Error(`saveLessonJson: ${error.message}`);
 }
@@ -477,6 +480,7 @@ export async function saveCheckpointJson(
   masjidId: string,
   nodeId: string,
   rawJson: string,
+  locale: Locale = "en",
 ): Promise<void> {
   await assertNodeInMasjid(nodeId, masjidId);
   const parsed = CheckpointEditSchema.safeParse(parseJson(rawJson));
@@ -491,9 +495,10 @@ export async function saveCheckpointJson(
     generatedBy: "hand-edited",
     generatedAt: new Date().toISOString(),
   };
+  const column = locale === "fr" ? "checkpoint_content_fr" : "checkpoint_content";
   const { error } = await getServiceClient()
     .from("pathway_nodes")
-    .update({ checkpoint_content: content })
+    .update({ [column]: content })
     .eq("id", nodeId);
   if (error) throw new Error(`saveCheckpointJson: ${error.message}`);
 }

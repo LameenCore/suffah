@@ -14,10 +14,11 @@ import { getT } from "@/lib/i18n";
 
 export default async function StudentHome() {
   const user = await requireRole("student");
-  const { t } = await getT(user);
+  const { locale, t } = await getT(user);
   const { pod, tracks, lessonsCompleted, checkpointsPassed } = await getStudentTracks(
     user.id,
     user.masjidId,
+    locale,
   );
   const consistency = await getConsistency(user.id, user.masjidId);
   await seedReviewItems(user.id, user.masjidId).catch(() => {});

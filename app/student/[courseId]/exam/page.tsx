@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { requireRole } from "@/lib/auth";
+import { getLocale } from "@/lib/i18n";
 import { DEMO_TERM_LABEL } from "@/lib/types";
 import { getPlayground } from "@/lib/db/queries";
 import { getTermExam } from "@/lib/db/exam-queries";
@@ -11,12 +12,13 @@ import { PageHeader } from "@/components/ui/PageHeader";
 export default async function TermExamPage({ params }: PageProps<"/student/[courseId]/exam">) {
   const { courseId } = await params;
   const user = await requireRole("student");
-  const { courses } = await getPlayground(user.id, user.masjidId);
+  const locale = await getLocale(user);
+  const { courses } = await getPlayground(user.id, user.masjidId, locale);
   const entry = courses.find((c) => c.course.id === courseId);
   if (!entry) notFound();
 
   const [examRow, prior] = await Promise.all([
-    getTermExam(courseId, DEMO_TERM_LABEL, user.masjidId),
+    getTermExam(courseId, DEMO_TERM_LABEL, user.masjidId, locale),
     latestTermExamGrade(user.id, courseId, DEMO_TERM_LABEL),
   ]);
 

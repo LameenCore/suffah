@@ -7,6 +7,7 @@
 
 import { revalidatePath } from "next/cache";
 import { getCurrentUser } from "@/lib/auth";
+import { getLocale } from "@/lib/i18n";
 import { recordAudit } from "@/lib/audit";
 import {
   createNode,
@@ -216,7 +217,7 @@ export async function saveLessonJsonAction(
     return fail(err);
   }
   try {
-    await saveLessonJson(user.masjidId, nodeId, json);
+    await saveLessonJson(user.masjidId, nodeId, json, await getLocale(user));
     await recordAudit({
       actor: user,
       action: "course.lesson_saved",
@@ -243,7 +244,7 @@ export async function saveCheckpointJsonAction(
     return fail(err);
   }
   try {
-    await saveCheckpointJson(user.masjidId, nodeId, json);
+    await saveCheckpointJson(user.masjidId, nodeId, json, await getLocale(user));
     await recordAudit({
       actor: user,
       action: "course.checkpoint_saved",
@@ -272,6 +273,7 @@ export async function regenerateLessonAction(
     const res = await generateLessonForNode(nodeId, user.masjidId, {
       force: true,
       actorUserId: user.id,
+      locale: await getLocale(user),
     });
     await recordAudit({
       actor: user,
@@ -301,6 +303,7 @@ export async function regenerateCheckpointAction(
     const res = await generateCheckpointForNode(nodeId, user.masjidId, {
       force: true,
       actorUserId: user.id,
+      locale: await getLocale(user),
     });
     await recordAudit({
       actor: user,

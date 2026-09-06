@@ -5,6 +5,7 @@
 // checked; read-only; a student only ever gets their own pod's current node.
 
 import { getCurrentUser } from "@/lib/auth";
+import { getLocale } from "@/lib/i18n";
 import { getPlayground } from "@/lib/db/queries";
 import { stripAnswers } from "@/lib/ai/checkpoint";
 
@@ -19,7 +20,7 @@ export async function GET(request: Request) {
   if (!courseId) return Response.json({ error: "courseId is required" }, { status: 400 });
 
   try {
-    const { courses } = await getPlayground(user.id, user.masjidId);
+    const { courses } = await getPlayground(user.id, user.masjidId, await getLocale(user));
     const entry = courses.find((c) => c.course.id === courseId);
     if (!entry) return Response.json({ error: "course not found for this student" }, { status: 404 });
     if (!entry.currentNode) {

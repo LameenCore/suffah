@@ -12,7 +12,7 @@ export default async function AuthoringCoursePage({
 }: PageProps<"/admin/authoring/[courseId]">) {
   const { courseId } = await params;
   const user = await requireRole("admin");
-  const { t } = await getT(user);
+  const { locale, t } = await getT(user);
 
   const course = await getAuthoringCourse(user.masjidId, courseId).catch(() => null);
   if (!course) notFound();
@@ -21,7 +21,7 @@ export default async function AuthoringCoursePage({
   // show + hand-edit it. Small set (one unit per course in demo scope).
   const content: Record<string, { lesson: unknown; checkpoint: unknown }> = {};
   for (const node of course.nodes) {
-    const full = await getPathwayNode(node.id, user.masjidId);
+    const full = await getPathwayNode(node.id, user.masjidId, locale);
     content[node.id] = {
       lesson: full?.lesson_content ?? null,
       checkpoint: full?.checkpoint_content ?? null,

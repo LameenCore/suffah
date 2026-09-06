@@ -31,7 +31,9 @@ import {
   type PathwayNode,
 } from "@/lib/db/queries";
 import { fallbackUnitAssessment } from "@/lib/ai/fallback-assessments";
+import { localeInstruction } from "@/lib/ai/lesson";
 import { PASS_THRESHOLD } from "@/lib/types";
+import type { Locale } from "@/lib/i18n/config";
 
 // --- Persisted shape -----------------------------------------------------
 
@@ -85,14 +87,17 @@ export function buildAssessmentPrompt(
   scopeTitle: string,
   nodes: PathwayNode[],
   kind: AssessmentKind,
+  locale: Locale = "en",
 ): { system: string; user: string } {
   const label = kind === "term" ? "term exam" : "unit assessment";
+  const loc = localeInstruction(locale);
   const system =
     `You write objective ${label}s for a self-paced homeschool playground. ` +
     "The reader is about 12 years old. Every question must have one objective answer that " +
     "can be graded by exact or numeric match - never an essay or a rubric. Short answers " +
     "are one number or a few words. Spread the questions across all the lessons listed, " +
-    "not just the last one.";
+    "not just the last one." +
+    (loc ? ` ${loc}` : "");
   const lessons = nodes
     .map((n, i) => {
       const l = n.lesson_content;
@@ -120,6 +125,7 @@ export function buildAssessmentPrompt(
 async function generateWithModel(
   unit: UnitRef,
   nodes: PathwayNode[],
+  locale: Locale = "en",
 ): Promise<{ assessment: AssessmentContent; usage: TokenUsage | null }> {
   const withLessons = nodes.filter((n) => n.lesson_content);
   if (withLessons.length === 0) {
@@ -132,6 +138,7 @@ async function generateWithModel(
     unit.title,
     withLessons,
     "unit",
+    locale,
   );
 
   const response = await getAnthropic().messages.parse({
@@ -176,9 +183,10 @@ export interface GenerateAssessmentResult {
 export async function generateUnitAssessment(
   unitId: string,
   masjidId: string,
-  opts: { force?: boolean; actorUserId?: string | null } = {},
+  opts: { force?: boolean; actorUserId?: string | null; locale?: Locale } = {},
 ): Promise<GenerateAssessmentResult> {
-  const unit = await getUnit(unitId, masjidId);
+  const locale: Locale = opts.locale ?? "en";
+  const unit = await getUnit(unitId, masjidId, locale);
   if (!unit) {
     const err = new Error(`unit ${unitId} not found in masjid ${masjidId}`);
     err.name = "UnitNotFoundError";
@@ -189,13 +197,13 @@ export async function generateUnitAssessment(
     return { unit, assessment: unit.assessment_content, regenerated: false, source: "existing" };
   }
 
-  const nodes = await getUnitNodes(unitId, masjidId);
+  const nodes = await getUnitNodes(unitId, masjidId, locale);
 
   let assessment: AssessmentContent;
   let source: AssessmentSource;
   try {
     await assertWithinAiBudget("assessment", masjidId);
-    const res = await generateWithModel(unit, nodes);
+    const res = await generateWithModel(unit, nodes, locale);
     assessment = res.assessment;
     source = "model";
     await logModelCall({
@@ -225,7 +233,7 @@ export async function generateUnitAssessment(
     });
   }
 
-  const persisted = await saveUnitAssessmentContent(unitId, masjidId, assessment);
+  const persisted = await saveUnitAssessmentContent(unitId, masjidId, assessment, locale);
   return { unit: persisted, assessment, regenerated: true, source };
 }
 
@@ -246,8 +254,9 @@ export async function gradeUnitAssessment(
   studentUserId: string,
   masjidId: string,
   answers: Record<string, string>,
+  locale: Locale = "en",
 ): Promise<AssessmentGrade> {
-  const unit = await getUnit(unitId, masjidId);
+  const unit = await getUnit(unitId, masjidId, locale);
   if (!unit) {
     const err = new Error(`unit ${unitId} not found in masjid ${masjidId}`);
     err.name = "UnitNotFoundError";

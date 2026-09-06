@@ -5,6 +5,7 @@
 
 import { revalidatePath } from "next/cache";
 import { getCurrentUser } from "@/lib/auth";
+import { getLocale } from "@/lib/i18n";
 import { assertAiRateLimit } from "@/lib/ratelimit";
 import { markLessonComplete, isLessonComplete } from "@/lib/db/queries";
 import { generateLessonForNode } from "@/lib/ai/lesson";
@@ -41,7 +42,11 @@ export async function ensureLessonAction(
 ): Promise<{ source: "existing" | "model" | "fallback" }> {
   const user = await requireStudent();
   assertAiRateLimit("lesson", user);
-  const result = await generateLessonForNode(nodeId, user.masjidId, { actorUserId: user.id });
+  const locale = await getLocale(user);
+  const result = await generateLessonForNode(nodeId, user.masjidId, {
+    actorUserId: user.id,
+    locale,
+  });
   revalidatePath("/student", "layout");
   return { source: result.source };
 }
@@ -55,7 +60,11 @@ export async function startCheckpointAction(
     throw new Error("finish the lesson before starting the checkpoint");
   }
   assertAiRateLimit("checkpoint", user);
-  const result = await generateCheckpointForNode(nodeId, user.masjidId, { actorUserId: user.id });
+  const locale = await getLocale(user);
+  const result = await generateCheckpointForNode(nodeId, user.masjidId, {
+    actorUserId: user.id,
+    locale,
+  });
   revalidatePath("/student", "layout");
   return { source: result.source };
 }
@@ -74,7 +83,7 @@ export async function submitCheckpointAction(
   if (!(await isLessonComplete(user.id, nodeId))) {
     throw new Error("finish the lesson before submitting the checkpoint");
   }
-  return gradeCheckpoint(nodeId, user.id, user.masjidId, answers);
+  return gradeCheckpoint(nodeId, user.id, user.masjidId, answers, await getLocale(user));
 }
 
 /** Prepare the term exam for a course (generate + persist if missing). */
@@ -83,6 +92,7 @@ export async function startTermExamAction(courseId: string): Promise<{ source: s
   assertAiRateLimit("term_exam", user);
   const r = await generateTermExam(courseId, DEMO_TERM_LABEL, user.masjidId, {
     actorUserId: user.id,
+    locale: await getLocale(user),
   });
   revalidatePath("/student", "layout");
   return { source: r.source };
@@ -97,7 +107,14 @@ export async function submitTermExamAction(
   answers: Record<string, string>,
 ): Promise<TermExamGrade> {
   const user = await requireStudent();
-  return gradeTermExam(courseId, DEMO_TERM_LABEL, user.id, user.masjidId, answers);
+  return gradeTermExam(
+    courseId,
+    DEMO_TERM_LABEL,
+    user.id,
+    user.masjidId,
+    answers,
+    await getLocale(user),
+  );
 }
 
 /** Grade a spaced-repetition review session and reschedule the items (T44). */
@@ -116,5 +133,12 @@ export async function askTutorAction(
 ): Promise<TutorReply> {
   const user = await requireStudent();
   assertAiRateLimit("tutor", user);
-  return askTutor(nodeId, user.id, user.masjidId, question, history ?? []);
+  return askTutor(
+    nodeId,
+    user.id,
+    user.masjidId,
+    question,
+    history ?? [],
+    await getLocale(user),
+  );
 }

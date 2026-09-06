@@ -3,6 +3,7 @@
 import { getCurrentUser } from "@/lib/auth";
 import { DEMO_TERM_LABEL } from "@/lib/types";
 import { gradeTermExam } from "@/lib/ai/term-exam";
+import { getLocale } from "@/lib/i18n";
 
 export async function POST(request: Request) {
   const user = await getCurrentUser();
@@ -33,7 +34,7 @@ export async function POST(request: Request) {
   for (const [k, v] of Object.entries(answers)) normalized[k] = String(v);
 
   try {
-    const grade = await gradeTermExam(courseId, term, user.id, user.masjidId, normalized);
+    const grade = await gradeTermExam(courseId, term, user.id, user.masjidId, normalized, await getLocale(user));
     return Response.json(grade);
   } catch (err) {
     if (err instanceof Error && err.name === "TermExamMissingError") {

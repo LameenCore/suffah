@@ -35,7 +35,9 @@ import { recordRemediationPassed, maybeSuggestFastTrack, needsRemediation } from
 import { getDisabledCheckpointQuestionIds } from "@/lib/db/question-bank-queries";
 import { getOrCreateRemediation, type RemediationContent } from "@/lib/ai/remediation";
 import { fallbackCheckpoint } from "@/lib/ai/fallback-checkpoints";
+import { localeInstruction } from "@/lib/ai/lesson";
 import { PASS_THRESHOLD } from "@/lib/types";
+import type { Locale } from "@/lib/i18n/config";
 
 export type { QuestionGrade } from "@/lib/ai/questions";
 
@@ -84,16 +86,19 @@ export interface GenerateCheckpointResult {
 
 async function generateWithModel(
   node: PathwayNode,
+  locale: Locale = "en",
 ): Promise<{ checkpoint: CheckpointContent; usage: TokenUsage | null }> {
   const lesson = node.lesson_content;
   if (!lesson) throw new Error("cannot generate a checkpoint before the lesson exists");
 
+  const loc = localeInstruction(locale);
   const system =
     "You write short objective checkpoints for a self-paced homeschool playground. " +
     "The student just finished one lesson. Write 3-4 questions that check the lesson's " +
     "core ideas - a mix of multiple-choice and short-answer. Every question must have a " +
     "single objective answer that can be graded by exact/numeric match, never a rubric. " +
-    "Short answers should be one number or a few words. Keep it at a 12-year-old's level.";
+    "Short answers should be one number or a few words. Keep it at a 12-year-old's level." +
+    (loc ? ` ${loc}` : "");
   const user = [
     `Course: ${node.course.name} - node ${node.sequence_order}: "${node.title}"`,
     "",
@@ -142,9 +147,10 @@ async function generateWithModel(
 export async function generateCheckpointForNode(
   nodeId: string,
   masjidId: string,
-  opts: { force?: boolean; actorUserId?: string | null } = {},
+  opts: { force?: boolean; actorUserId?: string | null; locale?: Locale } = {},
 ): Promise<GenerateCheckpointResult> {
-  const node = await getPathwayNode(nodeId, masjidId);
+  const locale: Locale = opts.locale ?? "en";
+  const node = await getPathwayNode(nodeId, masjidId, locale);
   if (!node) {
     const err = new Error(`pathway node ${nodeId} not found in masjid ${masjidId}`);
     err.name = "NodeNotFoundError";
@@ -164,7 +170,7 @@ export async function generateCheckpointForNode(
   let source: CheckpointSource;
   try {
     await assertWithinAiBudget("checkpoint", masjidId);
-    const res = await generateWithModel(node);
+    const res = await generateWithModel(node, locale);
     checkpoint = res.checkpoint;
     source = "model";
     await logModelCall({
@@ -194,7 +200,7 @@ export async function generateCheckpointForNode(
     });
   }
 
-  const persisted = await saveCheckpointContent(nodeId, masjidId, checkpoint);
+  const persisted = await saveCheckpointContent(nodeId, masjidId, checkpoint, locale);
   return { node: persisted, checkpoint, regenerated: true, source };
 }
 
@@ -223,8 +229,9 @@ export async function gradeCheckpoint(
   studentUserId: string,
   masjidId: string,
   answers: Record<string, string>,
+  locale: Locale = "en",
 ): Promise<CheckpointGrade> {
-  const node = await getPathwayNode(nodeId, masjidId);
+  const node = await getPathwayNode(nodeId, masjidId, locale);
   if (!node) {
     const err = new Error(`pathway node ${nodeId} not found in masjid ${masjidId}`);
     err.name = "NodeNotFoundError";

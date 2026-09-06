@@ -4,6 +4,7 @@ import { getCurrentUser } from "@/lib/auth";
 import { enforceAiRateLimit } from "@/lib/ratelimit";
 import { DEMO_TERM_LABEL } from "@/lib/types";
 import { generateTermExam } from "@/lib/ai/term-exam";
+import { isLocale } from "@/lib/i18n/config";
 
 export async function POST(request: Request) {
   const user = await getCurrentUser();
@@ -21,10 +22,11 @@ export async function POST(request: Request) {
   } catch {
     return Response.json({ error: "invalid JSON body" }, { status: 400 });
   }
-  const { courseId, termLabel, force } = (body ?? {}) as {
+  const { courseId, termLabel, force, locale } = (body ?? {}) as {
     courseId?: unknown;
     termLabel?: unknown;
     force?: unknown;
+    locale?: unknown;
   };
   if (typeof courseId !== "string" || courseId.length === 0) {
     return Response.json({ error: "courseId is required" }, { status: 400 });
@@ -35,6 +37,7 @@ export async function POST(request: Request) {
     const r = await generateTermExam(courseId, term, user.masjidId, {
       force: force === true && user.role === "admin",
       actorUserId: user.id,
+      locale: isLocale(locale) ? locale : "en",
     });
     return Response.json({
       courseId,

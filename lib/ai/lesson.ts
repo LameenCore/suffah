@@ -20,6 +20,18 @@ import {
 } from "@/lib/db/queries";
 import { fallbackLesson } from "@/lib/ai/fallback-lessons";
 import type { CourseName } from "@/lib/types";
+import type { Locale } from "@/lib/i18n/config";
+
+/** Instruction appended to a generation prompt when the target locale is French. */
+export function localeInstruction(locale: Locale): string {
+  return locale === "fr"
+    ? "Write ALL output in French (français québécois) — natural Quebec French, " +
+        "vouvoiement, the education vocabulary a Quebec Secondary 1 student and " +
+        "family would recognise. Keep any Arabic terms and the phrase " +
+        "“le Prophète Muhammad ﷺ” as-is. JSON keys stay in English; " +
+        "only the values are translated."
+    : "";
+}
 
 // --- Persisted shape -------------------------------------------------------
 
@@ -123,14 +135,19 @@ function courseBrief(course: CourseRef): { guidance: string; regulationNote?: st
   }
 }
 
-function buildPrompt(node: PathwayNode): { system: string; user: string } {
+function buildPrompt(
+  node: PathwayNode,
+  locale: Locale = "en",
+): { system: string; user: string } {
   const { guidance } = courseBrief(node.course);
+  const loc = localeInstruction(locale);
   const system =
     "You write short, warm, precise lessons for a self-paced homeschool playground. " +
     "The reader is about 12 years old (Québec Secondary 1). Every lesson is followed by " +
     "an objective checkpoint, so your practice items must have a single checkable answer " +
     "(a number or a short phrase) - never an essay prompt. Plain prose, no markdown " +
-    "headers inside section bodies. Be accurate; do not invent facts.";
+    "headers inside section bodies. Be accurate; do not invent facts." +
+    (loc ? ` ${loc}` : "");
   const user = [
     `Course: ${node.course.name} (${node.course.grade_band})`,
     `Unit node ${node.sequence_order}: "${node.title}"`,
@@ -146,8 +163,9 @@ function buildPrompt(node: PathwayNode): { system: string; user: string } {
 
 async function generateWithModel(
   node: PathwayNode,
+  locale: Locale = "en",
 ): Promise<{ lesson: LessonContent; usage: TokenUsage | null }> {
-  const { system, user } = buildPrompt(node);
+  const { system, user } = buildPrompt(node, locale);
   const response = await getAnthropic().messages.parse({
     model: LESSON_MODEL,
     max_tokens: 8000,
@@ -186,9 +204,10 @@ async function generateWithModel(
 export async function generateLessonForNode(
   nodeId: string,
   masjidId: string,
-  opts: { force?: boolean; actorUserId?: string | null } = {},
+  opts: { force?: boolean; actorUserId?: string | null; locale?: Locale } = {},
 ): Promise<GenerateLessonResult> {
-  const node = await getPathwayNode(nodeId, masjidId);
+  const locale: Locale = opts.locale ?? "en";
+  const node = await getPathwayNode(nodeId, masjidId, locale);
   if (!node) {
     const err = new Error(`pathway node ${nodeId} not found in masjid ${masjidId}`);
     err.name = "NodeNotFoundError";
@@ -203,7 +222,7 @@ export async function generateLessonForNode(
   let source: LessonSource;
   try {
     await assertWithinAiBudget("lesson", masjidId);
-    const res = await generateWithModel(node);
+    const res = await generateWithModel(node, locale);
     lesson = res.lesson;
     source = "model";
     await logModelCall({
@@ -233,6 +252,6 @@ export async function generateLessonForNode(
     });
   }
 
-  const persisted = await saveLessonContent(nodeId, masjidId, lesson);
+  const persisted = await saveLessonContent(nodeId, masjidId, lesson, locale);
   return { node: persisted, lesson, regenerated: true, source };
 }

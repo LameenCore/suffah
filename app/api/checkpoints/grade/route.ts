@@ -6,6 +6,7 @@
 import { getCurrentUser } from "@/lib/auth";
 import { isLessonComplete } from "@/lib/db/queries";
 import { gradeCheckpoint } from "@/lib/ai/checkpoint";
+import { getLocale } from "@/lib/i18n";
 
 export async function POST(request: Request) {
   const user = await getCurrentUser();
@@ -37,7 +38,7 @@ export async function POST(request: Request) {
         { status: 409 },
       );
     }
-    const grade = await gradeCheckpoint(nodeId, user.id, user.masjidId, normalized);
+    const grade = await gradeCheckpoint(nodeId, user.id, user.masjidId, normalized, await getLocale(user));
     return Response.json(grade);
   } catch (err) {
     if (err instanceof Error && err.name === "NodeNotFoundError") {
