@@ -2,9 +2,9 @@
 id: T80
 title: Finish moving user-facing lib/db reads onto getReadClient()
 phase: 9
-status: todo
-owner: —
-claimed: —
+status: doing
+owner: https://claude.ai/code/session_011H4sTF36JvRXwmwmj5Xkcr
+claimed: 2026-09-06T00:30:00Z
 updated: 2026-09-06
 depends_on: [T79]
 source: split from T79 (its 1st "done when" bullet — done as proof-of-pattern only)
