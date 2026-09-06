@@ -8,13 +8,15 @@ claimed: 2026-09-06T04:00:00Z
 updated: 2026-09-06
 depends_on: []
 source: post-hackathon roadmap (EdTech-checklist analysis)
-commits: (partial, many) foundation 71356b4 6b4e6fb; 2026-09-06 ac8deca 2306eba 9c37b72 55e41e3; session 011H4sTF 8662ffb dbb991a 8b456ab 2a4f279 bc298de 4471b6f 1f82ed1 9dd1f95
+commits: (partial, many) foundation 71356b4 6b4e6fb; 2026-09-06 ac8deca 2306eba 9c37b72 55e41e3; session 011H4sTF 8662ffb dbb991a 8b456ab 2a4f279 bc298de 4471b6f 1f82ed1 9dd1f95 08a1922 a0ef5b4
 note: >
-  The whole UI is in FR (1087 keys). Items 1-5 of the old PICK UP HERE list are
-  DONE and verified. ONLY item 6 (generated content in FR — AI generators +
-  locale-keyed persistence) and item 7 (native Quebec-French review, DOCUMENT-
-  only) remain. Kept `doing` because item 6 is real code. Re-claim normally
-  before resuming.
+  The whole UI is in FR (1087 keys) and item 6 (FR generated content) is mostly
+  done + E2E-verified: migration 0027 `*_content_fr` columns, `locale` threaded
+  through every AI generator/grader + the node/unit/exam readers, EN path
+  unchanged. What's left is small: `generatePodBriefing` / `getOrCreateRemediation`
+  / `getPodFocus` locale threading, a `gen:* --locale` flag, and item 7 (native
+  Quebec-French review, DOCUMENT-only). Kept `doing` for that tail. Re-claim
+  normally before resuming.
 ---
 
 ## Why
@@ -72,25 +74,38 @@ session (011H4sTF):
 
 **Remaining:**
 
-6. **Generated content in FR** — the big one, and now the ONLY code item left.
-   Thread a `locale` arg through the AI generators and persist it:
-   - `lib/ai/lesson.ts` `generateLesson`, `lib/ai/checkpoint.ts`
-     `generateCheckpoint`, `lib/ai/assessment.ts` `generateAssessment`,
-     `lib/ai/term-exam.ts` `generateTermExam` — add `locale` param, add an
-     "answer in Quebec French" instruction to the prompt when `locale === "fr"`.
-   - `lib/ai/continuity.ts` `generatePodBriefing`, `lib/ai/tutor.ts` `askTutor`,
-     `getOrCreateRemediation` (in `lib/recommendations.ts`), `getPodFocus`
-     (`lib/recommendations.ts` — deterministic English text, needs a keyed/FR
-     variant).
-   - **Persistence**: `lesson_content` / `checkpoint_content` / assessment rows
-     need a `locale` column (new migration) and the getOrCreate lookups must key
-     by `(node_id, locale)` so EN and FR copies coexist. Regeneration UX in
-     `CourseAuthoringEditor` should show which locale it's regenerating.
-   - **Risk**: this touches the demo's core loop (T05/T06). Do it on its own
-     branch-of-work with the migration first, keep EN the default, and re-run the
-     full `gen:*` scripts + student-path smoke test before merging.
-   - Arabic quoted text in Seerah already renders fine in both locales (RTL spans
-     are locale-independent) — no work there, just verify during item 6.
+6. **Generated content in FR — MOSTLY DONE** (commit `a0ef5b4`, verified E2E on
+   2026-09-06 via `scripts/demo.py` + browser: regenerated the Math node's
+   lesson in FR from the admin editor, confirmed the student sees French section
+   bodies in FR locale and unchanged English in EN locale).
+   - **DONE**: migration `0027` adds `*_content_fr` sibling columns
+     (`pathway_nodes` lesson+checkpoint, `units` assessment, `term_exams` exam) +
+     `pod_briefings.locale`. Every node/unit/exam reader + writer in
+     `lib/db/queries.ts` / `exam-queries.ts` / `authoring-queries.ts` takes a
+     `locale` arg (default `"en"` → EN path byte-identical); `shapeNode`/
+     `shapeUnit` swap in the `_fr` column when `locale==="fr"` and it exists,
+     else fall back to EN. `generateLessonForNode` / `generateCheckpointForNode`
+     / `generateUnitAssessment` / `generateTermExam` + their graders + `askTutor`
+     take `opts.locale`; `localeInstruction()` (exported from `lib/ai/lesson.ts`)
+     appends "write in Quebec French" to the system prompt. Student pages/actions,
+     the offline-unit route, the 8 `/api/*/generate|grade` routes (accept a
+     `locale` field), and the admin authoring regenerate/hand-edit actions all
+     resolve `getLocale(user)`.
+   - **STILL TODO**:
+     - `generatePodBriefing` (`lib/ai/continuity.ts`) — persisted to
+       `pod_briefings`, which now has a `locale` column; thread `locale` + filter
+       "latest briefing" by it.
+     - `getOrCreateRemediation` (`lib/ai/remediation.ts`) — thread `locale`,
+       persist per-locale.
+     - `getPodFocus` (`lib/recommendations.ts`) — deterministic English strings;
+       needs keyed FR variants.
+     - `--locale=fr` flag on the `gen:*` scripts (they can pass `{locale:"fr"}`
+       to the API routes today, just no CLI flag yet).
+     - Optional: an explicit EN/FR toggle in `CourseAuthoringEditor` (it
+       currently regenerates in the admin's active locale).
+     - Fallbacks (`fallback-lessons/-checkpoints/-assessments`) stay English — a
+       degraded path.
+   - Arabic quoted text in Seerah renders fine in both locales (verified).
 
 7. **Native Quebec-French review** of every string — the current FR (1087 keys +
    the two `/terms|/privacy|/acceptable-use` FR JSX blocks) is a model first pass.
@@ -254,3 +269,24 @@ Finished items 1–5. The whole UI is now FR; 1087 keys in sync.
   before any real use. Charter/Law 96 context is in the task "Why". As of session
   011H4sTF this covers 1087 keys + the FR JSX blocks in `/terms`, `/privacy`,
   `/acceptable-use`.
+
+### 2026-09-06 (f) — item 6 (FR generated content) + full E2E audit (session 011H4sTF)
+- **Migration 0027** + `locale` threaded through the AI generators/graders and
+  the node/unit/exam readers/writers (commit `a0ef5b4`). `localeInstruction()`
+  from `lib/ai/lesson.ts`. EN path unchanged (every new param defaults `"en"`).
+- **E2E audit** via `scripts/demo.py` (new — build → next start → Cloudflare quick
+  tunnel → shareable URL, Ctrl+C tears down; committed `08084cd`):
+  - Route sweep: 90 hits (45 routes × EN+FR, anon/student/parent/admin/volunteer)
+    → **0 failures**, no 500s, no `{param}` leaks.
+  - Sign in / sign out / role picker: works. FR toggle flips the whole UI.
+  - Item 6 proven live: regenerated the Math node lesson in FR from the admin
+    editor → student in FR locale sees French section bodies
+    ("Qu'est-ce qu'un nombre entier relatif ?", "Exemple résolu", …), EN locale
+    unchanged. Node **titles** stay English (authored structure, not generated
+    content) — acceptable.
+  - Browser console: clean on /student, /admin, /admin/compliance, /admin/analytics,
+    /admin/ledger, /admin/continuity, /admin/authoring (no React errors / warnings).
+- **All checks green again**: tsc, eslint ., check:i18n (1087), 68 vitest, next
+  build, check:integrity, check:rls (18/18), check:a11y (no serious/critical).
+- Remaining for T59: the small item-6 tail (briefing / remediation / getPodFocus /
+  gen:* flag) + item 7 native review.

@@ -751,3 +751,20 @@ toggle in the authoring editor UI (it follows the admin's locale).
 
 Full audit GREEN: tsc, 68 tests, check:i18n (1087), check:integrity, eslint .,
 next build, check:rls (18/18), check:a11y (no serious/critical).
+
+## E2E audit + devpost + doc sweep (2026-09-06, cont.)
+
+- Ran the full E2E audit via `scripts/demo.py` (Cloudflare quick tunnel):
+  - **Route sweep 0 failures** — 45 routes × EN+FR × anon/student/parent/admin/
+    volunteer, no 500s, no `{param}` leaks. Sign-in/out/role-picker + FR toggle
+    verified in-browser. Console clean on the demo-path screens.
+  - **Item 6 proven live**: regenerated the Math lesson in FR from the admin
+    editor → student sees French bodies in FR, unchanged English in EN.
+  - **No bugs found.** (The one thing that looked off — sign-out "not working" —
+    was a CDP click not registering; `.click()` via JS confirmed it works. Node
+    titles staying English in FR is by design: authored structure, not content.)
+- All checks re-run green: tsc, eslint ., check:i18n (1087), 68 vitest, next
+  build, check:integrity, check:rls (18/18), check:a11y.
+- New: `devpost.md` (Devpost submission format). Doc updates: `docs/DATA_MODEL.md`
+  (0027 `*_content_fr` columns), `progress/tasks/T59-french-l10n.md` (item 6
+  status + progress log f), `progress/BOARD.md`, `README.md` (demo.py section).

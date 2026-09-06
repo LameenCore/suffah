@@ -1,7 +1,7 @@
 # BOARD — Suffa progress snapshot
 
 **Derived from `progress/tasks/`. Not authoritative. Regenerate after any claim/finish.**
-Last regenerated: 2026-09-06 (T59 — whole UI now in FR; only generated-content + native review left)
+Last regenerated: 2026-09-06 (T59 — whole UI in FR + item 6 FR content mostly done & E2E-verified; scripts/demo.py added)
 
 ## Open tasks
 
@@ -9,7 +9,7 @@ Last regenerated: 2026-09-06 (T59 — whole UI now in FR; only generated-content
 
 | id  | phase | owner | title | notes |
 |-----|-------|-------|-------|-------|
-| T59 | 13 | 011H4sTF | French (Quebec) localization | Whole UI is FR (1087 keys, verified). Only item 6 (generated content in FR — AI generators + `locale` column + `(node,locale)` keying) and item 7 (native Quebec-French review, DOCUMENT-only) remain. See the task's "PICK UP HERE". |
+| T59 | 13 | 011H4sTF | French (Quebec) localization | Whole UI is FR (1087 keys). Item 6 (FR generated content) mostly done + E2E-verified (migration 0027 `*_content_fr`, `locale` through the AI generators/graders, EN unchanged). Tail left: briefing/remediation/getPodFocus locale + `gen:* --locale` flag + item 7 native review. See "PICK UP HERE". |
 
 **Blocked / needs a person or infra:**
 
@@ -93,7 +93,7 @@ Get a clean demo state: `npm run demo:setup` (full, hits the API) or `npm run de
 | T56 | 12 | done | — | AI spend monitoring + budget alerts + metering |
 | T57 | 12 | done | — | Backup / restore runbook + integrity check |
 | T58 | 12 | todo | — | Transactional email service |
-| T59 | 13 | doing | 011H4sTF | French (Quebec) localization — whole UI in FR (1087 keys, verified). ONLY item 6 (generated content in FR) + item 7 (native review, doc-only) left. See "PICK UP HERE". |
+| T59 | 13 | doing | 011H4sTF | French (Quebec) localization — whole UI in FR (1087 keys); item 6 FR content mostly done + E2E-verified. Tail: briefing/remediation/getPodFocus + gen:* flag + item 7 native review. |
 | T60 | 13 | done | — | Accessibility pass to WCAG 2.2 AA (SR/keyboard pass = manual, doc) |
 | T61 | 13 | done | — | PWA + offline: download a unit, work offline, sync |
 | T62 | 13 | done | — | Mobile / responsive audit |

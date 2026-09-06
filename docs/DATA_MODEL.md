@@ -24,9 +24,10 @@ Postgres schema, hackathon scope. Every table includes `masjid_id` for multi-ten
 
 ### `pathway_nodes`
 - `id`, `course_id`, `sequence_order`, `title`, `lesson_content` (generated + persisted, not regenerated per view), `checkpoint_content` (jsonb - the node's checkpoint questions, generated once from `lesson_content` and persisted; added in migration `0003`), `unit_id` (groups nodes into units for unit-assessment scoping)
+- `lesson_content_fr`, `checkpoint_content_fr` (jsonb, nullable; migration `0027`) - the French copy of the generated content. English stays in the original column (the demo default); the readers in `lib/db/queries.ts` take a `locale` arg and return `*_fr` when it's set to `"fr"` and that copy exists, otherwise fall back to the English column. Generated on demand in French, English never touched.
 
 ### `units`
-- `id`, `course_id`, `title`, `sequence_order`, `assessment_content` (jsonb - the unit assessment's questions, generated once from the unit's lessons and persisted; added in migration `0004`)
+- `id`, `course_id`, `title`, `sequence_order`, `assessment_content` (jsonb - the unit assessment's questions, generated once from the unit's lessons and persisted; added in migration `0004`), `assessment_content_fr` (jsonb, nullable; migration `0027`, same fallback rule as `pathway_nodes`)
 
 ### `pod_progress`
 - `id`, `pod_id`, `course_id`, `current_node_id` - this is the continuity record: what node a pod is on, per course, so a new volunteer can pick up instantly
@@ -53,6 +54,8 @@ Postgres schema, hackathon scope. Every table includes `masjid_id` for multi-ten
 ### Later migrations (0002+)
 The core table set above is `0001_init.sql`. Subsequent migrations add:
 `lesson_progress`, `pathway_nodes.checkpoint_content` / `units.assessment_content`,
+the `*_content_fr` French-copy columns + `term_exams.exam_content_fr` +
+`pod_briefings.locale` (migration `0027`, T59 item 6),
 `parent_children`, `pod_session_notes` + `pod_briefings`, `sponsorships`,
 `pod_barakah_log`, `term_exams`, `lesson_contributions`, `support_requests`,
 `users.auth_id` (Supabase Auth link), and `audit_log`. See `supabase/migrations/`.

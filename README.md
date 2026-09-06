@@ -36,6 +36,17 @@ can still be run one at a time.
 With `NEXT_PUBLIC_SUFFA_DEMO_MODE=1`, an admin also gets a **Reset walkthrough**
 button in the dashboard header - same fast reset, no terminal needed mid-pitch.
 
+### Shareable demo URL (no hosting account)
+
+```bash
+python scripts/demo.py          # build if needed -> next start -> Cloudflare quick tunnel
+```
+
+Prints a `https://<name>.trycloudflare.com` URL that proxies to the local server
+(first run downloads `cloudflared` once; no Cloudflare account needed). Ctrl+C
+tears down the server and tunnel. Flags: `--fresh` (clean rebuild + restart),
+`--migrate` / `--seed` (prep the DB first), `--port`.
+
 `.env.local` keys:
 
 | key | where |
