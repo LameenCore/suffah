@@ -106,6 +106,41 @@ export const fr: Messages = {
       "Les formats d'évaluation et l'équivalence d'examen affichés ici sont pour la démo et doivent être vérifiés par rapport aux exigences d'évaluation québécoises en vigueur.",
   },
 
+  auth: {
+    signInTitle: "Se connecter",
+    tagline:
+      "Des groupes d'enseignement à domicile communautaires où le logiciel porte le programme, pour que l'apprentissage ne s'arrête pas quand un bénévole s'en va.",
+    email: "Courriel",
+    password: "Mot de passe",
+    newHere: "Nouveau ici?",
+    createAccount: "Créer un compte",
+    tryDemo: "Essayer la démo",
+    demoAccountsNote:
+      "Ou connectez-vous avec les comptes de démonstration : admin@suffa.demo / parent@suffa.demo / student@suffa.demo.",
+    roleAdmin: "admin",
+    roleFamily: "famille",
+    roleStudent: "élève",
+    signUpTitle: "Créer un compte",
+    name: "Nom",
+    passwordMin: "Au moins 8 caractères.",
+    role: "Je suis…",
+    roleParentOpt: "Parent / tuteur",
+    roleStudentOpt: "Élève",
+    roleAdminOpt: "Admin de mosquée",
+    signUpNote:
+      "Démo : chaque compte rejoint la mosquée de démonstration. En production, un parent crée le compte de l'enfant et le consentement le verrouille.",
+    haveAccount: "Vous avez déjà un compte?",
+    createAccountCta: "Créer le compte",
+    agreeIntro: "En créant un compte, vous acceptez les",
+    agreeAnd: "et la",
+  },
+
+  footer: {
+    terms: "Conditions",
+    privacy: "Confidentialité",
+    acceptableUse: "Utilisation acceptable",
+  },
+
   admin: {
     overviewKicker: "Mosquée As-Suffa",
     overviewTitle: "Aperçu",

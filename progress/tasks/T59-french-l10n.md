@@ -45,7 +45,7 @@ DONE:
   'en' so the demo starts EN; flip per-masjid for a FR-default tenant).
 - **Translated**: landing page (all of it), the chrome (sidebar nav for all 3
   dashboards, footer, role label, mobile menu), student home, parent home
-  (header + key links), admin overview header.
+  (header + key links), admin overview header, /login, /signup.
 - `scripts/check-i18n.ts` (`npm run check:i18n`, wired into CI) fails on any
   key mismatch. 83 keys, catalogues in sync.
 - Verified live: EN default, `suffa-locale=fr` cookie flips landing + chrome +
@@ -57,7 +57,8 @@ REMAINING (mechanical - extract strings + add en/fr keys):
   `RegulationNote` default, `PageHeader` "Back".
 - Admin sub-pages: pods, volunteers, continuity, handoff-demo, compliance,
   ledger, ai-spend, seerah, audit, analytics, inbox (+ their components).
-- Auth pages (/login, /signup), /help, legal pages, consent + privacy flows.
+- /help, legal pages, consent + privacy flows; the auth *action* error
+  strings (server-side redirect messages).
 - Swap hard-coded `toLocaleDateString("en-CA", ...)` call sites for
   `lib/i18n/format.ts` helpers threaded with the active locale.
 - **Generated content in FR**: thread a `locale` arg through `generateLesson/

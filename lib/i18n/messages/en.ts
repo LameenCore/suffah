@@ -108,6 +108,41 @@ export const en = {
       "Assessment formats and exam equivalency shown here are for the demo and must be verified against current Quebec evaluation requirements.",
   },
 
+  auth: {
+    signInTitle: "Sign in",
+    tagline:
+      "Community-run homeschool pods where the software carries the curriculum, so learning doesn't stop when a volunteer moves on.",
+    email: "Email",
+    password: "Password",
+    newHere: "New here?",
+    createAccount: "Create an account",
+    tryDemo: "Try the demo",
+    demoAccountsNote:
+      "Or sign in with the seeded accounts: admin@suffa.demo / parent@suffa.demo / student@suffa.demo.",
+    roleAdmin: "admin",
+    roleFamily: "family",
+    roleStudent: "student",
+    signUpTitle: "Create an account",
+    name: "Name",
+    passwordMin: "At least 8 characters.",
+    role: "I am a…",
+    roleParentOpt: "Parent / guardian",
+    roleStudentOpt: "Student",
+    roleAdminOpt: "Masjid admin",
+    signUpNote:
+      "Demo: every account joins the demo masjid. In production a parent creates the child's account and consent gates it.",
+    haveAccount: "Already have an account?",
+    createAccountCta: "Create account",
+    agreeIntro: "By creating an account you agree to the",
+    agreeAnd: "and",
+  },
+
+  footer: {
+    terms: "Terms",
+    privacy: "Privacy",
+    acceptableUse: "Acceptable use",
+  },
+
   admin: {
     overviewKicker: "Masjid As-Suffa",
     overviewTitle: "Overview",

@@ -4,11 +4,14 @@ import { getCurrentUser } from "@/lib/auth";
 import { signUpAction } from "@/app/signup/actions";
 import { Star8 } from "@/components/ui/Motif";
 import { Mascot } from "@/components/ui/Mascot";
+import { LocaleSwitch } from "@/components/LocaleSwitch";
+import { getT } from "@/lib/i18n";
 
 export default async function SignupPage({ searchParams }: PageProps<"/signup">) {
   const user = await getCurrentUser();
   if (user) redirect(`/${user.role}`);
 
+  const { t } = await getT();
   const sp = await searchParams;
   const error = typeof sp.error === "string" ? sp.error : null;
 
@@ -19,17 +22,20 @@ export default async function SignupPage({ searchParams }: PageProps<"/signup">)
         aria-hidden
       />
       <div className="relative mx-auto flex w-full max-w-md flex-1 flex-col justify-center gap-6 px-6 py-16">
-        <div className="flex items-center gap-3">
-          <Mascot size={56} mood="cheer" className="shrink-0" />
-          <div>
-            <div className="flex items-center gap-2">
-              <Star8 className="h-4 w-4 text-terracotta" />
-              <span className="text-xs font-semibold uppercase tracking-[0.16em] text-terracotta">
-                Suffa
-              </span>
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <Mascot size={56} mood="cheer" className="shrink-0" />
+            <div>
+              <div className="flex items-center gap-2">
+                <Star8 className="h-4 w-4 text-terracotta" />
+                <span className="text-xs font-semibold uppercase tracking-[0.16em] text-terracotta">
+                  Suffa
+                </span>
+              </div>
+              <h1 className="font-display text-2xl font-semibold text-ink">{t("auth.signUpTitle")}</h1>
             </div>
-            <h1 className="font-display text-2xl font-semibold text-ink">Create an account</h1>
           </div>
+          <LocaleSwitch compact />
         </div>
 
         {error ? (
@@ -43,7 +49,7 @@ export default async function SignupPage({ searchParams }: PageProps<"/signup">)
           className="space-y-3 rounded-[var(--radius-lg)] border border-border bg-surface p-5 shadow-[var(--shadow-card)]"
         >
           <label className="block text-sm">
-            <span className="text-ink-2">Name</span>
+            <span className="text-ink-2">{t("auth.name")}</span>
             <input
               name="name"
               required
@@ -52,7 +58,7 @@ export default async function SignupPage({ searchParams }: PageProps<"/signup">)
             />
           </label>
           <label className="block text-sm">
-            <span className="text-ink-2">Email</span>
+            <span className="text-ink-2">{t("auth.email")}</span>
             <input
               type="email"
               name="email"
@@ -62,7 +68,7 @@ export default async function SignupPage({ searchParams }: PageProps<"/signup">)
             />
           </label>
           <label className="block text-sm">
-            <span className="text-ink-2">Password</span>
+            <span className="text-ink-2">{t("auth.password")}</span>
             <input
               type="password"
               name="password"
@@ -71,47 +77,44 @@ export default async function SignupPage({ searchParams }: PageProps<"/signup">)
               autoComplete="new-password"
               className="mt-1 w-full rounded-[var(--radius)] border border-border bg-bg px-3 py-2 text-sm text-ink outline-none focus:border-teal"
             />
-            <span className="mt-1 block text-[11px] text-ink-4">At least 8 characters.</span>
+            <span className="mt-1 block text-[11px] text-ink-4">{t("auth.passwordMin")}</span>
           </label>
           <label className="block text-sm">
-            <span className="text-ink-2">I am a…</span>
+            <span className="text-ink-2">{t("auth.role")}</span>
             <select
               name="role"
               defaultValue="parent"
               className="mt-1 w-full rounded-[var(--radius)] border border-border bg-bg px-3 py-2 text-sm text-ink outline-none focus:border-teal"
             >
-              <option value="parent">Parent / guardian</option>
-              <option value="student">Student</option>
-              <option value="admin">Masjid admin</option>
+              <option value="parent">{t("auth.roleParentOpt")}</option>
+              <option value="student">{t("auth.roleStudentOpt")}</option>
+              <option value="admin">{t("auth.roleAdminOpt")}</option>
             </select>
-            <span className="mt-1 block text-[11px] text-ink-4">
-              Demo: every account joins the demo masjid. In production a parent creates the
-              child&apos;s account and consent gates it.
-            </span>
+            <span className="mt-1 block text-[11px] text-ink-4">{t("auth.signUpNote")}</span>
           </label>
           <button
             type="submit"
             className="w-full rounded-full bg-teal px-5 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-teal-strong"
           >
-            Create account
+            {t("auth.createAccountCta")}
           </button>
         </form>
 
         <p className="text-center text-sm text-ink-3">
-          Already have an account?{" "}
+          {t("auth.haveAccount")}{" "}
           <Link href="/login" className="text-teal underline underline-offset-2">
-            Sign in
+            {t("auth.signInTitle")}
           </Link>
         </p>
 
         <p className="text-center text-xs text-ink-4">
-          By creating an account you agree to the{" "}
+          {t("auth.agreeIntro")}{" "}
           <Link href="/terms" className="hover:text-teal underline underline-offset-2">
-            Terms
+            {t("footer.terms")}
           </Link>{" "}
-          and{" "}
+          {t("auth.agreeAnd")}{" "}
           <Link href="/privacy" className="hover:text-teal underline underline-offset-2">
-            Privacy Policy
+            {t("footer.privacy")}
           </Link>
           .
         </p>
