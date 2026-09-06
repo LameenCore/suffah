@@ -475,3 +475,28 @@ For whoever picks up next:
   suffa-pitch.html (kept - it's the artifact source).
 - BOARD.md regenerated + an "Open tasks" table added at the top; fixed stale
   rows (T32, T63 were `todo`, actually `done`).
+
+## 2026-09-06 — Vercel deploy smoke test (suffah-gamma.vercel.app) — RELATED TO T27
+User asked to check the deployed site. Findings (did NOT edit T27 - unowned, not
+mine; recording here for whoever takes T27):
+- **Public/static pages OK**: `/` (EN + FR toggle works), `/login`, `/terms`,
+  `/for-masjids`, `/robots.txt`. Responsive fine. i18n framework works in prod.
+- **Every DB-backed route 500s**: `/student`, `/admin`, `/parent`, `/signup` —
+  "A server error occurred." Client console shows minified React error #441
+  (downstream of the streamed server error). Error digests seen: 1143518469,
+  2544510672.
+- The static build shipped completely (assets, fonts, metadata routes all 200).
+  `/robots.txt` sitemap points at `https://suffa.community/sitemap.xml` so a prod
+  domain env var is configured.
+- **Diagnosis** (can't confirm without Vercel dashboard / prod DB access): the
+  deployment can't use its database at request time. Most likely one of:
+  (a) env vars missing/wrong for the *Production* env in Vercel project settings
+  (SUPABASE_URL / ANON / SERVICE_ROLE_KEY / SUPABASE_DB_URL / ANTHROPIC_API_KEY);
+  (b) the prod Supabase DB was never `npm run migrate` + `npm run seed`'d, so the
+  demo users / tables the authed pages query don't exist;
+  (c) SUPABASE_DB_URL set to the non-pooler host (documented gotcha - won't
+  resolve from Vercel serverless).
+- Same code runs fully green locally (verified end-to-end earlier today), so this
+  is an environment/data problem, not a code regression.
+- Next step for T27: read the Vercel Runtime Logs while hitting `/student` to get
+  the real stack, then fix env + run migrate/seed against the prod DB.
