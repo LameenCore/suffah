@@ -477,3 +477,45 @@ Commit: 1666f8c
 - Verified: migrate applied; check:rls 13/13; check:integrity all pass; 62 tests;
   next build; dashboards + / + /login all 200 (post-merge with T59 i18n).
 Commit: d555124
+
+## T79 — RLS write policies + authed reads (fork agent-ad973a8f668b60ab6, own worktree branch, NOT pushed)
+
+- supabase/migrations/0017_rls_write_policies.sql:
+  * helper public.app_user_id() (SECURITY DEFINER) -> auth.uid() to users.id.
+  * Bucket A (insert/update/delete, `masjid_id = app_masjid_id() and app_role()='admin'`):
+    volunteers, courses, waqf_ledger, masjid_ai_budget, family_fee_status,
+    sponsorships, pods, pod_barakah_log.
+  * Bucket B (admin, via join): pod_students/parent_children/compliance_reports
+    (student->users.masjid_id), pod_progress/pod_briefings/pod_session_notes
+    (pod->pods), units/pathway_nodes/term_exams (course->courses),
+    lesson_contributions (node->course).
+  * Bucket C (insert only, owner-or-admin): checkpoint_results,
+    unit_assessment_results, term_exam_results, lesson_progress, review_items,
+    path_events, node_remediations, tutor_messages. No update/delete.
+  * Bucket D: users (self-update OR admin-manage), masjids (admin-update-own),
+    support_requests (self-insert + admin-update), consent_records
+    (guardian-of-child OR admin, insert only). audit_log / model_call_log /
+    consent_records get NO authed write policy (append-only triggers + service).
+- lib/db/server.ts: getReadClient() — dev-role cookie/env -> getServiceClient();
+  else getServerClient() (RLS-enforced authed SSR client). DEV_ROLE_COOKIE
+  re-declared locally to dodge a lib/auth <-> lib/db/server import cycle.
+- lib/db/parent-queries.ts, lib/db/analytics-queries.ts: getServiceClient() ->
+  await getReadClient() for their reads (proof-of-pattern). Every other lib/db/*
+  file and all writes stay on service-role -> enumerated in T79 task file, new T80.
+- scripts/check-rls.ts: +2 write assertions (parent can't INSERT checkpoint_result
+  for an M2 student; non-admin parent can't INSERT waqf_ledger in own masjid).
+- Verified vs live DB: migrate applied 0017; check:rls 15/15 ("cross-tenant reads
+  AND writes are refused"); check:integrity all pass; npm test 62/62;
+  tsc --noEmit clean; eslint clean on changed files.
+- next build NOT run in the fork (worktree has no local node_modules; Turbopack
+  won't resolve `next` from the parent tree). Delta = 1 helper fn + client swaps
+  in 2 already-async modules + SQL; tsc covers it. Run next build on merge.
+- docs/architecture-rationale.md: tenancy section + tradeoffs row rewritten for
+  the combined T31 + T79 state.
+- Merge notes for parent: 0017 already applied to the live DB. New files T79
+  touched: 0017_rls_write_policies.sql, T80-rls-finish-authed-reads.md. Modified:
+  lib/db/server.ts, parent-queries.ts, analytics-queries.ts, scripts/check-rls.ts,
+  docs/architecture-rationale.md, progress/tasks/T79-*.md, progress/BOARD.md.
+  BOARD in the worktree is the pre-T43/T46 version — parent should re-apply the
+  T79 done + T80 row onto the current BOARD, not overwrite.
+Commit: (fork branch — parent to cherry-pick/merge)
