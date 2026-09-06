@@ -573,4 +573,4 @@ Commit: 9db3c85
 - Verified live: post → peer reply → cooperation barakah note; profanity+PII →
   held + masked + queue; report → held; admin release/hide. 3 routes 200, no
   console errors. eslint + build + 68 tests + check:i18n green.
-Commit: PLACEHOLDERT47 / PLACEHOLDERT41
+Commit: a0e5720 / a0e5720
