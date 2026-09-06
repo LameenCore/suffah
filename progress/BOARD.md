@@ -1,7 +1,7 @@
 # BOARD — Suffa progress snapshot
 
 **Derived from `progress/tasks/`. Not authoritative. Regenerate after any claim/finish.**
-Last regenerated: 2026-09-06 (T66 done — simple mode)
+Last regenerated: 2026-09-06 (T83 done — authed-client writes)
 
 ## Open tasks
 
@@ -9,7 +9,6 @@ Last regenerated: 2026-09-06 (T66 done — simple mode)
 
 | id  | phase | title | notes |
 |-----|-------|-------|-------|
-| T83 | 9  | RLS: move user-action writes off service-role | dep T82 done; do with a browser |
 | T59 | 13 | French (Quebec) localization | 01KZ's active task; compliance / privacy / platform screens + FR content remain |
 
 **Blocked / needs a person or infra:**

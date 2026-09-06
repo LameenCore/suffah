@@ -174,6 +174,64 @@ async function main() {
     await svc.from("waqf_ledger").delete().eq("note", "rls-test").eq("masjid_id", DEMO_MASJID_ID);
   }
 
+  // --- T83: the user-action writes that now run on the authed client ---
+  // Sign in as the demo STUDENT and prove they can write their own result but
+  // not another student's, through the same authed client the app now uses.
+  await anon.auth.signOut();
+  const stSignIn = await anon.auth.signInWithPassword({
+    email: "student@suffa.demo",
+    password: DEMO_PARENT_PASSWORD,
+  });
+  if (stSignIn.data.session) {
+    const stAuthed = createClient(env.supabaseUrl, env.supabaseAnonKey, {
+      global: { headers: { Authorization: `Bearer ${stSignIn.data.session.access_token}` } },
+      auth: { persistSession: false, autoRefreshToken: false },
+    });
+    const { data: selfId } = await stAuthed.rpc("app_user_id");
+    const { data: node } = await svc.from("pathway_nodes").select("id").limit(1).single();
+    const { data: otherKid } = await svc
+      .from("users")
+      .select("id")
+      .eq("masjid_id", DEMO_MASJID_ID)
+      .eq("role", "student")
+      .neq("id", (selfId as string) ?? "")
+      .limit(1)
+      .maybeSingle();
+
+    const selfWrite = await stAuthed.from("checkpoint_results").insert({
+      student_user_id: selfId,
+      pathway_node_id: node!.id,
+      passed: true,
+      answer_data: { rls: "self-write-test" },
+    });
+    check(
+      "student CAN write their own checkpoint_result via the authed client",
+      !selfWrite.error,
+      selfWrite.error ? selfWrite.error.message : "inserted",
+    );
+    await svc
+      .from("checkpoint_results")
+      .delete()
+      .eq("student_user_id", selfId as string)
+      .contains("answer_data", { rls: "self-write-test" });
+
+    if (otherKid?.id) {
+      const otherWrite = await stAuthed.from("checkpoint_results").insert({
+        student_user_id: otherKid.id,
+        pathway_node_id: node!.id,
+        passed: true,
+      });
+      check(
+        "student CANNOT write another in-masjid student's checkpoint_result",
+        otherWrite.error != null,
+        otherWrite.error ? `refused: ${otherWrite.error.message}` : "INSERT SUCCEEDED — LEAK",
+      );
+    }
+    await anon.auth.signOut();
+  } else {
+    check("sign in as demo student", false, stSignIn.error?.message ?? "no session");
+  }
+
   // cleanup (cascade removes the M2 user)
   await svc.from("masjids").delete().eq("id", M2);
   await anon.auth.signOut();

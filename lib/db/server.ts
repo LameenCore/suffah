@@ -77,3 +77,29 @@ export async function getReadClient() {
     return getServiceClient();
   }
 }
+
+/**
+ * The client for **writes on behalf of a signed-in user** (T83). Same resolution
+ * as `getReadClient()`: a real Supabase session -> the RLS-enforced SSR client,
+ * so `0017_rls_write_policies.sql` is the live check on the insert; the dev-role
+ * "try the demo" path and any non-request context -> service-role (there is no
+ * `auth.uid()` there, so an RLS write would be refused, and the demo would
+ * break).
+ *
+ * Only for writes that ARE the user acting on their own tenant's data (a student
+ * saving their own result, a guardian recording consent, anyone filing a support
+ * request or posting to their pod board). Genuine system writes — AI-generated
+ * content, pod-progress advances, briefings, spend + audit logging, provisioning,
+ * seed — call `getServiceClient` directly and on purpose.
+ */
+export async function getWriteClient() {
+  try {
+    const cookieStore = await requestCookies();
+    const devMode =
+      Boolean(cookieStore.get(DEV_ROLE_COOKIE)?.value) || Boolean(env.devRole);
+    if (devMode) return getServiceClient();
+    return getServerClient();
+  } catch {
+    return getServiceClient();
+  }
+}

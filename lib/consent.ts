@@ -7,6 +7,7 @@
 // re-prompted.
 
 import { getServiceClient } from "@/lib/db";
+import { getWriteClient } from "@/lib/db/server";
 
 /** Current consent version. Bump on any material change to CONSENT_PURPOSES. */
 export const CONSENT_VERSION = "2026-09";
@@ -79,7 +80,7 @@ export async function recordConsentDecision(input: {
   purposes: readonly string[];
   documentHash?: string;
 }): Promise<void> {
-  const { error } = await getServiceClient()
+  const { error } = await (await getWriteClient())
     .from("consent_records")
     .insert({
       masjid_id: input.masjidId,

@@ -3,7 +3,7 @@
 // one place (see .claude/skills/api-design.md - every query filters by tenant).
 
 import { getServiceClient } from "@/lib/db";
-import { getReadClient } from "@/lib/db/server";
+import { getReadClient, getWriteClient } from "@/lib/db/server";
 import { unwrapRelation } from "@/lib/db/rel";
 import type { CourseName } from "@/lib/types";
 import type { LessonContent } from "@/lib/ai/lesson";
@@ -382,7 +382,7 @@ export async function markLessonComplete(
   const node = await getPathwayNode(nodeId, masjidId);
   if (!node) throw new Error(`markLessonComplete: node ${nodeId} not in masjid ${masjidId}`);
 
-  const { error } = await getServiceClient()
+  const { error } = await (await getWriteClient())
     .from("lesson_progress")
     .upsert(
       { student_user_id: studentUserId, pathway_node_id: nodeId, status: "lesson_complete" },
@@ -456,7 +456,7 @@ export async function saveCheckpointResult(
   passed: boolean,
   answerData: unknown,
 ): Promise<void> {
-  const { error } = await getServiceClient().from("checkpoint_results").insert({
+  const { error } = await (await getWriteClient()).from("checkpoint_results").insert({
     student_user_id: studentUserId,
     pathway_node_id: nodeId,
     passed,
@@ -618,7 +618,7 @@ export async function saveUnitAssessmentResult(
   passed: boolean,
   answerData: unknown,
 ): Promise<void> {
-  const { error } = await getServiceClient().from("unit_assessment_results").insert({
+  const { error } = await (await getWriteClient()).from("unit_assessment_results").insert({
     student_user_id: studentUserId,
     unit_id: unitId,
     score,

@@ -2,7 +2,7 @@
 // to keep that file from growing without bound.
 
 import { getServiceClient } from "@/lib/db";
-import { getReadClient } from "@/lib/db/server";
+import { getReadClient, getWriteClient } from "@/lib/db/server";
 import { unwrapRelation as unwrap } from "@/lib/db/rel";
 import type { CourseName } from "@/lib/types";
 import type { TermExamContent } from "@/lib/ai/term-exam";
@@ -138,7 +138,7 @@ export async function saveTermExamResult(
   score: number,
   answerData: unknown,
 ): Promise<void> {
-  const { error } = await getServiceClient().from("term_exam_results").insert({
+  const { error } = await (await getWriteClient()).from("term_exam_results").insert({
     student_user_id: studentUserId,
     course_id: courseId,
     term_label: termLabel,

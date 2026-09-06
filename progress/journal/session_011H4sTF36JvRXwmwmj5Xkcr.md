@@ -636,3 +636,18 @@ Commit: fbe2d7b
 - Follow-on: lesson pagination ("one thing at a time" in full), plain-language
   microcopy rewrite, volunteer-set default.
 Commit: 2162b7f
+
+## T83 — user-owned writes on the authed client
+
+- lib/db/server.ts: getWriteClient() (dev cookie / no request ctx -> service-role;
+  real session -> RLS SSR client).
+- Moved to it: saveCheckpointResult, markLessonComplete, saveUnitAssessmentResult
+  (queries.ts), saveTermExamResult (exam-queries.ts), recordConsentDecision
+  (consent.ts), createSupportRequest (support-queries.ts).
+- check-rls +2 (now 18): student self-write allowed via authed client, other-
+  student write refused. Non-request fallback verified for the grade helpers.
+- Left on service-role (0017 has no policies for these): admin authoring writes,
+  volunteer session notes / attendance, pod board posts/reports (also a barakah
+  side-effect), review_items updates, adaptive-path/system writes.
+- Demo path unchanged; build + 68 tests + check:integrity green.
+Commit: PLACEHOLDER83

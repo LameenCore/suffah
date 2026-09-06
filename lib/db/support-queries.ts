@@ -1,7 +1,7 @@
 // In-app help / bug reports (support_requests, migration 0009). Masjid-scoped.
 
 import { getServiceClient } from "@/lib/db";
-import { getReadClient } from "@/lib/db/server";
+import { getReadClient, getWriteClient } from "@/lib/db/server";
 import type { SessionUser } from "@/lib/types";
 
 // "data-erasure" is filed by the parent privacy page (T36), not the help form.
@@ -30,7 +30,7 @@ export async function createSupportRequest(
   if (!subject || !body) throw new Error("Add a subject and a message.");
   if (subject.length > 160) throw new Error("Keep the subject under 160 characters.");
 
-  const { error } = await getServiceClient().from("support_requests").insert({
+  const { error } = await (await getWriteClient()).from("support_requests").insert({
     masjid_id: user.masjidId,
     from_user_id: user.id,
     from_role: user.role,
