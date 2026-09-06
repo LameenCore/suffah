@@ -71,6 +71,14 @@ export const fr: Messages = {
     wholePod: "Tout le groupe",
     barakahPlaceholder: "p. ex. A aidé un camarade sans qu'on le lui demande.",
     recordNote: "Enregistrer la note",
+    attendanceTitle: "Présences aux séances d'enrichissement",
+    attendanceCount: "{present} présents · {absent} absents · {excused} excusés",
+    noSessions: "Aucune séance enregistrée.",
+    attendanceTopic: "Sujet de la séance (facultatif)",
+    attendance_present: "présent",
+    attendance_absent: "absent",
+    attendance_excused: "excusé",
+    saveAttendance: "Enregistrer les présences",
   },
 
   landing: {
@@ -274,6 +282,13 @@ export const fr: Messages = {
     fullEvaluation: "État complet de l'évaluation",
     transcriptPrintable: "Relevé de fin de trimestre (imprimable)",
     downloadCsv: "Télécharger en CSV",
+    attendanceTitle: "Séances d'enrichissement",
+    attendanceLede: "Séances en direct où le groupe de votre enfant a rencontré un bénévole.",
+    attendanceCount: "{present} sur {sessions} suivies",
+    attendanceNone: "Aucune séance d'enrichissement enregistrée pour l'instant.",
+    attendancePresent: "Présent",
+    attendanceAbsent: "Absent",
+    attendanceExcused: "Excusé",
   },
 
   platform: {

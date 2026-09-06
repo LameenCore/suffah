@@ -384,3 +384,22 @@ checkpoint JSON + overrides + stats; getDisabledCheckpointQuestionIds.
 gradeCheckpoint + stripAnswers (student page + T61 offline route) filter disabled
 items. /admin/question-bank + QuestionBank component, audited, nav + i18n.
 Verified: disable q1 -> all-correct grade is 3/3 not 4/4. 68 tests green. Commit <t51>.
+
+## 2026-09-06 — T48 done (enrichment-session attendance)
+migration 0021_attendance.sql: enrichment_sessions + attendance_records (masjid/
+pod-scoped, unique pod+date / session+student). lib/db/attendance-queries.ts:
+recordSessionAttendance (upsert, pod-members only), listPodSessions,
+getChildAttendanceSummary (parent, own child only), getPodAttendanceSignal
+(continuity), getPresentDates (T52 feed). Volunteer portal: attendance form per pod
+(VolunteerPod.tsx) -> recordAttendanceAction, audited attendance.recorded.
+Feeds wired: (1) consistency-queries adds present dates to the active-day set;
+(2) continuity.ts renderSignals + fallbackBriefing get per-student present/absent
++ "missed N sessions" watch-for; (3) parent/page.tsx AttendanceSummary card.
+i18n EN/FR (volunteer + parent). demo:reset wipes enrichment_sessions (cascades)
+and reseeds 2 sessions — Idris absent on the recent one.
+Root-cause bug fixed in same change: reset seeded recorded_by with the home
+volunteer id, but that FK is users(id) not volunteers(id) — insert silently
+failed (supabase-js returns error, doesn't throw). Now recorded_by: null + an
+explicit error check that throws.
+Verified: build + lint + tsc + 68 tests + check:i18n(305) + check:integrity all
+green; live queries return seeded spread. Commit <t48>.

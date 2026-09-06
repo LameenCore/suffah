@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { requireRole } from "@/lib/auth";
-import { getT } from "@/lib/i18n";
+import { getT, type Translator } from "@/lib/i18n";
 import { RegulationNote } from "@/components/RegulationNote";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
@@ -17,6 +17,10 @@ import {
   type ChildBarakahSummary,
 } from "@/lib/db/barakah-queries";
 import { getConsistency, type Consistency } from "@/lib/db/consistency-queries";
+import {
+  getChildAttendanceSummary,
+  type ChildAttendanceSummary,
+} from "@/lib/db/attendance-queries";
 import { ConsistencyStrip } from "@/components/student/ConsistencyStrip";
 import { assembleFromChildReport } from "@/lib/compliance/report";
 import { LEVEL_LABEL, type ComplianceLevel } from "@/lib/compliance/status";
@@ -199,14 +203,69 @@ function BarakahSummary({ barakah }: { barakah: ChildBarakahSummary }) {
   );
 }
 
+function AttendanceSummary({
+  attendance,
+  t,
+}: {
+  attendance: ChildAttendanceSummary;
+  t: Translator;
+}) {
+  const tone: Record<ChildAttendanceSummary["recent"][number]["status"], "success" | "warning" | "danger"> = {
+    present: "success",
+    excused: "warning",
+    absent: "danger",
+  };
+  const label: Record<ChildAttendanceSummary["recent"][number]["status"], string> = {
+    present: t("parent.attendancePresent"),
+    excused: t("parent.attendanceExcused"),
+    absent: t("parent.attendanceAbsent"),
+  };
+  return (
+    <Card as="section" className="p-5">
+      <h3 className="font-display text-lg font-semibold text-ink">
+        {t("parent.attendanceTitle")}
+      </h3>
+      <p className="mt-1 text-xs text-ink-3">{t("parent.attendanceLede")}</p>
+      {attendance.sessions === 0 ? (
+        <p className="mt-3 text-sm text-ink-4">{t("parent.attendanceNone")}</p>
+      ) : (
+        <>
+          <p className="mt-3 text-sm text-ink-2">
+            {t("parent.attendanceCount", {
+              present: attendance.present,
+              sessions: attendance.sessions,
+            })}
+          </p>
+          <ul className="mt-2 divide-y divide-border">
+            {attendance.recent.map((r, i) => (
+              <ResultRow
+                key={i}
+                label={r.topic ?? shortDate(`${r.date}T12:00:00`)}
+                right={
+                  <>
+                    <Badge tone={tone[r.status]}>{label[r.status]}</Badge>
+                    <span className="text-xs text-ink-4">{shortDate(`${r.date}T12:00:00`)}</span>
+                  </>
+                }
+              />
+            ))}
+          </ul>
+        </>
+      )}
+    </Card>
+  );
+}
+
 async function ChildBlock({
   report,
   barakah,
   consistency,
+  attendance,
 }: {
   report: ChildReport;
   barakah: ChildBarakahSummary;
   consistency: Consistency;
+  attendance: ChildAttendanceSummary;
 }) {
   const { t } = await getT();
   // report is already loaded by ParentHome - assemble the status view in memory
@@ -245,6 +304,7 @@ async function ChildBlock({
         ))}
       </div>
       <BarakahSummary barakah={barakah} />
+      <AttendanceSummary attendance={attendance} t={t} />
       <ConsistencyStrip consistency={consistency} audience="parent" t={t} />
 
       <div className="flex flex-wrap gap-3 text-sm">
@@ -275,6 +335,7 @@ export default async function ParentHome() {
     report: ChildReport;
     barakah: ChildBarakahSummary;
     consistency: Consistency;
+    attendance: ChildAttendanceSummary;
   }[] = [];
   let loadError: string | null = null;
   let needsConsent: string[] = [];
@@ -286,6 +347,7 @@ export default async function ParentHome() {
         report: await getChildReport(c, user.masjidId),
         barakah: await getChildBarakahSummary(c.id, user.masjidId),
         consistency: await getConsistency(c.id, user.masjidId),
+        attendance: await getChildAttendanceSummary(c.id, user.masjidId),
       })),
     );
     const consent = await Promise.all(
@@ -338,6 +400,7 @@ export default async function ParentHome() {
               report={b.report}
               barakah={b.barakah}
               consistency={b.consistency}
+              attendance={b.attendance}
             />
           ))}
         </div>

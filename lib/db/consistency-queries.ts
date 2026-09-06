@@ -9,6 +9,7 @@
 // attempted. No new table - these timestamps already exist.
 
 import { getServiceClient } from "@/lib/db";
+import { getPresentDates } from "@/lib/db/attendance-queries";
 
 // Quebec. All "which day" bucketing uses this zone so "today" matches the family.
 const TZ = "America/Toronto";
@@ -90,6 +91,13 @@ export async function getConsistency(
     days.add(localDay(r.attempted_at as string));
   }
   for (const r of tut.data ?? []) days.add(localDay(r.created_at as string));
+  // Enrichment-session attendance (T48): a day marked present is an engaged day.
+  try {
+    const present = await getPresentDates(studentUserId);
+    for (const d of present) days.add(d); // already yyyy-mm-dd (session_date)
+  } catch {
+    // attendance is supplementary
+  }
 
   const today = todayLocal();
   const weekCutoff = daysAgoLocal(6);

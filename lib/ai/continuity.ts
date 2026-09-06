@@ -108,6 +108,18 @@ function renderSignals(s: PodLearningSignals): string {
       lines.push(`- ${r.studentName}: ${r.dueNow} due now, ${acc}`);
     }
   }
+  const activeAttendance = (s.attendance ?? []).filter((a) => a.present > 0 || a.absent > 0);
+  if (activeAttendance.length) {
+    lines.push("");
+    lines.push("Enrichment-session attendance (last ~6 sessions):");
+    for (const a of activeAttendance) {
+      lines.push(
+        `- ${a.studentName}: ${a.present} present, ${a.absent} absent${
+          a.lastAbsentDate ? ` (last absent ${a.lastAbsentDate})` : ""
+        }`,
+      );
+    }
+  }
   if (s.notes.length) {
     lines.push("");
     lines.push("Session notes (most recent first):");
@@ -192,6 +204,11 @@ export function fallbackBriefing(s: PodLearningSignals): PodBriefing {
   for (const r of s.retention) {
     if (r.accuracyLast7 != null && r.accuracyLast7 < 0.6) {
       watchFor.push(`${r.studentName} is missing spaced-review questions from earlier lessons.`);
+    }
+  }
+  for (const a of s.attendance ?? []) {
+    if (a.absent >= 2) {
+      watchFor.push(`${a.studentName} has missed ${a.absent} recent enrichment sessions - check in.`);
     }
   }
   for (const n of s.notes.slice(0, 2)) watchFor.push(`From notes: ${n.note}`);

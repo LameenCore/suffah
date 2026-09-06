@@ -22,6 +22,7 @@ const ACTION_LABEL: Record<string, string> = {
   "barakah.note_added": "Recorded a barakah note",
   "continuity.briefing_generated": "Generated a handoff briefing",
   "continuity.session_note_added": "Added a pod session note",
+  "attendance.recorded": "Recorded enrichment-session attendance",
   "ai_budget.updated": "Updated the AI budget",
   "skill_tree.prereq_added": "Added a prerequisite edge",
   "skill_tree.prereq_removed": "Removed a prerequisite edge",

@@ -9,11 +9,22 @@ import { BARAKAH_INDICATORS } from "@/lib/db/barakah-queries";
 import {
   addVolunteerSessionNoteAction,
   addVolunteerBarakahNoteAction,
+  recordAttendanceAction,
   type ActionResult,
 } from "@/app/volunteer/actions";
 import type { VolunteerPodView } from "@/lib/db/volunteer-portal-queries";
+import type { SessionRecord, AttendanceStatus } from "@/lib/db/attendance-queries";
 
-export function VolunteerPod({ pod }: { pod: VolunteerPodView }) {
+const STATUSES: AttendanceStatus[] = ["present", "absent", "excused"];
+const todayISO = () => new Date().toISOString().slice(0, 10);
+
+export function VolunteerPod({
+  pod,
+  sessions = [],
+}: {
+  pod: VolunteerPodView;
+  sessions?: SessionRecord[];
+}) {
   const t = useT();
   const router = useRouter();
   const [pending, start] = useTransition();
@@ -21,6 +32,24 @@ export function VolunteerPod({ pod }: { pod: VolunteerPodView }) {
   const [note, setNote] = useState("");
   const [noteCourse, setNoteCourse] = useState("");
   const barakahRef = useRef<HTMLFormElement>(null);
+
+  const [attDate, setAttDate] = useState(todayISO());
+  const [attTopic, setAttTopic] = useState("");
+  const [attMarks, setAttMarks] = useState<Record<string, AttendanceStatus>>({});
+
+  function submitAttendance() {
+    if (Object.keys(attMarks).length === 0) return;
+    setError(null);
+    start(async () => {
+      const res = await recordAttendanceAction(pod.id, attDate, attTopic, attMarks);
+      if (!res.ok) setError(res.error ?? "action failed");
+      else {
+        setAttTopic("");
+        setAttMarks({});
+        router.refresh();
+      }
+    });
+  }
 
   function submitNote() {
     const text = note.trim();
@@ -134,6 +163,73 @@ export function VolunteerPod({ pod }: { pod: VolunteerPodView }) {
             {t("volunteer.addNote")}
           </Button>
         </div>
+      </div>
+
+      {/* enrichment-session attendance (T48) */}
+      <div className="space-y-2 rounded-[var(--radius)] border border-dashed border-border bg-surface-2 p-3">
+        <p className="text-xs font-semibold uppercase tracking-wide text-ink-3">
+          {t("volunteer.attendanceTitle")}
+        </p>
+        {sessions.length > 0 ? (
+          <ul className="space-y-0.5 text-xs text-ink-2">
+            {sessions.slice(0, 4).map((s) => (
+              <li key={s.id}>
+                {s.date}
+                {s.topic ? ` · ${s.topic}` : ""} —{" "}
+                <span className="text-ink-4">
+                  {t("volunteer.attendanceCount", {
+                    present: s.present,
+                    absent: s.absent,
+                    excused: s.excused,
+                  })}
+                </span>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="text-xs text-ink-4">{t("volunteer.noSessions")}</p>
+        )}
+        <div className="flex flex-wrap gap-2">
+          <input
+            type="date"
+            value={attDate}
+            max={todayISO()}
+            onChange={(e) => setAttDate(e.target.value)}
+            className="rounded-md border border-border bg-surface px-2 py-1 text-xs"
+          />
+          <input
+            type="text"
+            value={attTopic}
+            onChange={(e) => setAttTopic(e.target.value)}
+            placeholder={t("volunteer.attendanceTopic")}
+            className="min-w-[10rem] flex-1 rounded-md border border-border bg-surface px-2 py-1 text-xs"
+          />
+        </div>
+        <ul className="space-y-1">
+          {pod.students.map((s) => (
+            <li key={s.id} className="flex flex-wrap items-center gap-2 text-xs">
+              <span className="min-w-[7rem] text-ink-2">{s.name}</span>
+              {STATUSES.map((st) => (
+                <label key={st} className="flex items-center gap-1">
+                  <input
+                    type="radio"
+                    name={`att-${pod.id}-${s.id}`}
+                    checked={attMarks[s.id] === st}
+                    onChange={() => setAttMarks((m) => ({ ...m, [s.id]: st }))}
+                  />
+                  {t(`volunteer.attendance_${st}` as Parameters<typeof t>[0])}
+                </label>
+              ))}
+            </li>
+          ))}
+        </ul>
+        <Button
+          size="sm"
+          disabled={pending || Object.keys(attMarks).length === 0}
+          onClick={submitAttendance}
+        >
+          {t("volunteer.saveAttendance")}
+        </Button>
       </div>
 
       {/* barakah check-in */}

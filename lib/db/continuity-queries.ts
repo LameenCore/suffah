@@ -5,6 +5,7 @@ import { getServiceClient } from "@/lib/db";
 import type { CourseName } from "@/lib/types";
 import type { PodBriefing } from "@/lib/ai/continuity";
 import { getRetentionSignal } from "@/lib/review";
+import { getPodAttendanceSignal } from "@/lib/db/attendance-queries";
 
 function unwrap<T>(rel: T | T[] | null | undefined): T | null {
   if (rel == null) return null;
@@ -142,6 +143,13 @@ export interface PodLearningSignals {
     reviewedLast7: number;
     accuracyLast7: number | null;
   }[];
+  /** Enrichment-session attendance over the last ~6 sessions, per student (T48). */
+  attendance: {
+    studentName: string;
+    present: number;
+    absent: number;
+    lastAbsentDate: string | null;
+  }[];
   notes: PodSessionNote[];
 }
 
@@ -269,6 +277,8 @@ export async function gatherPodLearningSignals(
 
   const notes = await listPodSessionNotes(podId, masjidId, 25);
 
+  const attendance = await getPodAttendanceSignal(podId, masjidId).catch(() => []);
+
   const retention = await Promise.all(
     students.map(async (s) => {
       const r = await getRetentionSignal(s.id, masjidId);
@@ -297,6 +307,7 @@ export async function gatherPodLearningSignals(
     checkpoints,
     assessments,
     retention,
+    attendance,
     notes,
   };
 }

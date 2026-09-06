@@ -35,6 +35,7 @@ const DEMO = {
 } as const;
 
 const daysAgo = (n: number) => new Date(Date.now() - n * 86_400_000).toISOString();
+const dateDaysAgo = (n: number) => daysAgo(n).slice(0, 10);
 
 export interface ResetSummary {
   ok: true;
@@ -70,6 +71,9 @@ export async function resetWalkthroughState(masjidId: string): Promise<ResetSumm
     .delete()
     .eq("pod_id", DEMO.pod)
     .eq("author_kind", "system");
+  // Enrichment-session attendance (T48). Deleting the sessions cascades to
+  // attendance_records.
+  await db.from("enrichment_sessions").delete().eq("pod_id", DEMO.pod);
 
   // 3. Re-seed the on-track / watch / gap spread (Yusuf stays FRESH on Math).
   await db.from("checkpoint_results").insert([
@@ -141,5 +145,33 @@ export async function resetWalkthroughState(masjidId: string): Promise<ResetSumm
     },
   ]);
 
-  return { ok: true, clearedFor: ["progress", "results", "compliance snapshots", "continuity trail", "volunteer handoff"] };
+  // 7. Enrichment-session attendance (T48): two recent sessions. Idris missed
+  //    the most recent one - shows up in the parent view + handoff briefing.
+  // recorded_by references users(id); the demo's home volunteer is a volunteers
+  // row, not a user, so leave it null here.
+  const { data: sessionRows, error: sessionErr } = await db
+    .from("enrichment_sessions")
+    .insert([
+      { masjid_id: DEMO.masjidId, pod_id: DEMO.pod, session_date: dateDaysAgo(10), topic: "Group reading circle", recorded_by: null },
+      { masjid_id: DEMO.masjidId, pod_id: DEMO.pod, session_date: dateDaysAgo(3), topic: "Seerah discussion + du'a", recorded_by: null },
+    ])
+    .select("id, session_date");
+  if (sessionErr) throw new Error(`reset: seeding attendance sessions: ${sessionErr.message}`);
+  if (sessionRows && sessionRows.length === 2) {
+    const byDate = new Map(sessionRows.map((s) => [s.session_date as string, s.id as string]));
+    const s1 = byDate.get(dateDaysAgo(10))!;
+    const s2 = byDate.get(dateDaysAgo(3))!;
+    await db.from("attendance_records").insert([
+      { session_id: s1, student_user_id: DEMO.students.yusuf, status: "present" },
+      { session_id: s1, student_user_id: DEMO.students.maryam, status: "present" },
+      { session_id: s1, student_user_id: DEMO.students.idris, status: "present" },
+      { session_id: s1, student_user_id: DEMO.students.safiya, status: "excused" },
+      { session_id: s2, student_user_id: DEMO.students.yusuf, status: "present" },
+      { session_id: s2, student_user_id: DEMO.students.maryam, status: "present" },
+      { session_id: s2, student_user_id: DEMO.students.idris, status: "absent" },
+      { session_id: s2, student_user_id: DEMO.students.safiya, status: "present" },
+    ]);
+  }
+
+  return { ok: true, clearedFor: ["progress", "results", "compliance snapshots", "continuity trail", "attendance", "volunteer handoff"] };
 }

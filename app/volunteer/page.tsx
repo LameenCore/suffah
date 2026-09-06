@@ -9,16 +9,28 @@ import {
   getVolunteerPodViews,
   type VolunteerPodView,
 } from "@/lib/db/volunteer-portal-queries";
+import { listPodSessions, type SessionRecord } from "@/lib/db/attendance-queries";
 
 export default async function VolunteerHome() {
   const user = await requireRole("volunteer");
   const { t } = await getT(user);
 
   let pods: VolunteerPodView[] = [];
+  let sessionsByPod: Record<string, SessionRecord[]> = {};
   let loadError: string | null = null;
   try {
     const ctx = await getVolunteerContext(user.id, user.masjidId);
-    if (ctx) pods = await getVolunteerPodViews(ctx.volunteerId, user.masjidId);
+    if (ctx) {
+      pods = await getVolunteerPodViews(ctx.volunteerId, user.masjidId);
+      sessionsByPod = Object.fromEntries(
+        await Promise.all(
+          pods.map(async (p) => [
+            p.id,
+            await listPodSessions(p.id, user.masjidId).catch(() => []),
+          ]),
+        ),
+      );
+    }
   } catch (err) {
     loadError = err instanceof Error ? err.message : "could not load your pods";
   }
@@ -40,7 +52,7 @@ export default async function VolunteerHome() {
       ) : (
         <div className="space-y-4">
           {pods.map((pod) => (
-            <VolunteerPod key={pod.id} pod={pod} />
+            <VolunteerPod key={pod.id} pod={pod} sessions={sessionsByPod[pod.id] ?? []} />
           ))}
         </div>
       )}

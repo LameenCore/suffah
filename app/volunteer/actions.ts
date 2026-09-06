@@ -9,6 +9,7 @@ import { getCurrentUser } from "@/lib/auth";
 import { recordAudit } from "@/lib/audit";
 import { addPodSessionNote } from "@/lib/db/continuity-queries";
 import { addBarakahNote } from "@/lib/db/barakah-queries";
+import { recordSessionAttendance } from "@/lib/db/attendance-queries";
 import {
   getVolunteerContext,
   assertPodCoveredByVolunteer,
@@ -81,5 +82,34 @@ export async function addVolunteerBarakahNoteAction(
     return { ok: true };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : "action failed" };
+  }
+}
+
+export async function recordAttendanceAction(
+  podId: string,
+  date: string,
+  topic: string,
+  records: Record<string, "present" | "absent" | "excused">,
+): Promise<ActionResult> {
+  try {
+    const { user } = await requireLinkedVolunteer(podId);
+    await recordSessionAttendance(user.masjidId, podId, {
+      date,
+      topic,
+      recordedBy: user.id,
+      records,
+    });
+    await recordAudit({
+      actor: user,
+      action: "attendance.recorded",
+      targetType: "pod",
+      targetId: podId,
+      metadata: { date, marked: Object.keys(records).length },
+    });
+    revalidatePath("/volunteer");
+    revalidatePath("/parent");
+    return { ok: true };
+  } catch (err) {
+    return { ok: false, error: err instanceof Error ? err.message : "could not record attendance" };
   }
 }

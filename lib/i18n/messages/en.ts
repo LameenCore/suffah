@@ -73,6 +73,14 @@ export const en = {
     wholePod: "The whole pod",
     barakahPlaceholder: "e.g. Helped a podmate without being asked.",
     recordNote: "Record note",
+    attendanceTitle: "Enrichment-session attendance",
+    attendanceCount: "{present} present · {absent} absent · {excused} excused",
+    noSessions: "No sessions logged yet.",
+    attendanceTopic: "Session topic (optional)",
+    attendance_present: "present",
+    attendance_absent: "absent",
+    attendance_excused: "excused",
+    saveAttendance: "Save attendance",
   },
 
   landing: {
@@ -276,6 +284,13 @@ export const en = {
     fullEvaluation: "Full evaluation status",
     transcriptPrintable: "Term-completion record (printable)",
     downloadCsv: "Download as CSV",
+    attendanceTitle: "Enrichment sessions",
+    attendanceLede: "Live sessions your child's pod met with a volunteer.",
+    attendanceCount: "{present} of {sessions} attended",
+    attendanceNone: "No enrichment sessions logged yet.",
+    attendancePresent: "Present",
+    attendanceAbsent: "Absent",
+    attendanceExcused: "Excused",
   },
 
   platform: {
