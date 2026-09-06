@@ -635,6 +635,10 @@ export const en = {
       manual: "flagged",
     },
   },
+  simple: {
+    toggle: "Simple view",
+    toggleHint: "on/off",
+  },
 };
 
 export type Messages = typeof en;

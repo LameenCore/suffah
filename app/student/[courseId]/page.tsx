@@ -62,7 +62,9 @@ export default async function CourseLessonPage({
               : ""}
           </span>
           {currentNode?.lesson_content ? (
-            <DownloadUnitButton courseId={course.id} nodeId={currentNode.id} />
+            <span data-simple-hide>
+              <DownloadUnitButton courseId={course.id} nodeId={currentNode.id} />
+            </span>
           ) : null}
           <ButtonLink href={`/student/${course.id}/exam`} variant="ghost" size="sm">
             {t("student.termExam")}
@@ -95,7 +97,9 @@ export default async function CourseLessonPage({
         <div className="space-y-6">
           <LessonView title={currentNode.title} lesson={currentNode.lesson_content} t={t} />
 
-          <TutorPanel nodeId={currentNode.id} />
+          <div data-simple-hide>
+            <TutorPanel nodeId={currentNode.id} />
+          </div>
 
           {!lessonComplete ? (
             <MarkCompleteButton nodeId={currentNode.id} completed={false} />

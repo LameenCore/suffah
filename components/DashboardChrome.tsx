@@ -11,6 +11,7 @@ export function DashboardChrome({
   nav,
   locale,
   wide = false,
+  simple = false,
   children,
 }: {
   user: SessionUser;
@@ -18,16 +19,19 @@ export function DashboardChrome({
   /** Resolved with the user (cookie -> user pref -> masjid default). */
   locale: Locale;
   wide?: boolean;
+  /** Cognitive-accessibility "simple mode" (T66) — student surface only. */
+  simple?: boolean;
   children: React.ReactNode;
 }) {
   return (
     <I18nProvider locale={locale}>
       <SkipLink />
-      <div className="flex min-h-full bg-bg">
+      <div className="flex min-h-full bg-bg" data-simple={simple ? "" : undefined}>
         <Sidebar
           user={user}
           items={nav}
           demoReset={env.demoMode && user.role === "admin"}
+          simpleToggle={user.role === "student"}
         />
         <div className="flex min-w-0 flex-1 flex-col">
           <main

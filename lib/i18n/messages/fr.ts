@@ -630,4 +630,8 @@ export const fr: Messages = {
       manual: "signalé",
     },
   },
+  simple: {
+    toggle: "Vue simplifiée",
+    toggleHint: "activer/désactiver",
+  },
 };

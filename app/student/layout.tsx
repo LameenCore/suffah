@@ -5,11 +5,13 @@ import type { NavItem } from "@/components/Sidebar";
 import { getStudentTracks } from "@/lib/db/queries";
 import { hasActiveConsent } from "@/lib/consent";
 import { ConsentGate } from "@/components/student/ConsentGate";
+import { resolveSimpleMode } from "@/lib/simple-mode";
 import { getT } from "@/lib/i18n";
 
 export default async function StudentLayout({ children }: LayoutProps<"/student">) {
   const user = await requireRole("student");
   const { locale, t } = await getT(user);
+  const simple = await resolveSimpleMode(user).catch(() => false);
 
   // Law 25 (T37): no playground until a guardian consent record is on file.
   // Fail closed only on a definite "no consent" — a lookup error shouldn't lock
@@ -43,7 +45,7 @@ export default async function StudentLayout({ children }: LayoutProps<"/student"
   ];
 
   return (
-    <DashboardChrome user={user} nav={nav} locale={locale}>
+    <DashboardChrome user={user} nav={nav} locale={locale} simple={simple}>
       {children}
     </DashboardChrome>
   );

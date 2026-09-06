@@ -32,7 +32,9 @@ export default async function StudentHome() {
       <section className="relative overflow-hidden rounded-[var(--radius-lg)] border border-border bg-surface p-6 shadow-[var(--shadow-card)] sm:p-8">
         <div className="geo-field pointer-events-none absolute inset-0 opacity-30" aria-hidden />
         <div className="relative flex items-start gap-5">
-          <Mascot size={92} mood="happy" className="hidden shrink-0 sm:block" />
+          <span data-decor className="hidden shrink-0 sm:block">
+            <Mascot size={92} mood="happy" />
+          </span>
           <div className="space-y-2">
             <p className="text-xs font-semibold uppercase tracking-[0.16em] text-terracotta">
               {t("student.greeting")}
@@ -78,7 +80,7 @@ export default async function StudentHome() {
         <section>
           <div className="mb-4 flex items-center gap-3">
             <h2 className="font-display text-xl font-semibold text-ink">{t("student.yourCourses")}</h2>
-            <Flourish className="hidden h-3 flex-1 text-terracotta/50 sm:block" />
+            <Flourish className="hidden h-3 flex-1 text-terracotta/50 sm:block" data-decor />
           </div>
           <div className="grid gap-4 lg:grid-cols-3">
             {tracks.map((track) => (

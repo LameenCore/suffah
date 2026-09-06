@@ -7,6 +7,7 @@ import type { SessionUser } from "@/lib/types";
 import { Star8 } from "@/components/ui/Motif";
 import { DemoResetButton } from "@/components/DemoResetButton";
 import { LocaleSwitch } from "@/components/LocaleSwitch";
+import { SimpleModeToggle } from "@/components/student/SimpleModeToggle";
 import { useT } from "@/lib/i18n/client";
 import { signOutAction } from "@/app/logout/actions";
 
@@ -37,10 +38,12 @@ export function Sidebar({
   user,
   items,
   demoReset = false,
+  simpleToggle = false,
 }: {
   user: SessionUser;
   items: NavItem[];
   demoReset?: boolean;
+  simpleToggle?: boolean;
 }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
@@ -127,6 +130,7 @@ export function Sidebar({
       <div className="mb-1 flex justify-center px-1">
         <LocaleSwitch />
       </div>
+      {simpleToggle ? <SimpleModeToggle /> : null}
       <Link
         href="/help"
         onClick={() => setOpen(false)}

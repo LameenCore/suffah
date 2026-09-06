@@ -64,3 +64,18 @@ export async function withdrawConsentAction(formData: FormData): Promise<void> {
   revalidatePath("/parent/consent");
   revalidatePath("/parent");
 }
+
+export async function setSimpleModeAction(formData: FormData): Promise<void> {
+  const childId = String(formData.get("childId") ?? "");
+  const on = formData.get("on") === "1";
+  const user = await assertGuardianOf(childId);
+  const { setSimpleModeDefault } = await import("@/lib/simple-mode");
+  await setSimpleModeDefault(childId, user.masjidId, on);
+  await recordAudit({
+    actor: user,
+    action: on ? "student.simple_mode_on" : "student.simple_mode_off",
+    targetType: "student",
+    targetId: childId,
+  });
+  revalidatePath("/parent/consent");
+}

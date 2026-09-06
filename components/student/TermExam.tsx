@@ -115,6 +115,7 @@ export function TermExam({
         </h2>
         {!grade ? (
           <span
+            data-simple-hide
             className={`rounded-full px-3 py-1 font-mono text-sm font-semibold ${
               low ? "bg-danger-soft text-danger" : "bg-surface-2 text-ink-2"
             }`}

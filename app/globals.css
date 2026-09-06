@@ -285,6 +285,38 @@ a {
   }
 }
 
+/* Simple mode (T66) — a lower-load presentation of the student surface. Larger
+   type, more space, decoration + motion + secondary panels removed. Same
+   content underneath. Scoped to [data-simple] set on the student chrome. */
+[data-simple] {
+  font-size: 1.1875rem;
+  line-height: 1.7;
+}
+[data-simple] h1 {
+  font-size: 1.9rem;
+}
+[data-simple] h2 {
+  font-size: 1.4rem;
+}
+[data-simple] .geo-field,
+[data-simple] [data-decor] {
+  display: none !important;
+}
+[data-simple] [data-simple-hide] {
+  display: none !important;
+}
+[data-simple] * {
+  animation: none !important;
+  transition-duration: 0.001ms !important;
+}
+/* roomier cards + list spacing */
+[data-simple] .space-y-6 > * + * {
+  margin-top: 2rem;
+}
+[data-simple] li {
+  margin-bottom: 0.35rem;
+}
+
 /* ---- Geometric motif: a small interlocking eight-point tile, very faint ---- */
 .geo-field {
   background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%237a5636' stroke-opacity='0.10' stroke-width='1'%3E%3Cpath d='M20 3l4.2 7.6L32 10l-4.3 7.7L32 25l-8.5.9L20 33l-4.2-7L8 25l4.3-7.7L8 10l8.5-.6z'/%3E%3C/g%3E%3C/svg%3E");

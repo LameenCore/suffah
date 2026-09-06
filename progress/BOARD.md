@@ -1,7 +1,7 @@
 # BOARD — Suffa progress snapshot
 
 **Derived from `progress/tasks/`. Not authoritative. Regenerate after any claim/finish.**
-Last regenerated: 2026-09-06 (T60 done — accessibility pass)
+Last regenerated: 2026-09-06 (T66 done — simple mode)
 
 ## Open tasks
 
@@ -16,7 +16,6 @@ Last regenerated: 2026-09-06 (T60 done — accessibility pass)
 
 | id  | notes |
 |-----|-------|
-| T66 | 13 | Cognitive-accessibility "simple mode" | dep T60 now done — unblocked |
 | T27 T28 T53 T58 T76 T78 | Vercel deploy / demo recording / Sentry / email service / rehearsal / mock Q&A — infra + delivery, need the user/team |
 
 **Recent bug fixes (E2E audit, 2026-09-06):** hydration mismatch on every student
@@ -101,7 +100,7 @@ Get a clean demo state: `npm run demo:setup` (full, hits the API) or `npm run de
 | T63 | 13 | done | — | Multi-masjid onboarding + per-masjid content library |
 | T64 | 13 | done | — | Learning analytics dashboard |
 | T65 | 13 | done | — | Define + instrument the core metrics |
-| T66 | 13 | todo | — | Cognitive-accessibility "simple mode" for the playground |
+| T66 | 13 | done | — | Cognitive-accessibility "simple mode" (lesson pagination = follow-on) |
 
 Pilot order: T26 → T27, then T30 → T31 → T36 → T37 → T38, then T55 → T54 → T53,
 then T59 → T60, then Phase 11 depth; T63 is the multi-masjid scale unlock.

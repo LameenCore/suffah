@@ -6,7 +6,12 @@ import {
   CONSENT_VERSION,
   getActiveConsent,
 } from "@/lib/consent";
-import { grantConsentAction, withdrawConsentAction } from "@/app/parent/consent/actions";
+import {
+  grantConsentAction,
+  withdrawConsentAction,
+  setSimpleModeAction,
+} from "@/app/parent/consent/actions";
+import { getServiceClient } from "@/lib/db";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
@@ -24,10 +29,23 @@ export default async function ParentConsentPage() {
     loadError = err instanceof Error ? err.message : "could not load children";
   }
 
+  const simpleByChild = new Map<string, boolean>();
+  if (children.length > 0) {
+    const { data } = await getServiceClient()
+      .from("users")
+      .select("id, simple_mode")
+      .in(
+        "id",
+        children.map((c) => c.id),
+      );
+    for (const r of data ?? []) simpleByChild.set(r.id as string, Boolean(r.simple_mode));
+  }
+
   const withConsent = await Promise.all(
     children.map(async (c) => ({
       child: c,
       consent: await getActiveConsent(c.id, user.masjidId),
+      simple: simpleByChild.get(c.id) ?? false,
     })),
   );
 
@@ -53,7 +71,7 @@ export default async function ParentConsentPage() {
       ) : children.length === 0 ? (
         <Card className="p-6 text-sm text-ink-3">No children linked to this account yet.</Card>
       ) : (
-        withConsent.map(({ child, consent }) => (
+        withConsent.map(({ child, consent, simple }) => (
           <Card key={child.id} as="section" className="space-y-4 p-5">
             <div className="flex flex-wrap items-center gap-2">
               <h2 className="font-display text-lg font-semibold text-ink">{child.name}</h2>
@@ -63,6 +81,23 @@ export default async function ParentConsentPage() {
                 <Badge tone="warning">Playground locked — consent needed</Badge>
               )}
             </div>
+
+            <form action={setSimpleModeAction} className="flex items-center justify-between gap-3 text-sm">
+              <span className="text-ink-2">
+                Simple view
+                <span className="ml-1 text-ink-4">
+                  — bigger type, one thing at a time, no timers. Same lessons.
+                </span>
+              </span>
+              <input type="hidden" name="childId" value={child.id} />
+              <input type="hidden" name="on" value={simple ? "0" : "1"} />
+              <button
+                type="submit"
+                className="shrink-0 rounded-full border border-border-strong bg-surface px-3 py-1.5 text-xs font-medium text-ink-2 transition-colors hover:border-teal hover:text-teal"
+              >
+                {simple ? "Turn off" : "Turn on"}
+              </button>
+            </form>
 
             <div>
               <p className="text-sm font-medium text-ink-2">You are consenting to:</p>
