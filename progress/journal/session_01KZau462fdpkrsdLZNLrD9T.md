@@ -501,6 +501,23 @@ mine; recording here for whoever takes T27):
 - Next step for T27: read the Vercel Runtime Logs while hitting `/student` to get
   the real stack, then fix env + run migrate/seed against the prod DB.
 
+## 2026-09-06 — demo GIFs recorded (T28)
+Drove the local app through the TASKS.md demo script with the browser tool +
+gif_creator (quality 3, no watermark, click/label overlays). Two GIFs, saved to
+the user's `~/Downloads/`:
+- `suffa-demo-1-learning-loop.gif` (~10 MB, 50 frames): landing/pitch → sign in
+  as student → full Math lesson → checkpoint filled → AI grades 4/4 "pod moves
+  on" → sign in as family → parent sees "Passed Sep 6" live → admin overview →
+  handoff simulation (volunteer offline, playground stays online, replacement
+  assigned + briefing triggered).
+- `suffa-demo-2-continuity-and-waqf.gif` (~3 MB, 8 frames): the generated
+  Continuity Fingerprint briefing (By course / Students / Watch-for, incl. the
+  T48 attendance signal) → waqf ledger (principal locked $250k, flow diagram,
+  spending-vs-principal chart).
+Split into two because gif_creator caps at 50 frames/recording. Files are with
+the user — not committed (large binaries). T28 left `todo` for whoever files
+them + a narrated version if wanted.
+
 ## 2026-09-06 — T27 marked blocked (team staying local-only)
 User: Vercel is asking for payment, so the team is sticking with local dev.
 Claimed T27 and set `status: blocked` with a blocker line. Demo runs on
