@@ -42,6 +42,34 @@ export const fr: Messages = {
     admin: "Admin de la mosquée",
     parent: "Famille",
     student: "Aire d'apprentissage",
+    volunteer: "Bénévole",
+  },
+
+  volunteer: {
+    navMyPods: "Mon groupe",
+    kicker: "Portail bénévole",
+    title: "Votre groupe en un coup d'œil",
+    lede: "Les progrès en lecture seule et la note de passation pour le groupe dont vous vous occupez. Vous pouvez ajouter des notes de séance et des notes de barakah.",
+    noPods: "Aucun groupe ne vous est assigné pour l'instant. L'admin de la mosquée assigne les groupes.",
+    regulationNote:
+      "Une note de passation est un outil de soutien, pas un dossier scolaire officiel. Elle est générée à partir de l'activité sur la plateforme et peut être incomplète.",
+    gateTitle: "Presque prêt, {name}",
+    gateBody:
+      "La mosquée doit relier votre connexion à votre fiche de bénévole avant que votre groupe n'apparaisse ici. Une fois fait, actualisez simplement — pas besoin de vous reconnecter.",
+    gateHint: "Demandez à l'administrateur de la mosquée de relier votre compte.",
+    noStudents: "Aucun élève dans ce groupe pour l'instant.",
+    nodeOf: "Étape {n} sur {total}",
+    notStarted: "Non commencé",
+    noBriefing: "Aucune note de passation pour ce groupe — votre admin la génère.",
+    sessionNotes: "Notes de séance",
+    noNotes: "Aucune note pour l'instant.",
+    noCourse: "(aucun cours)",
+    notePlaceholder: "Après la séance d'aujourd'hui…",
+    addNote: "Ajouter une note",
+    barakahTitle: "Bilan barakah",
+    wholePod: "Tout le groupe",
+    barakahPlaceholder: "p. ex. A aidé un camarade sans qu'on le lui demande.",
+    recordNote: "Enregistrer la note",
   },
 
   landing: {
@@ -218,8 +246,9 @@ export const fr: Messages = {
     roleParentOpt: "Parent / tuteur",
     roleStudentOpt: "Élève",
     roleAdminOpt: "Admin de mosquée",
+    roleVolunteerOpt: "Bénévole",
     signUpNote:
-      "Démo : chaque compte rejoint la mosquée de démonstration. En production, un parent crée le compte de l'enfant et le consentement le verrouille.",
+      "Démo : chaque compte rejoint la mosquée de démonstration. En production, un parent crée le compte de l'enfant et le consentement le verrouille ; un compte bénévole attend que la mosquée le relie.",
     haveAccount: "Vous avez déjà un compte?",
     createAccountCta: "Créer le compte",
     agreeIntro: "En créant un compte, vous acceptez les",

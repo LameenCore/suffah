@@ -88,6 +88,7 @@ export default async function SignupPage({ searchParams }: PageProps<"/signup">)
             >
               <option value="parent">{t("auth.roleParentOpt")}</option>
               <option value="student">{t("auth.roleStudentOpt")}</option>
+              <option value="volunteer">{t("auth.roleVolunteerOpt")}</option>
               <option value="admin">{t("auth.roleAdminOpt")}</option>
             </select>
             <span className="mt-1 block text-[11px] text-ink-4">{t("auth.signUpNote")}</span>

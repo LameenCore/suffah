@@ -18,6 +18,10 @@ export interface VolunteerRow {
   leftAt: string | null;
   /** Names of pods this volunteer is currently assigned to. */
   pods: string[];
+  /** users.id of the linked login, or null when no volunteer login is linked (T32). */
+  userId: string | null;
+  /** email of the linked login, for display. */
+  userEmail: string | null;
 }
 
 export interface VolunteerRoster {
@@ -27,9 +31,12 @@ export interface VolunteerRoster {
   churned: VolunteerRow[];
 }
 
-const SELECT = "id, name, status, certification_note, joined_at, left_at, masjid_id";
+const SELECT =
+  "id, name, status, certification_note, joined_at, left_at, masjid_id, user_id, user:users ( email )";
 
 function shape(row: Record<string, unknown>, podsByVol: Map<string, string[]>): VolunteerRow {
+  const user = row.user;
+  const userRec = (Array.isArray(user) ? user[0] : user) as { email: string } | null;
   return {
     id: row.id as string,
     name: row.name as string,
@@ -38,6 +45,8 @@ function shape(row: Record<string, unknown>, podsByVol: Map<string, string[]>): 
     joinedAt: row.joined_at as string,
     leftAt: (row.left_at as string | null) ?? null,
     pods: podsByVol.get(row.id as string) ?? [],
+    userId: (row.user_id as string | null) ?? null,
+    userEmail: userRec?.email ?? null,
   };
 }
 
@@ -144,4 +153,63 @@ export async function reinstateVolunteer(masjidId: string, id: string): Promise<
     .update({ left_at: null, status: "active" })
     .eq("id", id);
   if (error) throw new Error(`reinstateVolunteer: ${error.message}`);
+}
+
+/**
+ * Link a volunteer record to a signed-up `volunteer`-role login by email (T32).
+ * The user must already exist in this masjid with role 'volunteer' (they sign up
+ * themselves; email delivery is T58). One login per volunteer record.
+ */
+export async function linkVolunteerLogin(
+  masjidId: string,
+  volunteerId: string,
+  email: string,
+): Promise<void> {
+  const db = getServiceClient();
+  const v = await assertVolunteerInMasjid(volunteerId, masjidId);
+  if (v.leftAt != null) throw new Error("this volunteer has already departed");
+
+  const cleaned = email.trim().toLowerCase();
+  if (!cleaned) throw new Error("enter the volunteer's account email");
+
+  const { data: user, error: uErr } = await db
+    .from("users")
+    .select("id, role, masjid_id")
+    .eq("email", cleaned)
+    .maybeSingle();
+  if (uErr) throw new Error(`linkVolunteerLogin: ${uErr.message}`);
+  if (!user || user.masjid_id !== masjidId) {
+    throw new Error("no account with that email in this masjid");
+  }
+  if (user.role !== "volunteer") {
+    throw new Error("that account is not a volunteer account");
+  }
+
+  // one login per volunteer record + one volunteer record per login
+  const { data: taken } = await db
+    .from("volunteers")
+    .select("id")
+    .eq("user_id", user.id)
+    .maybeSingle();
+  if (taken && taken.id !== volunteerId) {
+    throw new Error("that login is already linked to another volunteer record");
+  }
+
+  const { error } = await db
+    .from("volunteers")
+    .update({ user_id: user.id })
+    .eq("id", volunteerId);
+  if (error) throw new Error(`linkVolunteerLogin: ${error.message}`);
+}
+
+export async function unlinkVolunteerLogin(
+  masjidId: string,
+  volunteerId: string,
+): Promise<void> {
+  await assertVolunteerInMasjid(volunteerId, masjidId);
+  const { error } = await getServiceClient()
+    .from("volunteers")
+    .update({ user_id: null })
+    .eq("id", volunteerId);
+  if (error) throw new Error(`unlinkVolunteerLogin: ${error.message}`);
 }

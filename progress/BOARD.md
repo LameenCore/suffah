@@ -46,7 +46,7 @@ Get a clean demo state: `npm run demo:setup` (full, hits the API) or `npm run de
 | T29 | 8 | done  | — | Public landing / marketing page |
 | T30 | 9 | done  | — | Real auth - sign-up/sign-in + 3 demo accounts |
 | T31 | 9 | done  | — | Postgres RLS policies per table |
-| T32 | 9 | todo  | — | Volunteer logins + delegated pod access |
+| T32 | 9 | done  | — | Volunteer logins + delegated pod access |
 | T33 | 9 | done  | — | Platform super-admin + masjid provisioning |
 | T34 | 9 | done  | — | Rate limiting + abuse guards on AI endpoints |
 | T35 | 9 | done  | — | Audit logging for sensitive actions |

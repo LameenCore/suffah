@@ -3,9 +3,11 @@
 import { useRef, useState, useTransition } from "react";
 import {
   addVolunteerAction,
+  linkVolunteerLoginAction,
   recordDepartureAction,
   reinstateVolunteerAction,
   setVolunteerStatusAction,
+  unlinkVolunteerLoginAction,
   type ActionResult,
 } from "@/app/admin/volunteers/actions";
 import type { VolunteerRow } from "@/lib/db/volunteer-queries";
@@ -152,8 +154,60 @@ function ActiveRow({ v }: { v: VolunteerRow }) {
         <p className="mt-1 text-xs text-ink-3 ">{v.certificationNote}</p>
       )}
       <p className="mt-0.5 text-xs text-ink-4">joined {fmtDate(v.joinedAt)}</p>
+      <LoginLink v={v} />
       {error && <p className="mt-1 text-xs text-danger">{error}</p>}
     </li>
+  );
+}
+
+/** Link a volunteer record to a signed-up volunteer login (T32). */
+function LoginLink({ v }: { v: VolunteerRow }) {
+  const { pending, error, dispatch } = useAction();
+  const [email, setEmail] = useState("");
+
+  if (v.userId) {
+    return (
+      <p className="mt-1 flex flex-wrap items-center gap-2 text-xs text-ink-3">
+        <span className="rounded bg-teal-soft px-1.5 py-0.5 text-teal-strong">login linked</span>
+        <span className="text-ink-4">{v.userEmail}</span>
+        <button
+          type="button"
+          disabled={pending}
+          onClick={() => dispatch(() => unlinkVolunteerLoginAction(v.id))}
+          className="rounded border border-border px-1.5 py-0.5 hover:bg-surface-2 disabled:opacity-50"
+        >
+          unlink
+        </button>
+        {error && <span className="text-danger">{error}</span>}
+      </p>
+    );
+  }
+
+  return (
+    <form
+      className="mt-1 flex flex-wrap items-center gap-2 text-xs"
+      onSubmit={(e) => {
+        e.preventDefault();
+        dispatch(() => linkVolunteerLoginAction(v.id, email), () => setEmail(""));
+      }}
+    >
+      <span className="text-ink-4">No login yet.</span>
+      <input
+        type="email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        placeholder="their signed-up email"
+        className="min-w-[12rem] rounded border border-border bg-surface px-2 py-1"
+      />
+      <button
+        type="submit"
+        disabled={pending || !email.trim()}
+        className="rounded border border-border px-2 py-1 hover:bg-surface-2 disabled:opacity-50"
+      >
+        Link login
+      </button>
+      {error && <span className="text-danger">{error}</span>}
+    </form>
   );
 }
 

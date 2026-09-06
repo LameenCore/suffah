@@ -44,6 +44,34 @@ export const en = {
     admin: "Masjid Admin",
     parent: "Family",
     student: "Playground",
+    volunteer: "Volunteer",
+  },
+
+  volunteer: {
+    navMyPods: "My pod",
+    kicker: "Volunteer portal",
+    title: "Your pod at a glance",
+    lede: "Read-only progress plus the handoff briefing for the pod you cover. You can add session and barakah notes.",
+    noPods: "You aren't assigned to a pod right now. Your masjid admin assigns pods.",
+    regulationNote:
+      "A handoff briefing is a support tool, not a formal student record. It is generated from in-platform activity and may be incomplete.",
+    gateTitle: "Almost set, {name}",
+    gateBody:
+      "Your masjid needs to link your login to your volunteer record before your pod shows up here. Once they do, just refresh — no need to sign in again.",
+    gateHint: "Ask your masjid administrator to link your account.",
+    noStudents: "No students in this pod yet.",
+    nodeOf: "Node {n} of {total}",
+    notStarted: "Not started",
+    noBriefing: "No handoff briefing for this pod yet — your admin generates it.",
+    sessionNotes: "Session notes",
+    noNotes: "No notes yet.",
+    noCourse: "(no course)",
+    notePlaceholder: "After today's session…",
+    addNote: "Add note",
+    barakahTitle: "Barakah check-in",
+    wholePod: "The whole pod",
+    barakahPlaceholder: "e.g. Helped a podmate without being asked.",
+    recordNote: "Record note",
   },
 
   landing: {
@@ -220,8 +248,9 @@ export const en = {
     roleParentOpt: "Parent / guardian",
     roleStudentOpt: "Student",
     roleAdminOpt: "Masjid admin",
+    roleVolunteerOpt: "Volunteer",
     signUpNote:
-      "Demo: every account joins the demo masjid. In production a parent creates the child's account and consent gates it.",
+      "Demo: every account joins the demo masjid. In production a parent creates the child's account and consent gates it; a volunteer account waits for the masjid to link it.",
     haveAccount: "Already have an account?",
     createAccountCta: "Create account",
     agreeIntro: "By creating an account you agree to the",
