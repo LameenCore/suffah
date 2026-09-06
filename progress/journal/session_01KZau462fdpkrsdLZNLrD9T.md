@@ -518,6 +518,24 @@ Split into two because gif_creator caps at 50 frames/recording. Files are with
 the user — not committed (large binaries). T28 left `todo` for whoever files
 them + a narrated version if wanted.
 
+## 2026-09-06 (b) — proper MP4 walkthrough (T28)
+User: the GIFs were too short/choppy — wanted a real MP4 with duration showing
+everything. Approach: installed ffmpeg (winget Gyan.FFmpeg) + Playwright (ad-hoc,
+uninstalled after — package.json restored), wrote a headless Playwright script
+that walks the full TASKS.md demo script with generous pauses and an on-screen
+caption overlay per section, records webm, then ffmpeg -> h264 mp4.
+Result: **`~/Downloads/suffa-demo.mp4`** — 4:47, 1440x900, h264, ~21 MB.
+Covers, captioned: landing/pitch -> student Math lesson (full generated content)
+-> checkpoint filled + AI-graded 100%, Math advances -> parent sees "Passed" live
++ Barakah/attendance/consistency -> admin overview -> handoff simulation (offline,
+playground stays up, replacement assigned, **full Continuity Fingerprint briefing
+generated**) -> compliance (Idris gap / Yusuf) -> waqf ledger (principal locked,
+flow diagram, spend-vs-principal chart) -> learning analytics -> close.
+Verified by extracting frames at 11 timestamps. The one-off recording script was
+NOT committed (hardcodes demo UUIDs / answer indices / caption copy — a future
+re-record would rewrite it). Deps: `npx playwright install chromium
+chromium-headless-shell` + ffmpeg on PATH. Old GIFs superseded.
+
 ## 2026-09-06 — T27 marked blocked (team staying local-only)
 User: Vercel is asking for payment, so the team is sticking with local dev.
 Claimed T27 and set `status: blocked` with a blocker line. Demo runs on
