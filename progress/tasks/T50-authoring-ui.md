@@ -2,9 +2,9 @@
 id: T50
 title: Admin course-authoring UI
 phase: 11
-status: todo
-owner: —
-claimed: —
+status: doing
+owner: background agent (T50)
+claimed: 2026-09-05T00:00:00Z
 updated: 2026-09-05
 depends_on: []
 source: post-hackathon roadmap (EdTech-checklist analysis)
