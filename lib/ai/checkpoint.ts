@@ -40,7 +40,7 @@ export type { QuestionGrade } from "@/lib/ai/questions";
 
 // --- Persisted shape -----------------------------------------------------
 
-const CheckpointBodySchema = z.object({
+export const CheckpointBodySchema = z.object({
   questions: z
     .array(QuestionSchema)
     .min(3)

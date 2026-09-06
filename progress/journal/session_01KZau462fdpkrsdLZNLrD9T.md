@@ -357,3 +357,21 @@ build + lint + tsc + 62 tests green. Commit <t46>.
 Set up general-purpose agents on T50 (course-authoring UI) and T61 (PWA/offline)
 - both are near-isolated new-file areas. They follow the progress/ protocol
 (claim + verify + commit). I'm continuing T59.
+
+## 2026-09-05 — multi-agent recovery + T50 landed
+The 2 background agents I spawned for T50/T61 ran in the SAME working dir (not
+worktrees - my mistake). Recovery:
+- Both agents committed ONLY their claim (staged by explicit path), so main was
+  never corrupted. Stopped both via SendMessage.
+- T61 was implemented INDEPENDENTLY by another session (merge 2b03b25) while my
+  agent was ~45% in -> discarded my T61 agent's untracked drafts as superseded.
+- T59 lesson-loop commit rebased onto the new main (offline/T33/T79 had landed);
+  resolved a 3-marker conflict in Checkpoint.tsx (merged my i18n into the
+  offline-aware version - kept updateAnswer/draft/queued + cp()/heading).
+- T50 agent's implementation was complete on disk; I verified + committed it.
+
+T50 verified: authoring CRUD, JSON edit + regenerate, delete guard (pod's current
+node / results), re-sequencing. build + lint + tsc + 62 tests + check:integrity
+green. 248 i18n keys in sync. Commit <t50>.
+
+Lesson: spawn parallel agents with isolation:"worktree", not in the shared dir.

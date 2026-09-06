@@ -25,6 +25,16 @@ const ACTION_LABEL: Record<string, string> = {
   "ai_budget.updated": "Updated the AI budget",
   "skill_tree.prereq_added": "Added a prerequisite edge",
   "skill_tree.prereq_removed": "Removed a prerequisite edge",
+  "course.node_added": "Added a pathway node",
+  "course.node_renamed": "Renamed a pathway node",
+  "course.node_reordered": "Reordered a pathway node",
+  "course.node_deleted": "Deleted a pathway node",
+  "course.node_unit_set": "Changed a node's unit",
+  "course.unit_added": "Added a unit",
+  "course.lesson_saved": "Hand-edited a node's lesson",
+  "course.lesson_regenerated": "Regenerated a node's lesson",
+  "course.checkpoint_saved": "Hand-edited a node's checkpoint",
+  "course.checkpoint_regenerated": "Regenerated a node's checkpoint",
 };
 
 function label(action: string): string {

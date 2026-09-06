@@ -23,7 +23,7 @@ import type { CourseName } from "@/lib/types";
 
 // --- Persisted shape -------------------------------------------------------
 
-const LessonBodySchema = z.object({
+export const LessonBodySchema = z.object({
   summary: z
     .string()
     .describe("2-3 sentences a 12-year-old can read, framing why this node matters."),
