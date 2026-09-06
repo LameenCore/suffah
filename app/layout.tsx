@@ -3,6 +3,7 @@ import { Fraunces, Plus_Jakarta_Sans } from "next/font/google";
 import { env } from "@/lib/env";
 import { getLocale } from "@/lib/i18n";
 import { I18nProvider } from "@/lib/i18n/client";
+import { ServiceWorkerRegister } from "@/components/ServiceWorkerRegister";
 import "./globals.css";
 
 const jakarta = Plus_Jakarta_Sans({
@@ -38,6 +39,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body className="flex min-h-full flex-col">
         <I18nProvider locale={locale}>{children}</I18nProvider>
+        <ServiceWorkerRegister />
       </body>
     </html>
   );

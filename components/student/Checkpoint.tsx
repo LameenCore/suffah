@@ -1,9 +1,11 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useCallback, useEffect, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { startCheckpointAction, submitCheckpointAction } from "@/app/student/actions";
 import type { CheckpointForStudent, CheckpointGrade } from "@/lib/ai/checkpoint";
+import { useT } from "@/lib/i18n/client";
+import { enqueueAttempt, saveDraft, getDraft, clearDraft } from "@/lib/offline/store";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Crescent } from "@/components/ui/Motif";
@@ -26,10 +28,46 @@ export function Checkpoint({
   isLastNode: boolean;
 }) {
   const router = useRouter();
+  const t = useT();
   const [pending, startTransition] = useTransition();
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [grade, setGrade] = useState<CheckpointGrade | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [queued, setQueued] = useState(false);
+
+  // Restore a crash / drop draft, and clear the "queued" banner once the SW
+  // reports this node synced.
+  useEffect(() => {
+    let alive = true;
+    getDraft(nodeId).then((d) => {
+      if (alive && d && Object.keys(d).length) setAnswers((a) => ({ ...d, ...a }));
+    });
+    const onResult = (e: Event) => {
+      const detail = (e as CustomEvent).detail as { nodeId?: string; ok?: boolean };
+      if (detail?.nodeId === nodeId && detail.ok) {
+        setQueued(false);
+        router.refresh();
+      }
+    };
+    window.addEventListener("suffa:sync-result", onResult as EventListener);
+    return () => {
+      alive = false;
+      window.removeEventListener("suffa:sync-result", onResult as EventListener);
+    };
+  }, [nodeId, router]);
+
+  // Every answer change is persisted immediately — a mid-checkpoint network drop
+  // or a reload never loses work.
+  const updateAnswer = useCallback(
+    (id: string, value: string) => {
+      setAnswers((a) => {
+        const next = { ...a, [id]: value };
+        void saveDraft(nodeId, next);
+        return next;
+      });
+    },
+    [nodeId],
+  );
 
   if (priorPassed && !grade) {
     return (
@@ -76,12 +114,53 @@ export function Checkpoint({
   const gradeById = new Map(grade?.perQuestion.map((g) => [g.id, g]) ?? []);
   const allAnswered = checkpoint.questions.every((q) => (answers[q.id] ?? "") !== "");
 
+  async function queueOffline() {
+    await enqueueAttempt(nodeId, answers);
+    await clearDraft(nodeId);
+    setQueued(true);
+    // Ask the SW to sync as soon as the network is back (Background Sync where
+    // available; otherwise the page nudges it on the `online` event).
+    try {
+      const reg = await navigator.serviceWorker?.ready;
+      if (reg && "sync" in reg) {
+        await (reg as ServiceWorkerRegistration & { sync: { register(t: string): Promise<void> } }).sync.register(
+          "suffa-checkpoint-sync",
+        );
+      }
+    } catch {
+      /* offline queue still flushes via the page's online handler */
+    }
+  }
+
   function submit() {
+    if (typeof navigator !== "undefined" && !navigator.onLine) {
+      startTransition(async () => {
+        setError(null);
+        try {
+          await queueOffline();
+        } catch (e) {
+          setError(e instanceof Error ? e.message : t("offline.queueFailed"));
+        }
+      });
+      return;
+    }
     startTransition(async () => {
       setError(null);
       try {
-        setGrade(await submitCheckpointAction(nodeId, answers));
+        const g = await submitCheckpointAction(nodeId, answers);
+        setGrade(g);
+        void clearDraft(nodeId);
       } catch (e) {
+        // A silent connectivity drop between the online check and the action —
+        // fall back to the offline queue rather than losing the attempt.
+        if (typeof navigator !== "undefined" && !navigator.onLine) {
+          try {
+            await queueOffline();
+            return;
+          } catch {
+            /* fall through to the error */
+          }
+        }
         setError(e instanceof Error ? e.message : "grading failed");
       }
     });
@@ -120,9 +199,7 @@ export function Checkpoint({
                           className="accent-[color:var(--terracotta)]"
                           checked={selected}
                           disabled={pending || grade !== null}
-                          onChange={(e) =>
-                            setAnswers((a) => ({ ...a, [q.id]: e.target.value }))
-                          }
+                          onChange={(e) => updateAnswer(q.id, e.target.value)}
                         />
                         <span className="text-ink-2">{opt}</span>
                       </label>
@@ -134,7 +211,7 @@ export function Checkpoint({
                   type="text"
                   value={answers[q.id] ?? ""}
                   disabled={pending || grade !== null}
-                  onChange={(e) => setAnswers((a) => ({ ...a, [q.id]: e.target.value }))}
+                  onChange={(e) => updateAnswer(q.id, e.target.value)}
                   placeholder="Your answer"
                   className="w-full max-w-xs rounded-[var(--radius)] border border-border bg-surface px-3 py-2 text-sm text-ink outline-none focus:border-terracotta"
                 />
@@ -153,7 +230,12 @@ export function Checkpoint({
 
       {error ? <p className="text-xs text-danger">{error}</p> : null}
 
-      {!grade ? (
+      {queued ? (
+        <div className="space-y-1 rounded-[var(--radius)] border border-warning/40 bg-warning-soft p-4 text-sm">
+          <p className="font-medium text-[color:var(--ink)]">{t("offline.queuedTitle")}</p>
+          <p className="text-ink-2">{t("offline.queuedBody")}</p>
+        </div>
+      ) : !grade ? (
         <Button disabled={pending || !allAnswered} onClick={submit}>
           {pending ? "Checking..." : "Submit checkpoint"}
         </Button>

@@ -9,6 +9,8 @@ import { TutorPanel } from "@/components/student/TutorPanel";
 import { MarkCompleteButton } from "@/components/student/MarkCompleteButton";
 import { GenerateLessonPanel } from "@/components/student/GenerateLessonPanel";
 import { Checkpoint } from "@/components/student/Checkpoint";
+import { DownloadUnitButton } from "@/components/student/DownloadUnitButton";
+import { OfflineIndicator } from "@/components/student/OfflineIndicator";
 import { ButtonLink } from "@/components/ui/Button";
 
 export default async function CourseLessonPage({
@@ -42,16 +44,21 @@ export default async function CourseLessonPage({
         >
           <span aria-hidden>&larr;</span> All courses
         </Link>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
           <span className="text-xs text-ink-4">
             {course.name}
             {totalNodes > 0 ? ` · step ${nodePosition} of ${totalNodes}` : ""}
           </span>
+          {currentNode?.lesson_content ? (
+            <DownloadUnitButton courseId={course.id} nodeId={currentNode.id} />
+          ) : null}
           <ButtonLink href={`/student/${course.id}/exam`} variant="ghost" size="sm">
             Term exam
           </ButtonLink>
         </div>
       </div>
+
+      <OfflineIndicator />
 
       {!currentNode ? (
         <p className="rounded-[var(--radius-lg)] border border-border bg-surface p-6 text-sm text-ink-3">
