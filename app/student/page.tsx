@@ -65,7 +65,7 @@ export default async function StudentHome() {
           </div>
           <div className="grid gap-4 lg:grid-cols-3">
             {tracks.map((track) => (
-              <CoursePath key={track.course.id} track={track} />
+              <CoursePath key={track.course.id} track={track} t={t} />
             ))}
           </div>
         </section>
@@ -88,7 +88,7 @@ export default async function StudentHome() {
         </Card>
       ) : null}
 
-      {pod ? <ConsistencyStrip consistency={consistency} audience="student" /> : null}
+      {pod ? <ConsistencyStrip consistency={consistency} audience="student" t={t} /> : null}
 
       <RegulationNote>{t("student.regulationNote")}</RegulationNote>
     </div>

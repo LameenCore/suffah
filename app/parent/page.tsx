@@ -245,7 +245,7 @@ async function ChildBlock({
         ))}
       </div>
       <BarakahSummary barakah={barakah} />
-      <ConsistencyStrip consistency={consistency} audience="parent" />
+      <ConsistencyStrip consistency={consistency} audience="parent" t={t} />
 
       <div className="flex flex-wrap gap-3 text-sm">
         <a

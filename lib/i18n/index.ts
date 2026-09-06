@@ -54,8 +54,10 @@ function lookup(messages: Messages, key: string): string | undefined {
   }, messages) as string | undefined;
 }
 
+export type Translator = (key: MessageKey, params?: Record<string, string | number>) => string;
+
 /** Build a translator bound to `locale`, falling back to English then the key. */
-export function makeTranslator(locale: Locale) {
+export function makeTranslator(locale: Locale): Translator {
   const messages = getMessages(locale);
   return function t(key: MessageKey, params?: Record<string, string | number>): string {
     let value = lookup(messages, key) ?? lookup(en, key) ?? key;

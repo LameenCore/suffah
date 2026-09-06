@@ -45,16 +45,17 @@ DONE:
   'en' so the demo starts EN; flip per-masjid for a FR-default tenant).
 - **Translated**: landing page (all of it), the chrome (sidebar nav for all 3
   dashboards, footer, role label, mobile menu), student home, parent home
-  (header + key links), admin overview header, /login, /signup.
+  (header + key links), admin overview header, /login, /signup, the /student course cards
+  (CoursePath) + ConsistencyStrip. 130 keys.
 - `scripts/check-i18n.ts` (`npm run check:i18n`, wired into CI) fails on any
   key mismatch. 83 keys, catalogues in sync.
 - Verified live: EN default, `suffa-locale=fr` cookie flips landing + chrome +
   the 3 homes; all routes 200 in both locales; tsc + lint + build + 62 tests green.
 
 REMAINING (mechanical - extract strings + add en/fr keys):
-- Deeper components: `CourseCard`, `BarakahSummary`, `ConsistencyStrip`,
-  `Checkpoint`, `LessonView`, `TermExam`, `ReviewDeck`, `TutorPanel`,
-  `RegulationNote` default, `PageHeader` "Back".
+- Deeper components: `CourseCard` (parent), `BarakahSummary`, `Checkpoint`,
+  `LessonView`, `TermExam`, `ReviewDeck`, `TutorPanel`, `RegulationNote` default,
+  `PageHeader` "Back". Pattern: pass `t` from the async page (see CoursePath).
 - Admin sub-pages: pods, volunteers, continuity, handoff-demo, compliance,
   ledger, ai-spend, seerah, audit, analytics, inbox (+ their components).
 - /help, legal pages, consent + privacy flows; the auth *action* error

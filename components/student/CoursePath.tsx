@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { CourseTrack } from "@/lib/db/queries";
+import type { Translator } from "@/lib/i18n";
 import { Badge } from "@/components/ui/Badge";
 import { BookMark, Crescent, Star8 } from "@/components/ui/Motif";
 
@@ -15,27 +16,28 @@ function CourseIcon({ name }: { name: string }) {
   return <Star8 className="h-5 w-5" />;
 }
 
-export function CoursePath({ track }: { track: CourseTrack }) {
+export function CoursePath({ track, t }: { track: CourseTrack; t: Translator }) {
   const { course, nodes, currentNode, lessonComplete, checkpointPassed, position, total } =
     track;
+  const cp = (k: string) => t(`student.coursePath.${k}` as Parameters<Translator>[0]);
 
   const cta = !currentNode
-    ? { label: "Not assigned", disabled: true }
+    ? { label: cp("notAssigned"), disabled: true }
     : checkpointPassed
-      ? { label: "Review this lesson", disabled: false }
+      ? { label: cp("review"), disabled: false }
       : lessonComplete
-        ? { label: "Take the checkpoint", disabled: false }
+        ? { label: cp("takeCheckpoint"), disabled: false }
         : currentNode.lesson_content
-          ? { label: "Continue the lesson", disabled: false }
-          : { label: "Start the lesson", disabled: false };
+          ? { label: cp("continueLesson"), disabled: false }
+          : { label: cp("startLesson"), disabled: false };
 
   const status = !currentNode
     ? null
     : checkpointPassed
-      ? { tone: "success" as const, text: "Done" }
+      ? { tone: "success" as const, text: cp("stateDone") }
       : lessonComplete
-        ? { tone: "mustard" as const, text: "Quiz" }
-        : { tone: "teal" as const, text: "Ready" };
+        ? { tone: "mustard" as const, text: cp("stateQuiz") }
+        : { tone: "teal" as const, text: cp("stateReady") };
 
   const shell = `group flex h-full flex-col rounded-[var(--radius-lg)] border border-border bg-surface p-5 shadow-[var(--shadow-card)] transition-all ${
     currentNode
@@ -55,7 +57,9 @@ export function CoursePath({ track }: { track: CourseTrack }) {
               {course.name}
             </h3>
             <p className="text-xs text-ink-4">
-              {total > 0 ? `Step ${Math.max(position, 1)} of ${total}` : "No path yet"}
+              {total > 0
+                ? t("student.coursePath.step", { n: Math.max(position, 1), total })
+                : cp("noPath")}
             </p>
           </div>
         </div>
@@ -95,7 +99,7 @@ export function CoursePath({ track }: { track: CourseTrack }) {
       ) : null}
 
       <p className="mt-4 line-clamp-2 flex-1 text-sm text-ink-2">
-        {currentNode ? currentNode.title : "Ask the masjid to place your pod on this course."}
+        {currentNode ? currentNode.title : cp("askPlacement")}
       </p>
 
       <div className="mt-4 flex items-center gap-2 text-sm font-medium text-terracotta">
