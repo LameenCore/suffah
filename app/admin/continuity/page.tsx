@@ -9,6 +9,7 @@ import {
   listPodSessionNotes,
   getLatestBriefing,
 } from "@/lib/db/continuity-queries";
+import { getPodFocus, type PodFocusItem } from "@/lib/recommendations";
 import { getServiceClient } from "@/lib/db";
 
 async function coursesForMasjid(masjidId: string) {
@@ -35,6 +36,7 @@ export default async function AdminContinuityPage() {
   const user = await requireRole("admin");
 
   let pods: ContinuityPodData[] = [];
+  let focusByPod: Record<string, PodFocusItem[]> = {};
   let loadError: string | null = null;
 
   try {
@@ -60,6 +62,11 @@ export default async function AdminContinuityPage() {
             : null,
         };
       }),
+    );
+    focusByPod = Object.fromEntries(
+      await Promise.all(
+        pods.map(async (p) => [p.id, await getPodFocus(p.id, user.masjidId).catch(() => [])]),
+      ),
     );
   } catch (err) {
     loadError = err instanceof Error ? err.message : "could not load continuity data";
@@ -91,7 +98,25 @@ export default async function AdminContinuityPage() {
       ) : (
         <div className="space-y-4">
           {pods.map((pod) => (
-            <ContinuityPod key={pod.id} pod={pod} />
+            <div key={pod.id} className="space-y-2">
+              {focusByPod[pod.id]?.length ? (
+                <Card tone="teal" className="p-4">
+                  <p className="text-sm font-medium text-ink">Focus this session - {pod.name}</p>
+                  <ul className="mt-1 space-y-1 text-sm text-ink-2">
+                    {focusByPod[pod.id].map((f, i) => (
+                      <li key={i}>
+                        <span className="font-medium">{f.studentName}:</span> {f.focus}.{" "}
+                        <span className="text-ink-4">{f.why}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <p className="mt-1.5 text-xs text-ink-4">
+                    Deterministic - from checkpoint history + the skill tree, not a model.
+                  </p>
+                </Card>
+              ) : null}
+              <ContinuityPod pod={pod} />
+            </div>
           ))}
         </div>
       )}

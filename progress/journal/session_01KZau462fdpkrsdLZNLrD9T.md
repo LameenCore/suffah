@@ -344,3 +344,16 @@ Commit <t43>.
 
 Also this turn: extended T59 to /student course cards (CoursePath) +
 ConsistencyStrip (Translator-prop pattern for leaf server components). 131 keys.
+
+## 2026-09-05 — T46 done (next-step recommendations)
+Claimed T46 (dep T43 done same session). lib/recommendations.ts: deterministic
+priority ladder getStudentNextStep (review -> blocked prereq -> re-teach -> retry
+-> take checkpoint -> lesson -> caught up) + getPodFocus (per-student, volunteer-
+actionable only). "Do this next" card on /student; "Focus this session" panel per
+pod on /admin/continuity (labelled deterministic, not a model). Verified live.
+build + lint + tsc + 62 tests green. Commit <t46>.
+
+## 2026-09-05 — spawned 2 background agents (user request)
+Set up general-purpose agents on T50 (course-authoring UI) and T61 (PWA/offline)
+- both are near-isolated new-file areas. They follow the progress/ protocol
+(claim + verify + commit). I'm continuing T59.

@@ -126,6 +126,7 @@ export const en = {
     consistencyPrivateYou: "This is only for you - it is never compared with anyone else.",
     consistencyPrivateFamily:
       "This is only for your family - it is never compared with anyone else.",
+    nextStep: "Do this next",
     reviewReady: "Review is ready",
     reviewReadyBody: "{count} quick questions from lessons you've already passed.",
     startReview: "Start review",

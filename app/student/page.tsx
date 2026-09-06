@@ -3,6 +3,7 @@ import { getStudentTracks } from "@/lib/db/queries";
 import Link from "next/link";
 import { getConsistency } from "@/lib/db/consistency-queries";
 import { getRetentionSignal, seedReviewItems } from "@/lib/review";
+import { getStudentNextStep } from "@/lib/recommendations";
 import { RegulationNote } from "@/components/RegulationNote";
 import { Card } from "@/components/ui/Card";
 import { CoursePath } from "@/components/student/CoursePath";
@@ -21,6 +22,9 @@ export default async function StudentHome() {
   const consistency = await getConsistency(user.id, user.masjidId);
   await seedReviewItems(user.id, user.masjidId).catch(() => {});
   const retention = await getRetentionSignal(user.id, user.masjidId).catch(() => null);
+  const nextStep = pod
+    ? await getStudentNextStep(user.id, user.masjidId).catch(() => null)
+    : null;
   const firstName = user.name.split(" ")[0];
 
   return (
@@ -56,6 +60,19 @@ export default async function StudentHome() {
           </div>
         </div>
       </section>
+
+      {nextStep && nextStep.kind !== "caught_up" ? (
+        <Link
+          href={nextStep.href}
+          className="block rounded-[var(--radius-lg)] border border-terracotta/40 bg-terracotta-soft p-5 transition-colors hover:border-terracotta"
+        >
+          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-terracotta">
+            {t("student.nextStep")}
+          </p>
+          <p className="mt-1 font-display text-lg font-semibold text-ink">{nextStep.label}</p>
+          <p className="mt-0.5 text-sm text-ink-2">{nextStep.why}</p>
+        </Link>
+      ) : null}
 
       {pod ? (
         <section>

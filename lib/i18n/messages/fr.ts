@@ -124,6 +124,7 @@ export const fr: Messages = {
     consistencyPrivateYou: "C'est seulement pour toi - ce n'est jamais comparé à quelqu'un d'autre.",
     consistencyPrivateFamily:
       "C'est seulement pour votre famille - ce n'est jamais comparé à quelqu'un d'autre.",
+    nextStep: "Fais ceci ensuite",
     reviewReady: "La révision est prête",
     reviewReadyBody: "{count} questions rapides tirées de leçons déjà réussies.",
     startReview: "Commencer la révision",
