@@ -1,4 +1,5 @@
 import { requireRole } from "@/lib/auth";
+import { getT, type MessageKey } from "@/lib/i18n";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Card } from "@/components/ui/Card";
 import { LedgerChart } from "@/components/admin/LedgerChart";
@@ -16,19 +17,19 @@ import {
   type SponsoredOutcome,
 } from "@/lib/db/sponsorship-queries";
 
-const money = (v: number) =>
-  v.toLocaleString("en-CA", { style: "currency", currency: "CAD", maximumFractionDigits: 0 });
+const money = (v: number, intlLocale: string) =>
+  v.toLocaleString(intlLocale, { style: "currency", currency: "CAD", maximumFractionDigits: 0 });
 
-const ENTRY_LABEL: Record<LedgerEntry["entryType"], string> = {
-  principal_deposit: "Principal deposit",
-  return_disbursed: "Return disbursed",
-  sadaqah_received: "Sadaqah received",
-  scholarship_allocated: "Scholarship allocated",
+const ENTRY_KEY: Record<LedgerEntry["entryType"], MessageKey> = {
+  principal_deposit: "admin.ledger.entryPrincipalDeposit",
+  return_disbursed: "admin.ledger.entryReturnDisbursed",
+  sadaqah_received: "admin.ledger.entrySadaqahReceived",
+  scholarship_allocated: "admin.ledger.entryScholarshipAllocated",
 };
 
-const FEE_LABEL: Record<FamilyFeeRow["status"], string> = {
-  fee_paid: "Flat fee paid",
-  scholarship_covered: "Scholarship-covered",
+const FEE_KEY: Record<FamilyFeeRow["status"], MessageKey> = {
+  fee_paid: "admin.ledger.feePaid",
+  scholarship_covered: "admin.ledger.feeScholarship",
 };
 
 function StatTile({
@@ -53,6 +54,8 @@ function StatTile({
 
 export default async function AdminLedgerPage() {
   const user = await requireRole("admin");
+  const { t, intlLocale } = await getT(user);
+  const fmt = (v: number) => money(v, intlLocale);
 
   let summary: LedgerSummary | null = null;
   let fees: FamilyFeeRow[] = [];
@@ -66,7 +69,7 @@ export default async function AdminLedgerPage() {
       getSponsoredOutcomes(user.masjidId),
     ]);
   } catch (err) {
-    loadError = err instanceof Error ? err.message : "could not load ledger data";
+    loadError = err instanceof Error ? err.message : "unknown error";
   }
 
   const feePaid = fees.filter((f) => f.status === "fee_paid").length;
@@ -75,111 +78,111 @@ export default async function AdminLedgerPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        kicker="Waqf & donation ledger"
-        title="Where the money sits, and moves"
-        lede="Transparency view. The endowment principal is locked - only its returns, plus sadaqah, fund operations and scholarships."
-        back={{ href: "/admin", label: "Overview" }}
+        kicker={t("admin.ledger.kicker")}
+        title={t("admin.ledger.title")}
+        lede={t("admin.ledger.lede")}
+        back={{ href: "/admin", label: t("nav.overview") }}
       />
 
       <p className="rounded-[var(--radius)] border border-border bg-surface-2 px-3 py-2 text-xs text-ink-3">
-        <span className="font-semibold text-ink">Illustrative mock data.</span> No payment
-        processing - figures are seeded for the demo.
+        <span className="font-semibold text-ink">{t("admin.ledger.mockData")}</span>{" "}
+        {t("admin.ledger.mockDataRest")}
       </p>
 
       {loadError ? (
         <Card tone="warning" className="p-4 text-sm text-ink-2">
-          Ledger data is unavailable: {loadError}. Run <code>npm run seed</code>.
+          {t("admin.ledger.unavailable", { error: loadError })} <code>npm run seed</code>
         </Card>
       ) : summary ? (
         <>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <StatTile
-              label="Principal - locked"
-              value={money(summary.principal)}
-              sub="Never spent. Only returns are drawn."
+              label={t("admin.ledger.tilePrincipal")}
+              value={fmt(summary.principal)}
+              sub={t("admin.ledger.tilePrincipalSub")}
               accent="text-ink"
             />
             <StatTile
-              label="Returns disbursed"
-              value={money(summary.returnsDisbursed)}
-              sub="Operating costs to date, from returns only."
+              label={t("admin.ledger.tileReturns")}
+              value={fmt(summary.returnsDisbursed)}
+              sub={t("admin.ledger.tileReturnsSub")}
               accent="text-teal-strong"
             />
             <StatTile
-              label="Sadaqah received"
-              value={money(summary.sadaqahReceived)}
-              sub="Community giving into the scholarship pool."
+              label={t("admin.ledger.tileSadaqah")}
+              value={fmt(summary.sadaqahReceived)}
+              sub={t("admin.ledger.tileSadaqahSub")}
               accent="text-teal-strong"
             />
             <StatTile
-              label="Scholarships funded"
-              value={money(summary.scholarshipsAllocated)}
-              sub={`${scholarship} student${scholarship === 1 ? "" : "s"}, sadaqah-covered.`}
+              label={t("admin.ledger.tileScholarships")}
+              value={fmt(summary.scholarshipsAllocated)}
+              sub={t("admin.ledger.tileScholarshipsSub", { n: scholarship })}
               accent="text-terracotta"
             />
           </div>
 
           <section className="rounded-[var(--radius-lg)] border border-border bg-surface p-5 shadow-[var(--shadow-card)]">
-            <h2 className="font-display text-lg font-semibold text-ink">How the waqf works</h2>
-            <p className="mt-1 text-xs text-ink-3 ">
-              The endowment model at a glance - for anyone new to waqf.
-            </p>
+            <h2 className="font-display text-lg font-semibold text-ink">
+              {t("admin.ledger.howItWorks")}
+            </h2>
+            <p className="mt-1 text-xs text-ink-3 ">{t("admin.ledger.howItWorksSub")}</p>
             <div className="mt-3">
               <WaqfFlowDiagram
                 principal={summary.principal}
                 returnsDisbursed={summary.returnsDisbursed}
                 sadaqahReceived={summary.sadaqahReceived}
                 scholarshipsAllocated={summary.scholarshipsAllocated}
+                t={t}
+                intlLocale={intlLocale}
               />
             </div>
           </section>
 
           <section className="rounded-[var(--radius-lg)] border border-border bg-surface p-5 shadow-[var(--shadow-card)]">
-            <h2 className="font-display text-lg font-semibold text-ink">Sponsored outcomes</h2>
-            <p className="mt-1 text-xs text-ink-3 ">
-              What each contribution funded - and what the sponsored pod actually
-              learned. Not just where the money went.
-            </p>
+            <h2 className="font-display text-lg font-semibold text-ink">
+              {t("admin.ledger.sponsoredOutcomes")}
+            </h2>
+            <p className="mt-1 text-xs text-ink-3 ">{t("admin.ledger.sponsoredOutcomesSub")}</p>
             <div className="mt-3">
-              <SponsoredOutcomes outcomes={sponsored} />
+              <SponsoredOutcomes outcomes={sponsored} t={t} intlLocale={intlLocale} />
             </div>
           </section>
 
           <section className="rounded-[var(--radius-lg)] border border-border bg-surface p-5 shadow-[var(--shadow-card)]">
-            <h2 className="font-display text-lg font-semibold text-ink">Spending vs. principal, over time</h2>
-            <p className="mt-1 text-xs text-ink-3 ">
-              Cumulative operating draw and scholarships. The dashed line is the
-              locked principal - spending never reaches it.
-            </p>
+            <h2 className="font-display text-lg font-semibold text-ink">
+              {t("admin.ledger.spendVsPrincipal")}
+            </h2>
+            <p className="mt-1 text-xs text-ink-3 ">{t("admin.ledger.spendVsPrincipalSub")}</p>
             <div className="mt-3">
               <LedgerChart series={summary.spendSeries} principal={summary.principal} />
             </div>
 
             <details className="mt-3 text-sm">
               <summary className="cursor-pointer text-ink-3 hover:text-ink  ">
-                Table view - all ledger entries
+                {t("admin.ledger.tableToggle")}
               </summary>
               <div className="mt-2 overflow-x-auto">
                 <table className="w-full min-w-[32rem] border-collapse text-sm">
                   <thead>
                     <tr className="text-left text-xs uppercase tracking-wide text-ink-4">
-                      <th className="border-b border-border py-2 pr-4 ">Date</th>
-                      <th className="border-b border-border py-2 pr-4 ">Type</th>
-                      <th className="border-b border-border py-2 pr-4 text-right ">Amount</th>
-                      <th className="border-b border-border py-2 ">Note</th>
+                      <th className="border-b border-border py-2 pr-4 ">{t("admin.ledger.colDate")}</th>
+                      <th className="border-b border-border py-2 pr-4 ">{t("admin.ledger.colType")}</th>
+                      <th className="border-b border-border py-2 pr-4 text-right ">{t("admin.ledger.colAmount")}</th>
+                      <th className="border-b border-border py-2 ">{t("admin.ledger.colNote")}</th>
                     </tr>
                   </thead>
                   <tbody>
                     {summary.entries.map((e, i) => (
                       <tr key={i}>
                         <td className="border-b border-border py-2 pr-4 tabular-nums text-ink-3  ">
-                          {new Date(e.createdAt).toLocaleDateString("en-CA", {
+                          {new Date(e.createdAt).toLocaleDateString(intlLocale, {
                             year: "numeric",
                             month: "short",
                           })}
                         </td>
                         <td className="border-b border-border py-2 pr-4 ">
-                          {ENTRY_LABEL[e.entryType]}
+                          {t(ENTRY_KEY[e.entryType])}
                         </td>
                         <td
                           className={`border-b border-border py-2 pr-4 text-right tabular-nums  ${
@@ -188,7 +191,7 @@ export default async function AdminLedgerPage() {
                               : "text-teal-strong "
                           }`}
                         >
-                          {money(e.amount)}
+                          {fmt(e.amount)}
                         </td>
                         <td className="border-b border-border py-2 text-ink-3  ">
                           {e.note ?? "-"}
@@ -203,9 +206,11 @@ export default async function AdminLedgerPage() {
 
           <section className="rounded-[var(--radius-lg)] border border-border bg-surface p-5 shadow-[var(--shadow-card)]">
             <div className="flex items-center justify-between">
-              <h2 className="font-display text-lg font-semibold text-ink">Family fee status</h2>
+              <h2 className="font-display text-lg font-semibold text-ink">
+                {t("admin.ledger.familyFeeStatus")}
+              </h2>
               <span className="text-xs text-ink-3 ">
-                {feePaid} paying · {scholarship} scholarship-covered
+                {t("admin.ledger.feeStatusCount", { paid: feePaid, scholarship })}
               </span>
             </div>
             <ul className="mt-2 divide-y divide-border">
@@ -222,12 +227,12 @@ export default async function AdminLedgerPage() {
                         : "bg-terracotta-soft text-terracotta-strong"
                     }`}
                   >
-                    {FEE_LABEL[f.status]}
+                    {t(FEE_KEY[f.status])}
                   </span>
                 </li>
               ))}
               {fees.length === 0 && (
-                <li className="py-2 text-sm text-ink-4">No families on file.</li>
+                <li className="py-2 text-sm text-ink-4">{t("admin.ledger.noFamilies")}</li>
               )}
             </ul>
           </section>

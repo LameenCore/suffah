@@ -4,21 +4,28 @@
 // vars, no chart library. The flow dashes animate unless the viewer asks for
 // reduced motion. Server component - SMIL-free, pure CSS animation.
 
-const money = (v: number) =>
-  v.toLocaleString("en-CA", { style: "currency", currency: "CAD", maximumFractionDigits: 0 });
+import type { Translator } from "@/lib/i18n";
+
+const money = (v: number, intlLocale: string) =>
+  v.toLocaleString(intlLocale, { style: "currency", currency: "CAD", maximumFractionDigits: 0 });
 
 export function WaqfFlowDiagram({
   principal,
   returnsDisbursed,
   sadaqahReceived,
   scholarshipsAllocated,
+  t,
+  intlLocale,
 }: {
   principal: number;
   returnsDisbursed: number;
   sadaqahReceived: number;
   scholarshipsAllocated: number;
+  t: Translator;
+  intlLocale: string;
 }) {
   const scholarshipPool = Math.max(0, sadaqahReceived - scholarshipsAllocated);
+  const fmt = (v: number) => money(v, intlLocale);
 
   return (
     <div className="waqf-flow">
@@ -45,11 +52,11 @@ export function WaqfFlowDiagram({
       `}</style>
 
       <svg viewBox="0 0 720 240" role="img" className="w-full" style={{ height: "auto" }}
-        aria-label={`The ${money(principal)} principal is locked and unchanged. ${money(
-          returnsDisbursed,
-        )} of its returns have been spent on operations. Sadaqah of ${money(
-          sadaqahReceived,
-        )} funds a scholarship pool.`}
+        aria-label={t("admin.ledger.flowAria", {
+          principal: fmt(principal),
+          returns: fmt(returnsDisbursed),
+          sadaqah: fmt(sadaqahReceived),
+        })}
       >
         {/* Principal - the locked block */}
         <rect x="24" y="46" width="236" height="150" rx="10"
@@ -61,13 +68,13 @@ export function WaqfFlowDiagram({
         </g>
         <text x="142" y="128" textAnchor="middle" fontSize="22" fontWeight="700" fill="var(--wf-ink)"
           style={{ fontVariantNumeric: "tabular-nums" }}>
-          {money(principal)}
+          {fmt(principal)}
         </text>
         <text x="142" y="150" textAnchor="middle" fontSize="12" fill="var(--wf-sub)">
-          Principal - locked
+          {t("admin.ledger.flowPrincipalLabel")}
         </text>
         <text x="142" y="174" textAnchor="middle" fontSize="11" fill="var(--wf-muted)">
-          unchanged since founding
+          {t("admin.ledger.flowUnchanged")}
         </text>
 
         {/* Returns outflow: from the block's top-right, thin, up to Operations */}
@@ -77,21 +84,23 @@ export function WaqfFlowDiagram({
           stroke="var(--wf-flow)" strokeWidth="2.5" className="wf-stream" opacity="0.9" />
         <polygon points="452,39 462,44 452,49" fill="var(--wf-flow)" />
         <text x="356" y="34" textAnchor="middle" fontSize="10.5" fill="var(--wf-muted)">
-          returns only - never principal
+          {t("admin.ledger.flowReturnsOnly")}
         </text>
 
         {/* Operations box */}
         <rect x="466" y="24" width="230" height="44" rx="8" fill="var(--wf-box)"
           stroke="var(--wf-lock-stroke)" strokeWidth="1" />
-        <text x="481" y="42" fontSize="12" fill="var(--wf-sub)">Operations spent to date</text>
+        <text x="481" y="42" fontSize="12" fill="var(--wf-sub)">
+          {t("admin.ledger.flowOperations")}
+        </text>
         <text x="481" y="59" fontSize="14" fontWeight="600" fill="var(--wf-ink)"
           style={{ fontVariantNumeric: "tabular-nums" }}>
-          {money(returnsDisbursed)}
+          {fmt(returnsDisbursed)}
         </text>
 
         {/* Sadaqah stream - a separate system, does not touch the principal */}
         <text x="150" y="222" textAnchor="middle" fontSize="11" fill="var(--wf-muted)">
-          Community sadaqah
+          {t("admin.ledger.flowSadaqah")}
         </text>
         <path d="M232 210 C 330 210, 360 186, 452 186" fill="none"
           stroke="var(--wf-sadaqah)" strokeWidth="2.5" />
@@ -102,21 +111,22 @@ export function WaqfFlowDiagram({
         {/* Scholarship pool box */}
         <rect x="466" y="164" width="230" height="52" rx="8" fill="var(--wf-box)"
           stroke="var(--wf-lock-stroke)" strokeWidth="1" />
-        <text x="481" y="182" fontSize="12" fill="var(--wf-sub)">Scholarship pool</text>
+        <text x="481" y="182" fontSize="12" fill="var(--wf-sub)">
+          {t("admin.ledger.flowScholarshipPool")}
+        </text>
         <text x="481" y="200" fontSize="14" fontWeight="600" fill="var(--wf-ink)"
           style={{ fontVariantNumeric: "tabular-nums" }}>
-          {money(scholarshipPool)}
+          {fmt(scholarshipPool)}
         </text>
         <text x="481" y="212" fontSize="10" fill="var(--wf-muted)">
-          {money(sadaqahReceived)} in · {money(scholarshipsAllocated)} awarded
+          {t("admin.ledger.flowPoolBreakdown", {
+            in: fmt(sadaqahReceived),
+            awarded: fmt(scholarshipsAllocated),
+          })}
         </text>
       </svg>
 
-      <p className="mt-1 text-xs text-ink-3 ">
-        The endowment principal is a fixed, locked block - it is never spent. Only the
-        returns it earns flow out to operations, and sadaqah funds scholarships as a
-        separate stream.
-      </p>
+      <p className="mt-1 text-xs text-ink-3 ">{t("admin.ledger.flowCaption")}</p>
     </div>
   );
 }

@@ -10,6 +10,7 @@
 
 import { useId, useRef, useState } from "react";
 import type { SpendPoint } from "@/lib/db/ledger-queries";
+import { useT, useIntlLocale } from "@/lib/i18n/client";
 
 const W = 720;
 const H = 260;
@@ -17,11 +18,11 @@ const PAD = { top: 18, right: 18, bottom: 28, left: 60 };
 const PLOT_W = W - PAD.left - PAD.right;
 const PLOT_H = H - PAD.top - PAD.bottom;
 
-const money = (v: number) =>
-  v.toLocaleString("en-CA", { style: "currency", currency: "CAD", maximumFractionDigits: 0 });
+const money = (v: number, intlLocale: string) =>
+  v.toLocaleString(intlLocale, { style: "currency", currency: "CAD", maximumFractionDigits: 0 });
 const kAxis = (v: number) => (v === 0 ? "$0" : `$${Math.round(v / 1000)}k`);
-const monthLabel = (iso: string) =>
-  new Date(iso).toLocaleDateString("en-CA", { month: "short", year: "2-digit" });
+const monthLabel = (iso: string, intlLocale: string) =>
+  new Date(iso).toLocaleDateString(intlLocale, { month: "short", year: "2-digit" });
 
 export function LedgerChart({
   series,
@@ -30,16 +31,15 @@ export function LedgerChart({
   series: SpendPoint[];
   principal: number;
 }) {
+  const t = useT();
+  const intlLocale = useIntlLocale();
+  const fmt = (v: number) => money(v, intlLocale);
   const gradId = useId();
   const svgRef = useRef<SVGSVGElement | null>(null);
   const [hoverIdx, setHoverIdx] = useState<number | null>(null);
 
   if (series.length < 2 || principal <= 0) {
-    return (
-      <p className="text-sm text-ink-3 ">
-        Not enough ledger data to chart yet.
-      </p>
-    );
+    return <p className="text-sm text-ink-3 ">{t("admin.ledger.chartNotEnough")}</p>;
   }
 
   const t0 = new Date(series[0].t).getTime();
@@ -96,9 +96,10 @@ export function LedgerChart({
         ref={svgRef}
         viewBox={`0 0 ${W} ${H}`}
         role="img"
-        aria-label={`Cumulative operating spend reached ${money(
-          last.cumulativeOut,
-        )} against a locked principal of ${money(principal)}.`}
+        aria-label={t("admin.ledger.chartAria", {
+          spend: fmt(last.cumulativeOut),
+          principal: fmt(principal),
+        })}
         className="w-full"
         style={{ height: "auto" }}
         onMouseMove={onMove}
@@ -152,7 +153,7 @@ export function LedgerChart({
           fontSize={11}
           fill="var(--text-secondary)"
         >
-          Principal {money(principal)} - untouched
+          {t("admin.ledger.chartPrincipal", { amount: fmt(principal) })}
         </text>
 
         {/* area + line */}
@@ -176,15 +177,15 @@ export function LedgerChart({
           fill="var(--text-secondary)"
           style={{ fontVariantNumeric: "tabular-nums" }}
         >
-          {money(last.cumulativeOut)} spent
+          {t("admin.ledger.chartSpent", { amount: fmt(last.cumulativeOut) })}
         </text>
 
         {/* x labels: first + last */}
         <text x={pts[0].px} y={H - 8} textAnchor="start" fontSize={11} fill="var(--muted)">
-          {monthLabel(series[0].t)}
+          {monthLabel(series[0].t, intlLocale)}
         </text>
         <text x={last.px} y={H - 8} textAnchor="end" fontSize={11} fill="var(--muted)">
-          {monthLabel(series[series.length - 1].t)}
+          {monthLabel(series[series.length - 1].t, intlLocale)}
         </text>
 
         {/* hover crosshair */}
@@ -215,9 +216,14 @@ export function LedgerChart({
           className="pointer-events-none absolute -translate-x-1/2 rounded-md border border-border bg-surface px-2 py-1 text-xs shadow-sm  "
           style={{ left: `${(hover.px / W) * 100}%`, top: 0 }}
         >
-          <div className="font-medium tabular-nums">{money(hover.cumulativeOut)}</div>
+          <div className="font-medium tabular-nums">{fmt(hover.cumulativeOut)}</div>
           <div className="text-ink-3 ">
-            by {new Date(hover.t).toLocaleDateString("en-CA", { month: "long", year: "numeric" })}
+            {t("admin.ledger.chartBy", {
+              month: new Date(hover.t).toLocaleDateString(intlLocale, {
+                month: "long",
+                year: "numeric",
+              }),
+            })}
           </div>
         </div>
       )}

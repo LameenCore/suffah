@@ -451,3 +451,8 @@ Commit <t72>.
   live in FR (interpolation resolves, no console errors). AI briefing content +
   getPodFocus text stay EN. build/lint/tsc/68 tests/check:i18n green.
   Dev servers killed after verify. Commit <t59-c>.
+- waqf ledger screen: app/admin/ledger/page + WaqfFlowDiagram + SponsoredOutcomes
+  + LedgerChart. +55 keys (admin.ledger.*) -> 486. SVG components take t+intlLocale
+  props; LedgerChart uses the client hooks. Verified live in FR - SVG text fits,
+  fr-CA currency/dates. build/lint/tsc/68 tests/check:i18n green. Commit <t59-d>.
+  4/5 demo-path admin screens FR; compliance remains (generated report content).
