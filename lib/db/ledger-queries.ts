@@ -7,6 +7,7 @@
 // here keeps principal on its own line.
 
 import { getServiceClient } from "@/lib/db";
+import { unwrapRelation } from "@/lib/db/rel";
 import type { FeeStatus, LedgerEntryType } from "@/lib/types";
 
 export interface LedgerEntry {
@@ -119,7 +120,7 @@ export async function getFamilyFeeStatus(masjidId: string): Promise<FamilyFeeRow
 
   return (data ?? [])
     .map((r) => {
-      const student = (Array.isArray(r.student) ? r.student[0] : r.student) as
+      const student = unwrapRelation(r.student) as
         | { name: string; masjid_id: string }
         | null;
       return {

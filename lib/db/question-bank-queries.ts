@@ -2,6 +2,7 @@
 // JSON, attach per-question admin overrides + item analytics.
 
 import { getServiceClient } from "@/lib/db";
+import { unwrapRelation as rel } from "@/lib/db/rel";
 import { computeItemStats, type GradedAttempt, type ItemStats } from "@/lib/analytics/item-analytics";
 import type { CheckpointContent } from "@/lib/ai/checkpoint";
 
@@ -20,10 +21,6 @@ export interface BankQuestion {
   disabled: boolean;
   note: string | null;
   stats: ItemStats | null;
-}
-
-function rel<T>(v: T | T[] | null | undefined): T | null {
-  return v == null ? null : Array.isArray(v) ? (v[0] ?? null) : v;
 }
 
 interface OverrideRow {

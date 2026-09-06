@@ -4,6 +4,7 @@
 // can face a donor.
 
 import { getServiceClient } from "@/lib/db";
+import { unwrapRelation as rel } from "@/lib/db/rel";
 import type { CourseName } from "@/lib/types";
 
 export interface SponsoredOutcome {
@@ -20,10 +21,6 @@ export interface SponsoredOutcome {
   studentsInPod: number;
   assessmentsTaken: number;
   assessmentsPassed: number;
-}
-
-function rel<T>(v: T | T[] | null | undefined): T | null {
-  return v == null ? null : Array.isArray(v) ? (v[0] ?? null) : v;
 }
 
 export async function getSponsoredOutcomes(masjidId: string): Promise<SponsoredOutcome[]> {

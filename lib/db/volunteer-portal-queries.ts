@@ -4,6 +4,7 @@
 // (userId, masjidId) first.
 
 import { getServiceClient } from "@/lib/db";
+import { unwrapRelation as unwrap } from "@/lib/db/rel";
 import type { CourseName } from "@/lib/types";
 import {
   listPodSessionNotes,
@@ -34,10 +35,6 @@ export interface VolunteerPodView {
   briefing: { content: PodBriefing; source: string; generatedAt: string } | null;
 }
 
-function unwrap<T>(rel: T | T[] | null | undefined): T | null {
-  if (rel == null) return null;
-  return Array.isArray(rel) ? (rel[0] ?? null) : rel;
-}
 
 /**
  * The active volunteers record for this signed-in user, or null when the account

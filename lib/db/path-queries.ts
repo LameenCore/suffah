@@ -1,6 +1,7 @@
 // Adaptive-path branch state (T42): remediation gating + fast-track signals.
 
 import { getServiceClient } from "@/lib/db";
+import { unwrapRelation as rel } from "@/lib/db/rel";
 import { countCheckpointAttempts } from "@/lib/db/queries";
 
 /** True when the student has missed this checkpoint >=2x and hasn't seen a re-teach yet. */
@@ -98,10 +99,6 @@ export interface PathEvent {
   courseName: string;
   detail: Record<string, unknown>;
   at: string;
-}
-
-function rel<T>(v: T | T[] | null | undefined): T | null {
-  return v == null ? null : Array.isArray(v) ? (v[0] ?? null) : v;
 }
 
 export interface FastTrackSuggestion {

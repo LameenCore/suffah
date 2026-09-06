@@ -429,3 +429,14 @@ Ran `npm run dev` + Chrome automation end to end:
 - /print/compliance + /print/transcript render
 Zero console errors, zero non-2xx across every route (dev log clean). Demo state
 reset clean afterwards. Local dev is working.
+
+## 2026-09-06 — T72 done (code cohesion / coupling / readability pass)
+New lib/db/rel.ts owns `unwrapRelation` (PostgREST to-one embed -> object or
+1-element array -> first-or-null). Was hand-inlined in ~18 files. Replaced the
+local `rel`/`unwrap` fn in 11 query files (imported aliased to the local name to
+keep call sites) + the inline `Array.isArray(x)?x[0]:x` in queries.ts,
+recommendations, ledger, audit, tutor, privacy, volunteer, attendance. Added a
+"How lib/ is organised" cohesion note to docs/architecture-rationale.md. The
+admin stat-card markup the task flagged is already a shared <StatCard>. No
+behaviour change; build/lint/tsc/68 tests/check:i18n/check:integrity green.
+Commit <t72>.

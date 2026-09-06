@@ -2,14 +2,10 @@
 // to keep that file from growing without bound.
 
 import { getServiceClient } from "@/lib/db";
+import { unwrapRelation as unwrap } from "@/lib/db/rel";
 import type { CourseName } from "@/lib/types";
 import type { TermExamContent } from "@/lib/ai/term-exam";
 import type { PathwayNode } from "@/lib/db/queries";
-
-function unwrap<T>(rel: T | T[] | null | undefined): T | null {
-  if (rel == null) return null;
-  return Array.isArray(rel) ? (rel[0] ?? null) : rel;
-}
 
 export interface CourseRow {
   id: string;

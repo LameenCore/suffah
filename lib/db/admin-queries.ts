@@ -7,6 +7,7 @@
 // even in a single-masjid demo).
 
 import { getServiceClient } from "@/lib/db";
+import { unwrapRelation as unwrap } from "@/lib/db/rel";
 import { POD_MAX_STUDENTS, type CourseName, type VolunteerStatus } from "@/lib/types";
 
 export interface AdminVolunteer {
@@ -54,11 +55,6 @@ interface CourseRow {
   id: string;
   name: CourseName;
   totalNodes: number;
-}
-
-function unwrap<T>(rel: T | T[] | null | undefined): T | null {
-  if (rel == null) return null;
-  return Array.isArray(rel) ? (rel[0] ?? null) : rel;
 }
 
 /** Courses for the masjid plus a node count for each (continuity matrix columns). */

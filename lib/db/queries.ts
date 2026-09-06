@@ -3,6 +3,7 @@
 // one place (see .claude/skills/api-design.md - every query filters by tenant).
 
 import { getServiceClient } from "@/lib/db";
+import { unwrapRelation } from "@/lib/db/rel";
 import type { CourseName } from "@/lib/types";
 import type { LessonContent } from "@/lib/ai/lesson";
 import type { CheckpointContent } from "@/lib/ai/checkpoint";
@@ -32,8 +33,7 @@ const NODE_SELECT =
   "course:courses!inner ( id, name, grade_band, masjid_id )";
 
 function shapeNode(row: Record<string, unknown>): PathwayNode {
-  // Supabase types an embedded to-one relation as an array in some versions.
-  const course = Array.isArray(row.course) ? row.course[0] : row.course;
+  const course = unwrapRelation(row.course);
   return {
     id: row.id as string,
     course_id: row.course_id as string,
@@ -159,7 +159,7 @@ export async function getPodForStudent(
 
   if (error) throw new Error(`getPodForStudent: ${error.message}`);
   if (!data) return null;
-  const pod = (Array.isArray(data.pod) ? data.pod[0] : data.pod) as {
+  const pod = unwrapRelation(data.pod) as {
     id: string;
     name: string;
     masjid_id: string;
@@ -531,7 +531,7 @@ const UNIT_SELECT =
   "course:courses!inner ( id, name, grade_band, masjid_id )";
 
 function shapeUnit(row: Record<string, unknown>): UnitRef {
-  const course = Array.isArray(row.course) ? row.course[0] : row.course;
+  const course = unwrapRelation(row.course);
   return {
     id: row.id as string,
     course_id: row.course_id as string,

@@ -6,6 +6,7 @@
 // Grading is the same objective grader as checkpoints (no rubric).
 
 import { getServiceClient } from "@/lib/db";
+import { unwrapRelation as rel } from "@/lib/db/rel";
 import { gradeQuestion, type Question, type QuestionForStudent } from "@/lib/ai/questions";
 import type { CheckpointContent } from "@/lib/ai/checkpoint";
 
@@ -57,10 +58,6 @@ interface NodeRow {
   title: string;
   checkpoint_content: CheckpointContent | null;
   course: { id: string; name: string; masjid_id: string } | null;
-}
-
-function rel<T>(v: T | T[] | null | undefined): T | null {
-  return v == null ? null : Array.isArray(v) ? (v[0] ?? null) : v;
 }
 
 async function passedNodesWithCheckpoints(

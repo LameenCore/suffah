@@ -4,6 +4,7 @@
 // stripped so it can't hand over a pending answer.
 
 import { getServiceClient } from "@/lib/db";
+import { unwrapRelation } from "@/lib/db/rel";
 import { getAnthropic, LESSON_MODEL } from "@/lib/ai/client";
 import { logModelCall } from "@/lib/ai/usage";
 import { getPathwayNode } from "@/lib/db/queries";
@@ -198,11 +199,11 @@ export async function getTutorTranscript(
 
   const byNode = new Map<string, TutorTranscript>();
   for (const raw of (data ?? []) as unknown as Record<string, unknown>[]) {
-    const nodeRel = (Array.isArray(raw.node) ? raw.node[0] : raw.node) as
+    const nodeRel = unwrapRelation(raw.node) as
       | { title: string; course: { name: string; masjid_id: string } | { name: string; masjid_id: string }[] }
       | null;
     if (!nodeRel) continue;
-    const course = Array.isArray(nodeRel.course) ? nodeRel.course[0] : nodeRel.course;
+    const course = unwrapRelation(nodeRel.course);
     if (!course || course.masjid_id !== masjidId) continue;
 
     const nid = raw.pathway_node_id as string;

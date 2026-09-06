@@ -7,6 +7,7 @@
 // pod_progress is untouched, so a replacement picks up exactly where things were.
 
 import { getServiceClient } from "@/lib/db";
+import { unwrapRelation } from "@/lib/db/rel";
 import type { VolunteerStatus } from "@/lib/types";
 
 export interface VolunteerRow {
@@ -35,8 +36,7 @@ const SELECT =
   "id, name, status, certification_note, joined_at, left_at, masjid_id, user_id, user:users ( email )";
 
 function shape(row: Record<string, unknown>, podsByVol: Map<string, string[]>): VolunteerRow {
-  const user = row.user;
-  const userRec = (Array.isArray(user) ? user[0] : user) as { email: string } | null;
+  const userRec = unwrapRelation(row.user) as { email: string } | null;
   return {
     id: row.id as string,
     name: row.name as string,

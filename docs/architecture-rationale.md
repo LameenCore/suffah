@@ -82,6 +82,34 @@ a redundant guard on top. Every `lib/db/*-queries.ts` function still takes
 | **`lib/db/*-queries.ts` split by feature** | One big `queries.ts`; an ORM | Keeps each feature's data access reviewable in one file and let multiple people work in parallel without collisions. An ORM adds a layer over queries that are already simple. |
 | **Vercel** hosting | Self-host / containers | Zero-config for Next.js, preview deploys per PR (T54), and it scales to many masjids on one project. Canadian function region is a config change (T39/T27). |
 
+## How `lib/` is organised (T72)
+
+One rule: **a module is named for the feature it serves, and owns that feature's
+logic end to end.** There is no `utils.ts` grab-bag.
+
+- **`lib/db/*-queries.ts`** — data access, one file per feature area (`parent`,
+  `admin`, `continuity`, `ledger`, `attendance`, …). Every exported function takes
+  `masjidId` first and filters on it. The split (over one `queries.ts`) keeps each
+  feature's SQL reviewable in one place and lets parallel work avoid collisions.
+  `lib/db/queries.ts` is the student-playground core that predates the split;
+  `lib/db/server.ts` owns client selection (`getReadClient` vs service-role).
+- **`lib/db/rel.ts`** — the one copy of `unwrapRelation`, the "a PostgREST to-one
+  embed comes back as an object or a one-element array, take the first or null"
+  step. It was hand-inlined in ~15 query files; consolidating it was the concrete
+  T72 change. Files that had a local `rel`/`unwrap` import it aliased to that name.
+- **`lib/ai/*`** — every model call. `client.ts` (timeout + key), one module per
+  generation type, each with a hand-authored `fallback-*` used when the model call
+  fails or the budget is spent. Nothing outside `lib/ai/` talks to Anthropic.
+- **`lib/compliance/*`, `lib/analytics/*`, `lib/review.ts`** — pure functions, no
+  I/O, unit-tested to ~98–100%. This is the logic worth testing; the DB glue above
+  is covered by `check-integrity` / `check-rls` instead.
+- **`lib/auth`, `lib/i18n`, `lib/audit.ts`, `lib/consent.ts`** — cross-cutting
+  concerns, each self-contained and imported by feature code, never the reverse.
+
+Coupling runs one direction: `app/` → `lib/db` / `lib/ai` → `lib/compliance` /
+pure helpers. Query files may call each other (`volunteer-portal` reads
+`continuity`); pure modules import nothing from `lib/db`.
+
 ## Known tradeoffs (and the task that closes each)
 
 | Tradeoff | Risk | Fixed by |

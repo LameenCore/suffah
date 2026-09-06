@@ -18,6 +18,7 @@
 
 import { z } from "zod";
 import { getServiceClient } from "@/lib/db";
+import { unwrapRelation as rel } from "@/lib/db/rel";
 import type { CourseName } from "@/lib/types";
 import { LessonBodySchema, type LessonContent } from "@/lib/ai/lesson";
 import { CheckpointBodySchema, type CheckpointContent } from "@/lib/ai/checkpoint";
@@ -49,10 +50,6 @@ export interface AuthoringCourse {
   gradeBand: string;
   units: AuthoringUnit[];
   nodes: AuthoringNode[];
-}
-
-function rel<T>(v: T | T[] | null | undefined): T | null {
-  return v == null ? null : Array.isArray(v) ? (v[0] ?? null) : v;
 }
 
 // --- guards -------------------------------------------------------------

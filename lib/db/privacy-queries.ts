@@ -8,6 +8,7 @@
 // audit entry, because account deletion is a deliberate, logged human action.
 
 import { getServiceClient } from "@/lib/db";
+import { unwrapRelation } from "@/lib/db/rel";
 import { recordAudit } from "@/lib/audit";
 import { listConsentRecords } from "@/lib/consent";
 import { getChildrenForParent } from "@/lib/db/parent-queries";
@@ -98,7 +99,7 @@ export async function exportFamilyData(
 
     const podRows = ((pods.data ?? []) as unknown as Record<string, unknown>[])
       .map((r) => {
-        const pod = (Array.isArray(r.pod) ? r.pod[0] : r.pod) as
+        const pod = unwrapRelation(r.pod) as
           | { name: string; masjid_id: string }
           | null;
         if (!pod || pod.masjid_id !== guardian.masjidId) return null;

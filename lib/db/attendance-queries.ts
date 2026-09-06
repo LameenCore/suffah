@@ -1,6 +1,7 @@
 // Enrichment-session attendance (T48). Masjid-scoped throughout.
 
 import { getServiceClient } from "@/lib/db";
+import { unwrapRelation } from "@/lib/db/rel";
 
 export type AttendanceStatus = "present" | "absent" | "excused";
 
@@ -106,7 +107,7 @@ export async function listPodSessions(
 
   const bySession = new Map<string, SessionRecord["perStudent"]>();
   for (const r of recs ?? []) {
-    const nameRel = Array.isArray(r.student) ? r.student[0] : r.student;
+    const nameRel = unwrapRelation(r.student);
     const list = bySession.get(r.session_id as string) ?? [];
     list.push({
       studentUserId: r.student_user_id as string,
@@ -163,7 +164,7 @@ export async function getChildAttendanceSummary(
 
   const rows = (data ?? [])
     .map((r) => {
-      const s = Array.isArray(r.session) ? r.session[0] : r.session;
+      const s = unwrapRelation(r.session);
       return { status: r.status as AttendanceStatus, session: s as { session_date: string; topic: string | null; masjid_id: string } | null };
     })
     .filter((r) => r.session && r.session.masjid_id === masjidId)
@@ -213,7 +214,7 @@ export async function getPresentDates(studentUserId: string): Promise<string[]> 
   if (error) throw new Error(`getPresentDates: ${error.message}`);
   return (data ?? [])
     .map((r) => {
-      const s = Array.isArray(r.session) ? r.session[0] : r.session;
+      const s = unwrapRelation(r.session);
       return (s as { session_date: string } | null)?.session_date ?? null;
     })
     .filter((d): d is string => d != null);

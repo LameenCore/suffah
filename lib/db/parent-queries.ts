@@ -9,6 +9,7 @@
 // still narrows a parent to their *own* children within that masjid.)
 
 import { getReadClient } from "@/lib/db/server";
+import { unwrapRelation as rel } from "@/lib/db/rel";
 import type { CourseName } from "@/lib/types";
 
 export interface ChildRef {
@@ -67,10 +68,9 @@ export async function getChildrenForParent(
 
   return (data ?? [])
     .map((r) => {
-      const s = (Array.isArray(r.student) ? r.student[0] : r.student) as
+      return rel(r.student) as
         | { id: string; name: string; masjid_id: string; role: string }
         | null;
-      return s;
     })
     .filter(
       (s): s is { id: string; name: string; masjid_id: string; role: string } =>
@@ -79,9 +79,6 @@ export async function getChildrenForParent(
     .map((s) => ({ id: s.id, name: s.name }))
     .sort((a, b) => a.name.localeCompare(b.name));
 }
-
-const rel = <T,>(v: T | T[] | null | undefined): T | null =>
-  v == null ? null : Array.isArray(v) ? (v[0] ?? null) : v;
 
 /**
  * Full read-only reports for several children at once. Fixed number of queries

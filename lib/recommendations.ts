@@ -3,6 +3,7 @@
 // the skill tree (T43).
 
 import { getServiceClient } from "@/lib/db";
+import { unwrapRelation } from "@/lib/db/rel";
 import { getStudentTracks, getLatestCheckpointResult, countCheckpointAttempts } from "@/lib/db/queries";
 import { getRetentionSignal } from "@/lib/review";
 import { getPrereqStatus } from "@/lib/db/skill-tree-queries";
@@ -150,8 +151,7 @@ export async function getPodFocus(podId: string, masjidId: string): Promise<PodF
 
   const students = (members ?? [])
     .map((m) => {
-      const s = Array.isArray(m.student) ? m.student[0] : m.student;
-      return s as { id: string; name: string; masjid_id: string } | null;
+      return unwrapRelation(m.student) as { id: string; name: string; masjid_id: string } | null;
     })
     .filter((s): s is { id: string; name: string; masjid_id: string } => !!s && s.masjid_id === masjidId);
 

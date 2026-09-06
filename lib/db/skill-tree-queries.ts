@@ -1,6 +1,7 @@
 // Prerequisite / skill-tree graph (T43). Edges can cross courses.
 
 import { getServiceClient } from "@/lib/db";
+import { unwrapRelation as rel } from "@/lib/db/rel";
 
 export interface GraphNode {
   id: string;
@@ -16,10 +17,6 @@ export interface GraphNode {
 export interface SkillGraph {
   nodes: GraphNode[];
   byId: Map<string, GraphNode>;
-}
-
-function rel<T>(v: T | T[] | null | undefined): T | null {
-  return v == null ? null : Array.isArray(v) ? (v[0] ?? null) : v;
 }
 
 /** Every node in the masjid + its prerequisite edges. */

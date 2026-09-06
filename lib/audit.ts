@@ -5,6 +5,7 @@
 // append-only at the DB level, so entries here are the real record.
 
 import { getServiceClient } from "@/lib/db";
+import { unwrapRelation } from "@/lib/db/rel";
 import type { SessionUser } from "@/lib/types";
 
 export interface AuditEntryInput {
@@ -67,9 +68,7 @@ export async function listAuditEntries(
 
   const rows = (data ?? []) as unknown as Record<string, unknown>[];
   return rows.map((r) => {
-    const actor = (Array.isArray(r.actor) ? r.actor[0] : r.actor) as
-      | { name: string }
-      | null;
+    const actor = unwrapRelation(r.actor) as { name: string } | null;
     return {
       id: r.id as string,
       actorUserId: (r.actor_user_id as string | null) ?? null,

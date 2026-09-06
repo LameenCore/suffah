@@ -2,15 +2,11 @@
 // pod-handoff logic stays in one place. Every function is masjid-scoped.
 
 import { getServiceClient } from "@/lib/db";
+import { unwrapRelation as unwrap } from "@/lib/db/rel";
 import type { CourseName } from "@/lib/types";
 import type { PodBriefing } from "@/lib/ai/continuity";
 import { getRetentionSignal } from "@/lib/review";
 import { getPodAttendanceSignal } from "@/lib/db/attendance-queries";
-
-function unwrap<T>(rel: T | T[] | null | undefined): T | null {
-  if (rel == null) return null;
-  return Array.isArray(rel) ? (rel[0] ?? null) : rel;
-}
 
 async function assertPodInMasjid(
   podId: string,
