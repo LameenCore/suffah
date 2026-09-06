@@ -2,9 +2,9 @@
 id: T48
 title: Enrichment-session attendance tracking
 phase: 11
-status: todo
-owner: —
-claimed: —
+status: doing
+owner: https://claude.ai/code/session_01KZau462fdpkrsdLZNLrD9T
+claimed: 2026-09-06T13:40:00Z
 updated: 2026-09-05
 depends_on: [T32]
 source: post-hackathon roadmap (EdTech-checklist analysis)
