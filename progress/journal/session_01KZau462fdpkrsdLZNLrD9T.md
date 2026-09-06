@@ -414,3 +414,18 @@ green; live queries return seeded spread. Commit <t48>.
   tests stay green). Dates now use intlLocale from getT. +35 keys -> 335.
   build/lint/tsc/68 tests/check:i18n green. T59 still `doing` (admin pages,
   compliance-report FR, generated content remain).
+
+## 2026-09-06 — full local-dev browser walkthrough (verification, no code changes)
+Ran `npm run dev` + Chrome automation end to end:
+- landing, /login (EN+FR), student home + full lesson→checkpoint loop (AI grading
+  graded "token" + a short-answer correctly, 3/4, pod advanced)
+- parent home EN + FR switch live (T59 parent work confirmed: Pathway/étape,
+  POINTS DE CONTRÔLE, Réussi, overallHeadline localised). T48 attendance card
+  "Enrichment sessions — 2 of 2 attended" renders; consistency strip counts them.
+- all 17 admin pages render; handoff simulation run live: take volunteer offline
+  → assign replacement → AI briefing generated (14s) AND it picked up the T48
+  attendance signal ("missed one of the last six enrichment sessions - worth a
+  check-in" for Idris; "attendance has been solid" for Maryam)
+- /print/compliance + /print/transcript render
+Zero console errors, zero non-2xx across every route (dev log clean). Demo state
+reset clean afterwards. Local dev is working.
