@@ -20,7 +20,7 @@ outcome: >
   wrong-masjid guarded). Same lessons + assessments underneath — presentation
   only. Verified: data-simple appears only with the cookie/pref; persistence +
   guard tested; build + 68 tests + eslint + check:i18n (526) green.
-commits: PLACEHOLDER66
+commits: 2162b7f
 depends_on: [T25, T60]
 source: post-hackathon roadmap (EdTech-checklist analysis)
 ---

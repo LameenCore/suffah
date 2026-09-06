@@ -622,3 +622,17 @@ Commit: 7a92492
 - docs/review/2026-09-06-a11y.md — fixes + the manual SR/keyboard pass still owed.
 - Verified: eslint clean, build, 68 tests, check:a11y green, check:integrity.
 Commit: fbe2d7b
+
+## T66 — cognitive-accessibility "simple mode"
+
+- migration 0026 users.simple_mode; lib/simple-mode.ts (cookie -> pref -> false).
+- Student layout -> DashboardChrome data-simple. globals.css [data-simple]: bigger
+  type/spacing, decoration + motion off, [data-simple-hide] panels hidden (tutor,
+  offline download, exam timer, home mascot/flourish).
+- SimpleModeToggle in the student sidebar; parent sets per-child default on
+  /parent/consent (setSimpleModeAction, audited, guarded).
+- Presentation-only (CSS + hiding). Verified: attr only with cookie/pref;
+  persistence + guard; build + 68 tests + eslint + i18n(526).
+- Follow-on: lesson pagination ("one thing at a time" in full), plain-language
+  microcopy rewrite, volunteer-set default.
+Commit: 2162b7f
