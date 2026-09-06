@@ -39,12 +39,12 @@ export default async function Landing() {
 
   return (
     <div className="flex min-h-full flex-col bg-bg text-ink-2">
-      <header className="mx-auto flex w-full max-w-5xl items-center justify-between px-6 py-5">
+      <header className="mx-auto flex w-full max-w-5xl flex-wrap items-center justify-between gap-x-4 gap-y-2 px-6 py-5">
         <span className="flex items-center gap-2">
           <Star8 className="h-5 w-5 text-terracotta" />
           <span className="font-display text-lg font-semibold text-ink">{t("landing.brand")}</span>
         </span>
-        <nav className="flex items-center gap-4 text-sm">
+        <nav className="flex flex-wrap items-center justify-end gap-x-4 gap-y-2 text-sm">
           <LocaleSwitch compact />
           <Link href="/login" className="text-ink-3 hover:text-teal">
             {t("common.signIn")}
