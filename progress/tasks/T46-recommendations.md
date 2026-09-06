@@ -2,9 +2,9 @@
 id: T46
 title: Next-step recommendations
 phase: 11
-status: todo
-owner: —
-claimed: —
+status: doing
+owner: https://claude.ai/code/session_01KZau462fdpkrsdLZNLrD9T
+claimed: 2026-09-06T12:20:00Z
 updated: 2026-09-05
 depends_on: [T43]
 source: post-hackathon roadmap (EdTech-checklist analysis)
