@@ -6,6 +6,8 @@ import { usePathname } from "next/navigation";
 import type { SessionUser } from "@/lib/types";
 import { Star8 } from "@/components/ui/Motif";
 import { DemoResetButton } from "@/components/DemoResetButton";
+import { LocaleSwitch } from "@/components/LocaleSwitch";
+import { useT } from "@/lib/i18n/client";
 import { signOutAction } from "@/app/logout/actions";
 
 export interface NavItem {
@@ -15,10 +17,10 @@ export interface NavItem {
   badge?: number;
 }
 
-const ROLE_LABEL: Record<SessionUser["role"], string> = {
-  admin: "Masjid Admin",
-  parent: "Family",
-  student: "Playground",
+const ROLE_LABEL_KEY: Record<SessionUser["role"], "roleLabel.admin" | "roleLabel.parent" | "roleLabel.student"> = {
+  admin: "roleLabel.admin",
+  parent: "roleLabel.parent",
+  student: "roleLabel.student",
 };
 
 function isActive(pathname: string, href: string, roots: string[]) {
@@ -38,6 +40,8 @@ export function Sidebar({
 }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const t = useT();
+  const roleLabel = t(ROLE_LABEL_KEY[user.role]);
   const roots = ["/admin", "/parent", "/student"];
 
   const nav = (
@@ -75,19 +79,22 @@ export function Sidebar({
           <DemoResetButton />
         </div>
       ) : null}
+      <div className="mb-1 flex justify-center px-1">
+        <LocaleSwitch />
+      </div>
       <Link
         href="/help"
         onClick={() => setOpen(false)}
         className="flex items-center justify-between rounded-[var(--radius)] px-3 py-2 text-sm text-ink-2 hover:bg-surface-2"
       >
-        <span>Get help &amp; report a bug</span>
+        <span>{t("common.getHelp")}</span>
         <span aria-hidden>?</span>
       </Link>
       <div className="mt-1 flex items-center justify-between rounded-[var(--radius)] px-3 py-2">
         <div className="min-w-0">
           <p className="truncate text-sm font-medium text-ink">{user.name}</p>
-          {user.name !== ROLE_LABEL[user.role] ? (
-            <p className="text-xs text-ink-4">{ROLE_LABEL[user.role]}</p>
+          {user.name !== roleLabel ? (
+            <p className="text-xs text-ink-4">{roleLabel}</p>
           ) : (
             <p className="truncate text-xs text-ink-4">{user.email}</p>
           )}
@@ -97,7 +104,7 @@ export function Sidebar({
             type="submit"
             className="inline-flex min-h-9 items-center rounded-full border border-border px-3 text-xs text-ink-3 transition-colors hover:border-teal hover:text-teal"
           >
-            sign out
+            {t("common.signOut")}
           </button>
         </form>
       </div>
@@ -123,9 +130,9 @@ export function Sidebar({
           type="button"
           onClick={() => setOpen(true)}
           className="inline-flex min-h-11 items-center rounded-lg border border-border px-3.5 text-sm text-ink-2"
-          aria-label="Open menu"
+          aria-label={t("common.menu")}
         >
-          Menu
+          {t("common.menu")}
         </button>
       </div>
 
@@ -153,7 +160,7 @@ export function Sidebar({
                 className="mr-1 inline-flex min-h-11 items-center rounded-lg border border-border px-3 text-sm text-ink-3"
                 aria-label="Close menu"
               >
-                Close
+                {t("common.close")}
               </button>
             </div>
             {nav}

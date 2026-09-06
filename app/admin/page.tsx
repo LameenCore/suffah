@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { requireRole } from "@/lib/auth";
+import { getT } from "@/lib/i18n";
 import { RegulationNote } from "@/components/RegulationNote";
 import { PageHeader, SectionTitle } from "@/components/ui/PageHeader";
 import { StatCard } from "@/components/ui/StatCard";
@@ -66,6 +67,7 @@ const SECTIONS: { href: string; label: string; icon: React.ReactNode }[] = [
 
 export default async function AdminHome() {
   const user = await requireRole("admin");
+  const { t } = await getT(user);
 
   let m: AdminMetrics | null = null;
   let loadError: string | null = null;
@@ -79,9 +81,9 @@ export default async function AdminHome() {
   return (
     <div className="space-y-8">
       <PageHeader
-        kicker="Masjid As-Suffa"
-        title="Overview"
-        lede="Everything the masjid runs, and how the community is doing this term."
+        kicker={t("admin.overviewKicker")}
+        title={t("admin.overviewTitle")}
+        lede={t("admin.overviewLede")}
       />
 
       {loadError || !m ? (

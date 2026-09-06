@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Fraunces, Plus_Jakarta_Sans } from "next/font/google";
 import { env } from "@/lib/env";
+import { getLocale } from "@/lib/i18n";
+import { I18nProvider } from "@/lib/i18n/client";
 import "./globals.css";
 
 const jakarta = Plus_Jakarta_Sans({
@@ -27,13 +29,16 @@ export const metadata: Metadata = {
     "Community-run homeschool pods for Quebec Muslim families. A self-paced curriculum playground keeps learning going when a volunteer moves on; volunteers add live enrichment; the masjid handles admin and compliance. Waqf-sustained, free to families.",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  const locale = await getLocale();
   return (
     <html
-      lang="en"
+      lang={locale}
       className={`${jakarta.variable} ${fraunces.variable} h-full antialiased`}
     >
-      <body className="flex min-h-full flex-col">{children}</body>
+      <body className="flex min-h-full flex-col">
+        <I18nProvider locale={locale}>{children}</I18nProvider>
+      </body>
     </html>
   );
 }

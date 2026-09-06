@@ -42,6 +42,9 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      - name: i18n catalogues in sync
+        run: npm run check:i18n
+
       # `next build` also type-checks (it generates the PageProps/LayoutProps
       # route types this repo uses, then runs tsc). No env vars needed - lib/env.ts
       # never throws at import time and every DB/AI call has an unconfigured path.

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { requireRole } from "@/lib/auth";
+import { getT } from "@/lib/i18n";
 import { RegulationNote } from "@/components/RegulationNote";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
@@ -207,6 +208,7 @@ async function ChildBlock({
   barakah: ChildBarakahSummary;
   consistency: Consistency;
 }) {
+  const { t } = await getT();
   // report is already loaded by ParentHome - assemble the status view in memory
   // rather than re-fetching the whole child report.
   const compliance = assembleFromChildReport(report);
@@ -233,7 +235,7 @@ async function ChildBlock({
           href="/parent/compliance"
           className="text-sm font-medium text-terracotta hover:text-terracotta-strong"
         >
-          Full evaluation status &rarr;
+          {t("parent.fullEvaluation")} &rarr;
         </Link>
       </Card>
 
@@ -252,13 +254,13 @@ async function ChildBlock({
           rel="noreferrer"
           className="font-medium text-terracotta hover:text-terracotta-strong"
         >
-          Term-completion record (printable) &rarr;
+          {t("parent.transcriptPrintable")} &rarr;
         </a>
         <a
           href={`/api/transcript/${report.child.id}?format=csv`}
           className="text-ink-3 hover:text-ink"
         >
-          Download as CSV
+          {t("parent.downloadCsv")}
         </a>
       </div>
     </div>
@@ -267,6 +269,7 @@ async function ChildBlock({
 
 export default async function ParentHome() {
   const user = await requireRole("parent");
+  const { t } = await getT(user);
 
   let blocks: {
     report: ChildReport;
@@ -299,9 +302,9 @@ export default async function ParentHome() {
   return (
     <div className="space-y-7">
       <PageHeader
-        kicker="This week"
-        title={`As-salamu alaykum${blocks.length ? "" : ""}`}
-        lede="A calm, read-only view of how your child is doing. Results appear here the moment they finish."
+        kicker={t("nav.thisWeek")}
+        title={t("parent.greeting")}
+        lede={t("parent.lede")}
       />
 
       {needsConsent.length > 0 ? (

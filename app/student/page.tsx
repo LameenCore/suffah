@@ -9,9 +9,11 @@ import { CoursePath } from "@/components/student/CoursePath";
 import { ConsistencyStrip } from "@/components/student/ConsistencyStrip";
 import { Mascot } from "@/components/ui/Mascot";
 import { Crescent, Lantern, Flourish } from "@/components/ui/Motif";
+import { getT } from "@/lib/i18n";
 
 export default async function StudentHome() {
   const user = await requireRole("student");
+  const { t } = await getT(user);
   const { pod, tracks, lessonsCompleted, checkpointsPassed } = await getStudentTracks(
     user.id,
     user.masjidId,
@@ -29,25 +31,25 @@ export default async function StudentHome() {
           <Mascot size={92} mood="happy" className="hidden shrink-0 sm:block" />
           <div className="space-y-2">
             <p className="text-xs font-semibold uppercase tracking-[0.16em] text-terracotta">
-              As-salamu alaykum
+              {t("student.greeting")}
             </p>
             <h1 className="font-display text-3xl font-semibold text-ink">
-              Welcome back, {firstName}
+              {t("student.welcomeBack", { name: firstName })}
             </h1>
             <p className="max-w-lg text-sm text-ink-3">
               {pod
-                ? `You're learning with ${pod.name}. Work through a lesson at your own pace, then a short checkpoint before the path opens up.`
-                : "You're not in a pod yet. Ask the masjid admin to place you in one."}
+                ? t("student.inPod", { pod: pod.name })
+                : t("student.noPod")}
             </p>
             {pod ? (
               <div className="flex flex-wrap gap-2 pt-1">
                 <span className="inline-flex items-center gap-1.5 rounded-full bg-mustard-soft px-3 py-1 text-xs font-medium text-[color:var(--ink)]">
                   <Lantern className="h-3.5 w-3.5 text-mustard" />
-                  {lessonsCompleted} lesson{lessonsCompleted === 1 ? "" : "s"} finished
+                  {t("student.lessonsFinished", { count: lessonsCompleted })}
                 </span>
                 <span className="inline-flex items-center gap-1.5 rounded-full bg-teal-soft px-3 py-1 text-xs font-medium text-teal-strong">
                   <Crescent className="h-3.5 w-3.5" />
-                  {checkpointsPassed} checkpoint{checkpointsPassed === 1 ? "" : "s"} passed
+                  {t("student.checkpointsPassed", { count: checkpointsPassed })}
                 </span>
               </div>
             ) : null}
@@ -58,7 +60,7 @@ export default async function StudentHome() {
       {pod ? (
         <section>
           <div className="mb-4 flex items-center gap-3">
-            <h2 className="font-display text-xl font-semibold text-ink">Your courses</h2>
+            <h2 className="font-display text-xl font-semibold text-ink">{t("student.yourCourses")}</h2>
             <Flourish className="hidden h-3 flex-1 text-terracotta/50 sm:block" />
           </div>
           <div className="grid gap-4 lg:grid-cols-3">
@@ -72,27 +74,23 @@ export default async function StudentHome() {
       {pod && retention && retention.dueNow > 0 ? (
         <Card as="section" tone="teal" className="flex flex-wrap items-center justify-between gap-3 p-5">
           <div>
-            <h3 className="font-display text-lg font-semibold text-ink">Review is ready</h3>
+            <h3 className="font-display text-lg font-semibold text-ink">{t("student.reviewReady")}</h3>
             <p className="mt-0.5 text-sm text-ink-2">
-              {retention.dueNow} quick question{retention.dueNow === 1 ? "" : "s"} from lessons
-              you&apos;ve already passed.
+              {t("student.reviewReadyBody", { count: retention.dueNow })}
             </p>
           </div>
           <Link
             href="/student/review"
             className="shrink-0 rounded-full bg-teal px-4 py-2 text-sm font-medium text-white hover:bg-teal-strong"
           >
-            Start review
+            {t("student.startReview")}
           </Link>
         </Card>
       ) : null}
 
       {pod ? <ConsistencyStrip consistency={consistency} audience="student" /> : null}
 
-      <RegulationNote>
-        Assessment formats and exam equivalency shown here are for the demo and must be
-        verified against current Quebec evaluation requirements.
-      </RegulationNote>
+      <RegulationNote>{t("student.regulationNote")}</RegulationNote>
     </div>
   );
 }

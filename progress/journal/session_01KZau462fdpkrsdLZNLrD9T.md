@@ -300,3 +300,23 @@ Verified via script: fail -> fail -> remediation (real AI: "sign rules... number
 line") -> pass -> path history [remediation_passed, remediation_shown]. Banners
 render on /admin/pods + /admin/compliance. build + lint + tsc + 62 tests +
 check:integrity green. Commit <t42>.
+
+## 2026-09-05 — T59 in progress (French localization - foundation shipped)
+Claimed T59. This is a large multi-pass task; landed the foundation + demo path.
+
+- Hand-rolled i18n in lib/i18n/ (no next-intl - no locale-prefixed routes here,
+  catalogues are ~4KB). config / messages{en,fr} / index (getT server) / client
+  (I18nProvider + useT) / format (en-CA|fr-CA) / actions (setLocaleAction).
+- LocaleSwitch in the landing header + sidebar footer; revalidatePath layout +
+  router.refresh re-renders everything; <html lang> dynamic.
+- migration 0016_locale: users.locale + masjids.default_locale.
+- Translated: full landing page, chrome (all 3 dashboards' nav + footer + role
+  label + mobile menu), student home, parent home (header + links), admin header.
+- scripts/check-i18n.ts + npm run check:i18n, wired into ci.yml. 83 keys in sync.
+- Verified: suffa-locale=fr flips landing + chrome + the 3 homes; all routes 200
+  both locales; tsc + lint + build + 62 tests green.
+
+LEFT (documented in the task): deep components + admin sub-pages + auth/legal
+pages string extraction; FR generated content (thread locale through the AI
+generators); date/currency call-site swaps; admin default_locale toggle; a
+native-FR review of the strings. T59 stays `doing`.

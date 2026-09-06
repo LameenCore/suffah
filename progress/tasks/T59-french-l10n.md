@@ -26,4 +26,47 @@ Requested explicitly: a single control that switches the **whole app** EN <-> FR
 - [ ] Dates / numbers / currency localised (fr-CA); Arabic quoted text (Seerah) renders
       correctly in both locales; the marketing/landing page (T29) localised too
 
+## Progress
+
+### 2026-09-05 — foundation + chrome + landing + dashboard homes (session 01KZau4)
+DONE:
+- **i18n framework** (hand-rolled, no next-intl - the app has no locale-prefixed
+  routes and the catalogues are tiny): `lib/i18n/` - `config.ts` (LOCALES,
+  cookie name, INTL_LOCALE en-CA/fr-CA), `messages/{en,fr}.ts`, `index.ts`
+  (`getLocale(user?)` resolves cookie -> users.locale -> masjids.default_locale
+  -> "en"; `getT()` server translator), `client.tsx` (`I18nProvider` + `useT()` /
+  `useLocale()` / `useIntlLocale()` for client components), `format.ts` (locale
+  date/number/currency/percent), `actions.ts` (`setLocaleAction` - cookie +
+  persist to users.locale).
+- **The switch**: `components/LocaleSwitch.tsx` in the landing header (compact)
+  and the sidebar footer. Re-renders the whole app via `revalidatePath("/",
+  "layout")` + `router.refresh()`. `<html lang>` is dynamic.
+- **migration 0016_locale**: `users.locale`, `masjids.default_locale` (default
+  'en' so the demo starts EN; flip per-masjid for a FR-default tenant).
+- **Translated**: landing page (all of it), the chrome (sidebar nav for all 3
+  dashboards, footer, role label, mobile menu), student home, parent home
+  (header + key links), admin overview header.
+- `scripts/check-i18n.ts` (`npm run check:i18n`, wired into CI) fails on any
+  key mismatch. 83 keys, catalogues in sync.
+- Verified live: EN default, `suffa-locale=fr` cookie flips landing + chrome +
+  the 3 homes; all routes 200 in both locales; tsc + lint + build + 62 tests green.
+
+REMAINING (mechanical - extract strings + add en/fr keys):
+- Deeper components: `CourseCard`, `BarakahSummary`, `ConsistencyStrip`,
+  `Checkpoint`, `LessonView`, `TermExam`, `ReviewDeck`, `TutorPanel`,
+  `RegulationNote` default, `PageHeader` "Back".
+- Admin sub-pages: pods, volunteers, continuity, handoff-demo, compliance,
+  ledger, ai-spend, seerah, audit, analytics, inbox (+ their components).
+- Auth pages (/login, /signup), /help, legal pages, consent + privacy flows.
+- Swap hard-coded `toLocaleDateString("en-CA", ...)` call sites for
+  `lib/i18n/format.ts` helpers threaded with the active locale.
+- **Generated content in FR**: thread a `locale` arg through `generateLesson/
+  Checkpoint/Assessment/TermExam` + `generatePodBriefing` + `askTutor` +
+  `getOrCreateRemediation` prompts; store locale on the content; regenerate or
+  keep per-locale copies. Compliance report + `/print/*` in FR.
+- A masjid-settings toggle for `default_locale` (admin UI).
+
 ## Notes (owner appends)
+- The FR strings are a first pass by the model - a native Quebec French reviewer
+  should sweep them (esp. the landing marketing copy and regulatory phrasing)
+  before any real use. Charter/Law 96 context is in the task "Why".
