@@ -55,23 +55,23 @@ export function PodCard({
 
       {/* Volunteer */}
       <label className="mt-3 block text-xs font-medium text-ink-3 ">
-        Volunteer
+        <span className="block">Volunteer</span>
+        <select
+          className="mt-1 w-full rounded-md border border-border bg-surface px-2 py-1.5 text-sm  "
+          value={pod.volunteer?.id ?? ""}
+          disabled={pending}
+          onChange={(e) =>
+            dispatch(() => setVolunteerAction(pod.id, e.target.value || null))
+          }
+        >
+          <option value="">(unassigned)</option>
+          {volunteers.map((v) => (
+            <option key={v.id} value={v.id}>
+              {v.name} ({STATUS_LABEL[v.status]})
+            </option>
+          ))}
+        </select>
       </label>
-      <select
-        className="mt-1 w-full rounded-md border border-border bg-surface px-2 py-1.5 text-sm  "
-        value={pod.volunteer?.id ?? ""}
-        disabled={pending}
-        onChange={(e) =>
-          dispatch(() => setVolunteerAction(pod.id, e.target.value || null))
-        }
-      >
-        <option value="">(unassigned)</option>
-        {volunteers.map((v) => (
-          <option key={v.id} value={v.id}>
-            {v.name} ({STATUS_LABEL[v.status]})
-          </option>
-        ))}
-      </select>
 
       {/* Students */}
       <div className="mt-4 text-xs font-medium text-ink-3 ">

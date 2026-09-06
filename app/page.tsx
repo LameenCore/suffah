@@ -58,7 +58,7 @@ export default async function Landing() {
         </nav>
       </header>
 
-      <main className="flex-1">
+      <main id="main" tabIndex={-1} className="flex-1">
         <section className="relative overflow-hidden">
           <div
             className="geo-field pointer-events-none absolute inset-x-0 top-0 h-96 opacity-40 [mask-image:linear-gradient(to_bottom,black,transparent)]"

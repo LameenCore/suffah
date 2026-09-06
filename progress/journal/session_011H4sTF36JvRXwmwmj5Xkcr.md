@@ -605,3 +605,20 @@ Commit: 4b94c11
 - Writes axis split to T83 (needs a browser click-through).
 - build + 68 tests + check:integrity + dashboards/exam/authoring 200.
 Commit: 7a92492
+
+## T60 — accessibility pass (agent died on rate limit; done inline)
+
+- Skip link + <main id tabIndex=-1> (dashboards + landing + /for-masjids);
+  <nav aria-label> on sidebar.
+- Sidebar drawer: role=dialog/aria-modal/name, focus trap, Escape, body scroll
+  lock, focus restore to trigger (aria-expanded/haspopup).
+- globals.css: @media (prefers-reduced-motion: reduce) + .skip-link styles.
+- Forms: label-wraps in PodCard + VolunteerManager; role=alert on login/signup/
+  for-masjids errors. OfflineIndicator -> useSyncExternalStore (SSR-safe, no
+  setState-in-effect, role=status live region).
+- Contrast: --ink-4 2.5:1 on bg -> light #7a6b55 / dark #9a8c76 (>=4.5).
+- scripts/check-a11y.ts (axe-core + jsdom, 6 screens, serious/critical gate) +
+  npm run check:a11y + CI step. jsx-a11y eslint rules -> error.
+- docs/review/2026-09-06-a11y.md — fixes + the manual SR/keyboard pass still owed.
+- Verified: eslint clean, build, 68 tests, check:a11y green, check:integrity.
+Commit: PLACEHOLDER60

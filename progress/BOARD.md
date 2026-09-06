@@ -1,7 +1,7 @@
 # BOARD — Suffa progress snapshot
 
 **Derived from `progress/tasks/`. Not authoritative. Regenerate after any claim/finish.**
-Last regenerated: 2026-09-06 (T82 done — RLS reads + parent scope)
+Last regenerated: 2026-09-06 (T60 done — accessibility pass)
 
 ## Open tasks
 
@@ -10,14 +10,13 @@ Last regenerated: 2026-09-06 (T82 done — RLS reads + parent scope)
 | id  | phase | title | notes |
 |-----|-------|-------|-------|
 | T83 | 9  | RLS: move user-action writes off service-role | dep T82 done; do with a browser |
-| T60 | 13 | Accessibility pass to WCAG 2.2 AA | dep T25 done; large; agent attempt died on the session rate limit — retry |
 | T59 | 13 | French (Quebec) localization | 01KZ's active task; compliance / privacy / platform screens + FR content remain |
 
 **Blocked / needs a person or infra:**
 
 | id  | notes |
 |-----|-------|
-| T66 | blocked on T60 (cognitive "simple mode") |
+| T66 | 13 | Cognitive-accessibility "simple mode" | dep T60 now done — unblocked |
 | T27 T28 T53 T58 T76 T78 | Vercel deploy / demo recording / Sentry / email service / rehearsal / mock Q&A — infra + delivery, need the user/team |
 
 **Recent bug fixes (E2E audit, 2026-09-06):** hydration mismatch on every student
@@ -96,7 +95,7 @@ Get a clean demo state: `npm run demo:setup` (full, hits the API) or `npm run de
 | T57 | 12 | done | — | Backup / restore runbook + integrity check |
 | T58 | 12 | todo | — | Transactional email service |
 | T59 | 13 | todo | — | French (Quebec) localization — SEE the task's "PICK UP HERE": framework + switch + landing + chrome + student path + parent home + 4/5 demo-path admin screens done (486 keys); compliance screen + remaining admin sub-pages + FR generated content + native review left |
-| T60 | 13 | todo | — | Accessibility pass to WCAG 2.2 AA |
+| T60 | 13 | done | — | Accessibility pass to WCAG 2.2 AA (SR/keyboard pass = manual, doc) |
 | T61 | 13 | done | — | PWA + offline: download a unit, work offline, sync |
 | T62 | 13 | done | — | Mobile / responsive audit |
 | T63 | 13 | done | — | Multi-masjid onboarding + per-masjid content library |

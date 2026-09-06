@@ -48,7 +48,7 @@ export default async function LoginPage({ searchParams }: PageProps<"/login">) {
         <p className="text-sm text-ink-3">{t("auth.tagline")}</p>
 
         {error ? (
-          <p className="rounded-[var(--radius)] border border-danger/30 bg-danger-soft px-3 py-2 text-sm text-[color:var(--ink)]">
+          <p role="alert" className="rounded-[var(--radius)] border border-danger/30 bg-danger-soft px-3 py-2 text-sm text-[color:var(--ink)]">
             {error}
           </p>
         ) : null}

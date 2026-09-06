@@ -16,6 +16,13 @@ export const fr: Messages = {
     and: "et",
   },
 
+  a11y: {
+    skipToContent: "Aller au contenu principal",
+    mainNav: "Principal",
+    menuDialog: "Menu",
+    closeMenu: "Fermer le menu",
+  },
+
   nav: {
     myCourses: "Mes cours",
     review: "Révision",

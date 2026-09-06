@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { SessionUser } from "@/lib/types";
@@ -46,10 +46,51 @@ export function Sidebar({
   const [open, setOpen] = useState(false);
   const t = useT();
   const roleLabel = t(ROLE_LABEL_KEY[user.role]);
-  const roots = ["/admin", "/parent", "/student"];
+  const roots = ["/admin", "/parent", "/student", "/volunteer"];
+
+  const drawerRef = useRef<HTMLDivElement | null>(null);
+  const triggerRef = useRef<HTMLButtonElement | null>(null);
+
+  // Drawer a11y (T60): lock body scroll, trap focus, Escape closes, focus
+  // returns to the Menu trigger on close.
+  useEffect(() => {
+    if (!open) return;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const drawer = drawerRef.current;
+    drawer?.querySelector<HTMLElement>("a, button")?.focus();
+
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        setOpen(false);
+        return;
+      }
+      if (e.key !== "Tab" || !drawer) return;
+      const focusables = drawer.querySelectorAll<HTMLElement>(
+        'a[href], button:not([disabled]), input, select, textarea, [tabindex]:not([tabindex="-1"])',
+      );
+      if (focusables.length === 0) return;
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    }
+    document.addEventListener("keydown", onKey);
+    const trigger = triggerRef.current;
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prevOverflow;
+      trigger?.focus();
+    };
+  }, [open]);
 
   const nav = (
-    <nav className="flex flex-1 flex-col gap-0.5 overflow-y-auto px-3 py-4">
+    <nav aria-label={t("a11y.mainNav")} className="flex flex-1 flex-col gap-0.5 overflow-y-auto px-3 py-4">
       {items.map((item) => {
         const active = isActive(pathname, item.href, roots);
         return (
@@ -131,10 +172,13 @@ export function Sidebar({
           <span className="font-display font-semibold text-ink">Suffa</span>
         </div>
         <button
+          ref={triggerRef}
           type="button"
           onClick={() => setOpen(true)}
           className="inline-flex min-h-11 items-center rounded-lg border border-border px-3.5 text-sm text-ink-2"
           aria-label={t("common.menu")}
+          aria-expanded={open}
+          aria-haspopup="dialog"
         >
           {t("common.menu")}
         </button>
@@ -155,14 +199,20 @@ export function Sidebar({
             onClick={() => setOpen(false)}
             aria-hidden
           />
-          <div className="absolute inset-y-0 left-0 flex w-64 flex-col bg-surface shadow-[var(--shadow-pop)]">
+          <div
+            ref={drawerRef}
+            role="dialog"
+            aria-modal="true"
+            aria-label={t("a11y.menuDialog")}
+            className="absolute inset-y-0 left-0 flex w-64 flex-col bg-surface shadow-[var(--shadow-pop)]"
+          >
             <div className="flex items-center justify-between pr-3">
               {brand}
               <button
                 type="button"
                 onClick={() => setOpen(false)}
                 className="mr-1 inline-flex min-h-11 items-center rounded-lg border border-border px-3 text-sm text-ink-3"
-                aria-label="Close menu"
+                aria-label={t("a11y.closeMenu")}
               >
                 {t("common.close")}
               </button>

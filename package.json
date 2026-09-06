@@ -20,6 +20,7 @@
     "check:integrity": "tsx --env-file=.env.local scripts/check-integrity.ts",
     "check:rls": "tsx --env-file=.env.local scripts/check-rls.ts",
     "seed:reference": "tsx --env-file=.env.local scripts/seed-reference.ts",
+    "check:a11y": "tsx scripts/check-a11y.ts",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
@@ -38,6 +39,7 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@types/jsdom": "^30.0.0",
     "@types/node": "^20",
     "@types/pg": "^8.23.1",
     "@types/react": "^19",
@@ -45,6 +47,7 @@
     "@vitest/coverage-v8": "^2.1.9",
     "eslint": "^9",
     "eslint-config-next": "16.3.4",
+    "jsdom": "^25.0.1",
     "tailwindcss": "^4",
     "tsx": "^4.23.13",
     "typescript": "^5",

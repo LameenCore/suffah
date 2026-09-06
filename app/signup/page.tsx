@@ -39,7 +39,7 @@ export default async function SignupPage({ searchParams }: PageProps<"/signup">)
         </div>
 
         {error ? (
-          <p className="rounded-[var(--radius)] border border-danger/30 bg-danger-soft px-3 py-2 text-sm text-[color:var(--ink)]">
+          <p role="alert" className="rounded-[var(--radius)] border border-danger/30 bg-danger-soft px-3 py-2 text-sm text-[color:var(--ink)]">
             {error}
           </p>
         ) : null}

@@ -20,7 +20,7 @@
   --ink: #2c2521;         /* headings / primary text */
   --ink-2: #574d44;       /* body */
   --ink-3: #857868;       /* secondary */
-  --ink-4: #a99a86;       /* faint / captions */
+  --ink-4: #7a6b55;       /* faint / captions */
 
   /* Brand ramps - mid-tones tuned to sit on both sand and dark walnut */
   --terracotta: #c05e3b;
@@ -70,7 +70,7 @@
     --ink: #f3e9db;
     --ink-2: #d8cbb9;
     --ink-3: #ab9c86;
-    --ink-4: #8a7c69;
+    --ink-4: #9a8c76;
 
     --terracotta: #e0805c;
     --terracotta-strong: #cf6f4b;
@@ -112,7 +112,7 @@
   --ink: #2c2521;
   --ink-2: #574d44;
   --ink-3: #857868;
-  --ink-4: #a99a86;
+  --ink-4: #7a6b55;
   --terracotta: #c05e3b;
   --terracotta-strong: #a54a2c;
   --terracotta-soft: #f3ddd0;
@@ -144,7 +144,7 @@
   --ink: #f3e9db;
   --ink-2: #d8cbb9;
   --ink-3: #ab9c86;
-  --ink-4: #8a7c69;
+  --ink-4: #9a8c76;
 
   --terracotta: #e0805c;
   --terracotta-strong: #cf6f4b;
@@ -245,6 +245,44 @@ a {
   outline: 2px solid var(--focus);
   outline-offset: 2px;
   border-radius: 4px;
+}
+
+/* Accessibility (T60) -------------------------------------------------------- */
+
+/* Skip-to-content link: off-screen until focused. */
+.skip-link {
+  position: absolute;
+  left: 0.75rem;
+  top: 0.5rem;
+  z-index: 100;
+  transform: translateY(-150%);
+  transition: transform 0.15s ease;
+  background: var(--surface);
+  color: var(--ink);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  padding: 0.5rem 0.9rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+.skip-link:focus {
+  transform: translateY(0);
+}
+
+/* Respect a reduced-motion preference: near-instant everywhere, and stop the
+   decorative ledger-chart stream + any keyframe loops. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .wf-stream {
+    animation: none !important;
+  }
 }
 
 /* ---- Geometric motif: a small interlocking eight-point tile, very faint ---- */

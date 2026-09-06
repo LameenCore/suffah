@@ -35,7 +35,7 @@ export default async function ForMasjidsPage({ searchParams }: PageProps<"/for-m
         </Link>
       </header>
 
-      <main className="mx-auto w-full max-w-3xl flex-1 px-6 py-10">
+      <main id="main" tabIndex={-1} className="mx-auto w-full max-w-3xl flex-1 px-6 py-10">
         <p className="text-xs font-semibold uppercase tracking-[0.18em] text-terracotta">
           {t("forMasjids.kicker")}
         </p>
@@ -70,7 +70,7 @@ export default async function ForMasjidsPage({ searchParams }: PageProps<"/for-m
                 {t("forMasjids.formTitle")}
               </h2>
               {error ? (
-                <p className="mt-2 rounded-[var(--radius)] border border-danger/30 bg-danger-soft px-3 py-2 text-sm text-[color:var(--ink)]">
+                <p role="alert" className="mt-2 rounded-[var(--radius)] border border-danger/30 bg-danger-soft px-3 py-2 text-sm text-[color:var(--ink)]">
                   {error}
                 </p>
               ) : null}

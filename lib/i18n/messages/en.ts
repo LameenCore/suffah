@@ -15,6 +15,13 @@ export const en = {
     and: "and",
   },
 
+  a11y: {
+    skipToContent: "Skip to main content",
+    mainNav: "Main",
+    menuDialog: "Menu",
+    closeMenu: "Close menu",
+  },
+
   nav: {
     // student
     myCourses: "My courses",

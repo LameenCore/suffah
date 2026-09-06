@@ -3,32 +3,37 @@
 // Online/offline pill for the playground (T61). Also surfaces how many checkpoint
 // attempts are waiting to sync, and a one-line notice when the SW reports back.
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import { useT } from "@/lib/i18n/client";
 import { outboxCount } from "@/lib/offline/store";
 
+// Online status via useSyncExternalStore: the server snapshot is always "online",
+// the client snapshot is navigator.onLine. This is SSR-safe (no hydration
+// mismatch, no setState-in-effect) even though Node 21+ exposes a global
+// `navigator` without `onLine`.
+function subscribeOnline(cb: () => void) {
+  window.addEventListener("online", cb);
+  window.addEventListener("offline", cb);
+  return () => {
+    window.removeEventListener("online", cb);
+    window.removeEventListener("offline", cb);
+  };
+}
+
 export function OfflineIndicator() {
   const t = useT();
-  // Node 21+ defines a global `navigator` (without `onLine`), so a
-  // `typeof navigator` check is not enough to keep SSR and the first client
-  // render identical. Start "mounted = false" and render nothing until the
-  // effect runs on the client — that guarantees no hydration mismatch.
-  const [mounted, setMounted] = useState(false);
-  const [online, setOnline] = useState(true);
+  const online = useSyncExternalStore(
+    subscribeOnline,
+    () => navigator.onLine,
+    () => true,
+  );
   const [pending, setPending] = useState(0);
   const [notice, setNotice] = useState<string | null>(null);
 
   useEffect(() => {
-    setMounted(true);
-    setOnline(navigator.onLine);
     const refreshPending = () => outboxCount().then(setPending).catch(() => {});
     refreshPending();
 
-    const on = () => {
-      setOnline(true);
-      refreshPending();
-    };
-    const off = () => setOnline(false);
     const onResult = (e: Event) => {
       const d = (e as CustomEvent).detail || {};
       refreshPending();
@@ -37,23 +42,22 @@ export function OfflineIndicator() {
       else if (d.dropped) setNotice(t("offline.syncDropped"));
       window.setTimeout(() => setNotice(null), 6000);
     };
+    const onOnline = () => refreshPending();
 
-    window.addEventListener("online", on);
-    window.addEventListener("offline", off);
+    window.addEventListener("online", onOnline);
     window.addEventListener("suffa:sync-result", onResult as EventListener);
     const poll = window.setInterval(refreshPending, 5000);
     return () => {
-      window.removeEventListener("online", on);
-      window.removeEventListener("offline", off);
+      window.removeEventListener("online", onOnline);
       window.removeEventListener("suffa:sync-result", onResult as EventListener);
       window.clearInterval(poll);
     };
   }, [t]);
 
-  if (!mounted || (online && pending === 0 && !notice)) return null;
+  if (online && pending === 0 && !notice) return null;
 
   return (
-    <div className="flex flex-wrap items-center gap-2 text-xs">
+    <div className="flex flex-wrap items-center gap-2 text-xs" role="status" aria-live="polite">
       <span
         className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 font-medium ${
           online

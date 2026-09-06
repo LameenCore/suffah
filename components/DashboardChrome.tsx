@@ -1,4 +1,5 @@
 import { Sidebar, type NavItem } from "@/components/Sidebar";
+import { SkipLink } from "@/components/SkipLink";
 import { env } from "@/lib/env";
 import type { SessionUser } from "@/lib/types";
 import { I18nProvider } from "@/lib/i18n/client";
@@ -21,6 +22,7 @@ export function DashboardChrome({
 }) {
   return (
     <I18nProvider locale={locale}>
+      <SkipLink />
       <div className="flex min-h-full bg-bg">
         <Sidebar
           user={user}
@@ -29,6 +31,8 @@ export function DashboardChrome({
         />
         <div className="flex min-w-0 flex-1 flex-col">
           <main
+            id="main"
+            tabIndex={-1}
             className={`mx-auto w-full flex-1 px-5 py-8 sm:px-8 ${
               wide ? "max-w-6xl" : "max-w-4xl"
             }`}

@@ -53,3 +53,17 @@ jobs:
 
       - name: Test
         run: npm test
+
+      # Automated accessibility gate (T60): axe-core over the rendered HTML of the
+      # key screens; fails on serious/critical violations (contrast is a manual
+      # check — see docs/review/2026-09-06-a11y.md).
+      - name: Accessibility (axe)
+        run: |
+          npx next start -p 3400 &
+          SERVER_PID=$!
+          for i in $(seq 1 60); do
+            curl -sf http://localhost:3400/login > /dev/null && break
+            sleep 1
+          done
+          A11Y_BASE_URL=http://localhost:3400 npm run check:a11y
+          kill $SERVER_PID

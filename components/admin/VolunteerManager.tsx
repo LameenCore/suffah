@@ -73,25 +73,25 @@ function OnboardForm() {
       <div className="mt-3 space-y-3">
         <div>
           <label className="block text-xs font-medium text-ink-3 ">
-            Name
+            <span className="block">Name</span>
+            <input
+              name="name"
+              required
+              className="mt-1 w-full rounded-md border border-border bg-surface px-2 py-1.5 text-sm  "
+              placeholder="Br. / Sr. …"
+            />
           </label>
-          <input
-            name="name"
-            required
-            className="mt-1 w-full rounded-md border border-border bg-surface px-2 py-1.5 text-sm  "
-            placeholder="Br. / Sr. …"
-          />
         </div>
         <div>
           <label className="block text-xs font-medium text-ink-3 ">
-            Certification / background note
+            <span className="block">Certification / background note</span>
+            <textarea
+              name="certificationNote"
+              rows={2}
+              className="mt-1 w-full rounded-md border border-border bg-surface px-2 py-1.5 text-sm  "
+              placeholder="e.g. CEGEP math tutor; reference check on file (mock)."
+            />
           </label>
-          <textarea
-            name="certificationNote"
-            rows={2}
-            className="mt-1 w-full rounded-md border border-border bg-surface px-2 py-1.5 text-sm  "
-            placeholder="e.g. CEGEP math tutor; reference check on file (mock)."
-          />
         </div>
         <button
           type="submit"
