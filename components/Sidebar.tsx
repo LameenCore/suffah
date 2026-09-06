@@ -17,10 +17,14 @@ export interface NavItem {
   badge?: number;
 }
 
-const ROLE_LABEL_KEY: Record<SessionUser["role"], "roleLabel.admin" | "roleLabel.parent" | "roleLabel.student"> = {
+const ROLE_LABEL_KEY: Record<
+  SessionUser["role"],
+  "roleLabel.admin" | "roleLabel.parent" | "roleLabel.student" | "roleLabel.volunteer"
+> = {
   admin: "roleLabel.admin",
   parent: "roleLabel.parent",
   student: "roleLabel.student",
+  volunteer: "roleLabel.volunteer",
 };
 
 function isActive(pathname: string, href: string, roots: string[]) {

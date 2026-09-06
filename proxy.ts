@@ -6,7 +6,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 
-const PROTECTED = ["/admin", "/parent", "/student"];
+const PROTECTED = ["/admin", "/parent", "/student", "/volunteer"];
 const DEV_ROLE_COOKIE = "suffa-dev-role";
 
 export async function proxy(request: NextRequest) {

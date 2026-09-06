@@ -45,6 +45,15 @@ export const DEMO_USERS: Record<Role, SessionUser> = {
     name: "Yusuf (Secondary 1)",
     email: "student@suffa.demo",
   },
+  volunteer: {
+    // A users row (role=volunteer) linked to the seeded volunteers record d1
+    // (Br. Kareem), who covers Pod Al-Farabi. See supabase/seed.sql / scripts/seed.ts.
+    id: "00000000-0000-0000-0000-0000000000d9",
+    masjidId: DEMO_MASJID_ID,
+    role: "volunteer",
+    name: "Br. Kareem",
+    email: "volunteer@suffa.demo",
+  },
 };
 
 export function isRole(value: string | undefined | null): value is Role {

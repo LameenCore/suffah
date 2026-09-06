@@ -23,6 +23,7 @@ const U = {
   safiya: "00000000-0000-0000-0000-0000000000c4",
 };
 const VOLUNTEER = "00000000-0000-0000-0000-0000000000d1";
+const VOLUNTEER_USER = "00000000-0000-0000-0000-0000000000d9"; // login for Br. Kareem (T32)
 const POD = "00000000-0000-0000-0000-0000000000e1";
 const COURSE = {
   math: "00000000-0000-0000-0000-0000000000f1",
@@ -58,6 +59,7 @@ async function seed() {
       { id: U.maryam, masjid_id: MASJID, role: "student", name: "Maryam (Secondary 1)", email: "maryam@suffa.demo" },
       { id: U.idris, masjid_id: MASJID, role: "student", name: "Idris (Secondary 1)", email: "idris@suffa.demo" },
       { id: U.safiya, masjid_id: MASJID, role: "student", name: "Safiya (Secondary 1)", email: "safiya@suffa.demo" },
+      { id: VOLUNTEER_USER, masjid_id: MASJID, role: "volunteer", name: "Br. Kareem", email: "volunteer@suffa.demo" },
     ]),
   );
 
@@ -66,7 +68,7 @@ async function seed() {
       {
         id: VOLUNTEER,
         masjid_id: MASJID,
-        user_id: null,
+        user_id: VOLUNTEER_USER,
         name: "Br. Kareem",
         status: "active",
         certification_note: "CEGEP math tutor; reference check on file (mock).",

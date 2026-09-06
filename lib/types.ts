@@ -1,9 +1,9 @@
 // Shared domain types for Suffa.
 // Mirrors docs/DATA_MODEL.md - keep in sync when the schema changes.
 
-export type Role = "admin" | "parent" | "student";
+export type Role = "admin" | "parent" | "student" | "volunteer";
 
-export const ROLES: Role[] = ["admin", "parent", "student"];
+export const ROLES: Role[] = ["admin", "parent", "student", "volunteer"];
 
 export type CourseName = "Math" | "Seerah" | "AI Literacy";
 

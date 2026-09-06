@@ -9,9 +9,11 @@ import { getCurrentUser } from "@/lib/auth";
 import { recordAudit } from "@/lib/audit";
 import {
   addVolunteer,
+  linkVolunteerLogin,
   recordDeparture,
   reinstateVolunteer,
   setVolunteerStatus,
+  unlinkVolunteerLogin,
 } from "@/lib/db/volunteer-queries";
 import type { SessionUser, VolunteerStatus } from "@/lib/types";
 
@@ -90,6 +92,27 @@ export async function reinstateVolunteerAction(id: string): Promise<ActionResult
   return run(() => reinstateVolunteer(user.masjidId, id), {
     user,
     action: "volunteer.reinstated",
+    targetId: id,
+  });
+}
+
+export async function linkVolunteerLoginAction(
+  id: string,
+  email: string,
+): Promise<ActionResult> {
+  const user = await requireAdmin();
+  return run(() => linkVolunteerLogin(user.masjidId, id, email), {
+    user,
+    action: "volunteer.login_linked",
+    targetId: id,
+  });
+}
+
+export async function unlinkVolunteerLoginAction(id: string): Promise<ActionResult> {
+  const user = await requireAdmin();
+  return run(() => unlinkVolunteerLogin(user.masjidId, id), {
+    user,
+    action: "volunteer.login_unlinked",
     targetId: id,
   });
 }
