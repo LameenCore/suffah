@@ -43,3 +43,9 @@ next-env.d.ts
 
 # agent worktrees (created by the Agent tool)
 .claude/worktrees/
+
+# pitch-deck build workspace + the presentation file (user artifact — never commit)
+.deck/
+Suffa Presentation*.pptx
+~$*.pptx
+*.pptx
