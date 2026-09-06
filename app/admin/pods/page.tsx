@@ -102,7 +102,7 @@ export default async function AdminPodsPage() {
               volunteer sees on day one.
             </p>
             <div className="mt-3 overflow-x-auto">
-              <table className="w-full border-collapse text-sm">
+              <table className="w-full min-w-[30rem] border-collapse text-sm">
                 <thead>
                   <tr className="text-left text-xs uppercase tracking-wide text-ink-4">
                     <th className="border-b border-border py-2 pr-4 ">

@@ -1,7 +1,7 @@
 # BOARD — Suffa progress snapshot
 
 **Derived from `progress/tasks/`. Not authoritative. Regenerate after any claim/finish.**
-Last regenerated: 2026-09-05 (T42, T44, T45, T64, T65 done)
+Last regenerated: 2026-09-05 (T62 done — responsive audit)
 
 | id  | phase | status | owner | title |
 |-----|-------|--------|-------|-------|
@@ -76,7 +76,7 @@ Get a clean demo state: `npm run demo:setup` (full, hits the API) or `npm run de
 | T59 | 13 | todo | — | French (Quebec) localization |
 | T60 | 13 | todo | — | Accessibility pass to WCAG 2.2 AA |
 | T61 | 13 | todo | — | PWA + offline: download a unit, work offline, sync |
-| T62 | 13 | todo | — | Mobile / responsive audit |
+| T62 | 13 | done | — | Mobile / responsive audit |
 | T63 | 13 | todo | — | Multi-masjid onboarding + per-masjid content library |
 | T64 | 13 | done | — | Learning analytics dashboard |
 | T65 | 13 | done | — | Define + instrument the core metrics |

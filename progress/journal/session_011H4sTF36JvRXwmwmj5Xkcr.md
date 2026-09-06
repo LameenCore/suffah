@@ -430,3 +430,25 @@ Commit: 87dccc4
   backdated before users.created_at — median correctly returns null; real usage
   has created_at first). eslint + next build clean.
 Commit: 31d895e
+
+## T62 — mobile / responsive audit
+
+- docs/review/2026-09-05-responsive-audit.md: static pass over every route +
+  component at 360/768/1280. Verdict: T25 already baked responsiveness in
+  (breakpoint-prefixed grids, overflow-x-auto table wrappers, viewBox SVGs,
+  md-drawer nav) — no route scrolls the page sideways.
+- Fixes:
+  * app/globals.css: body { overflow-x: clip } safety net (clip, not hidden, so
+    the sticky sidebar keeps working).
+  * components/Sidebar.tsx: min-h-11 on the mobile Menu button, drawer Close
+    (+aria-label), and the nav links (rail+drawer shared); min-h-9 on sign-out.
+  * app/login/page.tsx: demo-role buttons min-h-11 w-full flex-centered.
+  * app/admin/ledger/page.tsx, app/admin/pods/page.tsx: min-w-[32rem]/[30rem] on
+    the data tables so columns scroll instead of crushing at 360px (matches the
+    analytics cohort table from T64).
+- Left as-is with rationale: ComplianceReportView table (shared with print),
+  Button size=sm (admin density; WCAG 2.5.8 AA allows 24px+spacing), inline
+  footer links. Drawer focus-trap + prefers-reduced-motion deferred to T60.
+- Verified: next build + 62 tests + eslint green; overflow-x:clip present in the
+  built CSS bundle; every route 200 with the dev-role cookie.
+Commit: PLACEHOLDER62

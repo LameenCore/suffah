@@ -49,7 +49,7 @@ export function Sidebar({
             key={item.href}
             href={item.href}
             onClick={() => setOpen(false)}
-            className={`flex items-center gap-3 rounded-[var(--radius)] px-3 py-2 text-sm transition-colors ${
+            className={`flex min-h-11 items-center gap-3 rounded-[var(--radius)] px-3 py-2 text-sm transition-colors ${
               active
                 ? "bg-terracotta-soft font-medium text-terracotta-strong"
                 : "text-ink-2 hover:bg-surface-2"
@@ -95,7 +95,7 @@ export function Sidebar({
         <form action={signOutAction} className="shrink-0">
           <button
             type="submit"
-            className="rounded-full border border-border px-2.5 py-1 text-xs text-ink-3 transition-colors hover:border-teal hover:text-teal"
+            className="inline-flex min-h-9 items-center rounded-full border border-border px-3 text-xs text-ink-3 transition-colors hover:border-teal hover:text-teal"
           >
             sign out
           </button>
@@ -122,7 +122,7 @@ export function Sidebar({
         <button
           type="button"
           onClick={() => setOpen(true)}
-          className="rounded-lg border border-border px-2.5 py-1.5 text-sm text-ink-2"
+          className="inline-flex min-h-11 items-center rounded-lg border border-border px-3.5 text-sm text-ink-2"
           aria-label="Open menu"
         >
           Menu
@@ -150,7 +150,8 @@ export function Sidebar({
               <button
                 type="button"
                 onClick={() => setOpen(false)}
-                className="rounded-lg border border-border px-2 py-1 text-xs text-ink-3"
+                className="mr-1 inline-flex min-h-11 items-center rounded-lg border border-border px-3 text-sm text-ink-3"
+                aria-label="Close menu"
               >
                 Close
               </button>

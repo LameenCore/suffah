@@ -220,6 +220,9 @@ body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  /* Safety net: a single stray wide child must never scroll the whole page
+     sideways on a phone. `clip` (not `hidden`) keeps position: sticky working. */
+  overflow-x: clip;
 }
 
 h1, h2, h3, h4 {

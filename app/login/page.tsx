@@ -94,7 +94,7 @@ export default async function LoginPage({ searchParams }: PageProps<"/login">) {
                 <input type="hidden" name="role" value={role} />
                 <button
                   type="submit"
-                  className="w-full rounded-full border border-border-strong bg-surface px-3 py-1.5 text-xs capitalize text-ink-2 transition-colors hover:border-teal hover:text-teal"
+                  className="inline-flex min-h-11 w-full items-center justify-center rounded-full border border-border-strong bg-surface px-3 text-xs capitalize text-ink-2 transition-colors hover:border-teal hover:text-teal"
                 >
                   {role === "parent" ? "family" : role}
                 </button>
