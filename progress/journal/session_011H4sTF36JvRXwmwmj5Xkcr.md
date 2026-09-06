@@ -650,4 +650,4 @@ Commit: 2162b7f
   volunteer session notes / attendance, pod board posts/reports (also a barakah
   side-effect), review_items updates, adaptive-path/system writes.
 - Demo path unchanged; build + 68 tests + check:integrity green.
-Commit: PLACEHOLDER83
+Commit: 2b74dc8

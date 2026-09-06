@@ -19,7 +19,7 @@ outcome: >
   authed client and CANNOT insert another in-masjid student's; the non-request
   fallback still works for the grade helpers + seed. Demo path (dev cookie) is
   unchanged. build + 68 tests + check:integrity green.
-commits: PLACEHOLDER83
+commits: 2b74dc8
 depends_on: [T82]
 source: split from T82 (the writes axis)
 ---
