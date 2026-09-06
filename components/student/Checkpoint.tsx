@@ -130,7 +130,7 @@ export function Checkpoint({
   }
 
   function submit() {
-    if (typeof navigator !== "undefined" && !navigator.onLine) {
+    if (navigator.onLine === false) {
       startTransition(async () => {
         setError(null);
         try {
@@ -150,7 +150,7 @@ export function Checkpoint({
       } catch (e) {
         // A silent connectivity drop between the online check and the action —
         // fall back to the offline queue rather than losing the attempt.
-        if (typeof navigator !== "undefined" && !navigator.onLine) {
+        if (navigator.onLine === false) {
           try {
             await queueOffline();
             return;

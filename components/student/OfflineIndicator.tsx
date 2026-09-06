@@ -9,13 +9,18 @@ import { outboxCount } from "@/lib/offline/store";
 
 export function OfflineIndicator() {
   const t = useT();
-  const [online, setOnline] = useState(() =>
-    typeof navigator === "undefined" ? true : navigator.onLine,
-  );
+  // Node 21+ defines a global `navigator` (without `onLine`), so a
+  // `typeof navigator` check is not enough to keep SSR and the first client
+  // render identical. Start "mounted = false" and render nothing until the
+  // effect runs on the client — that guarantees no hydration mismatch.
+  const [mounted, setMounted] = useState(false);
+  const [online, setOnline] = useState(true);
   const [pending, setPending] = useState(0);
   const [notice, setNotice] = useState<string | null>(null);
 
   useEffect(() => {
+    setMounted(true);
+    setOnline(navigator.onLine);
     const refreshPending = () => outboxCount().then(setPending).catch(() => {});
     refreshPending();
 
@@ -45,7 +50,7 @@ export function OfflineIndicator() {
     };
   }, [t]);
 
-  if (online && pending === 0 && !notice) return null;
+  if (!mounted || (online && pending === 0 && !notice)) return null;
 
   return (
     <div className="flex flex-wrap items-center gap-2 text-xs">
