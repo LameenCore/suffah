@@ -10,12 +10,6 @@ import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Crescent } from "@/components/ui/Motif";
 
-const HEADING = (
-  <h2 className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.14em] text-ink-3">
-    <Crescent className="h-4 w-4 text-terracotta" /> Checkpoint
-  </h2>
-);
-
 export function Checkpoint({
   nodeId,
   checkpoint,
@@ -34,6 +28,12 @@ export function Checkpoint({
   const [grade, setGrade] = useState<CheckpointGrade | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [queued, setQueued] = useState(false);
+  const cp = (k: string) => t(`student.checkpoint.${k}` as Parameters<typeof t>[0]);
+  const heading = (
+    <h2 className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.14em] text-ink-3">
+      <Crescent className="h-4 w-4 text-terracotta" /> {cp("heading")}
+    </h2>
+  );
 
   // Restore a crash / drop draft, and clear the "queued" banner once the SW
   // reports this node synced.
@@ -72,10 +72,10 @@ export function Checkpoint({
   if (priorPassed && !grade) {
     return (
       <Card tone="success" className="space-y-2 p-5">
-        {HEADING}
+        {heading}
         <p className="text-sm text-success">
-          You&apos;ve passed this checkpoint.
-          {isLastNode ? " That's the final step in this course." : ""}
+          {cp("passedAlready")}
+          {isLastNode ? cp("finalStep") : ""}
         </p>
       </Card>
     );
@@ -84,11 +84,8 @@ export function Checkpoint({
   if (!checkpoint) {
     return (
       <Card className="space-y-3 p-5">
-        {HEADING}
-        <p className="text-sm text-ink-3">
-          A few quick questions on this lesson. You need 70% to move on - and you can
-          try again as many times as you need.
-        </p>
+        {heading}
+        <p className="text-sm text-ink-3">{cp("intro")}</p>
         <Button
           variant="accent"
           disabled={pending}
@@ -99,12 +96,12 @@ export function Checkpoint({
                 await startCheckpointAction(nodeId);
                 router.refresh();
               } catch (e) {
-                setError(e instanceof Error ? e.message : "could not start checkpoint");
+                setError(e instanceof Error ? e.message : cp("couldNotStart"));
               }
             })
           }
         >
-          {pending ? "Preparing..." : "Start checkpoint"}
+          {pending ? cp("preparing") : cp("start")}
         </Button>
         {error ? <p className="text-xs text-danger">{error}</p> : null}
       </Card>
@@ -161,14 +158,14 @@ export function Checkpoint({
             /* fall through to the error */
           }
         }
-        setError(e instanceof Error ? e.message : "grading failed");
+        setError(e instanceof Error ? e.message : cp("gradingFailed"));
       }
     });
   }
 
   return (
     <Card className="space-y-5 p-5">
-      {HEADING}
+      {heading}
 
       <ol className="space-y-5">
         {checkpoint.questions.map((q, i) => {
@@ -212,14 +209,14 @@ export function Checkpoint({
                   value={answers[q.id] ?? ""}
                   disabled={pending || grade !== null}
                   onChange={(e) => updateAnswer(q.id, e.target.value)}
-                  placeholder="Your answer"
+                  placeholder={cp("yourAnswer")}
                   className="w-full max-w-xs rounded-[var(--radius)] border border-border bg-surface px-3 py-2 text-sm text-ink outline-none focus:border-terracotta"
                 />
               )}
 
               {g ? (
                 <p className={`text-xs ${g.correct ? "text-success" : "text-danger"}`}>
-                  {g.correct ? "Correct." : `Not quite - answer: ${g.correctAnswer}.`}{" "}
+                  {g.correct ? cp("correct") : t("student.checkpoint.notQuite", { answer: g.correctAnswer })}{" "}
                   <span className="text-ink-4">{g.explanation}</span>
                 </p>
               ) : null}
@@ -237,33 +234,39 @@ export function Checkpoint({
         </div>
       ) : !grade ? (
         <Button disabled={pending || !allAnswered} onClick={submit}>
-          {pending ? "Checking..." : "Submit checkpoint"}
+          {pending ? cp("checking") : cp("submit")}
         </Button>
       ) : grade.passed ? (
         <div className="space-y-2 rounded-[var(--radius)] border border-success/40 bg-success-soft p-4 text-sm">
           <p className="font-display text-base font-semibold text-success">
-            Ma sha Allah - {grade.correctCount}/{grade.total} ({Math.round(grade.score * 100)}%)
+            {t("student.checkpoint.passHeadline", {
+              correct: grade.correctCount,
+              total: grade.total,
+              pct: Math.round(grade.score * 100),
+            })}
           </p>
           <p className="text-success">
-            {grade.advancedToNodeId
-              ? "Your pod moves on to the next lesson."
-              : "That's the final step in this course."}
+            {grade.advancedToNodeId ? cp("passAdvance") : cp("passFinal")}
           </p>
           {grade.advancedToNodeId ? (
             <Button size="sm" variant="primary" onClick={() => router.refresh()}>
-              Go to the next lesson
+              {cp("goNext")}
             </Button>
           ) : null}
         </div>
       ) : (
         <div className="space-y-3 rounded-[var(--radius)] border border-warning/40 bg-warning-soft p-4 text-sm">
           <p className="font-display text-base font-semibold text-[color:var(--ink)]">
-            {grade.correctCount}/{grade.total} ({Math.round(grade.score * 100)}%) - not there yet
+            {t("student.checkpoint.failHeadline", {
+              correct: grade.correctCount,
+              total: grade.total,
+              pct: Math.round(grade.score * 100),
+            })}
           </p>
           {grade.remediation ? (
             <div className="space-y-2 rounded-[var(--radius)] bg-surface p-3">
               <p className="text-xs font-semibold uppercase tracking-wide text-terracotta">
-                A quick re-teach on what tripped you up
+                {cp("reteachTitle")}
               </p>
               <p className="text-ink-2">{grade.remediation.summary}</p>
               <ul className="list-disc space-y-1 pl-4 text-ink-2">
@@ -279,7 +282,7 @@ export function Checkpoint({
               ))}
             </div>
           ) : (
-            <p className="text-ink-2">Have another look at the lesson above, then try again.</p>
+            <p className="text-ink-2">{cp("failBody")}</p>
           )}
           <Button
             size="sm"
@@ -289,7 +292,7 @@ export function Checkpoint({
               setAnswers({});
             }}
           >
-            {grade.remediation ? "I've read this - try again" : "Try again"}
+            {grade.remediation ? cp("tryAgainRead") : cp("tryAgain")}
           </Button>
         </div>
       )}

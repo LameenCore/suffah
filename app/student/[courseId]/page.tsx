@@ -12,12 +12,14 @@ import { Checkpoint } from "@/components/student/Checkpoint";
 import { DownloadUnitButton } from "@/components/student/DownloadUnitButton";
 import { OfflineIndicator } from "@/components/student/OfflineIndicator";
 import { ButtonLink } from "@/components/ui/Button";
+import { getT } from "@/lib/i18n";
 
 export default async function CourseLessonPage({
   params,
 }: PageProps<"/student/[courseId]">) {
   const { courseId } = await params;
   const user = await requireRole("student");
+  const { t } = await getT(user);
   const { courses } = await getPlayground(user.id, user.masjidId);
 
   const entry = courses.find((c) => c.course.id === courseId);
@@ -42,18 +44,20 @@ export default async function CourseLessonPage({
           href="/student"
           className="inline-flex items-center gap-1 text-sm text-ink-3 transition-colors hover:text-teal"
         >
-          <span aria-hidden>&larr;</span> All courses
+          <span aria-hidden>&larr;</span> {t("student.allCourses")}
         </Link>
         <div className="flex flex-wrap items-center gap-3">
           <span className="text-xs text-ink-4">
             {course.name}
-            {totalNodes > 0 ? ` · step ${nodePosition} of ${totalNodes}` : ""}
+            {totalNodes > 0
+              ? ` · ${t("student.stepOf", { n: nodePosition, total: totalNodes })}`
+              : ""}
           </span>
           {currentNode?.lesson_content ? (
             <DownloadUnitButton courseId={course.id} nodeId={currentNode.id} />
           ) : null}
           <ButtonLink href={`/student/${course.id}/exam`} variant="ghost" size="sm">
-            Term exam
+            {t("student.termExam")}
           </ButtonLink>
         </div>
       </div>
@@ -62,32 +66,26 @@ export default async function CourseLessonPage({
 
       {!currentNode ? (
         <p className="rounded-[var(--radius-lg)] border border-border bg-surface p-6 text-sm text-ink-3">
-          Your pod isn&apos;t on this course yet. Ask the masjid to place it.
+          {t("student.podNotOnCourse")}
         </p>
       ) : lock?.locked ? (
         <div className="rounded-[var(--radius-lg)] border border-mustard/40 bg-mustard-soft p-6 text-sm">
           <p className="font-display text-base font-semibold text-ink">
-            Locked for now
+            {t("student.lockedTitle")}
           </p>
           <p className="mt-1 text-ink-2">
-            Finish{" "}
-            {lock.unmet.map((u, i) => (
-              <span key={u.id}>
-                {i > 0 ? " and " : ""}
-                <span className="font-medium">
-                  &ldquo;{u.title}&rdquo;
-                </span>{" "}
-                <span className="text-ink-4">({u.courseName})</span>
-              </span>
-            ))}{" "}
-            first - it&apos;s what this lesson builds on.
+            {t("student.lockedBody", {
+              items: lock.unmet
+                .map((u) => `“${u.title}” (${u.courseName})`)
+                .join(" & "),
+            })}
           </p>
         </div>
       ) : !currentNode.lesson_content ? (
         <GenerateLessonPanel nodeId={currentNode.id} />
       ) : (
         <div className="space-y-6">
-          <LessonView title={currentNode.title} lesson={currentNode.lesson_content} />
+          <LessonView title={currentNode.title} lesson={currentNode.lesson_content} t={t} />
 
           <TutorPanel nodeId={currentNode.id} />
 

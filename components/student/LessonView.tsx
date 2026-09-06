@@ -4,13 +4,16 @@ import { RegulationNote } from "@/components/RegulationNote";
 import { Card } from "@/components/ui/Card";
 import { Flourish, Lantern } from "@/components/ui/Motif";
 import type { LessonContent } from "@/lib/ai/lesson";
+import type { Translator } from "@/lib/i18n";
 
 export function LessonView({
   title,
   lesson,
+  t,
 }: {
   title: string;
   lesson: LessonContent;
+  t: Translator;
 }) {
   return (
     <article className="space-y-8">
@@ -19,14 +22,14 @@ export function LessonView({
         <p className="text-[15px] leading-relaxed text-ink-2">{lesson.summary}</p>
         <p className="text-[11px] uppercase tracking-wide text-ink-4">
           {lesson.generatedBy === "fallback"
-            ? "Offline lesson content"
-            : `Prepared by ${lesson.generatedBy}`}
+            ? t("student.lesson.offlineContent")
+            : t("student.lesson.preparedBy", { model: lesson.generatedBy })}
         </p>
       </header>
 
       <section>
         <h2 className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.14em] text-ink-3">
-          <Lantern className="h-4 w-4 text-mustard" /> By the end of this lesson
+          <Lantern className="h-4 w-4 text-mustard" /> {t("student.lesson.objectives")}
         </h2>
         <ul className="space-y-1.5">
           {lesson.objectives.map((o) => (
@@ -55,7 +58,7 @@ export function LessonView({
 
       <Card tone="muted" className="p-5">
         <h2 className="mb-2 text-xs font-semibold uppercase tracking-[0.14em] text-ink-3">
-          Worked example
+          {t("student.lesson.workedExample")}
         </h2>
         <p className="font-medium text-ink">{lesson.worked_example.prompt}</p>
         <p className="mt-2 whitespace-pre-line text-[15px] leading-relaxed text-ink-2">
@@ -65,7 +68,7 @@ export function LessonView({
 
       <section>
         <h2 className="mb-3 text-xs font-semibold uppercase tracking-[0.14em] text-ink-3">
-          Practice - check yourself
+          {t("student.lesson.practice")}
         </h2>
         <ol className="space-y-3">
           {lesson.practice.map((p, i) => (
@@ -76,10 +79,10 @@ export function LessonView({
               <p className="font-medium text-ink">{p.prompt}</p>
               <details className="mt-2 text-ink-3">
                 <summary className="cursor-pointer select-none font-medium text-terracotta">
-                  Show answer
+                  {t("student.lesson.showAnswer")}
                 </summary>
                 <p className="mt-1.5">
-                  <span className="font-semibold text-ink">Answer:</span> {p.answer}
+                  <span className="font-semibold text-ink">{t("student.lesson.answer")}</span> {p.answer}
                 </p>
                 <p className="mt-1">{p.explanation}</p>
               </details>
@@ -90,16 +93,16 @@ export function LessonView({
 
       <section>
         <h2 className="mb-3 text-xs font-semibold uppercase tracking-[0.14em] text-ink-3">
-          Key terms
+          {t("student.lesson.keyTerms")}
         </h2>
         <dl className="grid gap-2 sm:grid-cols-2">
-          {lesson.key_terms.map((t) => (
+          {lesson.key_terms.map((kt) => (
             <div
-              key={t.term}
+              key={kt.term}
               className="rounded-[var(--radius)] border border-border bg-surface p-3"
             >
-              <dt className="font-display text-sm font-semibold text-ink">{t.term}</dt>
-              <dd className="mt-0.5 text-sm text-ink-3">{t.definition}</dd>
+              <dt className="font-display text-sm font-semibold text-ink">{kt.term}</dt>
+              <dd className="mt-0.5 text-sm text-ink-3">{kt.definition}</dd>
             </div>
           ))}
         </dl>
