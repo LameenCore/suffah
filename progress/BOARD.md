@@ -1,19 +1,31 @@
 # BOARD — Suffa progress snapshot
 
 **Derived from `progress/tasks/`. Not authoritative. Regenerate after any claim/finish.**
-Last regenerated: 2026-09-06 (T80 done — authed reads)
+Last regenerated: 2026-09-06 (T80 done; E2E audit — 2 bugs fixed; 69/82 done)
 
-## Open tasks (unclaimed, deps met — pick one)
+## Open tasks
+
+**In-repo, unclaimed, deps met:**
 
 | id  | phase | title | notes |
 |-----|-------|-------|-------|
-| T59 | 13 | French (Quebec) localization | **partially done** — see the task's "PICK UP HERE" section; compliance screen is the highest-value remaining piece |
 | T47 | 11 | Pod discussion / Q&A board | dep T32 done; adds UGC → T41 moderation follows |
-| T60 | 13 | Accessibility pass to WCAG 2.2 AA | dep T25 done; large, partly needs a human (screen-reader passes) |
+| T60 | 13 | Accessibility pass to WCAG 2.2 AA | dep T25 done; large; agent attempt died on the session rate limit — retry |
+| T81 | 13 | Per-masjid curriculum — adopt shared or fork/author | dep T50 + T63 done |
+| T82 | 9  | RLS: newer read files + move user-action writes off service-role | dep T80 done |
+| T59 | 13 | French (Quebec) localization | 01KZ's active task; compliance / privacy / platform screens + FR content remain |
 
-| T81 | 13 | Per-masjid curriculum — adopt shared or fork/author | dep T50 done, **T63 done** (frontmatter was stale) |
-| T41 | 10 | Content moderation + child safety for UGC | blocked on T47 |
-| T27 T28 T53 T58 T76 T78 | — | deploy / demo recording / monitoring / email / rehearsal / mock Q&A | infra + delivery, mostly not pure-code |
+**Blocked / needs a person or infra:**
+
+| id  | notes |
+|-----|-------|
+| T41 | blocked on T47 (UGC moderation) |
+| T66 | blocked on T60 (cognitive "simple mode") |
+| T27 T28 T53 T58 T76 T78 | Vercel deploy / demo recording / Sentry / email service / rehearsal / mock Q&A — infra + delivery, need the user/team |
+
+**Recent bug fixes (E2E audit, 2026-09-06):** hydration mismatch on every student
+lesson page (`ffd78e0`); append-only triggers blocking tenant/student cascade
+deletes (`9c18ff1`, migration 0022). See `docs/review/2026-09-06-e2e-audit.md`.
 
 
 | id  | phase | status | owner | title |
