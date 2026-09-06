@@ -18,6 +18,7 @@
     "demo:setup": "tsx scripts/demo-setup.ts",
     "demo:reset": "tsx scripts/demo-setup.ts --reset-only",
     "check:integrity": "tsx --env-file=.env.local scripts/check-integrity.ts",
+    "check:rls": "tsx --env-file=.env.local scripts/check-rls.ts",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",

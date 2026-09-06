@@ -43,8 +43,17 @@ Decision history is in `docs/decisions.md` — this file is the technical view._
 `lib/db/*-queries.ts` function takes `masjidId` as its first argument (sourced
 from the authenticated session, never the request) and filters/checks before
 returning or writing. The server uses Supabase's **service-role** client, which
-*bypasses* Postgres RLS, so that app-code filter is currently the only boundary.
-RLS policies keyed to `auth.uid()` are the defence-in-depth layer — **T31**.
+*bypasses* Postgres RLS, so that app-code filter is the boundary that runs on
+every request. **Behind it (T31), RLS is now enabled on every table** with a
+per-table SELECT policy scoping rows to `public.app_masjid_id()` (the caller's
+masjid, resolved from `auth.uid()` via a `SECURITY DEFINER` helper) — directly on
+`masjid_id`, or by joining up through the owning student / pod / course. So if a
+query ever runs through the anon/authenticated client, or a bypassing key leaks
+into a context that loses the bypass, the database itself refuses cross-tenant
+rows. `npm run check:rls` proves it (anon sees nothing; a signed-in parent sees
+only their masjid, even after a second masjid is inserted behind their back).
+Still open: **write** policies for the authenticated client, which land with the
+code change that moves reads off the service-role client (a separate step).
 
 ## Why this shape (choice → alternative rejected → reason)
 
@@ -66,7 +75,7 @@ RLS policies keyed to `auth.uid()` are the defence-in-depth layer — **T31**.
 
 | Tradeoff | Risk | Fixed by |
 |---|---|---|
-| Server uses the **service-role** client everywhere → RLS is bypassed; the app-code `masjid_id` filter is the only tenant boundary | A missing filter in one query = a cross-tenant leak (the audit found one, now fixed) | **T31** — RLS policies per table |
+| Server uses the **service-role** client everywhere → RLS is bypassed on the request path; the app-code `masjid_id` filter is what runs each request | A missing filter in one query = a cross-tenant leak (the audit found one, now fixed) | **T31 (done for reads)** — RLS enabled on every table + per-table SELECT policy scoped to `app_masjid_id()`; `npm run check:rls` proves cross-tenant reads are refused. Write policies + moving reads onto the authed client remain. |
 | **Auth** was a dev cookie through the build; real Supabase Auth landed late (T30) so **RLS couldn't land in the same pass** | Short window where auth and tenancy weren't co-designed | T30 (done) → **T31** |
 | **DB in AWS us-west-2 (US)**, not Canada | Not acceptable for a Quebec pilot with minors' data | **T39** — migration plan to `ca-central-1` |
 | One **cross-border AI call** sends child first names + progress to Anthropic (the continuity briefing) | Personal info about minors leaving Quebec without a PIA | **T39** (pseudonymise before the call) + **T36** (Law 25 PIA) |

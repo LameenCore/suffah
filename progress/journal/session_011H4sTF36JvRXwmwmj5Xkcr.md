@@ -452,3 +452,28 @@ Commit: 31d895e
 - Verified: next build + 62 tests + eslint green; overflow-x:clip present in the
   built CSS bundle; every route 200 with the dev-role cookie.
 Commit: 1666f8c
+
+## T31 — Postgres RLS policies per table
+
+- supabase/migrations/0016_rls_policies.sql (coexists with 01KZ's 0016_locale.sql;
+  migrate.ts tracks by filename — repo already has 0006/0007/0009/0011 pairs):
+  * SECURITY DEFINER helpers public.app_masjid_id() / app_role() resolve
+    auth.uid() -> the caller's masjid/role. Definer so their own read of `users`
+    doesn't recurse through users' RLS.
+  * RLS ENABLED on all 32 app tables (explicit allowlist; schema_migrations left
+    alone so the migrate runner is unaffected).
+  * per-table SELECT policy `<table>_tenant_read` (to authenticated) scoping rows
+    to app_masjid_id(): direct masjid_id (13), via student_user_id->users (11),
+    via pod_id->pods (3), via course_id->courses (3), lesson_contributions via
+    node_id->pathway_nodes->courses.
+  * service_role keeps BYPASSRLS -> the app (all service-role) is unchanged.
+- scripts/check-rls.ts + `npm run check:rls`: 13 assertions. anon-no-auth sees 0
+  rows on users/pods/checkpoint_results/masjids/waqf_ledger; signed-in demo parent
+  sees ONLY masjid 1, and a 2nd masjid inserted behind their back stays invisible;
+  in-tenant reads still return rows.
+- Deferred to new task T79: move reads onto the authed client + write policies
+  (a real lib/db refactor, needs sign-off; app stays correct on service-role).
+- docs/architecture-rationale.md updated (tenancy para + tradeoffs row).
+- Verified: migrate applied; check:rls 13/13; check:integrity all pass; 62 tests;
+  next build; dashboards + / + /login all 200 (post-merge with T59 i18n).
+Commit: PLACEHOLDER31

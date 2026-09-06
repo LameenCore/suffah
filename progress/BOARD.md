@@ -1,7 +1,7 @@
 # BOARD — Suffa progress snapshot
 
 **Derived from `progress/tasks/`. Not authoritative. Regenerate after any claim/finish.**
-Last regenerated: 2026-09-05 (T62 done — responsive audit)
+Last regenerated: 2026-09-05 (T31 done — RLS enabled + policies)
 
 | id  | phase | status | owner | title |
 |-----|-------|--------|-------|-------|
@@ -45,7 +45,7 @@ Get a clean demo state: `npm run demo:setup` (full, hits the API) or `npm run de
 | T28 | 8 | todo  | — | Recorded demo walkthrough (video / GIF) |
 | T29 | 8 | done  | — | Public landing / marketing page |
 | T30 | 9 | done  | — | Real auth - sign-up/sign-in + 3 demo accounts |
-| T31 | 9 | todo  | — | Postgres RLS policies per table |
+| T31 | 9 | done  | — | Postgres RLS policies per table |
 | T32 | 9 | todo  | — | Volunteer logins + delegated pod access |
 | T33 | 9 | todo  | — | Platform super-admin + masjid provisioning |
 | T34 | 9 | done  | — | Rate limiting + abuse guards on AI endpoints |
