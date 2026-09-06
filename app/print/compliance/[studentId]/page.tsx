@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { requireRole } from "@/lib/auth";
+import { getT } from "@/lib/i18n";
 import { listStudents } from "@/lib/db/admin-queries";
 import { assembleComplianceReport } from "@/lib/compliance/report";
 import { ComplianceReportView } from "@/components/compliance/ComplianceReportView";
@@ -12,6 +13,7 @@ export default async function CompliancePrintPage({
 }: PageProps<"/print/compliance/[studentId]">) {
   const { studentId } = await params;
   const user = await requireRole("admin");
+  const { t, intlLocale } = await getT(user);
 
   const students = await listStudents(user.masjidId);
   const student = students.find((s) => s.id === studentId);
@@ -27,19 +29,20 @@ export default async function CompliancePrintPage({
             <Star8 className="h-6 w-6 text-terracotta" />
             <div>
               <p className="font-display text-lg font-semibold text-ink">
-                Suffa - home-instruction progress record
+                {t("compliance.printRecordTitle")}
               </p>
               <p className="text-xs text-ink-4">
-                Masjid As-Suffa (Demo) &middot; generated{" "}
-                {new Date(report.assembledAt).toLocaleDateString()}
+                {t("compliance.printGeneratedBy", {
+                  when: new Date(report.assembledAt).toLocaleDateString(intlLocale),
+                })}
               </p>
             </div>
           </div>
           <span className="rounded-full border border-border-strong px-3 py-1 text-xs text-ink-3 print:hidden">
-            Print with Cmd/Ctrl-P
+            {t("compliance.printHint")}
           </span>
         </div>
-        <ComplianceReportView report={report} />
+        <ComplianceReportView report={report} t={t} intlLocale={intlLocale} />
       </div>
     </div>
   );

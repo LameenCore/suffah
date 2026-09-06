@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { requireRole } from "@/lib/auth";
+import { getT } from "@/lib/i18n";
 import { getChildrenForParent } from "@/lib/db/parent-queries";
 import { assembleComplianceReport } from "@/lib/compliance/report";
 import { getTutorTranscript } from "@/lib/ai/tutor";
@@ -13,6 +14,7 @@ export default async function ParentCompliancePage({
   searchParams,
 }: PageProps<"/parent/compliance">) {
   const user = await requireRole("parent");
+  const { t, intlLocale } = await getT(user);
   const sp = await searchParams;
   const selectedId = typeof sp.child === "string" ? sp.child : null;
 
@@ -35,24 +37,20 @@ export default async function ParentCompliancePage({
   return (
     <div className="space-y-6">
       <PageHeader
-        kicker="Evaluation"
-        title="Where things stand for the term"
-        lede="A live read on your child against the term's evaluation requirement, updated as they work, so there are no surprises at term-end."
-        back={{ href: "/parent", label: "This week" }}
+        kicker={t("compliance.parentKicker")}
+        title={t("compliance.parentTitle")}
+        lede={t("compliance.parentLede")}
+        back={{ href: "/parent", label: t("compliance.parentBack") }}
       />
 
-      <RegulationNote>
-        This status is a planning aid. The official evaluation requirement, its format, and
-        acceptable evidence must be confirmed with the masjid and against current Quebec
-        home-instruction regulation.
-      </RegulationNote>
+      <RegulationNote>{t("compliance.parentRegulationNote")}</RegulationNote>
 
       {loadError ? (
         <Card tone="warning" className="p-4 text-sm text-ink-2">
-          {loadError}.
+          {t("compliance.parentLoadError", { detail: loadError })}
         </Card>
       ) : children.length === 0 ? (
-        <Card className="p-6 text-sm text-ink-3">No children linked to this account yet.</Card>
+        <Card className="p-6 text-sm text-ink-3">{t("compliance.parentNoChildren")}</Card>
       ) : (
         <>
           {children.length > 1 ? (
@@ -72,8 +70,16 @@ export default async function ParentCompliancePage({
               ))}
             </div>
           ) : null}
-          {report ? <ComplianceReportView report={report} /> : null}
-          {selected ? <TutorTranscriptView transcripts={tutorTranscripts} /> : null}
+          {report ? (
+            <ComplianceReportView report={report} t={t} intlLocale={intlLocale} />
+          ) : null}
+          {selected ? (
+            <TutorTranscriptView
+              transcripts={tutorTranscripts}
+              t={t}
+              intlLocale={intlLocale}
+            />
+          ) : null}
         </>
       )}
     </div>

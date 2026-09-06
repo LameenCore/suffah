@@ -4,6 +4,7 @@ import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { generateSnapshotAction } from "@/app/admin/compliance/actions";
 import { Button, ButtonLink } from "@/components/ui/Button";
+import { useT, useIntlLocale } from "@/lib/i18n/client";
 
 export function SnapshotBar({
   studentId,
@@ -16,6 +17,8 @@ export function SnapshotBar({
 }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
+  const t = useT();
+  const intlLocale = useIntlLocale();
 
   return (
     <div className="flex flex-wrap items-center gap-3 rounded-[var(--radius)] border border-border bg-surface-2 px-3 py-2.5">
@@ -29,7 +32,7 @@ export function SnapshotBar({
           })
         }
       >
-        {pending ? "Saving snapshot..." : "Save snapshot to record"}
+        {pending ? t("compliance.snapshot.saving") : t("compliance.snapshot.save")}
       </Button>
       <ButtonLink
         size="sm"
@@ -37,7 +40,7 @@ export function SnapshotBar({
         href={`/print/compliance/${studentId}`}
         target="_blank"
       >
-        Open printable view
+        {t("compliance.snapshot.printable")}
       </ButtonLink>
       <ButtonLink
         size="sm"
@@ -45,19 +48,21 @@ export function SnapshotBar({
         href={`/print/transcript/${studentId}`}
         target="_blank"
       >
-        Term-completion record
+        {t("compliance.snapshot.termRecord")}
       </ButtonLink>
       <ButtonLink
         size="sm"
         variant="ghost"
         href={`/api/transcript/${studentId}?format=csv`}
       >
-        Export CSV
+        {t("compliance.snapshot.exportCsv")}
       </ButtonLink>
       <span className="text-xs text-ink-4">
         {lastSnapshotAt
-          ? `Last snapshot: ${new Date(lastSnapshotAt).toLocaleString()}`
-          : "No snapshot saved yet - the view above is live."}
+          ? t("compliance.snapshot.last", {
+              when: new Date(lastSnapshotAt).toLocaleString(intlLocale),
+            })
+          : t("compliance.snapshot.none")}
       </span>
     </div>
   );

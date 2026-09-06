@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { requireRole } from "@/lib/auth";
+import { getT } from "@/lib/i18n";
 import { listStudents } from "@/lib/db/admin-queries";
 import { assembleComplianceReport, getLatestStoredReport } from "@/lib/compliance/report";
 import { getTutorTranscript } from "@/lib/ai/tutor";
@@ -14,6 +15,7 @@ export default async function AdminCompliancePage({
   searchParams,
 }: PageProps<"/admin/compliance">) {
   const user = await requireRole("admin");
+  const { t, intlLocale } = await getT(user);
   const sp = await searchParams;
   const selectedId = typeof sp.student === "string" ? sp.student : null;
 
@@ -38,24 +40,20 @@ export default async function AdminCompliancePage({
   return (
     <div className="space-y-6">
       <PageHeader
-        kicker="Compliance"
-        title="Progress & evaluation record"
-        lede="Assembled continuously from checkpoint, unit-assessment and term-exam data. Each course carries a forward-looking status - on track, watch, or gap forming - not just a backward record."
-        back={{ href: "/admin", label: "Overview" }}
+        kicker={t("compliance.kicker")}
+        title={t("compliance.title")}
+        lede={t("compliance.lede")}
+        back={{ href: "/admin", label: t("compliance.backOverview") }}
       />
 
-      <RegulationNote>
-        Whether this record satisfies Quebec&apos;s home-instruction evaluation requirement,
-        and in what format, must be confirmed against current regulation. The status
-        thresholds here are illustrative.
-      </RegulationNote>
+      <RegulationNote>{t("compliance.pageRegulationNote")}</RegulationNote>
 
       {loadError ? (
         <Card tone="warning" className="p-4 text-sm text-ink-2">
-          {loadError}. Run <code>npm run seed</code>.
+          {t("compliance.loadError", { detail: loadError, cmd: "npm run seed" })}
         </Card>
       ) : students.length === 0 ? (
-        <Card className="p-6 text-sm text-ink-3">No students yet.</Card>
+        <Card className="p-6 text-sm text-ink-3">{t("compliance.noStudents")}</Card>
       ) : (
         <>
           <div className="flex flex-wrap gap-2">
@@ -81,8 +79,12 @@ export default async function AdminCompliancePage({
                 studentName={selected.name}
                 lastSnapshotAt={stored?.generatedAt ?? null}
               />
-              <ComplianceReportView report={report} />
-              <TutorTranscriptView transcripts={tutorTranscripts} />
+              <ComplianceReportView report={report} t={t} intlLocale={intlLocale} />
+              <TutorTranscriptView
+                transcripts={tutorTranscripts}
+                t={t}
+                intlLocale={intlLocale}
+              />
             </>
           ) : null}
         </>

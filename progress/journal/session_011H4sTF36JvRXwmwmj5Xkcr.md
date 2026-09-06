@@ -651,3 +651,19 @@ Commit: 2162b7f
   side-effect), review_items updates, adaptive-path/system writes.
 - Demo path unchanged; build + 68 tests + check:integrity green.
 Commit: 2b74dc8
+
+## T59 — French: the compliance screen (the last demo-path screen)
+
+- Structured signals: `lib/compliance/status.ts` now emits `signalCodes: SignalCode[]`
+  (stable code + numeric params) alongside the untouched English `signals`. Pure
+  fns + their 15 unit tests unchanged (assert on level/counts/signals strings).
+- `lib/i18n/compliance-text.ts`: `levelLabel` / `overallHeadline` / `signalText`
+  — view-layer restatement through the active translator. `computeOverall`'s
+  English `headline` is never shown now.
+- Localised: `ComplianceReportView` (t + intlLocale props), `SnapshotBar`
+  (useT/useIntlLocale), `TutorTranscriptView` (t + intlLocale props), and pages
+  `/admin/compliance`, `/parent/compliance`, `/print/compliance/[studentId]`,
+  `/print/transcript/[studentId]`. New `compliance.*` key block (~95 keys).
+- `app/parent/page.tsx` dropped its local `overallHeadline` + the now-dead
+  `parent.overall*` keys — uses the shared helper. Removed unused `LEVEL_LABEL`.
+- Verified: check:i18n (605), tsc, next build, 68 tests, eslint — all green.

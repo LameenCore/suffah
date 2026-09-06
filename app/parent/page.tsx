@@ -23,7 +23,8 @@ import {
 } from "@/lib/db/attendance-queries";
 import { ConsistencyStrip } from "@/components/student/ConsistencyStrip";
 import { assembleFromChildReport } from "@/lib/compliance/report";
-import { type ComplianceLevel, type OverallCompliance } from "@/lib/compliance/status";
+import { type ComplianceLevel } from "@/lib/compliance/status";
+import { overallHeadline } from "@/lib/i18n/compliance-text";
 import { getActiveConsent } from "@/lib/consent";
 
 const pct = (frac: number) => `${Math.round(frac * 100)}%`;
@@ -41,21 +42,6 @@ const LEVEL_KEY: Record<ComplianceLevel, "parent.levelOnTrack" | "parent.levelWa
   watch: "parent.levelWatch",
   gap: "parent.levelGap",
 };
-
-/** Localised restatement of computeOverall's English headline, from level + counts. */
-function overallHeadline(t: Translator, o: OverallCompliance): string {
-  if (o.level === "gap") {
-    return t(o.counts.gap === 1 ? "parent.overallGapOne" : "parent.overallGapMany", {
-      n: o.counts.gap,
-    });
-  }
-  if (o.level === "watch") {
-    return t(o.counts.watch === 1 ? "parent.overallWatchOne" : "parent.overallWatchMany", {
-      n: o.counts.watch,
-    });
-  }
-  return t("parent.overallOnTrack");
-}
 
 function ResultRow({
   label,

@@ -11,12 +11,25 @@ import type { CourseReport } from "@/lib/db/parent-queries";
 
 export type ComplianceLevel = "on_track" | "watch" | "gap";
 
+/**
+ * A translation-ready form of each `signals` entry: a stable code plus the
+ * numbers behind it. The view layer renders these through the active locale
+ * (see `lib/i18n/compliance-text.ts`); `signals` keeps the English prose so the
+ * pure-function unit tests and any English-only callers are unaffected.
+ */
+export interface SignalCode {
+  code: string;
+  params?: Record<string, string | number>;
+}
+
 export interface CourseComplianceStatus {
   courseId: string;
   courseName: string;
   level: ComplianceLevel;
   /** Human-readable reasons - both concerns and positives. */
   signals: string[];
+  /** Same reasons as `signals`, in order, as localisable codes. */
+  signalCodes: SignalCode[];
   metrics: {
     checkpointsPassed: number;
     checkpointsAttempted: number;
@@ -64,63 +77,115 @@ export function computeCourseStatus(
   const podFinished = totalNodes > 0 && podPosition >= totalNodes;
 
   const signals: string[] = [];
+  const signalCodes: SignalCode[] = [];
+  const add = (
+    text: string,
+    code: string,
+    params?: Record<string, string | number>,
+  ) => {
+    signals.push(text);
+    signalCodes.push(params ? { code, params } : { code });
+  };
   let level: ComplianceLevel = "on_track";
 
   // --- gap conditions ---
   if (checkpointsAttempted === 0 && podPosition >= 2) {
     level = "gap";
-    signals.push(
+    add(
       `Pod is on node ${podPosition} but this student has no checkpoint attempts on record.`,
+      "noCheckpointsPodAhead",
+      { pos: podPosition },
     );
   }
   if (checkpointsAttempted > 0 && passRate < 0.5) {
     level = "gap";
-    signals.push(
+    add(
       `Checkpoint pass rate ${Math.round(passRate * 100)}% (${checkpointsPassed}/${checkpointsAttempted}).`,
+      "lowPassRateGap",
+      {
+        pct: Math.round(passRate * 100),
+        passed: checkpointsPassed,
+        attempted: checkpointsAttempted,
+      },
     );
   }
   if (termExamTaken && !termExamPassed) {
     level = "gap";
-    signals.push(`Term exam ${Math.round((termExamScore ?? 0) * 100)}% - below the ${Math.round(PASS_THRESHOLD * 100)}% threshold.`);
+    add(
+      `Term exam ${Math.round((termExamScore ?? 0) * 100)}% - below the ${Math.round(PASS_THRESHOLD * 100)}% threshold.`,
+      "termExamBelowThreshold",
+      {
+        pct: Math.round((termExamScore ?? 0) * 100),
+        threshold: Math.round(PASS_THRESHOLD * 100),
+      },
+    );
   }
 
   // --- watch conditions (only if not already a gap) ---
   if (level !== "gap") {
     if (checkpointsAttempted === 0 && podPosition >= 1) {
       level = "watch";
-      signals.push("Not started here yet - no checkpoint attempted.");
+      add("Not started here yet - no checkpoint attempted.", "notStartedHere");
     }
     if (checkpointsAttempted > 0 && passRate < PASS_THRESHOLD) {
       level = "watch";
-      signals.push(`Checkpoint pass rate ${Math.round(passRate * 100)}% - below the ${Math.round(PASS_THRESHOLD * 100)}% mark.`);
+      add(
+        `Checkpoint pass rate ${Math.round(passRate * 100)}% - below the ${Math.round(PASS_THRESHOLD * 100)}% mark.`,
+        "lowPassRateWatch",
+        {
+          pct: Math.round(passRate * 100),
+          threshold: Math.round(PASS_THRESHOLD * 100),
+        },
+      );
     }
     if (podPosition >= 2 && !unitAssessmentAttempted) {
       level = "watch";
-      signals.push("Pod has moved past the first node but no unit assessment has been attempted.");
+      add(
+        "Pod has moved past the first node but no unit assessment has been attempted.",
+        "noUnitAssessment",
+      );
     }
     if (podFinished && !termExamTaken) {
       level = "watch";
-      signals.push(`Pod has finished the course pathway but the ${termLabel} term exam is not done.`);
+      add(
+        `Pod has finished the course pathway but the ${termLabel} term exam is not done.`,
+        "pathwayDoneNoTermExam",
+        { term: termLabel },
+      );
     }
     if (totalNodes > 0 && coverage < 0.34 && podPosition > 1) {
       level = "watch";
-      signals.push(`Only ${checkpointsPassed} of ${totalNodes} nodes have a passed checkpoint.`);
+      add(
+        `Only ${checkpointsPassed} of ${totalNodes} nodes have a passed checkpoint.`,
+        "lowCoverage",
+        { passed: checkpointsPassed, total: totalNodes },
+      );
     }
   }
 
   // --- positives (shown alongside) ---
   if (checkpointsPassed > 0 && passRate >= PASS_THRESHOLD) {
-    signals.push(`${checkpointsPassed} checkpoint${checkpointsPassed === 1 ? "" : "s"} passed at ${Math.round(passRate * 100)}%.`);
+    add(
+      `${checkpointsPassed} checkpoint${checkpointsPassed === 1 ? "" : "s"} passed at ${Math.round(passRate * 100)}%.`,
+      checkpointsPassed === 1
+        ? "checkpointsPassedPositiveOne"
+        : "checkpointsPassedPositiveMany",
+      { count: checkpointsPassed, pct: Math.round(passRate * 100) },
+    );
   }
   if (unitAssessmentPassed) {
     const best = Math.max(...course.unitAssessments.map((u) => u.score));
-    signals.push(`Unit assessment passed (${Math.round(best * 100)}%).`);
+    add(`Unit assessment passed (${Math.round(best * 100)}%).`, "unitAssessmentPassed", {
+      pct: Math.round(best * 100),
+    });
   }
   if (termExamPassed) {
-    signals.push(`Term exam passed (${Math.round((termExamScore ?? 0) * 100)}%).`);
+    add(`Term exam passed (${Math.round((termExamScore ?? 0) * 100)}%).`, "termExamPassed", {
+      pct: Math.round((termExamScore ?? 0) * 100),
+    });
   }
   if (signals.length === 0) {
-    signals.push("On track - no concerns from the data so far.");
+    add("On track - no concerns from the data so far.", "onTrackNoConcerns");
   }
 
   return {
@@ -128,6 +193,7 @@ export function computeCourseStatus(
     courseName: course.courseName,
     level,
     signals,
+    signalCodes,
     metrics: {
       checkpointsPassed,
       checkpointsAttempted,
@@ -168,9 +234,3 @@ export function computeOverall(statuses: CourseComplianceStatus[]): OverallCompl
 
   return { level, headline, counts };
 }
-
-export const LEVEL_LABEL: Record<ComplianceLevel, string> = {
-  on_track: "On track",
-  watch: "Watch",
-  gap: "Gap forming",
-};

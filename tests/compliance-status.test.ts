@@ -132,6 +132,7 @@ describe("computeOverall", () => {
     courseName: "X",
     level,
     signals: [],
+    signalCodes: [],
     metrics: {} as CourseComplianceStatus["metrics"],
   });
 
