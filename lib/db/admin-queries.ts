@@ -7,6 +7,7 @@
 // even in a single-masjid demo).
 
 import { getServiceClient } from "@/lib/db";
+import { getReadClient } from "@/lib/db/server";
 import { unwrapRelation as unwrap } from "@/lib/db/rel";
 import { POD_MAX_STUDENTS, type CourseName, type VolunteerStatus } from "@/lib/types";
 
@@ -94,7 +95,7 @@ async function listCoursesWithNodeCounts(masjidId: string): Promise<CourseRow[]>
 
 /** All volunteers in the masjid, for the pod assignment picker. */
 export async function listVolunteers(masjidId: string): Promise<AdminVolunteer[]> {
-  const { data, error } = await getServiceClient()
+  const { data, error } = await (await getReadClient())
     .from("volunteers")
     .select("id, name, status")
     .eq("masjid_id", masjidId)
@@ -105,7 +106,7 @@ export async function listVolunteers(masjidId: string): Promise<AdminVolunteer[]
 
 /** Every student in the masjid, with the pod they're in (if any). */
 export async function listStudents(masjidId: string): Promise<AdminStudent[]> {
-  const db = getServiceClient();
+  const db = (await getReadClient());
   const { data: users, error } = await db
     .from("users")
     .select("id, name, email")
@@ -144,7 +145,7 @@ export async function listStudents(masjidId: string): Promise<AdminStudent[]> {
 
 /** Pods in the masjid with volunteer, members, and per-course continuity. */
 export async function listPods(masjidId: string): Promise<AdminPod[]> {
-  const db = getServiceClient();
+  const db = (await getReadClient());
 
   const { data: pods, error } = await db
     .from("pods")
@@ -247,7 +248,7 @@ async function assertPodInMasjid(
   podId: string,
   masjidId: string,
 ): Promise<{ id: string; max_students: number }> {
-  const { data, error } = await getServiceClient()
+  const { data, error } = await (await getReadClient())
     .from("pods")
     .select("id, max_students, masjid_id")
     .eq("id", podId)
@@ -260,7 +261,7 @@ async function assertPodInMasjid(
 }
 
 async function assertStudentInMasjid(studentUserId: string, masjidId: string): Promise<void> {
-  const { data, error } = await getServiceClient()
+  const { data, error } = await (await getReadClient())
     .from("users")
     .select("id, role, masjid_id")
     .eq("id", studentUserId)

@@ -1,7 +1,7 @@
 // Aggregate metrics for the admin overview dashboard. One round of queries,
 // masjid-scoped, all read-only.
 
-import { getServiceClient } from "@/lib/db";
+import { getReadClient } from "@/lib/db/server";
 import { PASS_THRESHOLD } from "@/lib/types";
 
 export interface CourseEngagement {
@@ -49,7 +49,7 @@ export interface AdminMetrics {
 const n = (v: unknown) => Number(v ?? 0);
 
 export async function getAdminMetrics(masjidId: string): Promise<AdminMetrics> {
-  const db = getServiceClient();
+  const db = (await getReadClient());
 
   const [
     pods,

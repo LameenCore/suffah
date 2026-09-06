@@ -4,6 +4,7 @@
 // leaderboard position.
 
 import { getServiceClient } from "@/lib/db";
+import { getReadClient } from "@/lib/db/server";
 
 export type BarakahIndicator = "attendance" | "cooperation" | "reflection" | "adab";
 
@@ -112,7 +113,7 @@ export async function listBarakahNotes(
   masjidId: string,
   limit = 40,
 ): Promise<BarakahEntry[]> {
-  const { data, error } = await getServiceClient()
+  const { data, error } = await (await getReadClient())
     .from("pod_barakah_log")
     .select("id, pod_id, student_user_id, indicator, note, recorded_by, recorded_at")
     .eq("masjid_id", masjidId)
@@ -134,7 +135,7 @@ export async function getChildBarakahSummary(
   studentUserId: string,
   masjidId: string,
 ): Promise<ChildBarakahSummary> {
-  const db = getServiceClient();
+  const db = (await getReadClient());
 
   // The child's pod, so whole-pod notes are included too.
   const { data: membership, error: mErr } = await db

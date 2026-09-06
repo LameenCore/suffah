@@ -1,6 +1,7 @@
 // In-app help / bug reports (support_requests, migration 0009). Masjid-scoped.
 
 import { getServiceClient } from "@/lib/db";
+import { getReadClient } from "@/lib/db/server";
 import type { SessionUser } from "@/lib/types";
 
 // "data-erasure" is filed by the parent privacy page (T36), not the help form.
@@ -42,7 +43,7 @@ export async function createSupportRequest(
 }
 
 export async function countOpenSupport(masjidId: string): Promise<number> {
-  const { count, error } = await getServiceClient()
+  const { count, error } = await (await getReadClient())
     .from("support_requests")
     .select("id", { count: "exact", head: true })
     .eq("masjid_id", masjidId)
@@ -67,7 +68,7 @@ function shape(r: Record<string, unknown>): SupportRequest {
 }
 
 export async function listSupportRequests(masjidId: string): Promise<SupportRequest[]> {
-  const { data, error } = await getServiceClient()
+  const { data, error } = await (await getReadClient())
     .from("support_requests")
     .select("*")
     .eq("masjid_id", masjidId)
@@ -82,7 +83,7 @@ export async function listOwnSupportRequests(
   userId: string,
   masjidId: string,
 ): Promise<SupportRequest[]> {
-  const { data, error } = await getServiceClient()
+  const { data, error } = await (await getReadClient())
     .from("support_requests")
     .select("*")
     .eq("masjid_id", masjidId)

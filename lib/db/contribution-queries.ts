@@ -4,6 +4,7 @@
 // (getPathwayNode already does this check).
 
 import { getServiceClient } from "@/lib/db";
+import { getReadClient } from "@/lib/db/server";
 import { getPathwayNode } from "@/lib/db/queries";
 
 export interface Contribution {
@@ -54,7 +55,7 @@ export type { CommunityRevision };
 
 /** Seerah pathway nodes for the masjid, with lesson + contribution state. */
 export async function listSeerahNodes(masjidId: string): Promise<SeerahNodeRow[]> {
-  const db = getServiceClient();
+  const db = (await getReadClient());
 
   const { data: course, error: cErr } = await db
     .from("courses")
@@ -111,7 +112,7 @@ export async function listContributions(
   const node = await getPathwayNode(nodeId, masjidId);
   if (!node) throw new Error("node not found in this masjid");
 
-  const { data, error } = await getServiceClient()
+  const { data, error } = await (await getReadClient())
     .from("lesson_contributions")
     .select("id, node_id, contributor_name, contributor_role, note, incorporated, created_at")
     .eq("node_id", nodeId)

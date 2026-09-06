@@ -2,6 +2,7 @@
 // pod-handoff logic stays in one place. Every function is masjid-scoped.
 
 import { getServiceClient } from "@/lib/db";
+import { getReadClient } from "@/lib/db/server";
 import { unwrapRelation as unwrap } from "@/lib/db/rel";
 import type { CourseName } from "@/lib/types";
 import type { PodBriefing } from "@/lib/ai/continuity";
@@ -43,7 +44,7 @@ export async function listPodSessionNotes(
   limit = 25,
 ): Promise<PodSessionNote[]> {
   await assertPodInMasjid(podId, masjidId);
-  const { data, error } = await getServiceClient()
+  const { data, error } = await (await getReadClient())
     .from("pod_session_notes")
     .select("id, author_kind, author_name, note, created_at, course:courses ( name )")
     .eq("pod_id", podId)
@@ -153,7 +154,7 @@ export async function gatherPodLearningSignals(
   podId: string,
   masjidId: string,
 ): Promise<PodLearningSignals> {
-  const db = getServiceClient();
+  const db = (await getReadClient());
 
   const { data: podRow, error: podErr } = await db
     .from("pods")
@@ -336,7 +337,7 @@ export async function getLatestBriefing(
   masjidId: string,
 ): Promise<StoredBriefing | null> {
   await assertPodInMasjid(podId, masjidId);
-  const { data, error } = await getServiceClient()
+  const { data, error } = await (await getReadClient())
     .from("pod_briefings")
     .select("content, generated_by, generated_at")
     .eq("pod_id", podId)
@@ -356,7 +357,7 @@ export async function getLatestBriefing(
 export async function listPodsForBriefing(
   masjidId: string,
 ): Promise<{ id: string; name: string }[]> {
-  const { data, error } = await getServiceClient()
+  const { data, error } = await (await getReadClient())
     .from("pods")
     .select("id, name")
     .eq("masjid_id", masjidId)
@@ -383,7 +384,7 @@ const DEMO_POD_NAME = "Pod Al-Farabi";
 const DEMO_HOME_VOLUNTEER_NAME = "Br. Kareem";
 
 export async function getHandoffDemoState(masjidId: string): Promise<HandoffDemoState> {
-  const db = getServiceClient();
+  const db = (await getReadClient());
 
   const { data: pod, error: podErr } = await db
     .from("pods")

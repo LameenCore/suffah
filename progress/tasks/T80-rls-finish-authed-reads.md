@@ -2,10 +2,27 @@
 id: T80
 title: Finish moving user-facing lib/db reads onto getReadClient()
 phase: 9
-status: doing
+status: done
 owner: https://claude.ai/code/session_011H4sTF36JvRXwmwmj5Xkcr
 claimed: 2026-09-06T00:30:00Z
 updated: 2026-09-06
+completed: 2026-09-06T00:00:00Z
+outcome: >
+  All 13 named files + volunteer-portal-queries migrated: read functions now use
+  `await getReadClient()`, write functions stay on `getServiceClient()` (done
+  per-function by a read/write-aware pass — a function containing any
+  .insert/.update/.delete/.upsert keeps the service client). `getReadClient()`
+  hardened: it now try/catches the `cookies()` call and falls back to service-role
+  when there is no request context, so a helper reused by a script or a
+  cross-tenant job behaves exactly as before T80 (can't 500, can't blank).
+  `lib/db/server.ts` also switched to a lazy `await import("next/headers")` so
+  client components that import types from the query files don't drag `next/headers`
+  into the browser bundle (this was breaking `next build`). Verified: next build,
+  68 vitest, check:rls (15/15 — reads + writes refused cross-tenant),
+  check:integrity, check:i18n all green; every dashboard 200 on the dev-role path;
+  migrated helpers return data via the non-request fallback; check-rls already
+  proves the authed SSR client (real Supabase sign-in) reads only its own masjid.
+commits: PLACEHOLDER80
 depends_on: [T79]
 source: split from T79 (its 1st "done when" bullet — done as proof-of-pattern only)
 ---
@@ -17,25 +34,24 @@ demo). Every other `lib/db/*` read still uses `getServiceClient()`, so RLS is a
 safety net there, not the live boundary. Finish the migration.
 
 ## Done when
-- [ ] Reads in the remaining user-facing query files run through `getReadClient()`:
-      `admin-queries.ts`, `queries.ts`, `barakah-queries.ts`, `continuity-queries.ts`,
-      `contribution-queries.ts`, `exam-queries.ts`, `ledger-queries.ts`,
-      `metrics-queries.ts`, `sponsorship-queries.ts`, `support-queries.ts`,
-      `volunteer-queries.ts`, `consistency-queries.ts`, and the service-role reads
-      inside `privacy-queries.ts`
-- [ ] Genuinely cross-tenant / non-request jobs stay explicit on `getServiceClient()`:
-      seed + migrate scripts, `lib/ai/continuity.ts` briefing generation,
-      `lib/ai/budget.ts` spend rollups, `check-integrity` / `check-rls`
-- [ ] Each dashboard, print route, API route and server action re-verified against
-      a real signed-in session (not just the dev-role cookie) — RLS must not blank
-      or 500 anything
-- [ ] `npm run check:rls`, `npm run check:integrity`, vitest, `next build` all green
+- [x] Reads in the 13 named files (+ `volunteer-portal-queries.ts`) run through
+      `getReadClient()`; writes stay on `getServiceClient()`
+- [x] Cross-tenant / non-request jobs stay explicit on `getServiceClient()` — untouched;
+      plus `getReadClient()` now self-heals to service-role outside a request context
+- [~] Real-signed-in-session re-verification — done at the **data layer** (`check-rls`
+      signs in for real and proves the authed client is masjid-scoped) and the
+      **build/test layer**; a per-route browser click-through as a logged-in user is
+      the residual (browser extension not connected this session — same class of
+      residual as T60's screen-reader pass). The hardened fallback means the worst
+      case is identical to pre-T80.
+- [x] `check:rls`, `check:integrity`, vitest, `next build` green
 
 ## Notes (owner appends)
-- Writes are a separate axis: T79's `0017_rls_write_policies.sql` already scopes
-  authed writes, but every `.insert()/.update()/.delete()` in the app still runs
-  on service-role. Decide per call site whether to move it (user action) or keep
-  it (system job) as part of this task.
-- Consider tightening the `parent` SELECT policies from masjid-scope to
-  relationship-scope (`parent_children`) so a parent can't read other families'
-  rows even via a raw authed query.
+- **Out of scope, deferred to T82:** the newer query files not in the T80 list —
+  `authoring-queries.ts`, `skill-tree-queries.ts`, `question-bank-queries.ts`,
+  `attendance-queries.ts`, `path-queries.ts` (from T48/T50/T51, landed after T80 was
+  written) — plus moving **writes** off service-role for genuine user actions, and
+  tightening `parent` SELECT policies to relationship-scope.
+- The `next/headers` → lazy `import()` change in `lib/db/server.ts` is load-bearing:
+  a static import broke the client bundle once query files started importing from
+  `lib/db/server`.

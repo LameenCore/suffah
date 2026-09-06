@@ -3,6 +3,7 @@
 // one place (see .claude/skills/api-design.md - every query filters by tenant).
 
 import { getServiceClient } from "@/lib/db";
+import { getReadClient } from "@/lib/db/server";
 import { unwrapRelation } from "@/lib/db/rel";
 import type { CourseName } from "@/lib/types";
 import type { LessonContent } from "@/lib/ai/lesson";
@@ -51,7 +52,7 @@ export async function getPathwayNode(
   nodeId: string,
   masjidId: string,
 ): Promise<PathwayNode | null> {
-  const { data, error } = await getServiceClient()
+  const { data, error } = await (await getReadClient())
     .from("pathway_nodes")
     .select(NODE_SELECT)
     .eq("id", nodeId)
@@ -67,7 +68,7 @@ export async function getPathwayNode(
 
 /** The first node (sequence_order = 1) of every course in the masjid. */
 export async function getFirstNodePerCourse(masjidId: string): Promise<PathwayNode[]> {
-  const { data, error } = await getServiceClient()
+  const { data, error } = await (await getReadClient())
     .from("pathway_nodes")
     .select(NODE_SELECT)
     .eq("sequence_order", 1)
@@ -81,7 +82,7 @@ export async function getFirstNodePerCourse(masjidId: string): Promise<PathwayNo
 
 /** Every pathway node in the masjid, ordered by course then sequence. */
 export async function getAllPathwayNodes(masjidId: string): Promise<PathwayNode[]> {
-  const { data, error } = await getServiceClient()
+  const { data, error } = await (await getReadClient())
     .from("pathway_nodes")
     .select(NODE_SELECT)
     .order("sequence_order", { ascending: true });
@@ -150,7 +151,7 @@ export async function getPodForStudent(
   studentUserId: string,
   masjidId: string,
 ): Promise<PodRef | null> {
-  const { data, error } = await getServiceClient()
+  const { data, error } = await (await getReadClient())
     .from("pod_students")
     .select("pod:pods!inner ( id, name, masjid_id )")
     .eq("student_user_id", studentUserId)
@@ -176,7 +177,7 @@ export async function getPlayground(
   studentUserId: string,
   masjidId: string,
 ): Promise<Playground> {
-  const db = getServiceClient();
+  const db = (await getReadClient());
   const pod = await getPodForStudent(studentUserId, masjidId);
   if (!pod) return { pod: null, courses: [] };
 
@@ -271,7 +272,7 @@ export async function getStudentTracks(
   studentUserId: string,
   masjidId: string,
 ): Promise<StudentTracks> {
-  const db = getServiceClient();
+  const db = (await getReadClient());
   const pod = await getPodForStudent(studentUserId, masjidId);
   if (!pod) return { pod: null, tracks: [], lessonsCompleted: 0, checkpointsPassed: 0 };
 
@@ -359,7 +360,7 @@ export async function isLessonComplete(
   studentUserId: string,
   nodeId: string,
 ): Promise<boolean> {
-  const { data, error } = await getServiceClient()
+  const { data, error } = await (await getReadClient())
     .from("lesson_progress")
     .select("id")
     .eq("student_user_id", studentUserId)
@@ -423,7 +424,7 @@ export async function getLatestCheckpointResult(
   studentUserId: string,
   nodeId: string,
 ): Promise<CheckpointResultRow | null> {
-  const { data, error } = await getServiceClient()
+  const { data, error } = await (await getReadClient())
     .from("checkpoint_results")
     .select("passed, answer_data, attempted_at")
     .eq("student_user_id", studentUserId)
@@ -440,7 +441,7 @@ export async function countCheckpointAttempts(
   studentUserId: string,
   nodeId: string,
 ): Promise<number> {
-  const { count, error } = await getServiceClient()
+  const { count, error } = await (await getReadClient())
     .from("checkpoint_results")
     .select("id", { count: "exact", head: true })
     .eq("student_user_id", studentUserId)
@@ -470,7 +471,7 @@ export async function getNextNode(
   currentSequenceOrder: number,
   masjidId: string,
 ): Promise<PathwayNode | null> {
-  const { data, error } = await getServiceClient()
+  const { data, error } = await (await getReadClient())
     .from("pathway_nodes")
     .select(NODE_SELECT)
     .eq("course_id", courseId)
@@ -544,7 +545,7 @@ function shapeUnit(row: Record<string, unknown>): UnitRef {
 
 /** One unit, only if its course belongs to `masjidId`. */
 export async function getUnit(unitId: string, masjidId: string): Promise<UnitRef | null> {
-  const { data, error } = await getServiceClient()
+  const { data, error } = await (await getReadClient())
     .from("units")
     .select(UNIT_SELECT)
     .eq("id", unitId)
@@ -557,7 +558,7 @@ export async function getUnit(unitId: string, masjidId: string): Promise<UnitRef
 
 /** All pathway nodes in a unit, ordered by sequence. */
 export async function getUnitNodes(unitId: string, masjidId: string): Promise<PathwayNode[]> {
-  const { data, error } = await getServiceClient()
+  const { data, error } = await (await getReadClient())
     .from("pathway_nodes")
     .select(NODE_SELECT)
     .eq("unit_id", unitId)
@@ -598,7 +599,7 @@ export async function getLatestUnitAssessmentResult(
   studentUserId: string,
   unitId: string,
 ): Promise<UnitAssessmentResultRow | null> {
-  const { data, error } = await getServiceClient()
+  const { data, error } = await (await getReadClient())
     .from("unit_assessment_results")
     .select("score, passed, answer_data, attempted_at")
     .eq("student_user_id", studentUserId)
@@ -636,7 +637,7 @@ export async function getUnitCheckpointProgress(
   const nodes = await getUnitNodes(unitId, masjidId);
   if (nodes.length === 0) return { total: 0, passed: 0, complete: false };
 
-  const { data, error } = await getServiceClient()
+  const { data, error } = await (await getReadClient())
     .from("checkpoint_results")
     .select("pathway_node_id, passed")
     .eq("student_user_id", studentUserId)

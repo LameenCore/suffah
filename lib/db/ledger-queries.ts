@@ -6,7 +6,7 @@
 // whole point of the model is that the principal is untouched. Every aggregate
 // here keeps principal on its own line.
 
-import { getServiceClient } from "@/lib/db";
+import { getReadClient } from "@/lib/db/server";
 import { unwrapRelation } from "@/lib/db/rel";
 import type { FeeStatus, LedgerEntryType } from "@/lib/types";
 
@@ -88,7 +88,7 @@ export function summariseLedgerEntries(entries: LedgerEntry[]): Omit<LedgerSumma
 }
 
 export async function getLedgerSummary(masjidId: string): Promise<LedgerSummary> {
-  const { data, error } = await getServiceClient()
+  const { data, error } = await (await getReadClient())
     .from("waqf_ledger")
     .select("entry_type, amount, note, created_at")
     .eq("masjid_id", masjidId)
@@ -112,7 +112,7 @@ export interface FamilyFeeRow {
 }
 
 export async function getFamilyFeeStatus(masjidId: string): Promise<FamilyFeeRow[]> {
-  const { data, error } = await getServiceClient()
+  const { data, error } = await (await getReadClient())
     .from("family_fee_status")
     .select("student_user_id, status, student:users!inner ( name, masjid_id )")
     .eq("masjid_id", masjidId);

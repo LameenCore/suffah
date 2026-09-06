@@ -539,3 +539,19 @@ Commit: (fork branch — parent to cherry-pick/merge)
 - Verified live: submit → dedupe → approve → masjid+admin+3 courses (fr) → app
   closed → cleanup. eslint + build + 62 tests + check:i18n (208 keys) green.
 Commit: ca5e82e
+
+## T80 — finish authed reads (agent failed on rate limit; done inline)
+
+- lib/db/server.ts: getReadClient() hardened with try/catch → service-role fallback
+  when there's no request context. next/headers import made lazy (await import)
+  so client components importing query-file types don't pull it into the browser
+  bundle (this broke `next build` once query files imported from lib/db/server).
+- Read/write-aware migration of the 13 T80 files + volunteer-portal-queries: read
+  fns → `await getReadClient()`, any fn with .insert/.update/.delete/.upsert kept
+  on getServiceClient(). Reverted the 5 newer files (authoring/skill-tree/question-
+  bank/attendance/path) as out of scope → T82.
+- Verified: next build, 68 tests, check:rls 15/15 (cross-tenant read+write refused),
+  check:integrity, check:i18n; dev-role dashboards all 200; migrated helpers return
+  data via the non-request fallback. Full per-route browser click-through as a
+  logged-in user is the residual (no browser extension) → noted in T82.
+Commit: PLACEHOLDER80

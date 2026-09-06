@@ -7,6 +7,7 @@
 // pod_progress is untouched, so a replacement picks up exactly where things were.
 
 import { getServiceClient } from "@/lib/db";
+import { getReadClient } from "@/lib/db/server";
 import { unwrapRelation } from "@/lib/db/rel";
 import type { VolunteerStatus } from "@/lib/types";
 
@@ -51,7 +52,7 @@ function shape(row: Record<string, unknown>, podsByVol: Map<string, string[]>): 
 }
 
 export async function listVolunteers(masjidId: string): Promise<VolunteerRoster> {
-  const db = getServiceClient();
+  const db = (await getReadClient());
   const { data, error } = await db
     .from("volunteers")
     .select(SELECT)
@@ -80,7 +81,7 @@ export async function listVolunteers(masjidId: string): Promise<VolunteerRoster>
 }
 
 async function assertVolunteerInMasjid(id: string, masjidId: string): Promise<VolunteerRow> {
-  const { data, error } = await getServiceClient()
+  const { data, error } = await (await getReadClient())
     .from("volunteers")
     .select(SELECT)
     .eq("id", id)

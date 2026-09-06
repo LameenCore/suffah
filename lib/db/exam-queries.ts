@@ -2,6 +2,7 @@
 // to keep that file from growing without bound.
 
 import { getServiceClient } from "@/lib/db";
+import { getReadClient } from "@/lib/db/server";
 import { unwrapRelation as unwrap } from "@/lib/db/rel";
 import type { CourseName } from "@/lib/types";
 import type { TermExamContent } from "@/lib/ai/term-exam";
@@ -17,7 +18,7 @@ export async function getCourseForMasjid(
   courseId: string,
   masjidId: string,
 ): Promise<CourseRow | null> {
-  const { data, error } = await getServiceClient()
+  const { data, error } = await (await getReadClient())
     .from("courses")
     .select("id, name, grade_band, masjid_id")
     .eq("id", courseId)
@@ -34,7 +35,7 @@ export async function getCourseNodes(
 ): Promise<PathwayNode[]> {
   const course = await getCourseForMasjid(courseId, masjidId);
   if (!course) return [];
-  const { data, error } = await getServiceClient()
+  const { data, error } = await (await getReadClient())
     .from("pathway_nodes")
     .select(
       "id, course_id, unit_id, sequence_order, title, lesson_content, checkpoint_content, " +
@@ -72,7 +73,7 @@ export async function getTermExam(
 ): Promise<TermExamRow | null> {
   const course = await getCourseForMasjid(courseId, masjidId);
   if (!course) return null;
-  const { data, error } = await getServiceClient()
+  const { data, error } = await (await getReadClient())
     .from("term_exams")
     .select("course_id, term_label, exam_content, generated_by")
     .eq("course_id", courseId)
@@ -117,7 +118,7 @@ export async function getLatestTermExamResult(
   courseId: string,
   termLabel: string,
 ): Promise<TermExamResultRow | null> {
-  const { data, error } = await getServiceClient()
+  const { data, error } = await (await getReadClient())
     .from("term_exam_results")
     .select("score, answer_data, attempted_at")
     .eq("student_user_id", studentUserId)

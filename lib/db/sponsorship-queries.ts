@@ -3,7 +3,7 @@
 // results). Everything is reported at the pod level - no student names - so this
 // can face a donor.
 
-import { getServiceClient } from "@/lib/db";
+import { getReadClient } from "@/lib/db/server";
 import { unwrapRelation as rel } from "@/lib/db/rel";
 import type { CourseName } from "@/lib/types";
 
@@ -24,7 +24,7 @@ export interface SponsoredOutcome {
 }
 
 export async function getSponsoredOutcomes(masjidId: string): Promise<SponsoredOutcome[]> {
-  const db = getServiceClient();
+  const db = (await getReadClient());
 
   const { data, error } = await db
     .from("sponsorships")

@@ -3,7 +3,7 @@
 // own volunteers record, within their masjid. Everything here is scoped by
 // (userId, masjidId) first.
 
-import { getServiceClient } from "@/lib/db";
+import { getReadClient } from "@/lib/db/server";
 import { unwrapRelation as unwrap } from "@/lib/db/rel";
 import type { CourseName } from "@/lib/types";
 import {
@@ -44,7 +44,7 @@ export async function getVolunteerContext(
   userId: string,
   masjidId: string,
 ): Promise<VolunteerContext | null> {
-  const { data, error } = await getServiceClient()
+  const { data, error } = await (await getReadClient())
     .from("volunteers")
     .select("id, name, masjid_id, left_at")
     .eq("user_id", userId)
@@ -59,7 +59,7 @@ export async function listVolunteerPodRefs(
   volunteerId: string,
   masjidId: string,
 ): Promise<{ id: string; name: string }[]> {
-  const { data, error } = await getServiceClient()
+  const { data, error } = await (await getReadClient())
     .from("pods")
     .select("id, name")
     .eq("masjid_id", masjidId)
@@ -75,7 +75,7 @@ export async function assertPodCoveredByVolunteer(
   volunteerId: string,
   masjidId: string,
 ): Promise<void> {
-  const { data, error } = await getServiceClient()
+  const { data, error } = await (await getReadClient())
     .from("pods")
     .select("id, masjid_id, volunteer_id")
     .eq("id", podId)
@@ -91,7 +91,7 @@ export async function getVolunteerPodViews(
   volunteerId: string,
   masjidId: string,
 ): Promise<VolunteerPodView[]> {
-  const db = getServiceClient();
+  const db = (await getReadClient());
   const podRefs = await listVolunteerPodRefs(volunteerId, masjidId);
   if (podRefs.length === 0) return [];
 

@@ -1,7 +1,7 @@
 # BOARD — Suffa progress snapshot
 
 **Derived from `progress/tasks/`. Not authoritative. Regenerate after any claim/finish.**
-Last regenerated: 2026-09-06 (T48 T72 done; T59 advanced then released to `todo`)
+Last regenerated: 2026-09-06 (T80 done — authed reads)
 
 ## Open tasks (unclaimed, deps met — pick one)
 
@@ -10,7 +10,7 @@ Last regenerated: 2026-09-06 (T48 T72 done; T59 advanced then released to `todo`
 | T59 | 13 | French (Quebec) localization | **partially done** — see the task's "PICK UP HERE" section; compliance screen is the highest-value remaining piece |
 | T47 | 11 | Pod discussion / Q&A board | dep T32 done; adds UGC → T41 moderation follows |
 | T60 | 13 | Accessibility pass to WCAG 2.2 AA | dep T25 done; large, partly needs a human (screen-reader passes) |
-| T80 | 9  | Finish user-facing `lib/db` reads on `getReadClient()` | dep T79 done; security boundary; needs verification against a real signed-in session |
+
 | T81 | 13 | Per-masjid curriculum — adopt shared or fork/author | dep T50 done, **T63 done** (frontmatter was stale) |
 | T41 | 10 | Content moderation + child safety for UGC | blocked on T47 |
 | T27 T28 T53 T58 T76 T78 | — | deploy / demo recording / monitoring / email / rehearsal / mock Q&A | infra + delivery, mostly not pure-code |
@@ -122,7 +122,8 @@ then T59 → T60, then Phase 11 depth; T63 is the multi-masjid scale unlock.
 | id  | phase | status | owner | title |
 |-----|-------|--------|-------|-------|
 | T79 | 9 | done | — | RLS write policies (0017) + parent/analytics reads on the authed client; rest of lib/db → T80 |
-| T80 | 9 | todo | — | Finish moving user-facing lib/db reads onto getReadClient() (continues T79) |
+| T80 | 9 | done | — | Finish moving user-facing lib/db reads onto getReadClient() (rest → T82) |
+| T82 | 9 | todo | — | RLS: newer read files + move user-action writes off service-role (from T80) |
 
 ## Legend
 todo = free to claim · doing = owned now · blocked = see task's `blocker:` · done = see task's `outcome:`

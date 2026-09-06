@@ -8,7 +8,7 @@
 // Activity = a lesson completed, or a checkpoint / unit assessment / term exam
 // attempted. No new table - these timestamps already exist.
 
-import { getServiceClient } from "@/lib/db";
+import { getReadClient } from "@/lib/db/server";
 import { getPresentDates } from "@/lib/db/attendance-queries";
 
 // Quebec. All "which day" bucketing uses this zone so "today" matches the family.
@@ -51,7 +51,7 @@ export async function getConsistency(
   studentUserId: string,
   masjidId: string,
 ): Promise<Consistency> {
-  const db = getServiceClient();
+  const db = (await getReadClient());
 
   // Tenancy: the student must be in this masjid.
   const { data: student, error: sErr } = await db

@@ -4,10 +4,19 @@
 // Phase 1 note: auth is still the dev-role cookie (lib/auth). This client is for
 // DB reads/writes now; it also carries the Supabase session once real auth lands.
 
-import { cookies } from "next/headers";
 import { createServerClient } from "@supabase/ssr";
 import { env, isSupabaseConfigured } from "@/lib/env";
 import { getServiceClient } from "@/lib/db";
+
+// `next/headers` is imported lazily (inside the async fns) so this module has no
+// static dependency on it. Client components import types from lib/db/*-queries
+// (which since T80 import getReadClient from here); a static `next/headers`
+// import would then break the client bundle even though the code never runs
+// client-side. The dynamic import only ever executes on the server.
+async function requestCookies() {
+  const { cookies } = await import("next/headers");
+  return cookies();
+}
 
 // Mirrors lib/auth's DEV_ROLE_COOKIE. Redefined here (not imported) because
 // lib/auth imports this module — importing back would cycle.
@@ -20,7 +29,7 @@ export async function getServerClient() {
         "NEXT_PUBLIC_SUPABASE_ANON_KEY in .env.local.",
     );
   }
-  const cookieStore = await cookies();
+  const cookieStore = await requestCookies();
   return createServerClient(env.supabaseUrl, env.supabaseAnonKey, {
     cookies: {
       getAll: () => cookieStore.getAll(),
@@ -39,7 +48,7 @@ export async function getServerClient() {
 }
 
 /**
- * The client to use for **reads on behalf of a signed-in user** (T79).
+ * The client to use for **reads on behalf of a signed-in user** (T79 / T80).
  *
  * - Real Supabase session  -> the RLS-enforced SSR client. Postgres row-level
  *   security (migration 0016) is the live tenant boundary; the `masjidId`
@@ -48,15 +57,23 @@ export async function getServerClient() {
  *   the service-role client. There is no real `auth.uid()` in that mode, so the
  *   RLS client would see zero rows and blank every dashboard. Service-role is
  *   safe here because the app-code `masjidId` filter still scopes the query.
+ * - **No request context** (a script, or a helper reused by a cross-tenant job)
+ *   -> `cookies()` throws; we fall back to service-role. So a query helper that
+ *   is *usually* request-scoped but occasionally isn't will keep working exactly
+ *   as it did before T80 rather than 500. RLS still applies wherever a real
+ *   session exists.
  *
- * Only call this from a request context (RSC / route handler / server action) —
- * it reads request cookies. Genuinely cross-tenant server work (seed scripts,
- * continuity briefing generation, spend rollups) keeps calling `getServiceClient`.
+ * Genuinely cross-tenant server work (seed scripts, continuity briefing
+ * generation, spend rollups) calls `getServiceClient` directly and explicitly.
  */
 export async function getReadClient() {
-  const cookieStore = await cookies();
-  const devMode =
-    Boolean(cookieStore.get(DEV_ROLE_COOKIE)?.value) || Boolean(env.devRole);
-  if (devMode) return getServiceClient();
-  return getServerClient();
+  try {
+    const cookieStore = await requestCookies();
+    const devMode =
+      Boolean(cookieStore.get(DEV_ROLE_COOKIE)?.value) || Boolean(env.devRole);
+    if (devMode) return getServiceClient();
+    return getServerClient();
+  } catch {
+    return getServiceClient();
+  }
 }

@@ -8,6 +8,7 @@
 // audit entry, because account deletion is a deliberate, logged human action.
 
 import { getServiceClient } from "@/lib/db";
+import { getReadClient } from "@/lib/db/server";
 import { unwrapRelation } from "@/lib/db/rel";
 import { recordAudit } from "@/lib/audit";
 import { listConsentRecords } from "@/lib/consent";
@@ -54,7 +55,7 @@ const EXPORT_NOTE =
 export async function exportFamilyData(
   guardian: Pick<SessionUser, "id" | "masjidId">,
 ): Promise<FamilyDataExport> {
-  const db = getServiceClient();
+  const db = (await getReadClient());
 
   const { data: gRow, error: gErr } = await db
     .from("users")
