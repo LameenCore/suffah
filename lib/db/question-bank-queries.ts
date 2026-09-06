@@ -2,6 +2,7 @@
 // JSON, attach per-question admin overrides + item analytics.
 
 import { getServiceClient } from "@/lib/db";
+import { getReadClient } from "@/lib/db/server";
 import { unwrapRelation as rel } from "@/lib/db/rel";
 import { computeItemStats, type GradedAttempt, type ItemStats } from "@/lib/analytics/item-analytics";
 import type { CheckpointContent } from "@/lib/ai/checkpoint";
@@ -81,7 +82,7 @@ export interface QuestionBankCourse {
 
 /** The whole bank, grouped by course. Currently covers checkpoint questions. */
 export async function listQuestionBank(masjidId: string): Promise<QuestionBankCourse[]> {
-  const db = getServiceClient();
+  const db = (await getReadClient());
   const { data: nodeRows, error } = await db
     .from("pathway_nodes")
     .select("id, title, sequence_order, checkpoint_content, course:courses!inner ( id, name, masjid_id )")
@@ -179,7 +180,7 @@ export async function getDisabledCheckpointQuestionIds(
   nodeId: string,
   masjidId: string,
 ): Promise<Set<string>> {
-  const { data, error } = await getServiceClient()
+  const { data, error } = await (await getReadClient())
     .from("question_overrides")
     .select("question_id")
     .eq("masjid_id", masjidId)

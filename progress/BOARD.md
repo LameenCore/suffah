@@ -1,7 +1,7 @@
 # BOARD — Suffa progress snapshot
 
 **Derived from `progress/tasks/`. Not authoritative. Regenerate after any claim/finish.**
-Last regenerated: 2026-09-06 (T81 done — shared curriculum adopt/fork)
+Last regenerated: 2026-09-06 (T82 done — RLS reads + parent scope)
 
 ## Open tasks
 
@@ -9,8 +9,8 @@ Last regenerated: 2026-09-06 (T81 done — shared curriculum adopt/fork)
 
 | id  | phase | title | notes |
 |-----|-------|-------|-------|
+| T83 | 9  | RLS: move user-action writes off service-role | dep T82 done; do with a browser |
 | T60 | 13 | Accessibility pass to WCAG 2.2 AA | dep T25 done; large; agent attempt died on the session rate limit — retry |
-| T82 | 9  | RLS: newer read files + move user-action writes off service-role | dep T80 done |
 | T59 | 13 | French (Quebec) localization | 01KZ's active task; compliance / privacy / platform screens + FR content remain |
 
 **Blocked / needs a person or infra:**
@@ -132,7 +132,7 @@ then T59 → T60, then Phase 11 depth; T63 is the multi-masjid scale unlock.
 |-----|-------|--------|-------|-------|
 | T79 | 9 | done | — | RLS write policies (0017) + parent/analytics reads on the authed client; rest of lib/db → T80 |
 | T80 | 9 | done | — | Finish moving user-facing lib/db reads onto getReadClient() (rest → T82) |
-| T82 | 9 | todo | — | RLS: newer read files + move user-action writes off service-role (from T80) |
+| T82 | 9 | done | — | RLS: newer read files + parent relationship-scope (writes → T83) |
 
 ## Legend
 todo = free to claim · doing = owned now · blocked = see task's `blocker:` · done = see task's `outcome:`

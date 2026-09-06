@@ -80,11 +80,29 @@ async function main() {
     authedUsers.data!.every((u) => u.masjid_id === DEMO_MASJID_ID);
   check("parent sees only their masjid's users", allOwn, `rows=${authedUsers.data?.length}`);
 
-  const authedResults = await authed.from("checkpoint_results").select("id").limit(1);
+  const authedResults = await authed
+    .from("checkpoint_results")
+    .select("id, student_user_id");
   check(
     "parent can read checkpoint_results in-tenant (policy grants, not just denies)",
     !authedResults.error,
     authedResults.error ? authedResults.error.message : `rows=${authedResults.data?.length}`,
+  );
+
+  // T82 relationship-scope: the demo parent is linked to Yusuf (…c1) only. They
+  // must NOT see checkpoint_results for the other pod students (…c2/c3/c4).
+  const { data: myKids } = await svc
+    .from("parent_children")
+    .select("student_user_id, parent:users!parent_children_parent_user_id_fkey ( email )")
+    .eq("parent.email", DEMO_PARENT_EMAIL);
+  const linked = new Set((myKids ?? []).map((r) => r.student_user_id as string));
+  const foreign = (authedResults.data ?? []).filter(
+    (r) => !linked.has(r.student_user_id as string),
+  ).length;
+  check(
+    "parent sees checkpoint_results for their linked children ONLY",
+    !authedResults.error && foreign === 0 && linked.size > 0,
+    `linked=${linked.size} foreign_rows=${foreign}`,
   );
 
   // --- cross-tenant: insert a second masjid + user, confirm invisibility ---

@@ -1,6 +1,7 @@
 // Adaptive-path branch state (T42): remediation gating + fast-track signals.
 
 import { getServiceClient } from "@/lib/db";
+import { getReadClient } from "@/lib/db/server";
 import { unwrapRelation as rel } from "@/lib/db/rel";
 import { countCheckpointAttempts } from "@/lib/db/queries";
 
@@ -9,7 +10,7 @@ export async function needsRemediation(
   nodeId: string,
   studentUserId: string,
 ): Promise<boolean> {
-  const db = getServiceClient();
+  const db = (await getReadClient());
   const { data: fails, error } = await db
     .from("checkpoint_results")
     .select("passed")
@@ -114,7 +115,7 @@ export interface FastTrackSuggestion {
  * (student, node).
  */
 export async function getFastTrackSuggestions(masjidId: string): Promise<FastTrackSuggestion[]> {
-  const { data, error } = await getServiceClient()
+  const { data, error } = await (await getReadClient())
     .from("path_events")
     .select(
       "created_at, student:users!inner ( name, masjid_id ), node:pathway_nodes!inner ( title, course:courses!inner ( name, masjid_id ) )",
@@ -149,7 +150,7 @@ export async function getPathHistory(
   studentUserId: string,
   masjidId: string,
 ): Promise<PathEvent[]> {
-  const { data, error } = await getServiceClient()
+  const { data, error } = await (await getReadClient())
     .from("path_events")
     .select(
       "kind, detail, created_at, node:pathway_nodes!inner ( title, course:courses!inner ( name, masjid_id ) )",

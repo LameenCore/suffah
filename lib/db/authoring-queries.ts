@@ -18,6 +18,7 @@
 
 import { z } from "zod";
 import { getServiceClient } from "@/lib/db";
+import { getReadClient } from "@/lib/db/server";
 import { unwrapRelation as rel } from "@/lib/db/rel";
 import type { CourseName } from "@/lib/types";
 import { LessonBodySchema, type LessonContent } from "@/lib/ai/lesson";
@@ -107,7 +108,7 @@ async function assertUnitInCourse(
 
 /** Every course in the masjid with its units + nodes, ordered for editing. */
 export async function listAuthoringCourses(masjidId: string): Promise<AuthoringCourse[]> {
-  const db = getServiceClient();
+  const db = (await getReadClient());
 
   const { data: courseRows, error: cErr } = await db
     .from("courses")

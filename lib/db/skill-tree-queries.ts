@@ -1,6 +1,7 @@
 // Prerequisite / skill-tree graph (T43). Edges can cross courses.
 
 import { getServiceClient } from "@/lib/db";
+import { getReadClient } from "@/lib/db/server";
 import { unwrapRelation as rel } from "@/lib/db/rel";
 
 export interface GraphNode {
@@ -21,7 +22,7 @@ export interface SkillGraph {
 
 /** Every node in the masjid + its prerequisite edges. */
 export async function listSkillGraph(masjidId: string): Promise<SkillGraph> {
-  const db = getServiceClient();
+  const db = (await getReadClient());
   const { data: nodeRows, error } = await db
     .from("pathway_nodes")
     .select("id, title, sequence_order, concept_tag, course:courses!inner ( id, name, masjid_id )")
@@ -76,7 +77,7 @@ export async function getPrereqStatus(
 ): Promise<Map<string, PrereqStatus>> {
   const graph = await listSkillGraph(masjidId);
 
-  const { data: cr, error } = await getServiceClient()
+  const { data: cr, error } = await (await getReadClient())
     .from("checkpoint_results")
     .select("pathway_node_id, passed")
     .eq("student_user_id", studentUserId);
@@ -101,7 +102,7 @@ export async function getPrereqStatus(
 // --- writes (admin) ----------------------------------------------------------
 
 async function assertNodeInMasjid(nodeId: string, masjidId: string): Promise<void> {
-  const { data, error } = await getServiceClient()
+  const { data, error } = await (await getReadClient())
     .from("pathway_nodes")
     .select("id, course:courses!inner ( masjid_id )")
     .eq("id", nodeId)

@@ -1,6 +1,7 @@
 // Enrichment-session attendance (T48). Masjid-scoped throughout.
 
 import { getServiceClient } from "@/lib/db";
+import { getReadClient } from "@/lib/db/server";
 import { unwrapRelation } from "@/lib/db/rel";
 
 export type AttendanceStatus = "present" | "absent" | "excused";
@@ -86,7 +87,7 @@ export async function listPodSessions(
   limit = 12,
 ): Promise<SessionRecord[]> {
   await assertPodInMasjid(podId, masjidId);
-  const db = getServiceClient();
+  const db = (await getReadClient());
 
   const { data: sessions, error } = await db
     .from("enrichment_sessions")
@@ -145,7 +146,7 @@ export async function getChildAttendanceSummary(
   studentUserId: string,
   masjidId: string,
 ): Promise<ChildAttendanceSummary> {
-  const db = getServiceClient();
+  const db = (await getReadClient());
 
   const { data: student } = await db
     .from("users")
@@ -206,7 +207,7 @@ export async function getPodAttendanceSignal(
 
 /** Distinct yyyy-mm-dd dates a student was marked present - fed to T52 consistency. */
 export async function getPresentDates(studentUserId: string): Promise<string[]> {
-  const { data, error } = await getServiceClient()
+  const { data, error } = await (await getReadClient())
     .from("attendance_records")
     .select("status, session:enrichment_sessions!inner ( session_date )")
     .eq("student_user_id", studentUserId)

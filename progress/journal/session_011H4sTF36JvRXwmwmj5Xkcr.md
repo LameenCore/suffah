@@ -591,3 +591,17 @@ Commit: a0e5720 / a0e5720
 - Verified live: adopt 3/9 with content; 2nd adopt no-op; reference hidden from
   /platform. eslint + build + 68 tests + check:integrity green.
 Commit: 4b94c11
+
+## T82 — RLS remaining reads + parent relationship-scope
+
+- authoring/skill-tree/question-bank/attendance/path-queries: read fns →
+  getReadClient() (read/write-aware pass; writes stay service-role).
+- migration 0025_rls_parent_scope: student-record SELECT policies + parent_children
+  + consent_records now also require, for app_role()='parent', a parent_children
+  link to the row's student. A parent can't read other families' records via a raw
+  authed query anymore.
+- check-rls: +1 assertion "parent sees checkpoint_results for their linked
+  children ONLY" → 16/16 pass.
+- Writes axis split to T83 (needs a browser click-through).
+- build + 68 tests + check:integrity + dashboards/exam/authoring 200.
+Commit: PLACEHOLDER82
