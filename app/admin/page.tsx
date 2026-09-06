@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { requireRole } from "@/lib/auth";
-import { getT } from "@/lib/i18n";
+import { getT, type MessageKey } from "@/lib/i18n";
 import { RegulationNote } from "@/components/RegulationNote";
 import { PageHeader, SectionTitle } from "@/components/ui/PageHeader";
 import { StatCard } from "@/components/ui/StatCard";
@@ -11,10 +11,10 @@ import { getAdminMetrics, type AdminMetrics } from "@/lib/db/metrics-queries";
 import { listStudents } from "@/lib/db/admin-queries";
 import { getChildReports } from "@/lib/db/parent-queries";
 import { assembleFromChildReport } from "@/lib/compliance/report";
-import { LEVEL_LABEL, type ComplianceLevel } from "@/lib/compliance/status";
+import { type ComplianceLevel } from "@/lib/compliance/status";
 
-const money = (v: number) =>
-  Math.abs(v).toLocaleString("en-CA", {
+const money = (v: number, intlLocale: string) =>
+  Math.abs(v).toLocaleString(intlLocale, {
     style: "currency",
     currency: "CAD",
     maximumFractionDigits: 0,
@@ -25,6 +25,12 @@ const LEVEL_TONE: Record<ComplianceLevel, "success" | "warning" | "danger"> = {
   on_track: "success",
   watch: "warning",
   gap: "danger",
+};
+
+const LEVEL_KEY: Record<ComplianceLevel, MessageKey> = {
+  on_track: "admin.levelOnTrack",
+  watch: "admin.levelWatch",
+  gap: "admin.levelGap",
 };
 
 async function complianceSpread(masjidId: string) {
@@ -52,22 +58,22 @@ function Bar({ value, tone = "teal" }: { value: number; tone?: string }) {
   );
 }
 
-const SECTIONS: { href: string; label: string; icon: React.ReactNode }[] = [
-  { href: "/admin/pods", label: "Pods & assignment", icon: <NavIcon name="grid" /> },
-  { href: "/admin/volunteers", label: "Volunteers", icon: <NavIcon name="users" /> },
-  { href: "/admin/continuity", label: "Continuity Fingerprint", icon: <NavIcon name="spark" /> },
-  { href: "/admin/handoff-demo", label: "Handoff simulation", icon: <NavIcon name="swap" /> },
-  { href: "/admin/compliance", label: "Compliance report", icon: <NavIcon name="clipboard" /> },
-  { href: "/admin/ledger", label: "Waqf ledger", icon: <NavIcon name="coins" /> },
-  { href: "/admin/ai-spend", label: "AI spend", icon: <NavIcon name="gauge" /> },
-  { href: "/admin/seerah", label: "Seerah studio", icon: <NavIcon name="book" /> },
-  { href: "/admin/audit", label: "Audit trail", icon: <NavIcon name="shield" /> },
-  { href: "/admin/inbox", label: "Help requests", icon: <NavIcon name="inbox" /> },
+const SECTIONS: { href: string; labelKey: MessageKey; icon: React.ReactNode }[] = [
+  { href: "/admin/pods", labelKey: "nav.pods", icon: <NavIcon name="grid" /> },
+  { href: "/admin/volunteers", labelKey: "nav.volunteers", icon: <NavIcon name="users" /> },
+  { href: "/admin/continuity", labelKey: "nav.continuity", icon: <NavIcon name="spark" /> },
+  { href: "/admin/handoff-demo", labelKey: "nav.handoff", icon: <NavIcon name="swap" /> },
+  { href: "/admin/compliance", labelKey: "nav.compliance", icon: <NavIcon name="clipboard" /> },
+  { href: "/admin/ledger", labelKey: "nav.ledger", icon: <NavIcon name="coins" /> },
+  { href: "/admin/ai-spend", labelKey: "nav.aiSpend", icon: <NavIcon name="gauge" /> },
+  { href: "/admin/seerah", labelKey: "nav.seerah", icon: <NavIcon name="book" /> },
+  { href: "/admin/audit", labelKey: "nav.audit", icon: <NavIcon name="shield" /> },
+  { href: "/admin/inbox", labelKey: "nav.helpRequests", icon: <NavIcon name="inbox" /> },
 ];
 
 export default async function AdminHome() {
   const user = await requireRole("admin");
-  const { t } = await getT(user);
+  const { t, intlLocale } = await getT(user);
 
   let m: AdminMetrics | null = null;
   let loadError: string | null = null;
@@ -88,71 +94,93 @@ export default async function AdminHome() {
 
       {loadError || !m ? (
         <Card tone="warning" className="p-4 text-sm text-ink-2">
-          Metrics are unavailable{loadError ? `: ${loadError}` : ""}. Run{" "}
-          <code>npm run migrate</code> and <code>npm run seed</code>.
+          {t("admin.metricsUnavailable", { detail: loadError ? `: ${loadError}` : "" })}{" "}
+          <code>npm run migrate</code> · <code>npm run seed</code>
         </Card>
       ) : (
         <>
           <section>
-            <SectionTitle>At a glance</SectionTitle>
+            <SectionTitle>{t("admin.atAGlance")}</SectionTitle>
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-              <StatCard label="Pods" value={m.pods} accent="terracotta" hint={`${m.students} students`} />
               <StatCard
-                label="Volunteers"
+                label={t("admin.statPods")}
+                value={m.pods}
+                accent="terracotta"
+                hint={t("admin.statPodsHint", { n: m.students })}
+              />
+              <StatCard
+                label={t("admin.statVolunteers")}
                 value={m.activeVolunteers}
                 accent="teal"
-                hint={`${m.departedVolunteers} departed (churn log)`}
+                hint={t("admin.statVolunteersHint", { n: m.departedVolunteers })}
               />
               <StatCard
-                label="Open help requests"
+                label={t("admin.statHelpRequests")}
                 value={m.openHelpRequests}
                 accent="mustard"
-                hint={<Link href="/admin/inbox" className="underline">go to inbox</Link>}
+                hint={<Link href="/admin/inbox" className="underline">{t("admin.goToInbox")}</Link>}
               />
               <StatCard
-                label="Waqf principal"
-                value={money(m.waqf.principal)}
+                label={t("admin.statWaqfPrincipal")}
+                value={money(m.waqf.principal, intlLocale)}
                 accent="ink"
-                hint="locked - only returns spent"
+                hint={t("admin.statWaqfPrincipalHint")}
               />
             </div>
           </section>
 
           <section>
-            <SectionTitle hint="across all students">Learning</SectionTitle>
+            <SectionTitle hint={t("admin.acrossAllStudents")}>{t("admin.learning")}</SectionTitle>
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-              <StatCard label="Lessons finished" value={m.lessonsCompleted} accent="teal" />
+              <StatCard label={t("admin.statLessonsFinished")} value={m.lessonsCompleted} accent="teal" />
               <StatCard
-                label="Checkpoint pass rate"
+                label={t("admin.statCheckpointPassRate")}
                 value={m.checkpointAttempts ? pct(m.checkpointPassRate) : "-"}
                 accent="terracotta"
-                hint={`${m.checkpointAttempts} attempts, ${m.studentsActive} students active`}
+                hint={t("admin.statCheckpointHint", {
+                  attempts: m.checkpointAttempts,
+                  active: m.studentsActive,
+                })}
               />
               <StatCard
-                label="Unit assessment avg"
+                label={t("admin.statUnitAvg")}
                 value={m.unitAvgScore != null ? pct(m.unitAvgScore) : "-"}
                 accent="mustard"
-                hint={m.unitAttempts ? `${m.unitAttempts} attempts, ${pct(m.unitPassRate)} passed` : "none yet"}
+                hint={
+                  m.unitAttempts
+                    ? t("admin.statUnitHint", {
+                        attempts: m.unitAttempts,
+                        rate: pct(m.unitPassRate),
+                      })
+                    : t("admin.statNone")
+                }
               />
               <StatCard
-                label="Term exam avg"
+                label={t("admin.statTermExamAvg")}
                 value={m.termExamAvgScore != null ? pct(m.termExamAvgScore) : "-"}
                 accent="ink"
-                hint={m.termExamAttempts ? `${m.termExamAttempts} taken` : "none yet"}
+                hint={
+                  m.termExamAttempts
+                    ? t("admin.statTermExamHint", { n: m.termExamAttempts })
+                    : t("admin.statNone")
+                }
               />
             </div>
 
             <Card className="mt-3 p-5">
               <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-ink-4">
-                By course
+                {t("admin.byCourse")}
               </p>
               <ul className="space-y-3">
                 {m.courses.map((c) => (
                   <li key={c.courseId} className="grid grid-cols-[1fr_auto] items-center gap-x-4 gap-y-1 text-sm">
                     <span className="font-medium text-ink">{c.courseName}</span>
                     <span className="text-xs text-ink-4">
-                      {c.nodesWithLesson}/{c.totalNodes} lessons prepared ·{" "}
-                      {c.checkpointAttempts} checkpoint attempts
+                      {t("admin.courseLessonsPrepared", {
+                        prepared: c.nodesWithLesson,
+                        total: c.totalNodes,
+                        attempts: c.checkpointAttempts,
+                      })}
                     </span>
                     <div className="col-span-2">
                       <Bar
@@ -168,12 +196,12 @@ export default async function AdminHome() {
 
           {spread && spread.total > 0 ? (
             <section>
-              <SectionTitle>Compliance spread</SectionTitle>
+              <SectionTitle>{t("admin.complianceSpread")}</SectionTitle>
               <Card className="flex flex-wrap items-center gap-3 p-4">
                 {(["on_track", "watch", "gap"] as ComplianceLevel[]).map((lvl) => (
                   <div key={lvl} className="flex items-center gap-2">
                     <Badge tone={LEVEL_TONE[lvl]} dot>
-                      {LEVEL_LABEL[lvl]}
+                      {t(LEVEL_KEY[lvl])}
                     </Badge>
                     <span className="text-sm font-medium text-ink">{spread.counts[lvl]}</span>
                   </div>
@@ -182,26 +210,26 @@ export default async function AdminHome() {
                   href="/admin/compliance"
                   className="ml-auto text-sm font-medium text-terracotta hover:text-terracotta-strong"
                 >
-                  Per-student records &rarr;
+                  {t("admin.perStudentRecords")} &rarr;
                 </Link>
               </Card>
             </section>
           ) : null}
 
           <section>
-            <SectionTitle>Waqf & community</SectionTitle>
+            <SectionTitle>{t("admin.waqfCommunity")}</SectionTitle>
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-              <StatCard label="Returns spent" value={money(m.waqf.returnsDisbursed)} accent="teal" hint="operations, from returns only" />
-              <StatCard label="Sadaqah received" value={money(m.waqf.sadaqah)} accent="teal" hint="into the scholarship pool" />
-              <StatCard label="Scholarships funded" value={money(m.waqf.scholarships)} accent="terracotta" />
-              <StatCard label="Barakah notes" value={m.barakahNotes} accent="mustard" hint={`${m.seerahPending} Seerah notes pending`} />
+              <StatCard label={t("admin.statReturnsSpent")} value={money(m.waqf.returnsDisbursed, intlLocale)} accent="teal" hint={t("admin.statReturnsSpentHint")} />
+              <StatCard label={t("admin.statSadaqah")} value={money(m.waqf.sadaqah, intlLocale)} accent="teal" hint={t("admin.statSadaqahHint")} />
+              <StatCard label={t("admin.statScholarships")} value={money(m.waqf.scholarships, intlLocale)} accent="terracotta" />
+              <StatCard label={t("admin.statBarakahNotes")} value={m.barakahNotes} accent="mustard" hint={t("admin.statBarakahHint", { n: m.seerahPending })} />
             </div>
           </section>
         </>
       )}
 
       <section>
-        <SectionTitle>Manage</SectionTitle>
+        <SectionTitle>{t("admin.manage")}</SectionTitle>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {SECTIONS.map((s) => (
             <Link
@@ -212,18 +240,14 @@ export default async function AdminHome() {
               <span className="grid h-9 w-9 place-items-center rounded-xl bg-teal-soft text-teal-strong">
                 {s.icon}
               </span>
-              <span className="text-sm font-medium text-ink">{s.label}</span>
+              <span className="text-sm font-medium text-ink">{t(s.labelKey)}</span>
               <span className="ml-auto text-ink-4 group-hover:text-teal">&rarr;</span>
             </Link>
           ))}
         </div>
       </section>
 
-      <RegulationNote>
-        Pod size caps and report formats across these screens follow Quebec&apos;s
-        home-instruction exemption as currently understood - confirm against active
-        regulation before relying on them.
-      </RegulationNote>
+      <RegulationNote>{t("admin.overviewRegulationNote")}</RegulationNote>
     </div>
   );
 }

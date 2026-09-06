@@ -101,6 +101,16 @@ headline still uses `computeOverall`'s English string), FR generated content
 (thread locale through the AI generators), admin default_locale toggle, native
 Quebec-French review.
 
+### 2026-09-06 (b) — admin overview page FR (session 01KZau4)
+`app/admin/page.tsx` fully localised: +37 keys under `admin.*` (at-a-glance /
+learning / compliance-spread / waqf-community stat cards + hints, "By course"
+line, "Manage" grid, the overview RegulationNote). The Manage grid reuses the
+existing `nav.*` keys via a `labelKey: MessageKey` on each SECTION. `money()` now
+takes `intlLocale` from `getT`; level labels via `admin.levelOnTrack/Watch/Gap`.
+372 keys total, catalogues in sync. build/lint/tsc/68 tests green. Admin
+overview (the dashboard landing screen) is now FR; the other 15 admin sub-pages
++ their components are the remaining admin scope.
+
 ## Notes (owner appends)
 - The FR strings are a first pass by the model - a native Quebec French reviewer
   should sweep them (esp. the landing marketing copy and regulatory phrasing)
