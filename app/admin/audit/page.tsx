@@ -25,6 +25,8 @@ const ACTION_LABEL: Record<string, string> = {
   "ai_budget.updated": "Updated the AI budget",
   "skill_tree.prereq_added": "Added a prerequisite edge",
   "skill_tree.prereq_removed": "Removed a prerequisite edge",
+  "question.disabled": "Disabled a checkpoint question",
+  "question.enabled": "Re-enabled a checkpoint question",
   "course.node_added": "Added a pathway node",
   "course.node_renamed": "Renamed a pathway node",
   "course.node_reordered": "Reordered a pathway node",

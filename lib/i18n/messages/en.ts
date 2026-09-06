@@ -35,6 +35,7 @@ export const en = {
     seerah: "Seerah studio",
     skillTree: "Skill tree",
     authoring: "Course authoring",
+    questionBank: "Question bank",
     audit: "Audit trail",
     analytics: "Learning analytics",
     helpRequests: "Help requests",

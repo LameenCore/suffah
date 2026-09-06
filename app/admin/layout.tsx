@@ -29,6 +29,7 @@ export default async function AdminLayout({ children }: LayoutProps<"/admin">) {
     { href: "/admin/seerah", label: t("nav.seerah"), icon: <NavIcon name="book" /> },
     { href: "/admin/skill-tree", label: t("nav.skillTree"), icon: <NavIcon name="path" /> },
     { href: "/admin/authoring", label: t("nav.authoring"), icon: <NavIcon name="pencil" /> },
+    { href: "/admin/question-bank", label: t("nav.questionBank"), icon: <NavIcon name="clipboard" /> },
     { href: "/admin/audit", label: t("nav.audit"), icon: <NavIcon name="shield" /> },
     {
       href: "/admin/inbox",

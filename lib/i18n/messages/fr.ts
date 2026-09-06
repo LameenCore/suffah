@@ -33,6 +33,7 @@ export const fr: Messages = {
     seerah: "Atelier Sîra",
     skillTree: "Arbre de compétences",
     authoring: "Rédaction des cours",
+    questionBank: "Banque de questions",
     audit: "Journal d'audit",
     analytics: "Analytique de l'apprentissage",
     helpRequests: "Demandes d'aide",

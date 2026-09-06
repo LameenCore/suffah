@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { requireRole } from "@/lib/auth";
 import { getPlayground, getLatestCheckpointResult } from "@/lib/db/queries";
 import { getPrereqStatus } from "@/lib/db/skill-tree-queries";
+import { getDisabledCheckpointQuestionIds } from "@/lib/db/question-bank-queries";
 import { stripAnswers } from "@/lib/ai/checkpoint";
 import { LessonView } from "@/components/student/LessonView";
 import { TutorPanel } from "@/components/student/TutorPanel";
@@ -36,6 +37,13 @@ export default async function CourseLessonPage({
     ? (await getPrereqStatus(user.id, user.masjidId).catch(() => null))?.get(currentNode.id) ??
       null
     : null;
+
+  // Question bank (T51): don't show items an admin has disabled.
+  const disabledQ = currentNode
+    ? await getDisabledCheckpointQuestionIds(currentNode.id, user.masjidId).catch(
+        () => new Set<string>(),
+      )
+    : new Set<string>();
 
   return (
     <div className="space-y-6">
@@ -98,7 +106,7 @@ export default async function CourseLessonPage({
                 nodeId={currentNode.id}
                 checkpoint={
                   currentNode.checkpoint_content
-                    ? stripAnswers(currentNode.checkpoint_content)
+                    ? stripAnswers(currentNode.checkpoint_content, disabledQ)
                     : null
                 }
                 priorPassed={priorPassed}

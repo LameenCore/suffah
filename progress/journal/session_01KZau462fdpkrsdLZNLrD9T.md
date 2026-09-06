@@ -375,3 +375,12 @@ node / results), re-sequencing. build + lint + tsc + 62 tests + check:integrity
 green. 248 i18n keys in sync. Commit <t50>.
 
 Lesson: spawn parallel agents with isolation:"worktree", not in the shared dir.
+
+## 2026-09-05 — T51 done (question bank + item analytics)
+Claimed T51 (dep T50 done same session). migration 0020_question_overrides
+(sparse). lib/analytics/item-analytics.ts (pure: p-value + upper/lower-27%
+discrimination + flags, 6 tests). lib/db/question-bank-queries.ts: flatten
+checkpoint JSON + overrides + stats; getDisabledCheckpointQuestionIds.
+gradeCheckpoint + stripAnswers (student page + T61 offline route) filter disabled
+items. /admin/question-bank + QuestionBank component, audited, nav + i18n.
+Verified: disable q1 -> all-correct grade is 3/3 not 4/4. 68 tests green. Commit <t51>.

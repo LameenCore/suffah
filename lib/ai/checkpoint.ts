@@ -32,6 +32,7 @@ import {
 } from "@/lib/db/queries";
 import { tryAddSystemNote } from "@/lib/db/continuity-queries";
 import { recordRemediationPassed, maybeSuggestFastTrack, needsRemediation } from "@/lib/db/path-queries";
+import { getDisabledCheckpointQuestionIds } from "@/lib/db/question-bank-queries";
 import { getOrCreateRemediation, type RemediationContent } from "@/lib/ai/remediation";
 import { fallbackCheckpoint } from "@/lib/ai/fallback-checkpoints";
 import { PASS_THRESHOLD } from "@/lib/types";
@@ -62,8 +63,14 @@ export interface CheckpointForStudent {
   questions: QuestionForStudent[];
 }
 
-export function stripAnswers(content: CheckpointContent): CheckpointForStudent {
-  return { questions: stripQuestionAnswers(content.questions) };
+export function stripAnswers(
+  content: CheckpointContent,
+  disabledIds?: Set<string>,
+): CheckpointForStudent {
+  const qs = disabledIds?.size
+    ? content.questions.filter((q) => !disabledIds.has(q.id))
+    : content.questions;
+  return { questions: stripQuestionAnswers(qs) };
 }
 
 // --- Generation --------------------------------------------------------
@@ -230,10 +237,15 @@ export async function gradeCheckpoint(
     throw err;
   }
 
-  const { score, correctCount, total, perQuestion } = gradeQuestions(
-    checkpoint.questions,
-    answers,
+  // Question bank (T51): a disabled item is not graded and can't sink a student.
+  const disabledIds = await getDisabledCheckpointQuestionIds(nodeId, masjidId).catch(
+    () => new Set<string>(),
   );
+  const activeQuestions = disabledIds.size
+    ? checkpoint.questions.filter((q) => !disabledIds.has(q.id))
+    : checkpoint.questions;
+
+  const { score, correctCount, total, perQuestion } = gradeQuestions(activeQuestions, answers);
   const passed = score >= PASS_THRESHOLD;
 
   const priorPass = (await getLatestCheckpointResult(studentUserId, nodeId))?.passed === true;
