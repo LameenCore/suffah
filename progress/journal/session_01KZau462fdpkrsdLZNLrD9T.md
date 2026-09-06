@@ -500,3 +500,10 @@ mine; recording here for whoever takes T27):
   is an environment/data problem, not a code regression.
 - Next step for T27: read the Vercel Runtime Logs while hitting `/student` to get
   the real stack, then fix env + run migrate/seed against the prod DB.
+
+## 2026-09-06 — T27 marked blocked (team staying local-only)
+User: Vercel is asking for payment, so the team is sticking with local dev.
+Claimed T27 and set `status: blocked` with a blocker line. Demo runs on
+`npm run dev` (or T28 recording) — no hosted URL. Updated the local-dev memory
++ MEMORY.md index + BOARD.md blocked section. If revisiting: fix env/migrate on
+the prod DB or pick a free host (Cloudflare Pages / Render). main clean + pushed.
