@@ -45,6 +45,14 @@ async function main() {
     console.log(`  ${demo.role.padEnd(7)} ${demo.email}  ->  users.${demo.id.slice(-2)}`);
   }
 
+  // Demo: make the masjid admin a platform admin too, so /platform is reachable
+  // in the walkthrough (T33). Ignore if the table isn't migrated yet.
+  const { error: paErr } = await db
+    .from("platform_admins")
+    .upsert({ user_id: DEMO_USERS.admin.id }, { onConflict: "user_id" });
+  if (paErr) console.warn(`  (platform_admins skipped: ${paErr.message})`);
+  else console.log(`  platform  ${DEMO_USERS.admin.email}  ->  platform_admins`);
+
   console.log(`\nDone. Sign in at /login with any of the above and password: ${PASSWORD}`);
 }
 

@@ -13,6 +13,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { env } from "@/lib/env";
 import { getServerClient } from "@/lib/db/server";
+import { getServiceClient } from "@/lib/db";
 import type { Role, SessionUser } from "@/lib/types";
 import { ROLES } from "@/lib/types";
 
@@ -91,6 +92,20 @@ export async function getCurrentUser(): Promise<SessionUser | null> {
   };
 }
 
+/** A platform admin can suspend a whole masjid (T33); its users are then paused. */
+async function masjidSuspended(masjidId: string): Promise<boolean> {
+  try {
+    const { data } = await getServiceClient()
+      .from("masjids")
+      .select("status")
+      .eq("id", masjidId)
+      .maybeSingle();
+    return data?.status === "suspended";
+  } catch {
+    return false; // column missing / not configured: treat as active
+  }
+}
+
 /**
  * Guard a dashboard route group. Redirects to /login if there is no session, or
  * to the caller's own dashboard if they hold a different role. Returns the user.
@@ -99,6 +114,7 @@ export async function requireRole(role: Role): Promise<SessionUser> {
   const user = await getCurrentUser();
   if (!user) redirect(`/login?next=${role}`);
   if (user.role !== role) redirect(`/${user.role}`);
+  if (await masjidSuspended(user.masjidId)) redirect("/suspended");
   return user;
 }
 

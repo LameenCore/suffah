@@ -182,6 +182,57 @@ export const en = {
     transcriptPrintable: "Term-completion record (printable)",
     downloadCsv: "Download as CSV",
   },
+
+  platform: {
+    kicker: "Platform",
+    title: "Masjids on Suffa",
+    lede: "Provision new masjids and watch cross-masjid operational health. No student data is shown here.",
+    provisionCta: "New masjid",
+    statMasjids: "Masjids",
+    statStudents: "Students (all masjids)",
+    statSpend: "AI spend this month",
+    colMasjid: "Masjid",
+    colStatus: "Status",
+    colLocale: "Locale",
+    colStudents: "Students",
+    colPods: "Pods",
+    colChurn: "Volunteer churn",
+    colSpend: "AI / month",
+    colCreated: "Created",
+    suspended: "Suspended",
+    active: "Active",
+    noMasjids: "No masjids yet.",
+    noPiiNote:
+      "Operational figures only — counts and totals. No student names or results are accessible from this view.",
+    provisionTitle: "Provision a masjid",
+    provisionLede: "Creates the tenant, its first admin login, and a starter curriculum skeleton.",
+    fieldMasjidName: "Masjid name",
+    fieldDefaultLocale: "Default language",
+    firstAdmin: "First admin",
+    fieldAdminName: "Admin name",
+    fieldAdminEmail: "Admin email",
+    fieldAdminPassword: "Temporary password",
+    passwordHint: "At least 8 characters. The admin can change it after signing in.",
+    provisionSubmit: "Create masjid",
+    provisionNote:
+      "The admin gets Math, Seerah and AI Literacy with one starter unit each. Lessons generate on first use.",
+    volunteersActive: "Volunteers (active)",
+    volunteersDeparted: "Volunteers (departed)",
+    waqfPrincipal: "Waqf principal",
+    provisionedOk: "Masjid provisioned. The first admin can now sign in.",
+    reactivateTitle: "Reactivate this masjid",
+    suspendTitle: "Suspend this masjid",
+    reactivateBody: "Its users can sign in again immediately.",
+    suspendBody:
+      "Every user of this masjid is paused at sign-in until it is reactivated. No data is deleted.",
+    reactivateSubmit: "Reactivate",
+    suspendSubmit: "Suspend masjid",
+  },
+
+  suspended: {
+    title: "This account is paused",
+    body: "Your masjid's access to Suffa has been paused by the platform team. Please contact your masjid administrator. Nothing has been lost.",
+  },
 };
 
 export type Messages = typeof en;
