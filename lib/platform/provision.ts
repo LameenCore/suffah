@@ -4,6 +4,10 @@
 
 import { getServiceClient } from "@/lib/db";
 import { seedCurriculumSkeleton } from "@/lib/platform/seed-masjid";
+import {
+  adoptSharedCurriculum,
+  referenceHasCurriculum,
+} from "@/lib/platform/reference-curriculum";
 import { isLocale, DEFAULT_LOCALE, type Locale } from "@/lib/i18n/config";
 
 export interface ProvisionInput {
@@ -76,11 +80,19 @@ export async function provisionMasjid(input: ProvisionInput): Promise<ProvisionR
   }
 
   try {
-    await seedCurriculumSkeleton(masjidId);
+    // Prefer a full copy of the shared reference curriculum (T81) — courses,
+    // units, nodes and any generated lesson/checkpoint content — so a new masjid
+    // starts with real content it can then edit via /admin/authoring. Fall back
+    // to the empty skeleton if the reference curriculum hasn't been seeded.
+    if (await referenceHasCurriculum()) {
+      await adoptSharedCurriculum(masjidId);
+    } else {
+      await seedCurriculumSkeleton(masjidId);
+    }
   } catch (err) {
     // Curriculum is recoverable; leave the masjid + admin in place but surface it.
     throw new Error(
-      `masjid + admin created (id ${masjidId}) but the curriculum skeleton failed: ${
+      `masjid + admin created (id ${masjidId}) but curriculum setup failed: ${
         err instanceof Error ? err.message : String(err)
       }`,
     );

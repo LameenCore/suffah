@@ -29,6 +29,7 @@ export async function getPlatformOverview(): Promise<MasjidRow[]> {
   const { data: masjids, error } = await db
     .from("masjids")
     .select("id, name, default_locale, status, created_at")
+    .eq("kind", "tenant")   // exclude the shared-curriculum reference masjid (T81)
     .order("created_at", { ascending: true });
   if (error) throw new Error(`masjids: ${error.message}`);
 

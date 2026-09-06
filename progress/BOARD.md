@@ -1,7 +1,7 @@
 # BOARD — Suffa progress snapshot
 
 **Derived from `progress/tasks/`. Not authoritative. Regenerate after any claim/finish.**
-Last regenerated: 2026-09-06 (T41 + T47 done — pod board + moderation)
+Last regenerated: 2026-09-06 (T81 done — shared curriculum adopt/fork)
 
 ## Open tasks
 
@@ -10,7 +10,6 @@ Last regenerated: 2026-09-06 (T41 + T47 done — pod board + moderation)
 | id  | phase | title | notes |
 |-----|-------|-------|-------|
 | T60 | 13 | Accessibility pass to WCAG 2.2 AA | dep T25 done; large; agent attempt died on the session rate limit — retry |
-| T81 | 13 | Per-masjid curriculum — adopt shared or fork/author | dep T50 + T63 done |
 | T82 | 9  | RLS: newer read files + move user-action writes off service-role | dep T80 done |
 | T59 | 13 | French (Quebec) localization | 01KZ's active task; compliance / privacy / platform screens + FR content remain |
 

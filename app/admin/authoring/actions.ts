@@ -20,6 +20,7 @@ import {
 } from "@/lib/db/authoring-queries";
 import { generateLessonForNode } from "@/lib/ai/lesson";
 import { generateCheckpointForNode } from "@/lib/ai/checkpoint";
+import { adoptSharedCurriculum } from "@/lib/platform/reference-curriculum";
 import type { SessionUser } from "@/lib/types";
 
 export interface ActionResult {
@@ -309,6 +310,33 @@ export async function regenerateCheckpointAction(
       metadata: { courseId, source: res.source },
     });
     revalidateAll(courseId);
+    return { ok: true };
+  } catch (err) {
+    return fail(err);
+  }
+}
+
+/** Adopt (deep-copy) the shared reference curriculum into this masjid (T81). */
+export async function adoptSharedCurriculumAction(): Promise<ActionResult> {
+  let user: SessionUser;
+  try {
+    user = await requireAdmin();
+  } catch (err) {
+    return fail(err);
+  }
+  try {
+    const r = await adoptSharedCurriculum(user.masjidId);
+    await recordAudit({
+      actor: user,
+      action: "course.curriculum_adopted",
+      targetType: "masjid",
+      targetId: user.masjidId,
+      metadata: { coursesCopied: r.coursesCopied, nodesCopied: r.nodesCopied },
+    });
+    revalidateAll();
+    if (r.coursesCopied === 0) {
+      return { ok: false, error: "Nothing to adopt — the shared curriculum is empty, or you already have these courses." };
+    }
     return { ok: true };
   } catch (err) {
     return fail(err);

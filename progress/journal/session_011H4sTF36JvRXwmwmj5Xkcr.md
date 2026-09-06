@@ -574,3 +574,20 @@ Commit: 9db3c85
   held + masked + queue; report → held; admin release/hide. 3 routes 200, no
   console errors. eslint + build + 68 tests + check:i18n green.
 Commit: a0e5720 / a0e5720
+
+## T81 — per-masjid curriculum (adopt shared / fork)
+
+- migration 0024_reference_curriculum: masjids.kind ('tenant'|'reference') +
+  seeds the reference masjid (id ...fe). `npm run seed:reference` deep-copies the
+  demo masjid's courses/units/nodes (with lesson_content + checkpoint_content)
+  into it — 3 courses / 9 nodes.
+- lib/platform/reference-curriculum.ts: copyCurriculum(from,to),
+  adoptSharedCurriculum(to), referenceHasCurriculum(). Name-dedup, idempotent.
+- provisionMasjid(): adopts the full shared curriculum when available, skeleton
+  fallback. /admin/authoring empty state -> AdoptCurriculumButton ->
+  adoptSharedCurriculumAction (audited). The adopted copy is the masjid's own and
+  editable via T50 = the fork.
+- getPlatformOverview excludes kind='reference'.
+- Verified live: adopt 3/9 with content; 2nd adopt no-op; reference hidden from
+  /platform. eslint + build + 68 tests + check:integrity green.
+Commit: PLACEHOLDER81

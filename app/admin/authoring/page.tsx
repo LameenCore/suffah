@@ -4,6 +4,7 @@ import { listAuthoringCourses, type AuthoringCourse } from "@/lib/db/authoring-q
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
+import { AdoptCurriculumButton } from "@/components/admin/AdoptCurriculumButton";
 
 function courseStats(c: AuthoringCourse) {
   const lessons = c.nodes.filter((n) => n.hasLesson).length;
@@ -42,8 +43,9 @@ export default async function AuthoringIndexPage() {
           {loadError}. Run <code>npm run migrate</code> and <code>npm run seed</code>.
         </Card>
       ) : courses.length === 0 ? (
-        <Card className="p-6 text-center text-sm text-ink-4">
-          No courses yet. Run <code>npm run seed</code> to create the demo set.
+        <Card className="space-y-3 p-6 text-sm text-ink-3">
+          <p>No courses yet. Start from the shared curriculum:</p>
+          <AdoptCurriculumButton />
         </Card>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
