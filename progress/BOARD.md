@@ -104,5 +104,11 @@ then T59 → T60, then Phase 11 depth; T63 is the multi-masjid scale unlock.
 
 `docs/qa-prep.md` is drafted (T77). Team/process answers in it need the team to fill.
 
+## Follow-on tasks (split from a parent during the build)
+
+| id  | phase | status | owner | title |
+|-----|-------|--------|-------|-------|
+| T79 | 9 | todo | — | Move reads to the authed client + RLS write policies (from T31) |
+
 ## Legend
 todo = free to claim · doing = owned now · blocked = see task's `blocker:` · done = see task's `outcome:`
