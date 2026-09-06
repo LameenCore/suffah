@@ -84,6 +84,23 @@ generated content (thread locale through the AI generators), date/currency
 call-site swaps to lib/i18n/format.ts, an admin default_locale toggle, and a
 native Quebec-French review of all strings.
 
+### 2026-09-06 — parent dashboard home fully FR (session 01KZau4)
+Translated the rest of `app/parent/page.tsx`: `CourseCard` internals (Pathway,
+step X of Y, Checkpoints/Unit assessment/Term exam headers + empty states,
+Passed/Needs review/Retry badges), `BarakahSummary` (title + lede + "whole pod"),
+consent-locked banner, load-error + no-child states, the enrichment note, the
+RegulationNote body, and the compliance badge label + overall headline (localised
+restatement from level+counts via `overallHeadline()`, `computeOverall` untouched
+so its tests stay green). Date formatting threaded through `intlLocale` from
+`getT`. `ChildBlock` no longer re-calls `getT()` — `t`/`intlLocale` passed down.
++35 keys (335 total). build + lint + tsc + 68 tests + check:i18n green.
+
+STILL REMAINING (unchanged): admin sub-pages, /help, legal + consent/privacy
+pages, `ComplianceReportView` + `/print/*` (the compliance-report-FR bullet — its
+headline still uses `computeOverall`'s English string), FR generated content
+(thread locale through the AI generators), admin default_locale toggle, native
+Quebec-French review.
+
 ## Notes (owner appends)
 - The FR strings are a first pass by the model - a native Quebec French reviewer
   should sweep them (esp. the landing marketing copy and regulatory phrasing)

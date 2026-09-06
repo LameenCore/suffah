@@ -403,3 +403,14 @@ failed (supabase-js returns error, doesn't throw). Now recorded_by: null + an
 explicit error check that throws.
 Verified: build + lint + tsc + 68 tests + check:i18n(305) + check:integrity all
 green; live queries return seeded spread. Commit <t48>.
+
+## 2026-09-06 — pitch artifact + T59 parent-home FR
+- Built the judge-facing pitch deck as a published Artifact (single-scroll
+  long-form, Suffa's shipping identity). URL saved to memory/pitch-artifact.md.
+  Source content from docs/pitch.md + explainer.md + cost-model.md.
+- T59: finished translating app/parent/page.tsx (CourseCard, BarakahSummary,
+  consent banner, states, enrichment note, RegulationNote, compliance badge +
+  overall headline via a display-layer overallHeadline() so computeOverall's
+  tests stay green). Dates now use intlLocale from getT. +35 keys -> 335.
+  build/lint/tsc/68 tests/check:i18n green. T59 still `doing` (admin pages,
+  compliance-report FR, generated content remain).

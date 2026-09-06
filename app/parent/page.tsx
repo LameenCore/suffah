@@ -23,18 +23,39 @@ import {
 } from "@/lib/db/attendance-queries";
 import { ConsistencyStrip } from "@/components/student/ConsistencyStrip";
 import { assembleFromChildReport } from "@/lib/compliance/report";
-import { LEVEL_LABEL, type ComplianceLevel } from "@/lib/compliance/status";
+import { type ComplianceLevel, type OverallCompliance } from "@/lib/compliance/status";
 import { getActiveConsent } from "@/lib/consent";
 
 const pct = (frac: number) => `${Math.round(frac * 100)}%`;
-const shortDate = (iso: string) =>
-  new Date(iso).toLocaleDateString("en-CA", { month: "short", day: "numeric" });
+const shortDate = (iso: string, intlLocale: string) =>
+  new Date(iso).toLocaleDateString(intlLocale, { month: "short", day: "numeric" });
 
 const LEVEL_TONE: Record<ComplianceLevel, "success" | "warning" | "danger"> = {
   on_track: "success",
   watch: "warning",
   gap: "danger",
 };
+
+const LEVEL_KEY: Record<ComplianceLevel, "parent.levelOnTrack" | "parent.levelWatch" | "parent.levelGap"> = {
+  on_track: "parent.levelOnTrack",
+  watch: "parent.levelWatch",
+  gap: "parent.levelGap",
+};
+
+/** Localised restatement of computeOverall's English headline, from level + counts. */
+function overallHeadline(t: Translator, o: OverallCompliance): string {
+  if (o.level === "gap") {
+    return t(o.counts.gap === 1 ? "parent.overallGapOne" : "parent.overallGapMany", {
+      n: o.counts.gap,
+    });
+  }
+  if (o.level === "watch") {
+    return t(o.counts.watch === 1 ? "parent.overallWatchOne" : "parent.overallWatchMany", {
+      n: o.counts.watch,
+    });
+  }
+  return t("parent.overallOnTrack");
+}
 
 function ResultRow({
   label,
@@ -51,7 +72,15 @@ function ResultRow({
   );
 }
 
-function CourseCard({ course }: { course: CourseReport }) {
+function CourseCard({
+  course,
+  t,
+  intlLocale,
+}: {
+  course: CourseReport;
+  t: Translator;
+  intlLocale: string;
+}) {
   const { checkpoints, unitAssessments, termExams } = course;
   const frac =
     course.totalNodes > 0
@@ -67,11 +96,11 @@ function CourseCard({ course }: { course: CourseReport }) {
 
       <div className="mt-3">
         <div className="flex items-center justify-between text-xs text-ink-4">
-          <span>Pathway</span>
+          <span>{t("parent.pathway")}</span>
           <span className="tabular-nums">
             {course.totalNodes > 0
-              ? `step ${course.nodePosition} of ${course.totalNodes}`
-              : "not started"}
+              ? t("parent.courseStep", { n: course.nodePosition, total: course.totalNodes })
+              : t("parent.courseNotStarted")}
           </span>
         </div>
         <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-surface-2">
@@ -85,10 +114,10 @@ function CourseCard({ course }: { course: CourseReport }) {
       <div className="mt-4 space-y-3">
         <div>
           <p className="text-[11px] font-semibold uppercase tracking-wide text-ink-4">
-            Checkpoints
+            {t("parent.checkpoints")}
           </p>
           {checkpoints.length === 0 ? (
-            <p className="mt-0.5 text-sm text-ink-4">None attempted yet.</p>
+            <p className="mt-0.5 text-sm text-ink-4">{t("parent.checkpointsNone")}</p>
           ) : (
             <ul className="mt-0.5 divide-y divide-border">
               {checkpoints.map((c, i) => (
@@ -98,9 +127,11 @@ function CourseCard({ course }: { course: CourseReport }) {
                   right={
                     <>
                       <Badge tone={c.passed ? "success" : "warning"}>
-                        {c.passed ? "Passed" : "Needs review"}
+                        {c.passed ? t("parent.resultPassed") : t("parent.resultNeedsReview")}
                       </Badge>
-                      <span className="text-xs text-ink-4">{shortDate(c.attemptedAt)}</span>
+                      <span className="text-xs text-ink-4">
+                        {shortDate(c.attemptedAt, intlLocale)}
+                      </span>
                     </>
                   }
                 />
@@ -111,10 +142,10 @@ function CourseCard({ course }: { course: CourseReport }) {
 
         <div>
           <p className="text-[11px] font-semibold uppercase tracking-wide text-ink-4">
-            Unit assessment
+            {t("parent.unitAssessment")}
           </p>
           {unitAssessments.length === 0 ? (
-            <p className="mt-0.5 text-sm text-ink-4">Not due yet.</p>
+            <p className="mt-0.5 text-sm text-ink-4">{t("parent.unitAssessmentNone")}</p>
           ) : (
             <ul className="mt-0.5 divide-y divide-border">
               {unitAssessments.map((u, i) => (
@@ -125,7 +156,7 @@ function CourseCard({ course }: { course: CourseReport }) {
                     <>
                       <span className="tabular-nums text-sm text-ink-2">{pct(u.score)}</span>
                       <Badge tone={u.passed ? "success" : "warning"}>
-                        {u.passed ? "Passed" : "Retry"}
+                        {u.passed ? t("parent.resultPassed") : t("parent.resultRetry")}
                       </Badge>
                     </>
                   }
@@ -137,19 +168,19 @@ function CourseCard({ course }: { course: CourseReport }) {
 
         <div>
           <p className="text-[11px] font-semibold uppercase tracking-wide text-ink-4">
-            Term exam
+            {t("parent.termExam")}
           </p>
           {termExams.length === 0 ? (
-            <p className="mt-0.5 text-sm text-ink-4">Not taken yet.</p>
+            <p className="mt-0.5 text-sm text-ink-4">{t("parent.termExamNone")}</p>
           ) : (
             <ul className="mt-0.5 divide-y divide-border">
-              {termExams.map((t, i) => (
+              {termExams.map((tx, i) => (
                 <ResultRow
                   key={i}
-                  label={t.termLabel}
+                  label={tx.termLabel}
                   right={
                     <span className="tabular-nums text-sm font-medium text-ink">
-                      {pct(t.score)}
+                      {pct(tx.score)}
                     </span>
                   }
                 />
@@ -162,16 +193,20 @@ function CourseCard({ course }: { course: CourseReport }) {
   );
 }
 
-function BarakahSummary({ barakah }: { barakah: ChildBarakahSummary }) {
+function BarakahSummary({
+  barakah,
+  t,
+}: {
+  barakah: ChildBarakahSummary;
+  t: Translator;
+}) {
   if (barakah.phrases.length === 0 && barakah.entries.length === 0) return null;
   return (
     <Card as="section" tone="teal" className="p-5">
       <h3 className="flex items-center gap-2 font-display text-lg font-semibold text-ink">
-        <Crescent className="h-4 w-4 text-teal-strong" /> In the circle
+        <Crescent className="h-4 w-4 text-teal-strong" /> {t("parent.circleTitle")}
       </h3>
-      <p className="mt-1 text-xs text-ink-3">
-        What the pod&apos;s volunteers have noticed - adab and cooperation, not a score.
-      </p>
+      <p className="mt-1 text-xs text-ink-3">{t("parent.circleLede")}</p>
       {barakah.phrases.length > 0 && (
         <div className="mt-3 flex flex-wrap gap-1.5">
           {barakah.phrases.map((p) => (
@@ -193,7 +228,9 @@ function BarakahSummary({ barakah }: { barakah: ChildBarakahSummary }) {
               </span>
               <span>
                 {e.note ?? e.indicatorLabel}
-                {e.studentName == null && <span className="text-ink-4"> (whole pod)</span>}
+                {e.studentName == null && (
+                  <span className="text-ink-4"> ({t("parent.wholePod")})</span>
+                )}
               </span>
             </li>
           ))}
@@ -206,9 +243,11 @@ function BarakahSummary({ barakah }: { barakah: ChildBarakahSummary }) {
 function AttendanceSummary({
   attendance,
   t,
+  intlLocale,
 }: {
   attendance: ChildAttendanceSummary;
   t: Translator;
+  intlLocale: string;
 }) {
   const tone: Record<ChildAttendanceSummary["recent"][number]["status"], "success" | "warning" | "danger"> = {
     present: "success",
@@ -240,11 +279,13 @@ function AttendanceSummary({
             {attendance.recent.map((r, i) => (
               <ResultRow
                 key={i}
-                label={r.topic ?? shortDate(`${r.date}T12:00:00`)}
+                label={r.topic ?? shortDate(`${r.date}T12:00:00`, intlLocale)}
                 right={
                   <>
                     <Badge tone={tone[r.status]}>{label[r.status]}</Badge>
-                    <span className="text-xs text-ink-4">{shortDate(`${r.date}T12:00:00`)}</span>
+                    <span className="text-xs text-ink-4">
+                      {shortDate(`${r.date}T12:00:00`, intlLocale)}
+                    </span>
                   </>
                 }
               />
@@ -256,18 +297,21 @@ function AttendanceSummary({
   );
 }
 
-async function ChildBlock({
+function ChildBlock({
   report,
   barakah,
   consistency,
   attendance,
+  t,
+  intlLocale,
 }: {
   report: ChildReport;
   barakah: ChildBarakahSummary;
   consistency: Consistency;
   attendance: ChildAttendanceSummary;
+  t: Translator;
+  intlLocale: string;
 }) {
-  const { t } = await getT();
   // report is already loaded by ParentHome - assemble the status view in memory
   // rather than re-fetching the whole child report.
   const compliance = assembleFromChildReport(report);
@@ -286,9 +330,9 @@ async function ChildBlock({
       >
         <div className="flex items-center gap-2.5">
           <Badge tone={LEVEL_TONE[compliance.overall.level]} dot>
-            {LEVEL_LABEL[compliance.overall.level]}
+            {t(LEVEL_KEY[compliance.overall.level])}
           </Badge>
-          <span className="text-sm text-ink-2">{compliance.overall.headline}</span>
+          <span className="text-sm text-ink-2">{overallHeadline(t, compliance.overall)}</span>
         </div>
         <Link
           href="/parent/compliance"
@@ -300,11 +344,11 @@ async function ChildBlock({
 
       <div className="grid gap-4 lg:grid-cols-3">
         {report.courses.map((c) => (
-          <CourseCard key={c.courseId} course={c} />
+          <CourseCard key={c.courseId} course={c} t={t} intlLocale={intlLocale} />
         ))}
       </div>
-      <BarakahSummary barakah={barakah} />
-      <AttendanceSummary attendance={attendance} t={t} />
+      <BarakahSummary barakah={barakah} t={t} />
+      <AttendanceSummary attendance={attendance} t={t} intlLocale={intlLocale} />
       <ConsistencyStrip consistency={consistency} audience="parent" t={t} />
 
       <div className="flex flex-wrap gap-3 text-sm">
@@ -329,7 +373,7 @@ async function ChildBlock({
 
 export default async function ParentHome() {
   const user = await requireRole("parent");
-  const { t } = await getT(user);
+  const { t, intlLocale } = await getT(user);
 
   let blocks: {
     report: ChildReport;
@@ -372,26 +416,26 @@ export default async function ParentHome() {
       {needsConsent.length > 0 ? (
         <Card tone="warning" className="flex flex-wrap items-center justify-between gap-3 p-4">
           <span className="text-sm text-ink-2">
-            {needsConsent.join(" and ")}&apos;s playground is locked until you complete the
-            consent step.
+            {t("parent.consentLocked", {
+              names: needsConsent.join(` ${t("common.and")} `),
+            })}
           </span>
           <Link
             href="/parent/consent"
             className="text-sm font-medium text-terracotta hover:text-terracotta-strong"
           >
-            Review consent &rarr;
+            {t("parent.reviewConsent")} &rarr;
           </Link>
         </Card>
       ) : null}
 
       {loadError ? (
         <Card tone="warning" className="p-4 text-sm text-ink-2">
-          Progress is unavailable: {loadError}. Run <code>npm run seed</code>.
+          {t("parent.progressUnavailable", { error: loadError })}{" "}
+          <code>npm run seed</code>
         </Card>
       ) : blocks.length === 0 ? (
-        <Card className="p-6 text-sm text-ink-3">
-          No child is linked to this account yet.
-        </Card>
+        <Card className="p-6 text-sm text-ink-3">{t("parent.noChildLinked")}</Card>
       ) : (
         <div className="space-y-9">
           {blocks.map((b) => (
@@ -401,6 +445,8 @@ export default async function ParentHome() {
               barakah={b.barakah}
               consistency={b.consistency}
               attendance={b.attendance}
+              t={t}
+              intlLocale={intlLocale}
             />
           ))}
         </div>
@@ -408,18 +454,10 @@ export default async function ParentHome() {
 
       <div className="flex items-start gap-3 rounded-[var(--radius-lg)] border border-border bg-surface-2 p-4 text-sm text-ink-3">
         <Dome className="mt-0.5 h-5 w-8 shrink-0 text-terracotta" />
-        <p>
-          Your pod meets with a community volunteer for live enrichment. Schedule and
-          fee/sponsorship details are managed by the masjid - reach out to the
-          coordinator with any questions.
-        </p>
+        <p>{t("parent.enrichmentNote")}</p>
       </div>
 
-      <RegulationNote>
-        Assessment and exam formats shown here are for the demo and must be verified against
-        current Quebec evaluation requirements before they stand in for an official
-        evaluation.
-      </RegulationNote>
+      <RegulationNote>{t("parent.regulationNote")}</RegulationNote>
     </div>
   );
 }
