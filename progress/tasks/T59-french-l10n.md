@@ -68,6 +68,22 @@ REMAINING (mechanical - extract strings + add en/fr keys):
   keep per-locale copies. Compliance report + `/print/*` in FR.
 - A masjid-settings toggle for `default_locale` (admin UI).
 
+### 2026-09-05 (b) — student lesson loop + auth pages (session 01KZau4)
+Also translated: /login, /signup (+ LocaleSwitch on both), the /student course
+cards (CoursePath) + ConsistencyStrip + next-step card, and the full student
+lesson page: LessonView (Translator prop), Checkpoint / TutorPanel /
+MarkCompleteButton / GenerateLessonPanel (useT), the skill-tree locked panel.
+~130 new keys. The whole pre-dashboard + student-playground path is now FR.
+`npm run check:i18n` in CI. 248 total keys (other sessions added offline.* /
+platform.* etc). Survived rebases through the T61/T33/T79 merges.
+
+DEMO PATH = DONE (landing, chrome, auth, student home + lesson loop, parent home).
+STILL REMAINING: admin sub-pages + their PageHeaders + components, /help, legal +
+consent/privacy pages, the parent CourseCard/BarakahSummary internals, FR
+generated content (thread locale through the AI generators), date/currency
+call-site swaps to lib/i18n/format.ts, an admin default_locale toggle, and a
+native Quebec-French review of all strings.
+
 ## Notes (owner appends)
 - The FR strings are a first pass by the model - a native Quebec French reviewer
   should sweep them (esp. the landing marketing copy and regulatory phrasing)
